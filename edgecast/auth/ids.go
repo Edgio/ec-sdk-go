@@ -15,15 +15,10 @@ import (
 
 const idsAddressDefault string = "https://id.vdms.io"
 
-// IDSToken holds the OAuth 2.0 token for calling Verizon Media APIs
+// IDSToken holds the OAuth 2.0 token for calling EdgeCast APIs
 type IDSToken struct {
 	AccessToken    string
 	ExpirationTime time.Time
-}
-
-// Provider defines structs that can provide API Authorization credentials
-type Provider interface {
-	GetAuthorization() (string, error)
 }
 
 type IDSAuthProvider struct {
@@ -92,16 +87,4 @@ func (ip *IDSAuthProvider) GetAuthorization() (string, error) {
 	}
 
 	return "Bearer " + ip.idsToken.AccessToken, nil
-}
-
-type LegacyAuthProvider struct {
-	APIToken string
-}
-
-func (lp *LegacyAuthProvider) GetAuthorization() (string, error) {
-	return "TOK:" + lp.APIToken, nil
-}
-
-func NewLegacyAuthProvider(apiToken string) *LegacyAuthProvider {
-	return &LegacyAuthProvider{APIToken: apiToken}
 }
