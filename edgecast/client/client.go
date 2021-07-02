@@ -33,11 +33,14 @@ type LiteralResponse struct {
 
 // Client is the primary means for services to interact with the EdgeCast API
 type Client struct {
+	// AuthProvider generates an authentication header value for requests
 	AuthProvider auth.Provider
-	APIURL       *url.URL
-	UserAgent    string
-	Logger       edgecast.Logger
-	HTTPClient   *retryablehttp.Client
+
+	// APIURL contains the base URL for the target API
+	BaseAPIURL *url.URL
+	UserAgent  string
+	Logger     edgecast.Logger
+	HTTPClient *retryablehttp.Client
 }
 
 // DefaultClient creates a new client.Client with some defaults
@@ -52,8 +55,8 @@ func DefaultLegacyClient(apiToken string) *Client {
 	return c
 }
 
-func NewClient(apiAddress string, authProvider auth.Provider) (*Client, error) {
-	apiURL, err := url.Parse(apiAddress)
+func NewClient(baseAPIAddress string, authProvider auth.Provider) (*Client, error) {
+	baseAPIURL, err := url.Parse(baseAPIAddress)
 
 	if err != nil {
 		return nil, fmt.Errorf("NewClient: url.Parse: %v", err)
@@ -64,7 +67,7 @@ func NewClient(apiAddress string, authProvider auth.Provider) (*Client, error) {
 	httpClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
 
 	return &Client{
-		APIURL:       apiURL,
+		BaseAPIURL:   baseAPIURL,
 		HTTPClient:   httpClient,
 		UserAgent:    userAgentDefault,
 		AuthProvider: authProvider,
@@ -85,14 +88,14 @@ func (c *Client) BuildRequest(method, path string, body interface{}) (*retryable
 		return nil, fmt.Errorf("BuildRequest: url.Parse: %v", err)
 	}
 
-	absoluteURL := c.APIURL.ResolveReference(relativeURL)
+	absoluteURL := c.BaseAPIURL.ResolveReference(relativeURL)
 
 	var payload interface{}
 
 	if body != nil {
-		switch body.(type) {
+		switch b := body.(type) {
 		case string:
-			payload = []byte(body.(string))
+			payload = []byte(b)
 		default:
 			buf := new(bytes.Buffer)
 			err := json.NewEncoder(buf).Encode(body)
@@ -210,7 +213,7 @@ func (c *Client) SendRequestWithStringResponse(req *retryablehttp.Request) (*str
 		return nil, fmt.Errorf("SendRequest failed: %s", bodyAsString)
 	}
 
-	c.Logger.LogDebug("Raw Response Body:base_client>>SendRequest:%s", body)
+	c.Logger.LogDebug("SendRequest: Response Body: %s", body)
 
 	return &bodyAsString, nil
 }

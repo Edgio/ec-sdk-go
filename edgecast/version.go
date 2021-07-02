@@ -2,7 +2,7 @@
 
 package edgecast
 
-var (
+const (
 	// The current SDK Version
 	SDKVersion = "0.1.0"
 

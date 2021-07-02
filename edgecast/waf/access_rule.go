@@ -56,6 +56,7 @@ type AccessRule struct {
 	UserAgentAccessControls *AccessControls `json:"user_agent"`
 }
 
+// AccessControls contains lists that identify traffic for access control
 type AccessControls struct {
 	// Contains entries that identify traffic that may access your content upon passing a threat assessment.
 	Accesslist []interface{} `json:"accesslist"`
@@ -69,8 +70,10 @@ type AccessControls struct {
 
 // AddAccessRuleResponse contains the response from the WAF API
 type AddAccessRuleResponse struct {
-	Id      string
-	Status  string
+	// The ID of the newly created Access Rule, if successful
+	ID string
+
+	// Indicates whether the operation completed successfully
 	Success bool
 }
 
