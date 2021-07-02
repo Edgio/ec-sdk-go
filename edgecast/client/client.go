@@ -7,12 +7,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 
 	"github.com/VerizonDigital/ec-sdk-go/edgecast"
 	"github.com/VerizonDigital/ec-sdk-go/edgecast/auth"
+	"github.com/VerizonDigital/ec-sdk-go/edgecast/internal/collections"
 	"github.com/VerizonDigital/ec-sdk-go/edgecast/internal/jsonutil"
 	"github.com/hashicorp/go-retryablehttp"
 )
@@ -23,8 +23,7 @@ const (
 )
 
 var (
-	idsToken         *auth.IDSToken
-	userAgentDefault string = "edgecast/ec-sdk-go:" + edgecast.SDKVersion
+	userAgentDefault string = "edgecast/" + edgecast.SDKName + ":" + edgecast.SDKVersion
 )
 
 // LiteralResponse is used for unmarshaling response data that is in an unrecognized format
@@ -32,11 +31,12 @@ type LiteralResponse struct {
 	Value interface{}
 }
 
-// Client is the base client for interacting with the EdgeCast API
+// Client is the primary means for services to interact with the EdgeCast API
 type Client struct {
 	AuthProvider auth.Provider
 	APIURL       *url.URL
 	UserAgent    string
+	Logger       edgecast.Logger
 	HTTPClient   *retryablehttp.Client
 }
 
@@ -68,7 +68,13 @@ func NewClient(apiAddress string, authProvider auth.Provider) (*Client, error) {
 		HTTPClient:   httpClient,
 		UserAgent:    userAgentDefault,
 		AuthProvider: authProvider,
+		Logger:       edgecast.NewNullLogger(),
 	}, nil
+}
+
+func (c *Client) WithLogger(logger edgecast.Logger) *Client {
+	c.Logger = logger
+	return c
 }
 
 // BuildRequest creates a new Request for the Edgecast API, adding appropriate headers
@@ -93,7 +99,8 @@ func (c *Client) BuildRequest(method, path string, body interface{}) (*retryable
 			if err != nil {
 				return nil, err
 			}
-			jsonutil.LogRequestBody(method, absoluteURL.String(), body)
+			logMsg := jsonutil.CreateRequestBodyLogMessage(method, absoluteURL.String(), body)
+			c.Logger.LogDebug(logMsg)
 			payload = buf
 
 		}
@@ -134,7 +141,7 @@ func (c *Client) SendRequest(req *retryablehttp.Request, parsedResponse interfac
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	bodyAsString := string(body)
-	jsonutil.LogPrettyJson("Response", bodyAsString)
+	jsonutil.CreateJSONLogMessage("Response", bodyAsString)
 	if resp.StatusCode >= 400 && resp.StatusCode <= 599 {
 		if err != nil {
 			return nil, fmt.Errorf("SendRequest: ioutil.ReadAll: %v", err)
@@ -148,12 +155,12 @@ func (c *Client) SendRequest(req *retryablehttp.Request, parsedResponse interfac
 
 	var f interface{}
 	if jsonUnmarshalErr := json.Unmarshal(body, &f); err != nil {
-		return nil, fmt.Errorf("Malformed Json response:%v", jsonUnmarshalErr)
+		return nil, fmt.Errorf("malformed Json response:%v", jsonUnmarshalErr)
 	}
 
-	if jsonutil.IsInterfaceArray(f) {
+	if collections.IsInterfaceArray(f) {
 		if jsonArryErr := json.Unmarshal([]byte(body), parsedResponse); jsonArryErr != nil {
-			return nil, fmt.Errorf("Malformed Json Array response:%v", jsonArryErr)
+			return nil, fmt.Errorf("malformed Json Array response:%v", jsonArryErr)
 		}
 	} else {
 		if jsonutil.IsJSONString(bodyAsString) {
@@ -203,8 +210,7 @@ func (c *Client) SendRequestWithStringResponse(req *retryablehttp.Request) (*str
 		return nil, fmt.Errorf("SendRequest failed: %s", bodyAsString)
 	}
 
-	// TODO Implement a proper logger with levels
-	log.Printf("[DEBUG] Raw Response Body:base_client>>SendRequest:%s", body)
+	c.Logger.LogDebug("Raw Response Body:base_client>>SendRequest:%s", body)
 
 	return &bodyAsString, nil
 }

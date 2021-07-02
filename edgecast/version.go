@@ -3,5 +3,9 @@
 package edgecast
 
 var (
+	// The current SDK Version
 	SDKVersion = "0.1.0"
+
+	// The SDK Name
+	SDKName = "ec-sdk-go"
 )
