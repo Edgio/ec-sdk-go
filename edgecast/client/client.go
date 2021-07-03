@@ -11,19 +11,15 @@ import (
 	"net/url"
 
 	"github.com/VerizonDigital/ec-sdk-go/edgecast"
-	"github.com/VerizonDigital/ec-sdk-go/edgecast/auth"
 	"github.com/VerizonDigital/ec-sdk-go/edgecast/internal/collections"
 	"github.com/VerizonDigital/ec-sdk-go/edgecast/internal/jsonutil"
 	"github.com/hashicorp/go-retryablehttp"
 )
 
 const (
-	apiURLDefault string = "https://api.vdms.io"
-	apiURLLegacy  string = "https://api.edgecast.com"
-)
-
-var (
-	userAgentDefault string = "edgecast/" + edgecast.SDKName + ":" + edgecast.SDKVersion
+	defaultBaseAPIURL       string = "https://api.vdms.io"
+	defaultBaseAPIURLLegacy string = "https://api.edgecast.com"
+	defaultUserAgentFormat  string = "edgecast/%s:%s"
 )
 
 // LiteralResponse is used for unmarshaling response data that is in an unrecognized format
@@ -33,33 +29,38 @@ type LiteralResponse struct {
 
 // Client is the primary means for services to interact with the EdgeCast API
 type Client struct {
-	// AuthProvider generates an authentication header value for requests
-	AuthProvider auth.Provider
+	// Generates Authorization Header values for HTTP requests
+	AuthHeaderProvider AuthorizationHeaderProvider
 
 	// APIURL contains the base URL for the target API
 	BaseAPIURL *url.URL
-	UserAgent  string
-	Logger     edgecast.Logger
+
+	// The User Agent specifed for HTTP requests
+	UserAgent string
+
+	// Logger -
+	Logger edgecast.Logger
+
+	// Internal HTTP client
 	HTTPClient *retryablehttp.Client
 }
 
-// DefaultClient creates a new client.Client with some defaults
-func DefaultClient(clientID string, clientSecret string, scope string) *Client {
-	c, _ := NewClient(apiURLDefault, auth.DefaultIDSAuthProvider(clientID, clientSecret, scope))
-	return c
+// Creates a new client pointing to EdgeCast APIs
+func NewDefaultClient() *Client {
+	return NewClient(defaultBaseAPIURL)
 }
 
-// DefaultLegacyClient creates a new client.Client with some defaults and pointing to the legacy API
-func DefaultLegacyClient(apiToken string) *Client {
-	c, _ := NewClient(apiURLLegacy, auth.NewLegacyAuthProvider(apiToken))
-	return c
+// Creates a new client pointing to EdgeCast Legacy APIs
+func NewLegacyClient() *Client {
+	return NewClient(defaultBaseAPIURLLegacy)
 }
 
-func NewClient(baseAPIAddress string, authProvider auth.Provider) (*Client, error) {
+// Creates a new Client targeting the given API address, with default configurations
+func NewClient(baseAPIAddress string) *Client {
 	baseAPIURL, err := url.Parse(baseAPIAddress)
 
 	if err != nil {
-		return nil, fmt.Errorf("NewClient: url.Parse: %v", err)
+		panic(err)
 	}
 
 	// Use PassthroughErrorHandler so that retryablehttp.Client does not obscure API errors
@@ -67,14 +68,38 @@ func NewClient(baseAPIAddress string, authProvider auth.Provider) (*Client, erro
 	httpClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
 
 	return &Client{
-		BaseAPIURL:   baseAPIURL,
-		HTTPClient:   httpClient,
-		UserAgent:    userAgentDefault,
-		AuthProvider: authProvider,
-		Logger:       edgecast.NewNullLogger(),
-	}, nil
+		BaseAPIURL: baseAPIURL,
+		HTTPClient: httpClient,
+		UserAgent:  fmt.Sprintf(defaultUserAgentFormat, edgecast.SDKName, edgecast.SDKVersion),
+		Logger:     edgecast.NewNullLogger(),
+	}
 }
 
+// Configures a client to use IDS Credentials
+func (c *Client) WithIDSCredentials(credentials IDSCredentials) *Client {
+	idsProvider, err := NewIDSAuthorizationHeaderProvider(credentials)
+
+	if err != nil {
+		panic(err)
+	}
+
+	c.AuthHeaderProvider = idsProvider
+	return c
+}
+
+// Configures a cient to use the legacy API Token
+func (c *Client) WithAPIToken(apiToken string) *Client {
+	legacyProvider, err := NewLegacyAuthorizationHeaderProvider(apiToken)
+
+	if err != nil {
+		panic(err)
+	}
+
+	c.AuthHeaderProvider = legacyProvider
+	return c
+}
+
+// Configures a Client to use a logger
 func (c *Client) WithLogger(logger edgecast.Logger) *Client {
 	c.Logger = logger
 	return c
@@ -121,7 +146,7 @@ func (c *Client) BuildRequest(method, path string, body interface{}) (*retryable
 
 	req.Header.Set("Accept", "application/json")
 
-	authHeader, err := c.AuthProvider.GetAuthorization()
+	authHeader, err := c.AuthHeaderProvider.GetAuthorizationHeader()
 
 	if err != nil {
 		return nil, fmt.Errorf("BuildRequest: Failed to get authorization: %v", err)

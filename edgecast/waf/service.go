@@ -10,17 +10,19 @@ import (
 // WAF service interacts with the EdgeCast API for WAF
 type WAFService struct {
 	*client.Client
+	Logger edgecast.Logger
 }
 
 // New creates a new WAF service
 func New(apiToken string) *WAFService {
 	return &WAFService{
-		Client: client.DefaultLegacyClient(apiToken),
+		Client: client.NewLegacyClient().WithAPIToken(apiToken),
 	}
 }
 
 // WithLogger can be used to specify a custom logger
 func (w *WAFService) WithLogger(logger edgecast.Logger) *WAFService {
 	w.Logger = logger
+	w.Client.WithLogger(logger)
 	return w
 }
