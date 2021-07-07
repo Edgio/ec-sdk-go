@@ -4,7 +4,7 @@ This is the official Go SDK for EdgeCast. It contains services that interact wit
 ## Dependencies
 - Go 1.16
 
-##Installing
+## Installing
 ### $GOPATH
 To install the SDK into your $GOPATH:
 ```
