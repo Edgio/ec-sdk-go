@@ -54,8 +54,14 @@ func main() {
 
 	fmt.Printf("Creating Access Rule: %+v\n", rule)
 
-	logger := edgecast.NewStandardLogger()
-	wafService := waf.New(*apiToken).WithLogger(logger)
+	wafConfig := waf.NewConfig(*apiToken)
+	wafConfig.Logger = edgecast.NewStandardLogger()
+	wafService, err := waf.New(wafConfig)
+
+	if err != nil {
+		fmt.Printf("error creating WAF Service: %v\n", err)
+		return
+	}
 
 	resp, err := wafService.AddAccessRule(rule)
 

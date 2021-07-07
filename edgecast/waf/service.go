@@ -3,6 +3,8 @@
 package waf
 
 import (
+	"fmt"
+
 	"github.com/VerizonDigital/ec-sdk-go/edgecast"
 	"github.com/VerizonDigital/ec-sdk-go/edgecast/client"
 )
@@ -14,15 +16,17 @@ type WAFService struct {
 }
 
 // New creates a new WAF service
-func New(apiToken string) *WAFService {
-	return &WAFService{
-		Client: client.NewLegacyClient().WithAPIToken(apiToken),
-	}
-}
+func New(config WAFConfig) (*WAFService, error) {
+	clientConfig, err := client.NewLegacyAPIClientConfig(config.APIToken)
 
-// WithLogger can be used to specify a custom logger
-func (w *WAFService) WithLogger(logger edgecast.Logger) *WAFService {
-	w.Logger = logger
-	w.Client.WithLogger(logger)
-	return w
+	if err != nil {
+		return nil, fmt.Errorf("error creating new WAF Service: %v", err)
+	}
+
+	// Inject the logger into the client config
+	clientConfig.Logger = config.Logger
+
+	return &WAFService{
+		Client: client.NewClient(*clientConfig),
+	}, nil
 }

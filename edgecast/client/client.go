@@ -10,16 +10,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/VerizonDigital/ec-sdk-go/edgecast"
 	"github.com/VerizonDigital/ec-sdk-go/edgecast/internal/collections"
 	"github.com/VerizonDigital/ec-sdk-go/edgecast/internal/jsonutil"
 	"github.com/hashicorp/go-retryablehttp"
-)
-
-const (
-	defaultBaseAPIURL       string = "https://api.vdms.io"
-	defaultBaseAPIURLLegacy string = "https://api.edgecast.com"
-	defaultUserAgentFormat  string = "edgecast/%s:%s"
 )
 
 // LiteralResponse is used for unmarshaling response data that is in an unrecognized format
@@ -29,80 +22,23 @@ type LiteralResponse struct {
 
 // Client is the primary means for services to interact with the EdgeCast API
 type Client struct {
-	// Generates Authorization Header values for HTTP requests
-	AuthHeaderProvider AuthorizationHeaderProvider
-
-	// APIURL contains the base URL for the target API
-	BaseAPIURL *url.URL
-
-	// The User Agent specifed for HTTP requests
-	UserAgent string
-
-	// Logger -
-	Logger edgecast.Logger
+	// Config holds the configuration values for this client
+	Config ClientConfig
 
 	// Internal HTTP client
 	HTTPClient *retryablehttp.Client
 }
 
 // Creates a new client pointing to EdgeCast APIs
-func NewDefaultClient() *Client {
-	return NewClient(defaultBaseAPIURL)
-}
-
-// Creates a new client pointing to EdgeCast Legacy APIs
-func NewLegacyClient() *Client {
-	return NewClient(defaultBaseAPIURLLegacy)
-}
-
-// Creates a new Client targeting the given API address, with default configurations
-func NewClient(baseAPIAddress string) *Client {
-	baseAPIURL, err := url.Parse(baseAPIAddress)
-
-	if err != nil {
-		panic(err)
-	}
-
+func NewClient(config ClientConfig) *Client {
 	// Use PassthroughErrorHandler so that retryablehttp.Client does not obscure API errors
 	httpClient := retryablehttp.NewClient()
 	httpClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
 
 	return &Client{
-		BaseAPIURL: baseAPIURL,
+		Config:     config,
 		HTTPClient: httpClient,
-		UserAgent:  fmt.Sprintf(defaultUserAgentFormat, edgecast.SDKName, edgecast.SDKVersion),
-		Logger:     edgecast.NewNullLogger(),
 	}
-}
-
-// Configures a client to use IDS Credentials
-func (c *Client) WithIDSCredentials(credentials IDSCredentials) *Client {
-	idsProvider, err := NewIDSAuthorizationHeaderProvider(credentials)
-
-	if err != nil {
-		panic(err)
-	}
-
-	c.AuthHeaderProvider = idsProvider
-	return c
-}
-
-// Configures a cient to use the legacy API Token
-func (c *Client) WithAPIToken(apiToken string) *Client {
-	legacyProvider, err := NewLegacyAuthorizationHeaderProvider(apiToken)
-
-	if err != nil {
-		panic(err)
-	}
-
-	c.AuthHeaderProvider = legacyProvider
-	return c
-}
-
-// Configures a Client to use a logger
-func (c *Client) WithLogger(logger edgecast.Logger) *Client {
-	c.Logger = logger
-	return c
 }
 
 // BuildRequest creates a new Request for the Edgecast API, adding appropriate headers
@@ -113,7 +49,7 @@ func (c *Client) BuildRequest(method, path string, body interface{}) (*retryable
 		return nil, fmt.Errorf("BuildRequest: url.Parse: %v", err)
 	}
 
-	absoluteURL := c.BaseAPIURL.ResolveReference(relativeURL)
+	absoluteURL := c.Config.BaseAPIURL.ResolveReference(relativeURL)
 
 	var payload interface{}
 
@@ -128,7 +64,7 @@ func (c *Client) BuildRequest(method, path string, body interface{}) (*retryable
 				return nil, err
 			}
 			logMsg := jsonutil.CreateRequestBodyLogMessage(method, absoluteURL.String(), body)
-			c.Logger.LogDebug(logMsg)
+			c.Config.Logger.LogDebug(logMsg)
 			payload = buf
 
 		}
@@ -146,14 +82,14 @@ func (c *Client) BuildRequest(method, path string, body interface{}) (*retryable
 
 	req.Header.Set("Accept", "application/json")
 
-	authHeader, err := c.AuthHeaderProvider.GetAuthorizationHeader()
+	authHeader, err := c.Config.AuthHeaderProvider.GetAuthorizationHeader()
 
 	if err != nil {
 		return nil, fmt.Errorf("BuildRequest: Failed to get authorization: %v", err)
 	}
 
 	req.Header.Set("Authorization", authHeader)
-	req.Header.Set("User-Agent", c.UserAgent)
+	req.Header.Set("User-Agent", c.Config.UserAgent)
 
 	return req, nil
 }
@@ -238,7 +174,7 @@ func (c *Client) SendRequestWithStringResponse(req *retryablehttp.Request) (*str
 		return nil, fmt.Errorf("SendRequest failed: %s", bodyAsString)
 	}
 
-	c.Logger.LogDebug("SendRequest: Response Body: %s", body)
+	c.Config.Logger.LogDebug("SendRequest: Response Body: %s", body)
 
 	return &bodyAsString, nil
 }
