@@ -16,7 +16,7 @@ go get -u github.com/VerizonDigital/ec-sdk-go
 go get github.com/VerizonDigital/ec-sdk-go
 ```
 
-##Using the SDK
+## Using the SDK
 Simply import the SDK and provide the API credentials provided to you. They may be an API Token or OAuth 2.0 Credentials. Examples are listed below for each feature.
 
 ### Web Application Firewall (WAF)
