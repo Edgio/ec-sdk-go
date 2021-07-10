@@ -25,7 +25,7 @@ type ManagedRule struct {
 	// Indicates the ID for the rule set associated with this managed rule.
 	RulesetId string `json:"ruleset_id"`
 
-	// 	Indicates the version of the rule set associated with this managed rule.
+	// Indicates the version of the rule set associated with this managed rule.
 	RulesetVersion string `json:"ruleset_version"`
 }
 
