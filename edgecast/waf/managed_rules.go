@@ -1,18 +1,54 @@
+// Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license . See LICENSE file in project root for terms.
+
 package waf
 
 import (
 	"fmt"
+	"strings"
+	"time"
 )
 
+// Retrieves a list of managed rules (Profiles). A managed rule identifies a rule set configuration and describes a valid request.
 type ManagedRule struct {
-	CreatedDate      string `json:"created_date"` //TODO: Change to time.Time
-	Id               string `json:"id"`
-	LastModifiedDate string `json:"last_modified_date"` //TODO: Change to time.Time
-	Name             string `json:"name"`
-	RulesetId        string `json:"ruleset_id"`
-	RulesetVersion   string `json:"ruleset_version"`
+	// Indicates the date and time at which the managed rule was created
+	CreatedDate shortDateTime `json:"created_date"`
+
+	// Indicates the system-defined ID for the managed rule.
+	Id string `json:"id"`
+
+	// Indicates the date and time at which the managed rule was last modified.
+	LastModifiedDate time.Time `json:"last_modified_date"`
+
+	// Indicates the name of the managed rule.
+	Name string `json:"name"`
+
+	// Indicates the ID for the rule set associated with this managed rule.
+	RulesetId string `json:"ruleset_id"`
+
+	// 	Indicates the version of the rule set associated with this managed rule.
+	RulesetVersion string `json:"ruleset_version"`
 }
 
+// Used to handle value returned for CreateDate to allow for implementation of UnmarshalJSON below
+type shortDateTime struct {
+	time.Time
+}
+
+// Allows for CreatedDate field within ManagedRule struct to be of type Time
+func (p *shortDateTime) UnmarshalJSON(bytes []byte) error {
+	s := strings.Trim(string(bytes), "\"")
+
+	timeObject, err := time.Parse("01/02/2006 04:04:05 PM", s)
+
+	if err != nil {
+		return fmt.Errorf("GetAllManagedRules: %v", err)
+	}
+
+	p.Time = timeObject
+	return nil
+}
+
+// Get all Managed Rules associcated with the provided account number.
 func (svc *WAFService) GetAllManagedRules(accountNumber string) ([]ManagedRule, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/profile", accountNumber)
 
