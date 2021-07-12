@@ -10,14 +10,14 @@ import (
 
 // Retrieves a list of managed rules (Profiles). A managed rule identifies a rule set configuration and describes a valid request.
 type ManagedRule struct {
-	// Indicates the date and time at which the managed rule was created
-	CreatedDate shortDateTime `json:"created_date"`
+	// Indicates the date and time at which the managed rule was created. TODO: Convert to time.Time .
+	CreatedDate string `json:"created_date"`
 
 	// Indicates the system-defined ID for the managed rule.
 	Id string `json:"id"`
 
-	// Indicates the date and time at which the managed rule was last modified.
-	LastModifiedDate time.Time `json:"last_modified_date"`
+	// Indicates the date and time at which the managed rule was last modified. TODO: Convert to time.Time .
+	LastModifiedDate string `json:"last_modified_date"`
 
 	// Indicates the name of the managed rule.
 	Name string `json:"name"`
@@ -29,7 +29,7 @@ type ManagedRule struct {
 	RulesetVersion string `json:"ruleset_version"`
 }
 
-// Used to handle value returned for CreateDate to allow for implementation of UnmarshalJSON below
+// Will be used in the future to handle value returned for CreateDate to allow for implementation of UnmarshalJSON below
 type shortDateTime struct {
 	time.Time
 }
@@ -38,7 +38,7 @@ type shortDateTime struct {
 func (p *shortDateTime) UnmarshalJSON(bytes []byte) error {
 	s := strings.Trim(string(bytes), "\"")
 
-	timeObject, err := time.Parse("01/02/2006 04:04:05 PM", s)
+	timeObject, err := time.Parse("1/2/2006 04:04:05 PM", s)
 
 	if err != nil {
 		return fmt.Errorf("GetAllManagedRules: %v", err)
