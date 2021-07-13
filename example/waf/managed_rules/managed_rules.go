@@ -12,6 +12,7 @@ func main() {
 
 	//Setup
 	apiToken := flag.String("api-token", "", "API Token provided to you")
+	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve all Managed Rules for")
 
 	flag.Parse()
 
@@ -25,7 +26,7 @@ func main() {
 	}
 
 	//Get All Managed Rules Example
-	managedRules, err := wafService.GetAllManagedRules("4FDBB")
+	managedRules, err := wafService.GetAllManagedRules(*accountNumber)
 
 	if err != nil {
 		fmt.Printf("Error retrieving all managed rules: %v\n", err)
