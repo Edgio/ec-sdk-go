@@ -1,6 +1,5 @@
 // Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
-// Package waf provides an API for managing Web Application Firewall for the EdgeCast CDN.
-// WAF  provides a layer of security between security threats and your external web infrastructure.
+
 package waf
 
 import "fmt"
@@ -69,17 +68,8 @@ type AccessControls struct {
 	Whitelist []interface{} `json:"whitelist"`
 }
 
-// AddAccessRuleResponse contains the response from the WAF API
-type AddAccessRuleResponse struct {
-	// The ID of the newly created Access Rule, if successful
-	ID string
-
-	// Indicates whether the operation completed successfully
-	Success bool
-}
-
 // AddAccessRule creates an access rule that identifies valid or malicious requests via whitelists, accesslists, and blacklists.
-func (svc *WAFService) AddAccessRule(accessRule AccessRule) (*AddAccessRuleResponse, error) {
+func (svc *WAFService) AddAccessRule(accessRule AccessRule) (*AddRuleResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl", accessRule.CustomerID)
 
 	request, err := svc.Client.BuildRequest("POST", url, accessRule)
@@ -88,7 +78,7 @@ func (svc *WAFService) AddAccessRule(accessRule AccessRule) (*AddAccessRuleRespo
 		return nil, fmt.Errorf("AddAccessRule: %v", err)
 	}
 
-	parsedResponse := &AddAccessRuleResponse{}
+	parsedResponse := &AddRuleResponse{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
