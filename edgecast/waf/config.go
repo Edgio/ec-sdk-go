@@ -1,6 +1,6 @@
 package waf
 
-import "github.com/VerizonDigital/ec-sdk-go/edgecast"
+import "github.com/EdgeCast/ec-sdk-go/edgecast"
 
 // Config holds the configuration for the WAF service
 type WAFConfig struct {
