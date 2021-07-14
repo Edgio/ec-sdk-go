@@ -149,7 +149,7 @@ func (svc *WAFService) AddRateRule(rateRule RateRule) (*AddRuleResponse, error) 
 	request, err := svc.Client.BuildRequest("POST", url, rateRule)
 
 	if err != nil {
-		return nil, fmt.Errorf("AddAccessRule: %v", err)
+		return nil, fmt.Errorf("AddRateRule: %v", err)
 	}
 
 	parsedResponse := &AddRuleResponse{}
@@ -157,7 +157,7 @@ func (svc *WAFService) AddRateRule(rateRule RateRule) (*AddRuleResponse, error) 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
-		return nil, fmt.Errorf("AddAccessRule: %v", err)
+		return nil, fmt.Errorf("AddRateRule: %v", err)
 	}
 
 	return parsedResponse, nil
