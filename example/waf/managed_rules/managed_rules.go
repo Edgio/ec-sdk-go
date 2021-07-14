@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/VerizonDigital/ec-sdk-go/edgecast"
-	"github.com/VerizonDigital/ec-sdk-go/edgecast/waf"
+	"github.com/EdgeCast/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 
 func main() {

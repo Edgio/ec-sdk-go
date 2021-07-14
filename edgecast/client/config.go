@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/VerizonDigital/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast"
 )
 
 const (
