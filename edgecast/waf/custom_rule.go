@@ -5,8 +5,6 @@ package waf
 
 import (
 	"fmt"
-	"strings"
-	"time"
 )
 
 type CustomRuleSet struct {
@@ -16,28 +14,10 @@ type CustomRuleSet struct {
 	//Indicates the date and time at which the custom rule was last modified.
 	//Syntax:
 	//MM/DD/YYYYhh:mm:ss [AM|PM]
-	LastModifiedDate shortDateTime `json:"last_modified_date"`
+	LastModifiedDate string `json:"last_modified_date"`
 
 	//Indicates the name of the custom rule set.
 	Name string `json:"name"`
-}
-
-// Used to handle value returned for LastModifiedDate to allow for implementation of UnmarshalJSON below
-type shortDateTime struct {
-	string
-}
-
-//Allows for LastModifiedDate field within customRuleSets struct to be of formatted datetime string
-func (p *shortDateTime) UnmarshalJSON(bytes []byte) error {
-	s := strings.Trim(string(bytes), "\"")
-
-	timeObject, err := time.Parse(time.RFC3339, s)
-	if err != nil {
-		return fmt.Errorf("GetAllCustomRuleSets: %v", err)
-	}
-
-	p.string = timeObject.Format("1/2/2006 04:04:05 PM")
-	return nil
 }
 
 //Retrieves a list of custom rule sets. A custom rule set allows you to define custom threat assessment criterion.

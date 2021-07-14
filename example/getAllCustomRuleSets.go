@@ -16,6 +16,7 @@ import (
 func main() {
 
 	apiToken := flag.String("api-token", "", "API Token provided to you")
+	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve all Managed Rules for")
 
 	flag.Parse()
 
@@ -29,7 +30,7 @@ func main() {
 	}
 
 	//Get all Custom Rule Sets example
-	customRuleSets, err := wafService.GetAllCustomRuleSets("")
+	customRuleSets, err := wafService.GetAllCustomRuleSets(*accountNumber)
 
 	if err != nil {
 		fmt.Printf("Error retrieving all custom rule sets: %v\n", err)
