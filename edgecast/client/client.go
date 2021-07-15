@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/VerizonDigital/ec-sdk-go/edgecast/internal/collections"
-	"github.com/VerizonDigital/ec-sdk-go/edgecast/internal/jsonutil"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/collections"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/jsonutil"
 	"github.com/hashicorp/go-retryablehttp"
 )
 

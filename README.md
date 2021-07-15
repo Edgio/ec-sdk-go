@@ -8,12 +8,12 @@ This is the official Go SDK for EdgeCast. It contains services that interact wit
 ### $GOPATH
 To install the SDK into your $GOPATH:
 ```
-go get -u github.com/VerizonDigital/ec-sdk-go
+go get -u github.com/EdgeCast/ec-sdk-go
 ```
 
 ### Go Modules
 ```
-go get github.com/VerizonDigital/ec-sdk-go
+go get github.com/EdgeCast/ec-sdk-go
 ```
 
 ## Using the SDK
@@ -30,8 +30,8 @@ To use the WAF service, use the API Token provided to you.
 An access rule identifies legitimate traffic and threats by ASN, Cookie, Country, IP Address, Referrer, URL, User agent, HTTP method, Media type, File extension, and Request headers.
 ```
 import (
-	"github.com/VerizonDigital/ec-sdk-go/edgecast"
-	"github.com/VerizonDigital/ec-sdk-go/edgecast/waf"
+	"github.com/EdgeCast/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 // ...
 	wafConfig := waf.NewConfig("MY API TOKEN")
@@ -49,4 +49,6 @@ import (
 
 [API Documentation](https://docs.vdms.com/cdn/index.html#REST-API.htm%3FTocPath%3D_____8) - For developers that want to interact directly with the EdgeCast CDN API, refer to this documentation. It contains all of the available operations as well as their inputs and outputs.
 
-[Submit an Issue](https://github.com/VerizonDigital/ec-sdk-go/issues) - Found a bug? Want to request a feature? Please do so here.
+[Examples](https://github.com/EdgeCast/ec-sdk-go/tree/main/example) - Example to get started can be found here.
+
+[Submit an Issue](https://github.com/EdgeCast/ec-sdk-go/issues) - Found a bug? Want to request a feature? Please do so here.

@@ -5,8 +5,8 @@ package waf
 import (
 	"fmt"
 
-	"github.com/VerizonDigital/ec-sdk-go/edgecast"
-	"github.com/VerizonDigital/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
 )
 
 // WAF service interacts with the EdgeCast API for WAF
