@@ -1,6 +1,5 @@
 // Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
-// Package waf provides an API for managing Web Application Firewall for the EdgeCast CDN.
-// WAF  provides a layer of security between security threats and your external web infrastructure.
+
 package waf
 
 import (

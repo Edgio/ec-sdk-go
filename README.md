@@ -49,6 +49,6 @@ import (
 
 [API Documentation](https://docs.vdms.com/cdn/index.html#REST-API.htm%3FTocPath%3D_____8) - For developers that want to interact directly with the EdgeCast CDN API, refer to this documentation. It contains all of the available operations as well as their inputs and outputs.
 
-[Examples](https://github.com/EdgeCast/ec-sdk-go/tree/main/example) - Example to get started can be found here.
+[Examples](https://github.com/EdgeCast/ec-sdk-go/tree/main/example) - Examples to get started can be found here.
 
 [Submit an Issue](https://github.com/EdgeCast/ec-sdk-go/issues) - Found a bug? Want to request a feature? Please do so here.
