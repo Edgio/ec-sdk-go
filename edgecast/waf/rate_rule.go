@@ -45,10 +45,10 @@ type RateRule struct {
 		USER_AGENT: Indicates that requests will be grouped by a client's user agent.
 		Each unique combination of IP address and user agent is considered a separate group.
 	*/
-	Keys []string `json:"keys"`
+	Keys []string `json:"keys,omitempty"`
 
 	// Indicates the name of the rate rule.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 
 	/*
 		Indicates the rate limit value. This value identifies the number of requests that will trigger rate limiting.
@@ -69,19 +69,19 @@ type ConditionGroup struct {
 
 		Example: 12345678-90ab-cdef-ghij-klmnopqrstuvwxyz1
 	*/
-	ID string `json:"id"`
+	ID string `json:"id,omitempty"`
 
 	// Indicates the name of a condition group
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 }
 
 // Condition to be associated with a Rate Rule
 type Condition struct {
 	// Target describes the type of match condition
-	Target *Target `json:"target"`
+	Target Target `json:"target"`
 
 	// OP describes a match condition
-	OP *OP `json:"op"`
+	OP OP `json:"op"`
 }
 
 // Target describes the type of match condition
@@ -99,18 +99,18 @@ type Target struct {
 
 		Note: Required if Type is REQUEST_HEADERS
 	*/
-	Value string `json:"value"`
+	Value string `json:"value,omitempty"`
 }
 
 // OP describes a match condition
 type OP struct {
 	// IsCaseSensitive indicates whether the comparison between the request and
 	// the Values property is case-sensitive.
-	IsCaseSensitive bool `json:"is_case_sensitive"`
+	IsCaseSensitive *bool `json:"is_case_sensitive,omitempty"`
 
 	// IsNegated indicates whether this match condition will be satisfied when
 	// the request matches or does not match the value defined by the Values property.
-	IsNegated bool `json:"is_negated"`
+	IsNegated *bool `json:"is_negated,omitempty"`
 
 	/*
 		Indicates how the system will interpret the comparison between the request and the Values property.
@@ -131,14 +131,14 @@ type OP struct {
 
 		Note: valid only if Type is RX
 	*/
-	Value string `json:"value"`
+	Value string `json:"value,omitempty"`
 
 	/*
 		Identifies one or more values used to identify requests that are eligible for rate limiting.
 
 		Note: Valid only if Type is EM or IPMATCH
 	*/
-	Values []string `json:"values"`
+	Values []string `json:"values,omitempty"`
 }
 
 // AddRateRule creates a rate rule that determines the maximum number of
