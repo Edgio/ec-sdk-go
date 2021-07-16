@@ -9,7 +9,7 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 
-// Adds a WAD rate rule
+// Adds a WAF rate rule
 //
 // Usage:
 // go run addRateRule.go
