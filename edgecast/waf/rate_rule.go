@@ -104,9 +104,9 @@ type Target struct {
 
 // OP describes a match condition
 type OP struct {
-	// IsCaseSensitive indicates whether the comparison between the request and
+	// IsCaseInsensitive indicates whether the comparison between the request and
 	// the Values property is case-sensitive.
-	IsCaseSensitive *bool `json:"is_case_sensitive,omitempty"`
+	IsCaseInsensitive *bool `json:"is_case_insensitive,omitempty"`
 
 	// IsNegated indicates whether this match condition will be satisfied when
 	// the request matches or does not match the value defined by the Values property.
