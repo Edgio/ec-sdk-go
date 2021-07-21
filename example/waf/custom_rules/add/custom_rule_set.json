@@ -1,0 +1,33 @@
+{
+    "allowed_http_methods":["POST"],
+    "allowed_request_content_types": ["application/json", "text/html"],
+    "directive": [{
+        "sec_rule": {
+            "action": {
+                "id": "66000000",
+                "msg": "Invalid user agent.",
+                "t": [
+                    "NONE"
+                ]
+            },
+            "operator": {
+                "is_negated": false,
+                "type": "CONTAINS",
+                "value": "bot"
+            },
+            "variable": [{
+                    "is_count": false,
+                    "match": [{
+                            "is_negated": false,
+                            "is_regex": false,
+                            "value": "User-Agent"
+                        }
+                    ],
+                    "type": "REQUEST_HEADERS"
+                }
+            ]
+        }
+    }
+],
+"name": "My-Rule"
+}
