@@ -89,8 +89,8 @@ func (svc *WAFService) AddAccessRule(accessRule AccessRule) (*AddRuleResponse, e
 	return parsedResponse, nil
 }
 
-//GetAccessControls containts list of rules that identify traffic for access control
-type GetAccessControls struct {
+//AccessRuleLight containts list of rules that identify traffic for access control
+type AccessRuleLight struct {
 	// Indicates the system-defined ID for the access rule.
 	Id string `json:"id"`
 	// Indicates the name of the access rule.
@@ -99,8 +99,8 @@ type GetAccessControls struct {
 	LastModifiedDate string `json:"last_modified_date"`
 }
 
-// Get all Access Rules associcated with the provided account number.
-func (svc *WAFService) GetAllAccessRules(accountNumber string) ([]GetAccessControls, error) {
+// Get all access rules light associcated with the provided account number.
+func (svc *WAFService) GetAccessRulesLight(accountNumber string) ([]AccessRuleLight, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl", accountNumber)
 
 	request, err := svc.Client.BuildRequest("GET", url, nil)
@@ -109,13 +109,13 @@ func (svc *WAFService) GetAllAccessRules(accountNumber string) ([]GetAccessContr
 		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
 	}
 
-	var accessRules = &[]GetAccessControls{}
+	var accessRuleLight = &[]AccessRuleLight{}
 
-	_, err = svc.Client.SendRequest(request, &accessRules)
+	_, err = svc.Client.SendRequest(request, &accessRuleLight)
 
 	if err != nil {
 		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
 	}
 
-	return *accessRules, nil
+	return *accessRuleLight, nil
 }
