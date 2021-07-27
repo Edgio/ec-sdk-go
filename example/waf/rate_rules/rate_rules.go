@@ -17,10 +17,8 @@ import (
 // go run rate_rules.go
 func main() {
 
-	//customerID := "MY_ACCOUNT_NUMBER"
-	//apiToken := "MY_API_TOKEN"
-	customerID := "123E4D"
-	apiToken := "qsYM4Xv4EtwJnIlXUcsNSxFSMTEynNzh"
+	customerID := "MY_ACCOUNT_NUMBER"
+	apiToken := "MY_API_TOKEN"
 	idsCredentials := auth.OAuth2Credentials{} // WAF does not use these credentials
 
 	rule := waf.RateRule{
