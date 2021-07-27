@@ -1,6 +1,4 @@
-// Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
-
-package client
+package auth
 
 import (
 	"testing"
@@ -11,14 +9,14 @@ func TestGetAuthorizationHeader_IDS(t *testing.T) {
 	cases := []struct {
 		Name          string
 		CurrentToken  *IDSToken
-		NewToken      *GetIDSTokenResponse
+		NewToken      *OAuth2TokenResponse
 		Expected      string
 		ExpectedError bool
 	}{
 		{
 			Name:         "No cached token - new token retrieved",
 			CurrentToken: nil,
-			NewToken: &GetIDSTokenResponse{
+			NewToken: &OAuth2TokenResponse{
 				AccessToken: "abcd",
 				ExpiresIn:   100000,
 			},
@@ -31,7 +29,7 @@ func TestGetAuthorizationHeader_IDS(t *testing.T) {
 				AccessToken:    "abcd",
 				ExpirationTime: time.Now().Add(-1),
 			},
-			NewToken: &GetIDSTokenResponse{
+			NewToken: &OAuth2TokenResponse{
 				AccessToken: "efgh",
 				ExpiresIn:   100000,
 			},
@@ -58,10 +56,10 @@ func TestGetAuthorizationHeader_IDS(t *testing.T) {
 	}
 
 	for _, v := range cases {
-		provider := IDSAuthorizationHeaderProvider{
+		provider := IDSAuthorizationProvider{
 			CurrentToken: v.CurrentToken,
-			IDSClient: TestIDSClient{
-				NewToken: v.NewToken,
+			TokenClient: TestIDSClient{
+				StaticToken: v.NewToken,
 			},
 		}
 
@@ -79,49 +77,12 @@ func TestGetAuthorizationHeader_IDS(t *testing.T) {
 	}
 }
 
-// A test client that always returns the same token
+// A test client that implements OAuth2Client
 type TestIDSClient struct {
-	NewToken *GetIDSTokenResponse
+	StaticToken *OAuth2TokenResponse
 }
 
-// Returns a static token
-func (c TestIDSClient) GetIDSToken(credentials IDSCredentials) (*GetIDSTokenResponse, error) {
-	return c.NewToken, nil
-}
-
-func TestGetAuthorizationHeader_Legacy(t *testing.T) {
-	cases := []struct {
-		APIToken      string
-		Expected      string
-		ExpectedError bool
-	}{
-		{
-			APIToken:      "abcd",
-			Expected:      "TOK:abcd",
-			ExpectedError: false,
-		},
-		{
-			APIToken:      "",
-			Expected:      "",
-			ExpectedError: true,
-		},
-	}
-
-	for _, v := range cases {
-		provider := LegacyAuthorizationHeaderProvider{
-			APIToken: v.APIToken,
-		}
-
-		actual, err := provider.GetAuthorizationHeader()
-
-		if v.ExpectedError {
-			if err == nil {
-				t.Fatalf("Expected an error, but did not get one")
-			}
-		} else {
-			if v.Expected != actual {
-				t.Fatalf("Expected '%s', but got '%s'", v.Expected, actual)
-			}
-		}
-	}
+// GetToken returns the same token every tie
+func (c TestIDSClient) GetToken(credentials OAuth2Credentials) (*OAuth2TokenResponse, error) {
+	return c.StaticToken, nil
 }

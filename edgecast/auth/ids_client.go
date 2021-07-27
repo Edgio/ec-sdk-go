@@ -1,6 +1,4 @@
-// Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
-
-package client
+package auth
 
 import (
 	"bytes"
@@ -11,24 +9,18 @@ import (
 	"strconv"
 )
 
-// Defines a way of getting an IDS Token
-type IDSClient interface {
-	GetIDSToken(credentials IDSCredentials) (*GetIDSTokenResponse, error)
-}
-
 // Calls the IDS token endpoint
-type DefaultIDSClient struct {
+type IDSClient struct {
 	IDSBaseUrl *url.URL
 }
 
-// NewDefaultIDSClient -
-func NewDefaultIDSClient() DefaultIDSClient {
-	idsURL, _ := url.Parse(idsAddressDefault)
-	return DefaultIDSClient{IDSBaseUrl: idsURL}
+// NewIDSClientWithURL -
+func NewIDSClient(baseURL url.URL) IDSClient {
+	return IDSClient{IDSBaseUrl: &baseURL}
 }
 
 // Gets a new token from the IDS Token Endpoint
-func (c DefaultIDSClient) GetIDSToken(credentials IDSCredentials) (*GetIDSTokenResponse, error) {
+func (c IDSClient) GetToken(credentials OAuth2Credentials) (*OAuth2TokenResponse, error) {
 	data := url.Values{}
 	data.Set("grant_type", "client_credentials")
 	data.Add("scope", credentials.Scope)
@@ -55,7 +47,7 @@ func (c DefaultIDSClient) GetIDSToken(credentials IDSCredentials) (*GetIDSTokenR
 		return nil, err
 	}
 
-	tokenResponse := &GetIDSTokenResponse{}
+	tokenResponse := &OAuth2TokenResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&tokenResponse)
 
 	if err != nil {
@@ -63,12 +55,4 @@ func (c DefaultIDSClient) GetIDSToken(credentials IDSCredentials) (*GetIDSTokenR
 	}
 
 	return tokenResponse, nil
-}
-
-// GetIDSTokenResponse -
-type GetIDSTokenResponse struct {
-	AccessToken string  `json:"access_token"`
-	ExpiresIn   float64 `json:"expires_in"`
-	TokenType   string  `json:"token_type"`
-	Scope       string  `json:"scope"`
 }
