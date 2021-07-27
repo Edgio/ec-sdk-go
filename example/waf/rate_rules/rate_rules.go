@@ -4,7 +4,6 @@ package main
 
 import (
 	"fmt"
-	"net/url"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
@@ -79,9 +78,6 @@ func main() {
 	}
 
 	sdkConfig := edgecast.NewSDKConfig(apiToken, idsCredentials)
-	baseAPIURLLegacy, _ := url.Parse("https://qa-api.edgecast.com")
-	sdkConfig.BaseAPIURLLegacy = *baseAPIURLLegacy
-
 	wafService, err := waf.New(sdkConfig)
 
 	if err != nil {
