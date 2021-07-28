@@ -6,13 +6,6 @@ import (
 	"fmt"
 )
 
-type TrustedEntities struct {
-	// Contains entries that identify traffic that will be blocked or for which an alert will be generated.
-	Blacklist []interface{} `json:"blacklist"`
-	// Contains entries that identify traffic that may access your content without undergoing threat assessment.
-	Whitelist []interface{} `json:"whitelist"`
-}
-
 // AccessRule (ACL) identifies valid or malicious requests via whitelists, accesslists, and blacklists.
 type AccessRule struct {
 	// Identifies each allowed HTTP method (e.g., GET).
@@ -45,6 +38,8 @@ type AccessRule struct {
 	// Contains access controls for IPv4 and/or IPv6 addresses.
 	// Specify each desired IP address using standard IPv4/IPv6 and CIDR notation.
 	IPAccessControls *AccessControls `json:"ip"`
+
+	MaxFileSize int `json:"max_file_size"`
 
 	// Assigns a name to this access rule.
 	Name string `json:"name"`
@@ -109,7 +104,7 @@ type AccessRuleLight struct {
 }
 
 // Get all access rules light associcated with the provided account number.
-func (svc *WAFService) GetAccessRulesLight(accountNumber string) ([]AccessRuleLight, error) {
+func (svc *WAFService) GetAccessRules(accountNumber string) ([]AccessRuleLight, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl", accountNumber)
 
 	request, err := svc.Client.BuildRequest("GET", url, nil)
@@ -130,39 +125,16 @@ func (svc *WAFService) GetAccessRulesLight(accountNumber string) ([]AccessRuleLi
 }
 
 //AccessRuleLightById containts detail of rules that identify traffic for access control
-type AccessRuleLightById struct {
-	AllowedHTTPMethods         []string `json:"allowed_http_methods"`
-	AllowedRequestContentTypes []string `json:"allowed_request_content_types"`
-	Country                    struct {
-		TrustedEntities
-	} `json:"country"`
-	CustomerID           string   `json:"customer_id"`
-	DisallowedExtensions []string `json:"disallowed_extensions"`
-	DisallowedHeaders    []string `json:"disallowed_headers"`
-	ID                   string   `json:"id"`
-	IP                   struct {
-		TrustedEntities
-		Blacklist []interface{} `json:"blacklist"`
-	} `json:"ip"`
+type AccessRuleById struct {
+	Id string `json:"id"`
+	AccessRule
 	LastModifiedBy   string `json:"last_modified_by"`
-	LastModifiedDate string `json:"last_modified_date"`
-	MaxFileSize      int    `json:"max_file_size"`
-	Name             string `json:"name"`
-	Referer          struct {
-		TrustedEntities
-	} `json:"referer"`
-	ResponseHeaderName string `json:"response_header_name"`
-	URL                struct {
-		TrustedEntities
-	} `json:"url"`
-	UserAgent struct {
-		TrustedEntities
-	} `json:"user_agent"`
-	Version string `json:"version"`
+	LastModifiedDate string `json:"last_modified_Date"`
+	Version          string `json:"version"`
 }
 
 //Get access rule light detail accociated with the provided account number.
-func (svc *WAFService) GetAccessRulesLightById(accountNumber string, id string) (*AccessRuleLightById, error) {
+func (svc *WAFService) GetAccessRuleById(accountNumber string, id string) (*AccessRuleById, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl/%s", accountNumber, id)
 
 	request, err := svc.Client.BuildRequest("GET", url, nil)
@@ -171,13 +143,13 @@ func (svc *WAFService) GetAccessRulesLightById(accountNumber string, id string) 
 		return nil, fmt.Errorf("waf -> access_rule.go -> GetAccessRulesLightById: %v", err)
 	}
 
-	var accessRuleLightByIdResponse = &AccessRuleLightById{}
+	var accessRuleByIdResponse = &AccessRuleById{}
 
-	_, err = svc.Client.SendRequest(request, &accessRuleLightByIdResponse)
+	_, err = svc.Client.SendRequest(request, &accessRuleByIdResponse)
 
 	if err != nil {
 		return nil, fmt.Errorf("waf -> access_rule.go -> GetAccessRulesLightById: %v", err)
 	}
 
-	return accessRuleLightByIdResponse, nil
+	return accessRuleByIdResponse, nil
 }

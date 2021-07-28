@@ -11,7 +11,7 @@ import (
 
 const (
 	defaultBaseAPIURL       string = "https://api.vdms.io"
-	defaultBaseAPIURLLegacy string = "https://api.edgecast.com"
+	defaultBaseAPIURLLegacy string = "https://qa-api.edgecast.com"
 	defaultUserAgentFormat  string = "edgecast/%s:%s"
 )
 
@@ -36,7 +36,7 @@ func NewLegacyAPIClientConfig(apiToken string) (*ClientConfig, error) {
 	authProvider, err := NewLegacyAuthorizationHeaderProvider(apiToken)
 
 	if err != nil {
-		return nil, fmt.Errorf("Failed to create Legacy API config: %v", err)
+		return nil, fmt.Errorf("failed to create legacy api config: %v", err)
 	}
 
 	baseAPIURL, _ := url.Parse(defaultBaseAPIURLLegacy)
@@ -55,7 +55,7 @@ func NewAPIClientConfig(credentials IDSCredentials) (*ClientConfig, error) {
 	authProvider, err := NewIDSAuthorizationHeaderProvider(credentials)
 
 	if err != nil {
-		return nil, fmt.Errorf("Failed to create API config: %v", err)
+		return nil, fmt.Errorf("failed to create api config: %v", err)
 	}
 
 	baseAPIURL, _ := url.Parse(defaultBaseAPIURL)

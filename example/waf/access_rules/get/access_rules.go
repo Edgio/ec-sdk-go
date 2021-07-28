@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 
@@ -13,8 +12,7 @@ func main() {
 
 	//Setup
 	apiToken := flag.String("api-token", "", "API Token provided to you")
-	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve Access Rules for")
-	id := flag.String("id", "", "Rule Id")
+	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve all Access Rules for")
 
 	flag.Parse()
 
@@ -28,17 +26,14 @@ func main() {
 	}
 
 	//Get All Access Rules Example
-	accessRules, err := wafService.GetAccessRulesLightById(*accountNumber, *id)
+	accessRules, err := wafService.GetAccessRules(*accountNumber)
 
 	if err != nil {
-		fmt.Printf("Error retrieving access rules by id: %v\n", err)
+		fmt.Printf("Error retrieving all access rules: %v\n", err)
 		return
 	}
-	prettyJSON, err := json.MarshalIndent(accessRules, "", "    ")
-	if err != nil {
-		fmt.Println("Failed to generate json", err)
+
+	for _, rule := range accessRules {
+		fmt.Println(rule)
 	}
-
-	fmt.Printf("%s\n", string(prettyJSON))
-
 }
