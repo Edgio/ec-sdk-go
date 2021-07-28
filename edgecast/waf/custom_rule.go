@@ -257,7 +257,7 @@ func (svc *WAFService) GetAllCustomRuleSets(accountNumber string) ([]CustomRuleS
 	return *customRuleSets, nil
 }
 
-// Creates a custom rule set that defines custom threat assessment criteria.
+// Deletes a custom rule.
 func (svc *WAFService) DeleteCustomRuleSet(accountNumber string, customRuleId string) (*DeleteCustomRuleResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%v", accountNumber, customRuleId)
 

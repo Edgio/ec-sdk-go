@@ -9,10 +9,10 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 
-// Retrieves a list of custom rule sets
+// Deletes a custom rule
 //
 // Usage:
-// go run get_all_custom_rule_sets.go -api-token "<api-token> -account-number "<account-number>"
+// go run delete_custom_rule_set.go -api-token "<api-token> -account-number "<account-number>" -id "<id>"
 func main() {
 
 	apiToken := flag.String("api-token", "", "API Token provided to you")
