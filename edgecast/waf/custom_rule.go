@@ -10,6 +10,14 @@ import (
 	This file contains operations and types specific to WAF Custom Rule Sets.
 */
 
+// DeleteCustomRuleResponse contains the response from the WAF API when deleting a new rule
+type DeleteCustomRuleResponse struct {
+	DeleteRuleResponse
+
+	// ID indicates the generated ID for the newly deleted Rule
+	ID string
+}
+
 // A custom rule set defines custom threat assessment criteria.
 type CustomRule struct {
 
@@ -246,4 +254,25 @@ func (svc *WAFService) GetAllCustomRuleSets(accountNumber string) ([]CustomRuleS
 	}
 
 	return *customRuleSets, nil
+}
+
+// Creates a custom rule set that defines custom threat assessment criteria.
+func (svc *WAFService) DeleteCustomRuleSet(accountNumber string, customRuleId string) (*DeleteCustomRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%v", accountNumber, customRuleId)
+
+	request, err := svc.Client.BuildRequest("DELETE", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("DeleteCustomRuleSet: %v", err)
+	}
+
+	parsedResponse := &DeleteCustomRuleResponse{}
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("DeleteCustomRuleSet: %v", err)
+	}
+
+	return parsedResponse, nil
 }

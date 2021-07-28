@@ -19,6 +19,21 @@ type AddRuleResponse struct {
 	Errors []WAFError
 }
 
+// DeleteRuleResponse contains the response from the WAF API when deleting a new rule
+type DeleteRuleResponse struct {
+	// ID indicates the generated ID for the newly deleted Rule
+	ID string
+
+	// Success indicates whether the operation completed successfully
+	Success bool
+
+	// Status indicates whether this request was successful.
+	Status string
+
+	// Errors contains one or more errors if the request was not successful
+	Errors []WAFError
+}
+
 // WAFError contains errors encountered during a WAF operation
 type WAFError struct {
 	// Code indicates the HTTP status code for the error.
