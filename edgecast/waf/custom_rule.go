@@ -12,10 +12,11 @@ import (
 
 // DeleteCustomRuleResponse contains the response from the WAF API when deleting a new rule
 type DeleteCustomRuleResponse struct {
-	DeleteRuleResponse
 
 	// ID indicates the generated ID for the newly deleted Rule
 	ID string
+
+	DeleteRuleResponse
 }
 
 // A custom rule set defines custom threat assessment criteria.

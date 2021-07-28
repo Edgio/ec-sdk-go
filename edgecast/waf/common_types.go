@@ -21,8 +21,6 @@ type AddRuleResponse struct {
 
 // DeleteRuleResponse contains the response from the WAF API when deleting a new rule
 type DeleteRuleResponse struct {
-	// ID indicates the generated ID for the newly deleted Rule
-	ID string
 
 	// Success indicates whether the operation completed successfully
 	Success bool
