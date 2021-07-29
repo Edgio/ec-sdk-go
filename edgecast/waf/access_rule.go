@@ -88,3 +88,34 @@ func (svc *WAFService) AddAccessRule(accessRule AccessRule) (*AddRuleResponse, e
 
 	return parsedResponse, nil
 }
+
+//AccessRuleLight containts list of rules that identify traffic for access control
+type AccessRuleLight struct {
+	// Indicates the system-defined ID for the access rule.
+	Id string `json:"id"`
+	// Indicates the name of the access rule.
+	Name string `json:"name"`
+	// Indicates the date and time at which the access rule was last modified. TODO: Convert to time.Time .
+	LastModifiedDate string `json:"last_modified_date"`
+}
+
+// Get all access rules light associcated with the provided account number.
+func (svc *WAFService) GetAccessRulesLight(accountNumber string) ([]AccessRuleLight, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl", accountNumber)
+
+	request, err := svc.Client.BuildRequest("GET", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
+	}
+
+	var accessRuleLight = &[]AccessRuleLight{}
+
+	_, err = svc.Client.SendRequest(request, &accessRuleLight)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
+	}
+
+	return *accessRuleLight, nil
+}
