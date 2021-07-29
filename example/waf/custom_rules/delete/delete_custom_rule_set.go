@@ -17,7 +17,7 @@ func main() {
 
 	apiToken := flag.String("api-token", "", "API Token provided to you")
 	accountNumber := flag.String("account-number", "", "Account number of which you wish to delete a custom rule.")
-	customRuleSetId := flag.String("id", "", "system-defined ID for your custom rule you wish to delete.")
+	customRuleSetID := flag.String("id", "", "system-defined ID for your custom rule you wish to delete.")
 
 	flag.Parse()
 
@@ -30,7 +30,7 @@ func main() {
 		return
 	}
 
-	resp, err := wafService.DeleteCustomRuleSet(*accountNumber, *customRuleSetId)
+	resp, err := wafService.DeleteCustomRuleSet(*accountNumber, *customRuleSetID)
 
 	if err != nil {
 		fmt.Println("failed", err)

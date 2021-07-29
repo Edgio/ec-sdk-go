@@ -4,11 +4,8 @@ package waf
 
 // This file contains common types that are used for multiple WAF operations
 
-// AddRuleResponse contains the response from the WAF API when adding a new rule
-type AddRuleResponse struct {
-	// ID indicates the generated ID for the newly created Rule
-	ID string
-
+//WAF response contains the response from the WAF API
+type WAFResponse struct {
 	// Success indicates whether the operation completed successfully
 	Success bool
 
@@ -19,17 +16,12 @@ type AddRuleResponse struct {
 	Errors []WAFError
 }
 
-// DeleteRuleResponse contains the response from the WAF API when deleting a new rule
-type DeleteRuleResponse struct {
+// AddRuleResponse contains the response from the WAF API when adding a new rule
+type AddRuleResponse struct {
+	// ID indicates the generated ID for the newly created Rule
+	ID string
 
-	// Success indicates whether the operation completed successfully
-	Success bool
-
-	// Status indicates whether this request was successful.
-	Status string
-
-	// Errors contains one or more errors if the request was not successful
-	Errors []WAFError
+	WAFResponse
 }
 
 // WAFError contains errors encountered during a WAF operation
