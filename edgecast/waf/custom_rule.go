@@ -263,8 +263,8 @@ func (svc *WAFService) GetAllCustomRuleSets(accountNumber string) ([]CustomRuleS
 }
 
 // Deletes a custom rule.
-func (svc *WAFService) DeleteCustomRuleSet(accountNumber string, customRuleId string) (*DeleteCustomRuleResponse, error) {
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%v", accountNumber, customRuleId)
+func (svc *WAFService) DeleteCustomRuleSet(accountNumber string, customRuleID string) (*DeleteCustomRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%v", accountNumber, customRuleID)
 
 	request, err := svc.Client.BuildRequest("DELETE", url, nil)
 
