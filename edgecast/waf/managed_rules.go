@@ -48,7 +48,7 @@ func (p *shortDateTime) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-// Get all Managed Rules associcated with the provided account number.
+// Get all Managed Rules associated with the provided account number.
 func (svc *WAFService) GetAllManagedRules(accountNumber string) ([]ManagedRule, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/profile", accountNumber)
 

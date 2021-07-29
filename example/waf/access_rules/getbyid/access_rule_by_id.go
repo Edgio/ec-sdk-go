@@ -14,7 +14,7 @@ func main() {
 	//Setup
 	apiToken := flag.String("api-token", "", "API Token provided to you")
 	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve Access Rules for")
-	id := flag.String("id", "", "Rule Id")
+	ID := flag.String("ID", "", "Rule ID")
 
 	flag.Parse()
 
@@ -28,7 +28,7 @@ func main() {
 	}
 
 	//Get All Access Rules Example
-	accessRules, err := wafService.GetAccessRuleById(*accountNumber, *id)
+	accessRules, err := wafService.GetAccessRuleByID(*accountNumber, *ID)
 
 	if err != nil {
 		fmt.Printf("Error retrieving access rules by id: %v\n", err)

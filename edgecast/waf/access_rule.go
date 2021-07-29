@@ -39,6 +39,7 @@ type AccessRule struct {
 	// Specify each desired IP address using standard IPv4/IPv6 and CIDR notation.
 	IPAccessControls *AccessControls `json:"ip"`
 
+	// MaxFileSize Indicates the maximum file size, in bytes, for a POST request body.
 	MaxFileSize int `json:"max_file_size"`
 
 	// Assigns a name to this access rule.
@@ -93,17 +94,17 @@ func (svc *WAFService) AddAccessRule(accessRule AccessRule) (*AddRuleResponse, e
 	return parsedResponse, nil
 }
 
-//AccessRuleLight containts list of rules that identify traffic for access control
+// AccessRuleLight contains list of rules that identifies traffic for access control.
 type AccessRuleLight struct {
 	// Indicates the system-defined ID for the access rule.
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// Indicates the name of the access rule.
 	Name string `json:"name"`
 	// Indicates the date and time at which the access rule was last modified. TODO: Convert to time.Time .
 	LastModifiedDate string `json:"last_modified_date"`
 }
 
-// Get all access rules light associcated with the provided account number.
+// GetAccessRules associated with the provided account number.
 func (svc *WAFService) GetAccessRules(accountNumber string) ([]AccessRuleLight, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl", accountNumber)
 
@@ -124,18 +125,18 @@ func (svc *WAFService) GetAccessRules(accountNumber string) ([]AccessRuleLight, 
 	return *accessRuleLight, nil
 }
 
-//AccessRuleLightById containts detail of rules that identify traffic for access control
-type AccessRuleById struct {
-	Id string `json:"id"`
+//AccessRuleByID contains detail of rules that identify traffic for access control.
+type AccessRuleByID struct {
+	ID string `json:"id"`
 	AccessRule
 	LastModifiedBy   string `json:"last_modified_by"`
-	LastModifiedDate string `json:"last_modified_Date"`
+	LastModifiedDate string `json:"last_modified_date"`
 	Version          string `json:"version"`
 }
 
-//Get access rule light detail accociated with the provided account number.
-func (svc *WAFService) GetAccessRuleById(accountNumber string, id string) (*AccessRuleById, error) {
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl/%s", accountNumber, id)
+// GetAccessRuleByID provid access rule details.
+func (svc *WAFService) GetAccessRuleByID(accountNumber string, ID string) (*AccessRuleByID, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl/%s", accountNumber, ID)
 
 	request, err := svc.Client.BuildRequest("GET", url, nil)
 
@@ -143,13 +144,13 @@ func (svc *WAFService) GetAccessRuleById(accountNumber string, id string) (*Acce
 		return nil, fmt.Errorf("waf -> access_rule.go -> GetAccessRulesLightById: %v", err)
 	}
 
-	var accessRuleByIdResponse = &AccessRuleById{}
+	var accessRuleByIDResponse = &AccessRuleByID{}
 
-	_, err = svc.Client.SendRequest(request, &accessRuleByIdResponse)
+	_, err = svc.Client.SendRequest(request, &accessRuleByIDResponse)
 
 	if err != nil {
 		return nil, fmt.Errorf("waf -> access_rule.go -> GetAccessRulesLightById: %v", err)
 	}
 
-	return accessRuleByIdResponse, nil
+	return accessRuleByIDResponse, nil
 }

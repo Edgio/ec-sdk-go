@@ -130,7 +130,7 @@
         ],
         "blacklist": [
             "/untrusted",
-            "/untrused/.*"
+            "/untrusted/.*"
         ],
         "whitelist": [
             "/trusted-path",

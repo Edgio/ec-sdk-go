@@ -11,7 +11,7 @@ import (
 
 const (
 	defaultBaseAPIURL       string = "https://api.vdms.io"
-	defaultBaseAPIURLLegacy string = "https://qa-api.edgecast.com"
+	defaultBaseAPIURLLegacy string = "https://api.edgecast.com"
 	defaultUserAgentFormat  string = "edgecast/%s:%s"
 )
 
@@ -23,7 +23,7 @@ type ClientConfig struct {
 	// APIURL contains the base URL for the target API
 	BaseAPIURL *url.URL
 
-	// The User Agent specifed for HTTP requests
+	// The User Agent specified for HTTP requests
 	UserAgent string
 
 	// Logger -
