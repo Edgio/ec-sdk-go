@@ -10,6 +10,20 @@ import (
 	This file contains operations and types specific to WAF Custom Rule Sets.
 */
 
+// DeleteCustomRuleResponse contains the response from the WAF API when deleting a new custom rule
+type DeleteCustomRuleResponse struct {
+
+	// ID indicates the generated ID for the newly deleted Rule
+	ID string
+
+	WAFResponse
+}
+
+// AddCustomRuleResponse contains the response from the WAF API when adding a new custom rule
+type AddCustomRuleResponse struct {
+	AddRuleResponse
+}
+
 // A custom rule set defines custom threat assessment criteria.
 type CustomRule struct {
 
@@ -207,7 +221,7 @@ type CustomRuleSet struct {
 }
 
 // Creates a custom rule set that defines custom threat assessment criteria.
-func (svc *WAFService) AddCustomRuleSet(customRuleSet CustomRule, accountNumber string) (*AddRuleResponse, error) {
+func (svc *WAFService) AddCustomRuleSet(customRuleSet CustomRule, accountNumber string) (*AddCustomRuleResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules", accountNumber)
 
 	request, err := svc.Client.BuildRequest("POST", url, customRuleSet)
@@ -216,7 +230,7 @@ func (svc *WAFService) AddCustomRuleSet(customRuleSet CustomRule, accountNumber 
 		return nil, fmt.Errorf("AddCustomRuleSet: %v", err)
 	}
 
-	parsedResponse := &AddRuleResponse{}
+	parsedResponse := &AddCustomRuleResponse{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
@@ -246,4 +260,25 @@ func (svc *WAFService) GetAllCustomRuleSets(accountNumber string) ([]CustomRuleS
 	}
 
 	return *customRuleSets, nil
+}
+
+// Deletes a custom rule.
+func (svc *WAFService) DeleteCustomRuleSet(accountNumber string, customRuleID string) (*DeleteCustomRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%v", accountNumber, customRuleID)
+
+	request, err := svc.Client.BuildRequest("DELETE", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("DeleteCustomRuleSet: %v", err)
+	}
+
+	parsedResponse := &DeleteCustomRuleResponse{}
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("DeleteCustomRuleSet: %v", err)
+	}
+
+	return parsedResponse, nil
 }
