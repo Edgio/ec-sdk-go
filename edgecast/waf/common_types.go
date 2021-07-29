@@ -4,7 +4,7 @@ package waf
 
 // This file contains common types that are used for multiple WAF operations
 
-//WAF response contains the response from the WAF API
+// WAF response contains the response from the WAF API
 type WAFResponse struct {
 	// Success indicates whether the operation completed successfully
 	Success bool

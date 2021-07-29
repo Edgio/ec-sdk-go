@@ -20,6 +20,9 @@ func main() {
 	apiToken := "MY_API_TOKEN"
 	idsCredentials := auth.OAuth2Credentials{} // WAF does not use these credentials
 
+	sdkConfig := edgecast.NewSDKConfig(apiToken, idsCredentials)
+	wafService, err := waf.New(sdkConfig)
+
 	rule := waf.RateRule{
 		Name:        "Rate Rule 1",
 		Keys:        []string{"IP", "USER_AGENT"},
@@ -76,9 +79,6 @@ func main() {
 			},
 		},
 	}
-
-	sdkConfig := edgecast.NewSDKConfig(apiToken, idsCredentials)
-	wafService, err := waf.New(sdkConfig)
 
 	if err != nil {
 		fmt.Printf("error creating WAF Service: %v\n", err)
