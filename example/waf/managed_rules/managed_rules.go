@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 
@@ -16,9 +17,14 @@ func main() {
 
 	flag.Parse()
 
-	wafConfig := waf.NewConfig(*apiToken)
-	wafConfig.Logger = edgecast.NewStandardLogger()
-	wafService, err := waf.New(wafConfig)
+	idsCredentials := auth.OAuth2Credentials{} // WAF does not use these credentials
+	sdkConfig := edgecast.NewSDKConfig(*apiToken, idsCredentials)
+	wafService, err := waf.New(sdkConfig)
+
+	if err != nil {
+		fmt.Printf("error creating WAF Service: %v\n", err)
+		return
+	}
 
 	if err != nil {
 		fmt.Printf("error creating WAF Service: %v\n", err)

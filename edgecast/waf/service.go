@@ -6,27 +6,33 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
 )
 
 // WAF service interacts with the EdgeCast API for WAF
 type WAFService struct {
-	*client.Client
-	Logger edgecast.Logger
+	client.Client
+	Logger logging.Logger
 }
 
 // New creates a new WAF service
-func New(config WAFConfig) (*WAFService, error) {
-	clientConfig, err := client.NewLegacyAPIClientConfig(config.APIToken)
+func New(config edgecast.SDKConfig) (*WAFService, error) {
+
+	authProvider, err := auth.NewTokenAuthorizationProvider(config.APIToken)
 
 	if err != nil {
-		return nil, fmt.Errorf("error creating new WAF Service: %v", err)
+		return nil, fmt.Errorf("waf.New(): %v", err)
 	}
 
-	// Inject the logger into the client config
-	clientConfig.Logger = config.Logger
-
 	return &WAFService{
-		Client: client.NewClient(*clientConfig),
+		Client: client.NewClient(client.ClientConfig{
+			AuthProvider: authProvider,
+			BaseAPIURL:   config.BaseAPIURLLegacy,
+			UserAgent:    config.UserAgent,
+			Logger:       config.Logger,
+		}),
+		Logger: config.Logger,
 	}, nil
 }

@@ -4,7 +4,7 @@ package waf
 
 // This file contains common types that are used for multiple WAF operations
 
-//WAF response contains the response from the WAF API
+// WAF response contains the response from the WAF API
 type WAFResponse struct {
 	// Success indicates whether the operation completed successfully
 	Success bool
@@ -31,4 +31,17 @@ type WAFError struct {
 
 	// Message indicates the description for the error that occurred.
 	Message string
+}
+
+// GetRuleRequest contains the fields for retrieving WAF rules
+type GetRuleRequest struct {
+	// ID indicates the system-defined alphanumeric ID of the rule to retrieve
+	RuleID string
+
+	// CustomerID indicates the customer account number
+	CustomerID string
+}
+
+type Rule struct {
+	Name string
 }

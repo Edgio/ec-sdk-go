@@ -6,7 +6,10 @@ package waf
 	This file contains operations and types specific to WAF Rate Rules.
 */
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // A RateRule restricts the flow of site traffic
 type RateRule struct {
@@ -67,12 +70,29 @@ type ConditionGroup struct {
 	/*
 		Indicates the system-defined alphanumeric ID of a condition group.
 
+		Note: This is a read-only field that will be ignored by AddRateRule and UpdateRateRule
+
 		Example: 12345678-90ab-cdef-ghij-klmnopqrstuvwxyz1
 	*/
 	ID string `json:"id,omitempty"`
 
 	// Indicates the name of a condition group
 	Name string `json:"name,omitempty"`
+}
+
+// MarshalJSON marshals a ConditionGroup to JSON bytes while excluding read-only fields
+func (cg ConditionGroup) MarshalJSON() ([]byte, error) {
+
+	// Note that ID is missing
+	var tmp struct {
+		Conditions []Condition `json:"conditions"`
+		Name       string      `json:"name,omitempty"`
+	}
+
+	tmp.Conditions = cg.Conditions
+	tmp.Name = cg.Name
+
+	return json.Marshal(&tmp)
 }
 
 // Condition to be associated with a Rate Rule
@@ -141,18 +161,26 @@ type OP struct {
 	Values []string `json:"values,omitempty"`
 }
 
+type AddRateRuleRequest struct {
+	RateRule
+}
+
+type AddRateRuleResponse struct {
+	AddRuleResponse
+}
+
 // AddRateRule creates a rate rule that determines the maximum number of
 // requests that will be allowed within a given time period.
-func (svc *WAFService) AddRateRule(rateRule RateRule) (*AddRuleResponse, error) {
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit", rateRule.CustomerID)
+func (svc *WAFService) AddRateRule(req AddRateRuleRequest) (*AddRateRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit", req.CustomerID)
 
-	request, err := svc.Client.BuildRequest("POST", url, rateRule)
+	request, err := svc.Client.BuildRequest("POST", url, req)
 
 	if err != nil {
 		return nil, fmt.Errorf("AddRateRule: %v", err)
 	}
 
-	parsedResponse := &AddRuleResponse{}
+	parsedResponse := &AddRateRuleResponse{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
@@ -161,4 +189,48 @@ func (svc *WAFService) AddRateRule(rateRule RateRule) (*AddRuleResponse, error) 
 	}
 
 	return parsedResponse, nil
+}
+
+type GetRateRuleResponse struct {
+	RateRule
+
+	/*
+	   Indicates the system-defined ID for the rate rule.
+	*/
+	ID string `json:"id"`
+
+	/*
+		Indicates the timestamp at which the rate rule was last modified.
+
+		Syntax:
+			YYYY-MM-DDThh:mm:ss:ffffffZ
+	*/
+	LastModifiedDate string `json:"last_modified_date"`
+
+	// LastModifiedBy is reserved for future use.
+	LastModifiedBy string `json:"last_modified_by,omitempty"`
+
+	// Version is reserved for future use.
+	Version string `json:"version,omitempty"`
+}
+
+// GetRateRule retrieves a rate rule
+func (svc *WAFService) GetRateRule(req GetRuleRequest) (*GetRateRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit/%s", req.CustomerID, req.RuleID)
+
+	httpRequest, err := svc.Client.BuildRequest("GET", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetRateRule: %v", err)
+	}
+
+	var resp = &GetRateRuleResponse{}
+
+	_, err = svc.Client.SendRequest(httpRequest, &resp)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetRateRule: %v", err)
+	}
+
+	return resp, nil
 }

@@ -94,7 +94,7 @@ func (svc *WAFService) AddAccessRule(accessRule AccessRule) (*AddRuleResponse, e
 	return parsedResponse, nil
 }
 
-// AccessRuleLight contains list of rules that identifies traffic for access control.
+// AccessRuleLight contains basic information about an access rule
 type AccessRuleLight struct {
 	// Indicates the system-defined ID for the access rule.
 	ID string `json:"id"`
