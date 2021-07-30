@@ -108,4 +108,16 @@ func main() {
 	} else {
 		fmt.Printf("Successfully retrieved rate rule: %+v\n", getResponse)
 	}
+
+	// Now we update the rule
+	rule.Name = "Updated rule from example"
+
+	updateResponse, err := wafService.UpdateRateRule(rule, addResponse.ID)
+
+	if err != nil {
+		fmt.Printf("Failed to retrieve rate rule: %+v\n", err)
+		return
+	} else {
+		fmt.Printf("Successfully updated rate rule: %+v\n", updateResponse)
+	}
 }
