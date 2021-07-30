@@ -55,7 +55,7 @@ type IDSCredentials struct {
 	Scope        string
 }
 
-// Generates IDS Authoriation Header values
+// Generates IDS Authorization Header values
 type IDSAuthorizationHeaderProvider struct {
 	// The latest IDS token. May be expired.
 	CurrentToken *IDSToken

@@ -23,7 +23,7 @@ type Logger interface {
 }
 
 // Creates a logger that writes to a single log file
-func NewSimplFileLogger(filePath string) Logger {
+func NewSimpleFileLogger(filePath string) Logger {
 	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
