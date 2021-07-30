@@ -127,8 +127,8 @@ func (c *Client) SendRequest(req *retryablehttp.Request, parsedResponse interfac
 	}
 
 	if collections.IsInterfaceArray(f) {
-		if jsonArryErr := json.Unmarshal([]byte(body), parsedResponse); jsonArryErr != nil {
-			return nil, fmt.Errorf("malformed Json Array response:%v", jsonArryErr)
+		if jsonArrayErr := json.Unmarshal([]byte(body), parsedResponse); jsonArrayErr != nil {
+			return nil, fmt.Errorf("malformed Json Array response:%v", jsonArrayErr)
 		}
 	} else {
 		if jsonutil.IsJSONString(bodyAsString) {

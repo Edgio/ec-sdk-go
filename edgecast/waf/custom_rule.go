@@ -241,7 +241,7 @@ func (svc *WAFService) AddCustomRuleSet(customRuleSet CustomRule, accountNumber 
 	return parsedResponse, nil
 }
 
-//Retrieves a list of custom rule sets. A custom rule set allows you to define custom threat assessment criterion.
+// Retrieves a list of custom rule sets. A custom rule set allows you to define custom threat assessment criterion.
 func (svc *WAFService) GetAllCustomRuleSets(accountNumber string) ([]CustomRuleSet, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules", accountNumber)
 
