@@ -44,7 +44,7 @@ func NewIDSAuthorizationProvider(baseIDSURL url.URL, credentials OAuth2Credentia
 	}, nil
 }
 
-// GetAuthorizationHeader creates an authorization value for the current token, refreshing it if it has expired.
+// GetAuthorizationHeader creates an authorization header value for the current token, refreshing it if it has expired.
 // Used for EdgeCast APIs that use IDS OAuth 2.0 tokens.
 func (ip *IDSAuthorizationProvider) GetAuthorizationHeader() (string, error) {
 
