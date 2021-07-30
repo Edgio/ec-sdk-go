@@ -27,7 +27,7 @@ type Logger interface {
 }
 
 // Creates a logger that writes to a single log file
-func NewSimplFileLogger(filePath string) Logger {
+func NewFileLogger(filePath string) Logger {
 	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
@@ -56,7 +56,7 @@ func NewNullLogger() Logger {
 	return NullLogger{}
 }
 
-// A basic implementation of Logger that writes to stdout and stderr
+// A basic implementation of Logger using log.Logger internally
 type SimpleLogger struct {
 	InfoLogger    *log.Logger
 	DebugLogger   *log.Logger
