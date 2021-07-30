@@ -1,0 +1,154 @@
+{
+    "allowed_http_methods":["GET", "POST"],
+    "allowed_request_content_types": ["application/json", "text/html"],
+    "asn": {
+        "accesslist": [
+            12,
+            200,
+            465
+        ],
+        "blacklist": [
+            13,
+            201,
+            466
+        ],
+        "whitelist": [
+            14,
+            202,
+            467
+        ]
+    },
+    "cookie": {
+        "blacklist": [
+            "bot"
+        ],
+        "whitelist": [
+            "trusted"
+        ]
+    },
+    "country": {
+        "accesslist": [
+            "AU",
+            "NZ"
+        ],
+        "blacklist": [
+            "GB",
+            "EE"
+        ],
+        "whitelist": [
+            "US",
+            "CAN"
+        ]
+    },
+    "customer_id" : "CEA78",
+    "disallowed_extensions": [
+        ".asa",
+        ".asax",
+        ".ascx",
+        ".axd",
+        ".backup",
+        ".bak",
+        ".bat",
+        ".cdx",
+        ".cer",
+        ".cfg",
+        ".cmd",
+        ".com",
+        ".config",
+        ".conf",
+        ".cs",
+        ".csproj",
+        ".csr",
+        ".dat",
+        ".db",
+        ".dbf",
+        ".dll",
+        ".dos",
+        ".htr",
+        ".htw",
+        ".ida",
+        ".idc",
+        ".idq",
+        ".inc",
+        ".ini",
+        ".key",
+        ".licx",
+        ".lnk",
+        ".log",
+        ".mdb",
+        ".old",
+        ".pass",
+        ".pdb",
+        ".pol",
+        ".printer",
+        ".pwd",
+        ".resources",
+        ".resx",
+        ".sql",
+        ".sys",
+        ".vb",
+        ".vbs",
+        ".vbproj",
+        ".vsdisco",
+        ".webinfo",
+        ".xsd",
+        ".xsx/"
+    ],
+    "ip": {
+        "accesslist": [
+            "10.10.10.114",
+            "10.10.10.115"
+        ],
+        "blacklist": [
+            "10:0:1::0:3",
+            "10:0:1::0:4"
+        ],
+        "whitelist": [
+            "10.10.10.200",
+            "10.10.10.201"
+        ]
+    },
+    "name" : "SDK Access Rule #1",
+    "referer": {
+        "accesslist": [
+            "https://maybetrusted.com",
+            "http://maybestrusted2.com"
+        ],
+        "blacklist": [
+            "https://untrusted.com",
+            "https://untrusted2.com"
+        ],
+        "whitelist": [
+            "https://trusted.com",
+            "https://trusted2.com"
+        ]
+    },
+    "url": {
+        "accesslist": [
+            "/maybe-trusted",
+            "/maybe-trusted-2"
+        ],
+        "blacklist": [
+            "/untrusted",
+            "/untrusted/.*"
+        ],
+        "whitelist": [
+            "/trusted-path",
+            "/trusted-path/.*"
+        ]
+    },
+    "user_agent": {
+        "accesslist": [
+            "Mozilla\\s.*",
+            "Opera\\s.*"
+        ],
+        "blacklist": [
+            "curl.*",
+            "PostmanRuntime.*"
+        ],
+        "whitelist": [
+            "internal-tool/v1",
+            "internal-tool/v2"
+        ]
+    }
+}

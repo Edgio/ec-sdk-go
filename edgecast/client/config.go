@@ -11,7 +11,7 @@ import (
 
 const (
 	defaultBaseAPIURL       string = "https://api.vdms.io"
-	defaultBaseAPIURLLegacy string = "https://api.edgecast.com"
+	defaultBaseAPIURLLegacy string = "https://qa-api.edgecast.com"
 	defaultUserAgentFormat  string = "edgecast/%s:%s"
 )
 
