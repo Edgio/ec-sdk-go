@@ -155,8 +155,8 @@ func (svc *WAFService) GetAccessRuleByID(accountNumber string, ID string) (*Acce
 	return accessRuleByIDResponse, nil
 }
 
-//Updates an access rule that identifies valid or malicious requests via whitelists, accesslists, and blacklists.
-func (svc *WAFService) PutAccessRuleByID(accessRule AccessRule, ID string) (*UpdateRuleResponse, error) {
+//UpdateRateRule an access rule that identifies valid or malicious requests via whitelists, accesslists, and blacklists.
+func (svc *WAFService) UpdateRateRule(accessRule AccessRule, ID string) (*UpdateRuleResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl/%s", accessRule.CustomerID, ID)
 
 	request, err := svc.Client.BuildRequest("PUT", url, accessRule)
