@@ -32,9 +32,7 @@ func main() {
 	if err != nil {
 		fmt.Printf("Error retrieving all access rules: %v\n", err)
 		return
-	}
-
-	for _, rule := range accessRules {
-		fmt.Println(rule)
+	} else {
+		fmt.Printf("Successfully retrieved rate rule: %+v\n", accessRules)
 	}
 }

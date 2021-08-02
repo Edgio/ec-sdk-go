@@ -134,7 +134,7 @@ type AccessRuleByID struct {
 	Version          string `json:"version"`
 }
 
-// GetAccessRuleByID provid access rule details.
+// GetAccessRuleByID provide access rule details.
 func (svc *WAFService) GetAccessRuleByID(accountNumber string, ID string) (*AccessRuleByID, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl/%s", accountNumber, ID)
 
@@ -153,4 +153,25 @@ func (svc *WAFService) GetAccessRuleByID(accountNumber string, ID string) (*Acce
 	}
 
 	return accessRuleByIDResponse, nil
+}
+
+// DeleteAccessRuleByID delete access rule.
+func (svc *WAFService) DeleteAccessRuleByID(accountNumber string, ID string) (*DeleteRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl/%s", accountNumber, ID)
+
+	request, err := svc.Client.BuildRequest("DELETE", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> access_rule.go -> DeleteAccessRulesById: %v", err)
+	}
+
+	var parsedResponse = &DeleteRuleResponse{}
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> access_rule.go -> DeleteAccessRulesById: %v", err)
+	}
+
+	return parsedResponse, nil
 }
