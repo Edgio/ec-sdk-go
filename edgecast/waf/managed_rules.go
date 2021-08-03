@@ -44,8 +44,8 @@ type ManagedRule struct {
 	// Contains settings that define the profile for a valid request.
 	GeneralSettings `json:"general_settings"`
 
-	/* Contains a list of policies that have been enabled on this managed rule.
-	Available policies available from https://dev.vdms.com/cdn/api/Content/Media_Management/WAF/Get-Available-Policies.htm */
+	// Contains a list of policies that have been enabled on this managed rule.
+	// Available policies https://dev.vdms.com/cdn/api/Content/Media_Management/WAF/Get-Available-Policies.htm
 	Policies []string `json:"policies"`
 
 	// Defines one or more targets that will be ignored and/or replaced. A maximum of 25 target configurations may be created.
@@ -98,16 +98,16 @@ type GeneralSettings struct {
 	// Indicates the total file size for multipart message lengths.
 	CombinedFileSizes int `json:"combined_file_sizes"`
 
-	/* Identifies each cookie that will be ignored for the purpose of determining whether a request is malicious traffic.
-	Each element in this array defines a regular expression. */
+	// Identifies each cookie that will be ignored for the purpose of determining whether a request is malicious traffic.
+	// Each element in this array defines a regular expression.
 	IgnoreCookie []string `json:"ignore_cookie"`
 
-	/* Identifies each request header that will be ignored for the purpose of determining whether a request is malicious traffic.
-	Each element in this array defines a regular expression. */
+	// Identifies each request header that will be ignored for the purpose of determining whether a request is malicious traffic.
+	// Each element in this array defines a regular expression.
 	IgnoreHeader []string `json:"ignore_header"`
 
-	/* Identifies each query string argument that will be ignored for the purpose of determining whether a request is malicious traffic.
-	Each element in this array defines a regular expression. */
+	// Identifies each query string argument that will be ignored for the purpose of determining whether a request is malicious traffic.
+	// Each element in this array defines a regular expression.
 	IgnoreQueryArgs []string `json:"ignore_query_args"`
 
 	// Determines whether JSON payloads will be inspected.
@@ -121,8 +121,8 @@ type GeneralSettings struct {
 	// Indicates the maximum number of query string parameters.
 	MaxNumArgs int `json:"max_num_args"`
 
-	/* Indicates the balance between the level of protection and false positives. Valid values are: 1 | 2 | 3 | 4
-	Learn more at https://docs.vdms.com/cdn/index.html#Web-Security/Managed-Rules.htm#RuleSet */
+	// Indicates the balance between the level of protection and false positives. Valid values are: 1 | 2 | 3 | 4
+	// Learn more at https://docs.vdms.com/cdn/index.html#Web-Security/Managed-Rules.htm#RuleSet
 	ParanoiaLevel int `json:"paranoia_level"`
 
 	// Indicates whether WAF will inspect a POST request body.
@@ -134,8 +134,8 @@ type GeneralSettings struct {
 	// Indicates the maximum number of characters for the query string value.
 	TotalArgLength int `json:"total_arg_length"`
 
-	/* Indicates whether WAF may check whether a request variable (e.g., ARGS, ARGS_NAMES, and REQUEST_FILENAME) is a valid UTF-8 string.
-	This validation includes checking for missing bytes, invalid characters, and ASCII to UTF-8 character mapping. */
+	// Indicates whether WAF may check whether a request variable (e.g., ARGS, ARGS_NAMES, and REQUEST_FILENAME) is a valid UTF-8 string.
+	// This validation includes checking for missing bytes, invalid characters, and ASCII to UTF-8 character mapping.
 	ValidateUtf8Encoding bool `json:"validate_utf8_encoding"`
 
 	// Determines whether XML payloads will be inspected.
@@ -160,12 +160,12 @@ type RuleTargetUpdates struct {
 	a cookie value instead of a query string argument. */
 	ReplaceTarget string `json:"replace_target"`
 
-	/* Identifies a rule by its system-defined ID.
-	The configuration defined within this object will alter the behavior of the rule identified by this parameter. */
+	// Identifies a rule by its system-defined ID.
+	// The configuration defined within this object will alter the behavior of the rule identified by this parameter.
 	RuleID string `json:"rule_id"`
 
-	/* Identifies the type of data source (e.g., REQUEST_COOKIES, ARGS, GEO, etc.) for which a target will be created.
-	The maximum size of this value is 256 characters. */
+	// Identifies the type of data source (e.g., REQUEST_COOKIES, ARGS, GEO, etc.) for which a target will be created.
+	// The maximum size of this value is 256 characters.
 	Target string `json:"target"`
 
 	/* Identifies a name or category (e.g., cookie name, query string name, country code, etc.) for the data source defined in the target parameter.
