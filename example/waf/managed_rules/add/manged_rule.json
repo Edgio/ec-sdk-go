@@ -18,7 +18,7 @@
         "validate_utf8_encoding": true,
         "xml_parser": true
     },
-    "name": "Go Profile 1",
+    "name": "Test Profile 3",
     "policies": [
         "r4020_tw_cpanel.conf.json",
         "r4040_tw_drupal.conf.json",

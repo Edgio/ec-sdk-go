@@ -23,7 +23,7 @@ func main() {
 	jsonFile, err := os.Open(*filePath)
 
 	if err != nil {
-		fmt.Printf("Error reading json file: %+v\n", err)
+		fmt.Printf("Error opening json file: %+v\n", err)
 		return
 	}
 
@@ -36,7 +36,7 @@ func main() {
 		return
 	}
 
-	var managedRule waf.ManagedRule
+	var managedRule waf.AddManagedRuleRequest
 	err = json.Unmarshal(bytes, &managedRule)
 
 	if err != nil {
@@ -57,7 +57,8 @@ func main() {
 	//Add Managed Rule API call and response
 	managedRuleResponse, err := wafService.AddManagedRule(managedRule, *accountNumber)
 
-	if err != nil || managedRuleResponse.Errors.Code != 0 || managedRuleResponse.Errors.Message != "" {
+	//TODO: Check if it is necessary to verify managedRuleResponse.status separately
+	if err != nil {
 		fmt.Printf("Error creating managed rule: %v\n", err)
 		return
 	}
