@@ -5,7 +5,10 @@ package client
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"time"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 )
 
 const (
@@ -61,20 +64,20 @@ type IDSAuthorizationHeaderProvider struct {
 	CurrentToken *IDSToken
 
 	// Calls the IDS token endpoint for new tokens
-	IDSClient IDSClient
+	IDSClient auth.IDSClient
 
 	Credentials IDSCredentials
 }
 
 // Creates a new IDSAuthorizationHeaderProvider with the given credentials
-func NewIDSAuthorizationHeaderProvider(credentials IDSCredentials) (*IDSAuthorizationHeaderProvider, error) {
+func NewIDSAuthorizationHeaderProvider(baseIDSURL url.URL, credentials IDSCredentials) (*IDSAuthorizationHeaderProvider, error) {
 	if len(credentials.ClientID) == 0 || len(credentials.ClientSecret) == 0 || len(credentials.Scope) == 0 {
 		return nil, errors.New("NewIDSAuthorizationHeaderProvider: Client ID, Secret, and Scope required")
 	}
 
 	return &IDSAuthorizationHeaderProvider{
 		Credentials: credentials,
-		IDSClient:   NewDefaultIDSClient(),
+		IDSClient:   auth.NewIDSClient(baseIDSURL),
 	}, nil
 }
 
@@ -83,7 +86,7 @@ func NewIDSAuthorizationHeaderProvider(credentials IDSCredentials) (*IDSAuthoriz
 func (ip *IDSAuthorizationHeaderProvider) GetAuthorizationHeader() (string, error) {
 	if ip.CurrentToken == nil || ip.CurrentToken.ExpirationTime.Before(time.Now()) {
 
-		model, err := ip.IDSClient.GetIDSToken(ip.Credentials)
+		model, err := ip.IDSClient.GetToken(auth.OAuth2Credentials(ip.Credentials))
 
 		if err != nil {
 			return "", err

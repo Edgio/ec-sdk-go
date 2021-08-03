@@ -18,7 +18,7 @@
         "validate_utf8_encoding": true,
         "xml_parser": true
     },
-    "name": "Test Profile 3",
+    "name": "Test Profile 1",
     "policies": [
         "r4020_tw_cpanel.conf.json",
         "r4040_tw_drupal.conf.json",
