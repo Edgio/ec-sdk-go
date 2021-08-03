@@ -110,7 +110,7 @@ func main() {
 	updateResponse, err := wafService.UpdateRateRule(rule, addResponse.ID)
 
 	if err != nil {
-		fmt.Printf("Failed to retrieve rate rule: %+v\n", err)
+		fmt.Printf("Failed to update rate rule: %+v\n", err)
 		return
 	} else {
 		fmt.Printf("Successfully updated rate rule: %+v\n", updateResponse)
