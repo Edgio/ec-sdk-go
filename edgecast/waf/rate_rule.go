@@ -161,20 +161,16 @@ type OP struct {
 	Values []string `json:"values,omitempty"`
 }
 
-type AddRateRuleRequest struct {
-	RateRule
-}
-
 type AddRateRuleResponse struct {
 	AddRuleResponse
 }
 
 // AddRateRule creates a rate rule that determines the maximum number of
 // requests that will be allowed within a given time period.
-func (svc *WAFService) AddRateRule(req AddRateRuleRequest) (*AddRateRuleResponse, error) {
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit", req.CustomerID)
+func (svc *WAFService) AddRateRule(rule RateRule) (*AddRateRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit", rule.CustomerID)
 
-	request, err := svc.Client.BuildRequest("POST", url, req)
+	request, err := svc.Client.BuildRequest("POST", url, rule)
 
 	if err != nil {
 		return nil, fmt.Errorf("AddRateRule: %v", err)
@@ -215,8 +211,8 @@ type GetRateRuleResponse struct {
 }
 
 // GetRateRule retrieves a rate rule
-func (svc *WAFService) GetRateRule(req GetRuleRequest) (*GetRateRuleResponse, error) {
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit/%s", req.CustomerID, req.RuleID)
+func (svc *WAFService) GetRateRule(customerID string, ruleID string) (*GetRateRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit/%s", customerID, ruleID)
 
 	httpRequest, err := svc.Client.BuildRequest("GET", url, nil)
 
@@ -233,4 +229,26 @@ func (svc *WAFService) GetRateRule(req GetRuleRequest) (*GetRateRuleResponse, er
 	}
 
 	return resp, nil
+}
+
+// UpdateRateRule updates a rate rule that determines the maximum number of
+// requests that will be allowed within a given time period.
+func (svc *WAFService) UpdateRateRule(rule RateRule, ruleID string) (*UpdateRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit/%s", rule.CustomerID, ruleID)
+
+	request, err := svc.Client.BuildRequest("PUT", url, rule)
+
+	if err != nil {
+		return nil, fmt.Errorf("UpdateRateRule: %v", err)
+	}
+
+	parsedResponse := &UpdateRuleResponse{}
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("UpdateRateRule: %v", err)
+	}
+
+	return parsedResponse, nil
 }
