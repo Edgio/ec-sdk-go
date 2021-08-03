@@ -10,18 +10,20 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 
-// Retrieves a list of custom rule sets
+// Deletes a custom rule
 //
 // Usage:
-// go run get_all_custom_rule_sets.go -api-token "<api-token> -account-number "<account-number>"
+// go run delete_custom_rule_set.go -api-token "<api-token> -account-number "<account-number>" -id "<id>"
 func main() {
 
 	apiToken := flag.String("api-token", "", "API Token provided to you")
-	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve all Managed Rules for")
+	accountNumber := flag.String("account-number", "", "Account number of which you wish to delete a custom rule.")
+	customRuleSetID := flag.String("id", "", "system-defined ID for your custom rule you wish to delete.")
 
 	flag.Parse()
 
 	idsCredentials := auth.OAuth2Credentials{} // WAF does not use these credentials
+
 	sdkConfig := edgecast.NewSDKConfig(*apiToken, idsCredentials)
 	wafService, err := waf.New(sdkConfig)
 
@@ -30,15 +32,11 @@ func main() {
 		return
 	}
 
-	//Get all Custom Rule Sets example
-	customRuleSets, err := wafService.GetAllCustomRuleSets(*accountNumber)
+	resp, err := wafService.DeleteCustomRuleSet(*accountNumber, *customRuleSetID)
 
 	if err != nil {
-		fmt.Printf("Error retrieving all custom rule sets: %v\n", err)
-		return
-	}
-
-	for _, rule := range customRuleSets {
-		fmt.Println(rule)
+		fmt.Println("failed", err)
+	} else {
+		fmt.Printf("success: %+v\n", resp)
 	}
 }

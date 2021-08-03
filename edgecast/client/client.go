@@ -30,23 +30,24 @@ type Client struct {
 }
 
 // Creates a new client pointing to EdgeCast APIs
-func NewClient(config ClientConfig) *Client {
+func NewClient(config ClientConfig) Client {
 	// Use PassthroughErrorHandler so that retryablehttp.Client does not obscure API errors
 	httpClient := retryablehttp.NewClient()
 	httpClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
+	httpClient.Logger = config.Logger
 
-	return &Client{
-		Config:     config,
+	return Client{
 		HTTPClient: httpClient,
+		Config:     config,
 	}
 }
 
 // BuildRequest creates a new Request for the Edgecast API, adding appropriate headers
-func (c *Client) BuildRequest(method, path string, body interface{}) (*retryablehttp.Request, error) {
+func (c Client) BuildRequest(method, path string, body interface{}) (*retryablehttp.Request, error) {
 	relativeURL, err := url.Parse(path)
 
 	if err != nil {
-		return nil, fmt.Errorf("BuildRequest: url.Parse: %v", err)
+		return nil, fmt.Errorf("Client.BuildRequest: url.Parse: %v", err)
 	}
 
 	absoluteURL := c.Config.BaseAPIURL.ResolveReference(relativeURL)
@@ -64,7 +65,7 @@ func (c *Client) BuildRequest(method, path string, body interface{}) (*retryable
 				return nil, err
 			}
 			logMsg := jsonutil.CreateRequestBodyLogMessage(method, absoluteURL.String(), body)
-			c.Config.Logger.LogDebug(logMsg)
+			c.Config.Logger.Debug(logMsg)
 			payload = buf
 
 		}
@@ -82,7 +83,7 @@ func (c *Client) BuildRequest(method, path string, body interface{}) (*retryable
 
 	req.Header.Set("Accept", "application/json")
 
-	authHeader, err := c.Config.AuthHeaderProvider.GetAuthorizationHeader()
+	authHeader, err := c.Config.AuthProvider.GetAuthorizationHeader()
 
 	if err != nil {
 		return nil, fmt.Errorf("BuildRequest: Failed to get authorization: %v", err)
@@ -105,7 +106,10 @@ func (c *Client) SendRequest(req *retryablehttp.Request, parsedResponse interfac
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	bodyAsString := string(body)
-	jsonutil.CreateJSONLogMessage("Response", bodyAsString)
+
+	logMsg := jsonutil.CreateJSONLogMessage("Response", bodyAsString)
+	c.Config.Logger.Debug(logMsg)
+
 	if resp.StatusCode >= 400 && resp.StatusCode <= 599 {
 		if err != nil {
 			return nil, fmt.Errorf("SendRequest: ioutil.ReadAll: %v", err)
@@ -123,8 +127,8 @@ func (c *Client) SendRequest(req *retryablehttp.Request, parsedResponse interfac
 	}
 
 	if collections.IsInterfaceArray(f) {
-		if jsonArryErr := json.Unmarshal([]byte(body), parsedResponse); jsonArryErr != nil {
-			return nil, fmt.Errorf("malformed Json Array response:%v", jsonArryErr)
+		if jsonArrayErr := json.Unmarshal([]byte(body), parsedResponse); jsonArrayErr != nil {
+			return nil, fmt.Errorf("malformed Json Array response:%v", jsonArrayErr)
 		}
 	} else {
 		if jsonutil.IsJSONString(bodyAsString) {
@@ -174,7 +178,7 @@ func (c *Client) SendRequestWithStringResponse(req *retryablehttp.Request) (*str
 		return nil, fmt.Errorf("SendRequest failed: %s", bodyAsString)
 	}
 
-	c.Config.Logger.LogDebug("SendRequest: Response Body: %s", body)
+	c.Config.Logger.Debug("SendRequest: Response Body: %s", body)
 
 	return &bodyAsString, nil
 }

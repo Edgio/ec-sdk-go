@@ -2,7 +2,9 @@
 
 package waf
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // AccessRule (ACL) identifies valid or malicious requests via whitelists, accesslists, and blacklists.
 type AccessRule struct {
@@ -36,6 +38,9 @@ type AccessRule struct {
 	// Contains access controls for IPv4 and/or IPv6 addresses.
 	// Specify each desired IP address using standard IPv4/IPv6 and CIDR notation.
 	IPAccessControls *AccessControls `json:"ip"`
+
+	// MaxFileSize Indicates the maximum file size, in bytes, for a POST request body.
+	MaxFileSize int `json:"max_file_size"`
 
 	// Assigns a name to this access rule.
 	Name string `json:"name"`
@@ -87,4 +92,65 @@ func (svc *WAFService) AddAccessRule(accessRule AccessRule) (*AddRuleResponse, e
 	}
 
 	return parsedResponse, nil
+}
+
+// AccessRuleLight contains basic information about an access rule
+type AccessRuleLight struct {
+	// Indicates the system-defined ID for the access rule.
+	ID string `json:"id"`
+	// Indicates the name of the access rule.
+	Name string `json:"name"`
+	// Indicates the date and time at which the access rule was last modified. TODO: Convert to time.Time .
+	LastModifiedDate string `json:"last_modified_date"`
+}
+
+// GetAccessRules associated with the provided account number.
+func (svc *WAFService) GetAccessRules(accountNumber string) ([]AccessRuleLight, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl", accountNumber)
+
+	request, err := svc.Client.BuildRequest("GET", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
+	}
+
+	var accessRuleLight = &[]AccessRuleLight{}
+
+	_, err = svc.Client.SendRequest(request, &accessRuleLight)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
+	}
+
+	return *accessRuleLight, nil
+}
+
+//AccessRuleByID contains detail of rules that identify traffic for access control.
+type AccessRuleByID struct {
+	ID string `json:"id"`
+	AccessRule
+	LastModifiedBy   string `json:"last_modified_by"`
+	LastModifiedDate string `json:"last_modified_date"`
+	Version          string `json:"version"`
+}
+
+// GetAccessRuleByID provid access rule details.
+func (svc *WAFService) GetAccessRuleByID(accountNumber string, ID string) (*AccessRuleByID, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl/%s", accountNumber, ID)
+
+	request, err := svc.Client.BuildRequest("GET", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> access_rule.go -> GetAccessRulesLightById: %v", err)
+	}
+
+	var accessRuleByIDResponse = &AccessRuleByID{}
+
+	_, err = svc.Client.SendRequest(request, &accessRuleByIDResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> access_rule.go -> GetAccessRulesLightById: %v", err)
+	}
+
+	return accessRuleByIDResponse, nil
 }

@@ -1,4 +1,3 @@
-// Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license . See LICENSE file in project root for terms.
 package main
 
 import (
@@ -10,14 +9,11 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 
-// Retrieves a list of custom rule sets
-//
-// Usage:
-// go run get_all_custom_rule_sets.go -api-token "<api-token> -account-number "<account-number>"
 func main() {
 
+	// Setup
 	apiToken := flag.String("api-token", "", "API Token provided to you")
-	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve all Managed Rules for")
+	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve all Access Rules for")
 
 	flag.Parse()
 
@@ -30,15 +26,15 @@ func main() {
 		return
 	}
 
-	//Get all Custom Rule Sets example
-	customRuleSets, err := wafService.GetAllCustomRuleSets(*accountNumber)
+	// Get All Access Rules Example
+	accessRules, err := wafService.GetAccessRules(*accountNumber)
 
 	if err != nil {
-		fmt.Printf("Error retrieving all custom rule sets: %v\n", err)
+		fmt.Printf("Error retrieving all access rules: %v\n", err)
 		return
 	}
 
-	for _, rule := range customRuleSets {
+	for _, rule := range accessRules {
 		fmt.Println(rule)
 	}
 }
