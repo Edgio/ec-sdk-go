@@ -15,7 +15,7 @@ func main() {
 	//Setup
 	apiToken := flag.String("api-token", "", "API Token provided to you")
 	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve Access Rules for")
-	ID := flag.String("ID", "", "Rule ID")
+	ID := flag.String("id", "", "Rule ID")
 
 	flag.Parse()
 
