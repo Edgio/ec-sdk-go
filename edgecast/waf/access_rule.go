@@ -155,14 +155,14 @@ func (svc *WAFService) GetAccessRuleByID(accountNumber string, ID string) (*Acce
 	return accessRuleByIDResponse, nil
 }
 
-//UpdateRateRule an access rule that identifies valid or malicious requests via whitelists, accesslists, and blacklists.
-func (svc *WAFService) UpdateRateRule(accessRule AccessRule, ID string) (*UpdateRuleResponse, error) {
+//UpdateAccessRule an access rule that identifies valid or malicious requests via whitelists, accesslists, and blacklists.
+func (svc *WAFService) UpdateAccessRule(accessRule AccessRule, ID string) (*UpdateRuleResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl/%s", accessRule.CustomerID, ID)
 
 	request, err := svc.Client.BuildRequest("PUT", url, accessRule)
 
 	if err != nil {
-		return nil, fmt.Errorf("waf -> access_rule.go -> PutAccessRuleByID: %v", err)
+		return nil, fmt.Errorf("waf -> access_rule.go -> UpdateAccessRule.go: %v", err)
 	}
 
 	var parsedResponse = &UpdateRuleResponse{}
@@ -170,7 +170,7 @@ func (svc *WAFService) UpdateRateRule(accessRule AccessRule, ID string) (*Update
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
-		return nil, fmt.Errorf("waf -> access_rule.go -> PutAccessRuleByID: %v", err)
+		return nil, fmt.Errorf("waf -> access_rule.go -> UpdateAccessRule.go: %v", err)
 	}
 
 	return parsedResponse, nil

@@ -1,5 +1,5 @@
 {
-    "allowed_http_methods":["GET", "POST"],
+    "allowed_http_methods":["GET","POST"],
     "allowed_request_content_types": ["application/json", "text/html"],
     "asn": {
         "accesslist": [
@@ -40,7 +40,7 @@
             "CAN"
         ]
     },
-    "customer_id" : "CEA78",
+    "customer_id" : "03c9",
     "disallowed_extensions": [
         ".asa",
         ".asax",

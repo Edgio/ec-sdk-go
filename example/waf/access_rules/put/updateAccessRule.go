@@ -65,7 +65,7 @@ func main() {
 		return
 	}
 
-	resp, err := wafService.PutAccessRuleByID(rule, *ID)
+	resp, err := wafService.UpdateAccessRule(rule, *ID)
 
 	if err != nil {
 		fmt.Println("failed", err)
