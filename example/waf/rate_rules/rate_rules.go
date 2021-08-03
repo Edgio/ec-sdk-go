@@ -86,9 +86,7 @@ func main() {
 	}
 
 	fmt.Printf("Creating Rate Rule: %+v\n", rule)
-	addResponse, err := wafService.AddRateRule(waf.AddRateRuleRequest{
-		RateRule: rule,
-	})
+	addResponse, err := wafService.AddRateRule(rule)
 
 	if err != nil {
 		fmt.Printf("failed to create rate rule: %+v\n", err)
@@ -97,15 +95,24 @@ func main() {
 		fmt.Printf("successfully created rate rule: %+v\n", addResponse)
 	}
 
-	getResponse, err := wafService.GetRateRule(waf.GetRuleRequest{
-		RuleID:     addResponse.ID,
-		CustomerID: customerID,
-	})
+	getResponse, err := wafService.GetRateRule(customerID, addResponse.ID)
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve rate rule: %+v\n", err)
 		return
 	} else {
 		fmt.Printf("Successfully retrieved rate rule: %+v\n", getResponse)
+	}
+
+	// Now we update the rule
+	rule.Name = "Updated rule from example"
+
+	updateResponse, err := wafService.UpdateRateRule(rule, addResponse.ID)
+
+	if err != nil {
+		fmt.Printf("Failed to update rate rule: %+v\n", err)
+		return
+	} else {
+		fmt.Printf("Successfully updated rate rule: %+v\n", updateResponse)
 	}
 }

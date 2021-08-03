@@ -24,6 +24,14 @@ type AddRuleResponse struct {
 	WAFResponse
 }
 
+// UpdateRuleResponse contains the response from the WAF API when updating a rule
+type UpdateRuleResponse struct {
+	// ID indicates the generated ID for the newly created Rule
+	ID string
+
+	WAFResponse
+}
+
 // DeleteRuleResponse contains the response from the WAF API when deleting a rule
 type DeleteRuleResponse struct {
 	// ID indicates the generated ID for the newly created Rule
@@ -39,15 +47,6 @@ type WAFError struct {
 
 	// Message indicates the description for the error that occurred.
 	Message string
-}
-
-// GetRuleRequest contains the fields for retrieving WAF rules
-type GetRuleRequest struct {
-	// ID indicates the system-defined alphanumeric ID of the rule to retrieve
-	RuleID string
-
-	// CustomerID indicates the customer account number
-	CustomerID string
 }
 
 type Rule struct {
