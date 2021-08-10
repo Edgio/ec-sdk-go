@@ -4,7 +4,6 @@ package main
 
 import (
 	"fmt"
-	"net/url"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
@@ -18,16 +17,11 @@ import (
 func main() {
 
 	// Setup
-	customerID := "123B96"
-	apiToken := "qsYM4Xv4EtwJnIlXUcsNSxFSMTEynNzh"
+	customerID := "MY_ACCOUNT_NUMBER"
+	apiToken := "MY_API_TOKEN"
 	idsCredentials := auth.OAuth2Credentials{} // WAF does not use these credentials
 
 	sdkConfig := edgecast.NewSDKConfig(apiToken, idsCredentials)
-
-	url, _ := url.Parse("https://qa-api.edgecast.com")
-	sdkConfig.BaseAPIURLLegacy = *url
-	sdkConfig.BaseAPIURL = *url
-
 	wafService, err := waf.New(sdkConfig)
 
 	if err != nil {
