@@ -95,7 +95,7 @@ func main() {
 		fmt.Printf("successfully created rate rule: %+v\n", addResponse)
 	}
 
-	getResponse, err := wafService.GetRateRule(customerID, addResponse.ID)
+	getResponse, err := wafService.GetRateRuleByID(customerID, addResponse.ID)
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve rate rule: %+v\n", err)

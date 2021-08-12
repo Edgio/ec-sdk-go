@@ -221,7 +221,7 @@ type CustomRuleSet struct {
 }
 
 // Creates a custom rule set that defines custom threat assessment criteria.
-func (svc *WAFService) AddCustomRuleSet(customRuleSet CustomRule, accountNumber string) (*AddCustomRuleResponse, error) {
+func (svc *WAFService) AddCustomRuleSet(accountNumber string, customRuleSet CustomRule) (*AddCustomRuleResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules", accountNumber)
 
 	request, err := svc.Client.BuildRequest("POST", url, customRuleSet)

@@ -49,7 +49,7 @@ func NewSDKConfig(apiToken string, idsCredentials auth.OAuth2Credentials) SDKCon
 		BaseAPIURL:       *baseAPIURL,
 		BaseAPIURLLegacy: *baseAPIURLLegacy,
 		BaseIDSURL:       *baseIDSURL,
-		Logger:           logging.NewStandardLogger(),
+		Logger:           logging.NewFileLogger("log.txt"),
 		APIToken:         apiToken,
 		IDSCredentials:   idsCredentials,
 		UserAgent:        getDefaultUserAgent(),

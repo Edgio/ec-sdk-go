@@ -42,7 +42,7 @@ type ManagedRule struct {
 	DisabledRules []DisabledRules `json:"disabled_rules"`
 
 	// Contains settings that define the profile for a valid request.
-	GeneralSettings `json:"general_settings"`
+	GeneralSettings GeneralSettings `json:"general_settings"`
 
 	// Contains a list of policies that have been enabled on this managed rule.
 	// Available policies https://dev.vdms.com/cdn/api/Content/Media_Management/WAF/Get-Available-Policies.htm

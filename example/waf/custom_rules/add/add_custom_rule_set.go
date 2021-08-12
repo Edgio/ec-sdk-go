@@ -66,7 +66,7 @@ func main() {
 		return
 	}
 
-	resp, err := wafService.AddCustomRuleSet(rule, *accountNumber)
+	resp, err := wafService.AddCustomRuleSet(*accountNumber, rule)
 
 	if err != nil {
 		fmt.Println("failed", err)

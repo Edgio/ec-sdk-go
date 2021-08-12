@@ -207,10 +207,10 @@ type GetRateRuleResponse struct {
 	LastModifiedBy string `json:"last_modified_by,omitempty"`
 
 	// Version is reserved for future use.
-	Version string `json:"version,omitempty"`
+	Version int `json:"version,omitempty"`
 }
 
-// GetRateRule retrieves a rate rule
+// GetRateRuleByID retrieves a rate rule
 func (svc *WAFService) GetRateRule(customerID string, ruleID string) (*GetRateRuleResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit/%s", customerID, ruleID)
 
