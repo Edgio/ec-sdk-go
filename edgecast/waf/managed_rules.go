@@ -75,7 +75,7 @@ type ManagedRuleGet struct {
 	Version string `json:"version"`
 }
 
-// Contains all disabled rules.
+// The DisabledRule object identifies a rule that has been disabled using the following properties
 type DisabledRule struct {
 	// Identifies a policy from which a rule will be disabled by its system-defined ID.
 	PolicyID string `json:"policy_id"`
