@@ -39,17 +39,17 @@ type ManagedRule struct {
 	RulesetVersion string `json:"ruleset_version"`
 
 	// Contains all disabled rules.
-	DisabledRules []DisabledRules `json:"disabled_rules"`
+	DisabledRules []DisabledRule `json:"disabled_rules"`
 
 	// Contains settings that define the profile for a valid request.
-	GeneralSettings `json:"general_settings"`
+	GeneralSettings GeneralSettings `json:"general_settings"`
 
 	// Contains a list of policies that have been enabled on this managed rule.
 	// Available policies https://dev.vdms.com/cdn/api/Content/Media_Management/WAF/Get-Available-Policies.htm
 	Policies []string `json:"policies"`
 
 	// Defines one or more targets that will be ignored and/or replaced. A maximum of 25 target configurations may be created.
-	RuleTargetUpdates []RuleTargetUpdates `json:"rule_target_updates"`
+	RuleTargetUpdates []RuleTargetUpdate `json:"rule_target_updates"`
 }
 
 // Collection used when retrieving a single Managed Rule
@@ -76,7 +76,7 @@ type ManagedRuleGet struct {
 }
 
 // Contains all disabled rules.
-type DisabledRules struct {
+type DisabledRule struct {
 	// Identifies a policy from which a rule will be disabled by its system-defined ID.
 	PolicyID string `json:"policy_id"`
 
@@ -142,8 +142,8 @@ type GeneralSettings struct {
 	XmlParser bool `json:"xml_parser"`
 }
 
-// The RuleTargetUpdates object describes each target using the below properties
-type RuleTargetUpdates struct {
+// The RuleTargetUpdate object describes each target using the below properties
+type RuleTargetUpdate struct {
 	/* Determines whether the current target, as defined within this object, will be ignored when identifying threats. Valid values are:
 	True: Ignore this target.
 	False: Default value. Allow this target to identify threats. */
