@@ -2,12 +2,11 @@
 
 package waf
 
-import "fmt"
-
 /*
-	Retrieves a list of Security Application Manager configurations (Scopes) and their properties.
 
-	Each configuration:
+This file contains methods and types for Security Application Manager configuration (Scopes)
+
+Each configuration/scope:
 
 	- Identifies the set of traffic to which it applies by hostname, a URL path, or both.
 
@@ -16,6 +15,13 @@ import "fmt"
 	Note: If one or more condition group(s) have been defined within a rate rule, then traffic will only be rate limited when it also satisfies at least one of those condition groups.
 
 	- Defines the production and/or audit enforcement action that will be applied to the requests identified as threats by the above rules.
+
+*/
+
+import "fmt"
+
+/*
+	Retrieves a list of Security Application Manager configurations (Scopes) and their properties.
 */
 func (svc *WAFService) GetAllScopes(accountNumber string) (*GetAllScopesResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/scopes", accountNumber)
@@ -35,6 +41,35 @@ func (svc *WAFService) GetAllScopes(accountNumber string) (*GetAllScopesResponse
 	}
 
 	return responseData, nil
+}
+
+/*
+	Retrieves a single Security Application Manager configurations (Scope) and its properties.
+
+	Warning: This is a convenience method that will retrieve all Scopes and filter down to the requested Scope.
+	To reduce overhead, avoid using this method; if you need the details for multiple Scopes, it is better to
+	use GetAllScopes and filter it down to the scopes you need rather than calling GetScope for each ID.
+*/
+func (svc *WAFService) GetScope(accountNumber string, id string) (*Scope, error) {
+
+	/*
+		The API does not have an endpoint for a singular GET
+		So we will retrieve the entire list and filter it
+	*/
+
+	resp, err := svc.GetAllScopes(accountNumber)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetScope: %v", err)
+	}
+
+	for _, scope := range resp.Scopes {
+		if scope.ID == id {
+			return &scope, nil
+		}
+	}
+
+	return nil, fmt.Errorf("scope not found")
 }
 
 /*
