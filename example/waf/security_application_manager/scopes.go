@@ -28,6 +28,7 @@ func main() {
 		return
 	}
 
+	fmt.Println("**** GET ALL ****")
 	getAllResponse, err := wafService.GetAllScopes(customerID)
 
 	if err != nil {
@@ -52,85 +53,106 @@ func main() {
 	fmt.Printf("Version: %s\n", getAllResponse.Version)
 	fmt.Println("Scopes:")
 
-	for _, v := range getAllResponse.Scopes {
-		fmt.Printf("\tID:%s\n", v.ID)
-		fmt.Printf("\tName:%s\n", v.Name)
-
-		fmt.Println("\tHost:")
-		PrintMatchCondition(v.Host)
-
-		fmt.Println("\tPath:")
-		PrintMatchCondition(v.Path)
-
-		if v.Limits != nil {
-			fmt.Println("\tLimits:")
-			PrintLimits(*v.Limits)
-		}
-
-		if v.ACLAuditID != nil {
-			fmt.Printf("\tACLAuditID:%s\n", *v.ACLAuditID)
-		}
-
-		if v.ACLAuditAction != nil {
-			fmt.Println("\tACLAuditAction:")
-			PrintAuditAction(*v.ACLAuditAction)
-		}
-
-		if v.ACLProdID != nil {
-			fmt.Printf("\tACLProdID:%s\n", *v.ACLProdID)
-		}
-
-		if v.ACLProdAction != nil {
-			fmt.Println("\tACLProdAction:")
-			PrintProdAction(*v.ACLProdAction)
-		}
-
-		if v.BotsProdID != nil {
-			fmt.Printf("\tBotsProdID:%s\n", *v.BotsProdID)
-		}
-
-		if v.BotsProdAction != nil {
-			fmt.Println("\tBotsProdAction:")
-			PrintProdAction(*v.BotsProdAction)
-		}
-
-		if v.ProfileAuditID != nil {
-			fmt.Printf("\tProfileAuditID:%s\n", *v.ProfileAuditID)
-		}
-
-		if v.ProfileAuditAction != nil {
-			fmt.Println("\tProfileAuditAction:")
-			PrintAuditAction(*v.ProfileAuditAction)
-		}
-
-		if v.ProfileProdID != nil {
-			fmt.Printf("\tProfileProdID:%s\n", *v.ProfileProdID)
-		}
-
-		if v.ProfileProdAction != nil {
-			fmt.Println("\tProfileProdAction:")
-			PrintProdAction(*v.ProfileProdAction)
-		}
-
-		if v.RuleAuditID != nil {
-			fmt.Printf("\tRuleAuditID:%s\n", *v.RuleAuditID)
-		}
-
-		if v.RuleAuditAction != nil {
-			fmt.Println("\tRuleAuditAction:")
-			PrintAuditAction(*v.RuleAuditAction)
-		}
-
-		if v.RuleProdID != nil {
-			fmt.Printf("\tRuleProdID:%s\n", *v.RuleProdID)
-		}
-
-		if v.RuleProdAction != nil {
-			fmt.Println("\tRuleProdAction:")
-			PrintProdAction(*v.RuleProdAction)
-		}
-
+	for _, s := range getAllResponse.Scopes {
+		PrintScope(s)
 		fmt.Println("")
+	}
+
+	// Now we demonstrate the singular GET
+	if len(getAllResponse.Scopes) > 0 {
+
+		fmt.Println("**** GET ****")
+
+		// Just pick the first one
+		scopeID := getAllResponse.Scopes[0].ID
+
+		scope, err := wafService.GetScope(customerID, scopeID)
+
+		if err != nil {
+			fmt.Printf("Failed to retrieve security application manager configuration (scope): %+v\n", err)
+			return
+		}
+
+		PrintScope(*scope)
+	}
+}
+
+func PrintScope(scope waf.Scope) {
+	fmt.Printf("\tID:%s\n", scope.ID)
+	fmt.Printf("\tName:%s\n", scope.Name)
+
+	fmt.Println("\tHost:")
+	PrintMatchCondition(scope.Host)
+
+	fmt.Println("\tPath:")
+	PrintMatchCondition(scope.Path)
+
+	if scope.Limits != nil {
+		fmt.Println("\tLimits:")
+		PrintLimits(*scope.Limits)
+	}
+
+	if scope.ACLAuditID != nil {
+		fmt.Printf("\tACLAuditID:%s\n", *scope.ACLAuditID)
+	}
+
+	if scope.ACLAuditAction != nil {
+		fmt.Println("\tACLAuditAction:")
+		PrintAuditAction(*scope.ACLAuditAction)
+	}
+
+	if scope.ACLProdID != nil {
+		fmt.Printf("\tACLProdID:%s\n", *scope.ACLProdID)
+	}
+
+	if scope.ACLProdAction != nil {
+		fmt.Println("\tACLProdAction:")
+		PrintProdAction(*scope.ACLProdAction)
+	}
+
+	if scope.BotsProdID != nil {
+		fmt.Printf("\tBotsProdID:%s\n", *scope.BotsProdID)
+	}
+
+	if scope.BotsProdAction != nil {
+		fmt.Println("\tBotsProdAction:")
+		PrintProdAction(*scope.BotsProdAction)
+	}
+
+	if scope.ProfileAuditID != nil {
+		fmt.Printf("\tProfileAuditID:%s\n", *scope.ProfileAuditID)
+	}
+
+	if scope.ProfileAuditAction != nil {
+		fmt.Println("\tProfileAuditAction:")
+		PrintAuditAction(*scope.ProfileAuditAction)
+	}
+
+	if scope.ProfileProdID != nil {
+		fmt.Printf("\tProfileProdID:%s\n", *scope.ProfileProdID)
+	}
+
+	if scope.ProfileProdAction != nil {
+		fmt.Println("\tProfileProdAction:")
+		PrintProdAction(*scope.ProfileProdAction)
+	}
+
+	if scope.RuleAuditID != nil {
+		fmt.Printf("\tRuleAuditID:%s\n", *scope.RuleAuditID)
+	}
+
+	if scope.RuleAuditAction != nil {
+		fmt.Println("\tRuleAuditAction:")
+		PrintAuditAction(*scope.RuleAuditAction)
+	}
+
+	if scope.RuleProdID != nil {
+		fmt.Printf("\tRuleProdID:%s\n", *scope.RuleProdID)
+	}
+
+	if scope.RuleProdAction != nil {
+		fmt.Println("\tRuleProdAction:")
+		PrintProdAction(*scope.RuleProdAction)
 	}
 }
 
