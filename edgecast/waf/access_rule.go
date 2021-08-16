@@ -105,7 +105,7 @@ type AccessRuleLight struct {
 }
 
 // GetAccessRules associated with the provided account number.
-func (svc *WAFService) GetAccessRules(accountNumber string) ([]AccessRuleLight, error) {
+func (svc *WAFService) GetAllAccessRules(accountNumber string) ([]AccessRuleLight, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/acl", accountNumber)
 
 	request, err := svc.Client.BuildRequest("GET", url, nil)

@@ -27,7 +27,7 @@ func main() {
 	}
 
 	// Get All Access Rules Example
-	accessRules, err := wafService.GetAccessRules(*accountNumber)
+	accessRules, err := wafService.GetAllAccessRules(*accountNumber)
 
 	if err != nil {
 		fmt.Printf("Error retrieving all access rules: %v\n", err)
