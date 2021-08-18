@@ -9,56 +9,56 @@ import (
 // AccessRule (ACL) identifies valid or malicious requests via whitelists, accesslists, and blacklists.
 type AccessRule struct {
 	// Identifies each allowed HTTP method (e.g., GET).
-	AllowedHTTPMethods []string `json:"allowed_http_methods"`
+	AllowedHTTPMethods []string `json:"allowed_http_methods,omitempty"`
 
 	// Identifies each allowed media type (e.g., application/json).
-	AllowedRequestContentTypes []string `json:"allowed_request_content_types"`
+	AllowedRequestContentTypes []string `json:"allowed_request_content_types,omitempty"`
 
 	// Contains access controls for autonomous system numbers (ASNs).
 	// All entries are integer values.
-	ASNAccessControls *AccessControls `json:"asn"`
+	ASNAccessControls *AccessControls `json:"asn,omitempty"`
 
 	// Contains access controls for cookies.
 	// All entries are regular expressions.
-	CookieAccessControls *AccessControls `json:"cookie"`
+	CookieAccessControls *AccessControls `json:"cookie,omitempty"`
 
 	// Contains access controls for countries.
 	// Specify each desired country using its country code.
-	CountryAccessControls *AccessControls `json:"country"`
+	CountryAccessControls *AccessControls `json:"country,omitempty"`
 
 	// Identifies an account by its customer account number.
 	CustomerID string `json:"customer_id"`
 
 	// Indicates each file extension for which WAF will send an alert or block the request.
-	DisallowedExtensions []string `json:"disallowed_extensions"`
+	DisallowedExtensions []string `json:"disallowed_extensions,omitempty"`
 
 	// Indicates each request header for which WAF will send an alert or block the request.
-	DisallowedHeaders []string `json:"disallowed_headers"`
+	DisallowedHeaders []string `json:"disallowed_headers,omitempty"`
 
 	// Contains access controls for IPv4 and/or IPv6 addresses.
 	// Specify each desired IP address using standard IPv4/IPv6 and CIDR notation.
-	IPAccessControls *AccessControls `json:"ip"`
+	IPAccessControls *AccessControls `json:"ip,omitempty"`
 
 	// MaxFileSize Indicates the maximum file size, in bytes, for a POST request body.
-	MaxFileSize int `json:"max_file_size"`
+	MaxFileSize int `json:"max_file_size,omitempty"`
 
 	// Assigns a name to this access rule.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 
 	// Contains access controls for referrers.
 	// All entries are regular expressions.
-	RefererAccessControls *AccessControls `json:"referer"`
+	RefererAccessControls *AccessControls `json:"referer,omitempty"`
 
 	// Determines the name of the response header that will be included with blocked requests.
-	ResponseHeaderName string `json:"response_header_name"`
+	ResponseHeaderName string `json:"response_header_name,omitempty"`
 
 	// Contains access controls for URL paths.
 	// All entries are regular expressions.
-	URLAccessControls *AccessControls `json:"url"`
+	URLAccessControls *AccessControls `json:"url,omitempty"`
 
 	// Contains access controls for user agents.
 	// All entries are regular expressions.
-	UserAgentAccessControls *AccessControls `json:"user_agent"`
+	UserAgentAccessControls *AccessControls `json:"user_agent,omitempty"`
 }
 
 // AccessControls contains lists that identify traffic for access control
