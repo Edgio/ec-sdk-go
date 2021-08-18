@@ -14,7 +14,7 @@ func main() {
 	//Setup
 	apiToken := flag.String("api-token", "", "API Token provided to you")
 	accountNumber := flag.String("account-number", "", "Account number you wish to retrieve the Managed Rule for")
-	managedRuleID := flag.String("managed-rule-id", "", "Managed Rule ID you wish to retrieve for the provided account number")
+	managedRuleID := flag.String("managed-rule-id", "", "Managed Rule ID you wish to delete for the provided account number")
 
 	flag.Parse()
 
@@ -27,13 +27,13 @@ func main() {
 		return
 	}
 
-	//Get Managed Rule Example
-	managedRule, err := wafService.GetManagedRule(*accountNumber, *managedRuleID)
+	//Delete Managed Rule Example
+	response, err := wafService.DeleteManagedRule(*accountNumber, *managedRuleID)
 
 	if err != nil {
 		fmt.Printf("Error retrieving managed rule: %v\n", err)
 		return
 	}
 
-	fmt.Println(managedRule)
+	fmt.Println(response)
 }
