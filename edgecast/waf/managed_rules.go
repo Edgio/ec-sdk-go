@@ -194,6 +194,21 @@ type AddManagedRuleResponse struct {
 	AddRuleResponse
 }
 
+// Updates a managed rule that identifies a rule set configuration and describes a valid request.
+type UpdateManagedRuleRequest struct {
+	ManagedRule
+}
+
+// Contains the response from the WAF API when updating a managed rule
+type UpdateManagedRuleResponse struct {
+	UpdateRuleResponse
+}
+
+// Contains the response from the WAF API when deleting a managed rule
+type DeleteManagedRuleResponse struct {
+	DeleteRuleResponse
+}
+
 // Get all Managed Rules associcated with the provided account number.
 func (svc *WAFService) GetAllManagedRules(accountNumber string) ([]GetAllManagedRulesResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/profile", accountNumber)
@@ -252,6 +267,48 @@ func (svc *WAFService) AddManagedRule(managedRule AddManagedRuleRequest, account
 
 	if err != nil {
 		return nil, fmt.Errorf("AddManagedRule: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+// Update a Managed Rule for the provided account number and Managed Rule ID.
+func (svc *WAFService) UpdateManagedRule(accountNumber string, managedRuleID string, managedRule UpdateManagedRuleRequest) (*UpdateManagedRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/profile/%s", accountNumber, managedRuleID)
+
+	request, err := svc.Client.BuildRequest("PUT", url, managedRule)
+
+	if err != nil {
+		return nil, fmt.Errorf("UpdateManagedRule: %v", err)
+	}
+
+	parsedResponse := &UpdateManagedRuleResponse{}
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("UpdateManagedRule: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+// Delete a Managed Rule for the provided account number and Managed Rule ID.
+func (svc *WAFService) DeleteManagedRule(accountNumber string, managedRuleID string) (*DeleteManagedRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/profile/%s", accountNumber, managedRuleID)
+
+	request, err := svc.Client.BuildRequest("DELETE", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("DeleteManagedRule: %v", err)
+	}
+
+	parsedResponse := &DeleteManagedRuleResponse{}
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("Delete ManagedRule: %v", err)
 	}
 
 	return parsedResponse, nil

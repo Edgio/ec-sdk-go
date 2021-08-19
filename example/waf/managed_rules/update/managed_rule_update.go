@@ -16,8 +16,9 @@ func main() {
 
 	//Setup
 	apiToken := flag.String("api-token", "", "API Token provided to you")
-	accountNumber := flag.String("account-number", "", "Account number you wish to create a Managed Rule for")
+	accountNumber := flag.String("account-number", "", "Account number you wish to update a Managed Rule for")
 	filePath := flag.String("file-path", "", "File containing the Managed Rule in json format")
+	managedRuleID := flag.String("managed-rule-id", "", "Managed Rule ID you wish to update for the provided account number")
 	flag.Parse()
 
 	//Load JSON file containing managed rule to add
@@ -37,7 +38,7 @@ func main() {
 		return
 	}
 
-	var managedRule waf.AddManagedRuleRequest
+	var managedRule waf.UpdateManagedRuleRequest
 	err = json.Unmarshal(bytes, &managedRule)
 
 	if err != nil {
@@ -55,12 +56,12 @@ func main() {
 		return
 	}
 
-	//Add Managed Rule API call and response
-	managedRuleResponse, err := wafService.AddManagedRule(managedRule, *accountNumber)
+	//Update Managed Rule API call and response
+	managedRuleResponse, err := wafService.UpdateManagedRule(*accountNumber, *managedRuleID, managedRule)
 
 	//TODO: Check if it is necessary to verify managedRuleResponse.status separately
 	if err != nil {
-		fmt.Printf("Error creating managed rule: %v\n", err)
+		fmt.Printf("Error updating managed rule: %v\n", err)
 		return
 	}
 
