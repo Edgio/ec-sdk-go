@@ -356,7 +356,7 @@ func (svc *WAFService) GetCustomRuleSet(accountNumber string, customRuleID strin
 	return parsedResponse, nil
 }
 
-//UpdateCustomRuleSet an access rule that identifies valid or malicious requests via whitelists, accesslists, and blacklists.
+//UpdateCustomRuleSet that defines custom threat assessment criteria.
 func (svc *WAFService) UpdateCustomRuleSet(customRuleSet CustomRuleSetDetail, accountNumber string, ID string) (*UpdateRuleResponse, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%s", accountNumber, ID)
 
