@@ -1,0 +1,32 @@
+{
+	"directive": [{
+			"sec_rule": {
+				"action": {
+					"id": "66000001",
+					"msg": "Invalid user agent.",
+					"t": [
+						"NONE"
+					]
+				},
+				"operator": {
+					"is_negated": false,
+					"is_regex": false,
+					"type": "CONTAINS",
+					"value": "bot"
+				},
+				"variable": [{
+						"is_count": false,
+						"match": [{
+								"is_negated": false,
+								"is_regex": false,
+								"value": "User-Agent"
+							}
+						],
+						"type": "REQUEST_HEADERS"
+					}
+				]
+			}
+		}
+	],
+	"name": "Deny Boys"
+}
