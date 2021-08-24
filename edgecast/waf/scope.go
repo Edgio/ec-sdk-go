@@ -4,26 +4,42 @@ package waf
 
 /*
 
-This file contains methods and types for Security Application Manager configuration (Scopes)
+	This file contains methods and types for Security Application Manager configuration (Scopes)
 
-Each configuration/scope:
+	Each configuration/scope:
 
 	- Identifies the set of traffic to which it applies by hostname, a URL path, or both.
 
 	- Defines how threats will be detected via access rules, custom rule set, managed rules, and rate rules.
 
-	Note: If one or more condition group(s) have been defined within a rate rule, then traffic will only be rate limited when it also satisfies at least one of those condition groups.
+		Note: If one or more condition group(s) have been defined within a rate rule,
+		then traffic will only be rate limited when it also satisfies at least one of those condition groups.
 
 	- Defines the production and/or audit enforcement action that will be applied to the requests identified as threats by the above rules.
 
+	The recommended method for updating your Security Application Manager configurations
+	is to perform the following steps:
+
+	1. Retrieve your current set of Scopes via GetAllScopes.
+
+	2. Add, modify, or remove Scopes as needed.
+
+	3. Pass the updated Scopes to ModifyAllScopes.
+
 */
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
-/*
-	Retrieves a list of Security Application Manager configurations (Scopes) and their properties.
-*/
-func (svc *WAFService) GetAllScopes(accountNumber string) (*GetAllScopesResponse, error) {
+// Retrieves the set of Security Application Manager configurations (Scopes) and their properties for a customer
+func (svc *WAFService) GetAllScopes(accountNumber string) (*Scopes, error) {
+
+	if len(accountNumber) == 0 {
+		return nil, errors.New("accountNumber is required")
+	}
+
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/scopes", accountNumber)
 
 	request, err := svc.Client.BuildRequest("GET", url, nil)
@@ -32,7 +48,7 @@ func (svc *WAFService) GetAllScopes(accountNumber string) (*GetAllScopesResponse
 		return nil, fmt.Errorf("GetAllScopes: %v", err)
 	}
 
-	var responseData = &GetAllScopesResponse{}
+	var responseData = &Scopes{}
 
 	_, err = svc.Client.SendRequest(request, &responseData)
 
@@ -44,54 +60,64 @@ func (svc *WAFService) GetAllScopes(accountNumber string) (*GetAllScopesResponse
 }
 
 /*
-	Retrieves a single Security Application Manager configurations (Scope) and its properties.
+	Create, update, or delete one or more Security Application Manager configurations (Scopes) for a customer
 
-	Warning: This is a convenience method that will retrieve all Scopes and filter down to the requested Scope.
-	To reduce overhead, avoid using this method; if you need the details for multiple Scopes, it is better to
-	use GetAllScopes and filter it down to the scopes you need rather than calling GetScope for each ID.
+	- Create a Security Application Manager configuration by adding a Scope object.
+
+	- Update a Security Application Manager configuration by modifying an existing Scope.
+	The id property identifies the Security Application Manager configuration that will be updated.
+
+	- Delete a Security Application Manager configuration by excluding a Scope.
+
+	*** NOTE ***
+	Rules must be fully processed by the CDN in order to be usable in a Scope.
+	You may receive an error stating that a rule has not been processed. If this occurs, try again.
 */
-func (svc *WAFService) GetScope(accountNumber string, id string) (*Scope, error) {
+func (svc *WAFService) ModifyAllScopes(scopes Scopes) (*WAFResponse, error) {
 
-	/*
-		The API does not have an endpoint for a singular GET
-		So we will retrieve the entire list and filter it
-	*/
+	if len(scopes.CustomerID) == 0 {
+		return nil, errors.New("scopes.CustomerID is required")
+	}
 
-	resp, err := svc.GetAllScopes(accountNumber)
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/scopes", scopes.CustomerID)
+
+	request, err := svc.Client.BuildRequest("POST", url, scopes)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetScope: %v", err)
+		return nil, fmt.Errorf("ModifyAllScopes: %v", err)
 	}
 
-	for _, scope := range resp.Scopes {
-		if scope.ID == id {
-			return &scope, nil
-		}
+	var responseData = &WAFResponse{}
+
+	_, err = svc.Client.SendRequest(request, &responseData)
+
+	if err != nil {
+		return nil, fmt.Errorf("ModifyAllScopes: %v", err)
 	}
 
-	return nil, fmt.Errorf("scope not found")
+	return responseData, nil
 }
 
 /*
 	Contains the set of Security Application Manager configurations (Scopes) for a customer
 */
-type GetAllScopesResponse struct {
+type Scopes struct {
 
 	/*
-		Identifies your account by its customer account number.
+		Identifies your account by its customer account number. This value is case-sensitive.
 	*/
-	CustomerID string `json:"customer_id"`
+	CustomerID string `json:"customer_id,omitempty"`
 
 	/*
 		Indicates the system-defined ID for the set of
 		Security Application Manager configurations defined within the scopes array.
 	*/
-	ID string `json:"id"`
+	ID string `json:"id,omitempty"`
 
 	/*
 		Reserved for future use.
 	*/
-	LastModifiedBy *string `json:"last_modified_by,omitempty"`
+	LastModifiedBy string `json:"last_modified_by,omitempty"`
 
 	/*
 		Indicates the timestamp at which the Security Application Manager configuration returned by the scopes array was last modified.
@@ -101,12 +127,12 @@ type GetAllScopesResponse struct {
 
 		Learn more: https://dev.vdms.com/cdn/api/Content/References/Report_Date_Time_Format.htm
 	*/
-	LastModifiedDate string `json:"last_modified_date"`
+	LastModifiedDate string `json:"last_modified_date,omitempty"`
 
 	/*
 		Reserved for future use.
 	*/
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name,omitempty"`
 
 	/*
 		Contains a list of Security Application Manager configurations (Scopes) and their properties.
@@ -116,7 +142,7 @@ type GetAllScopesResponse struct {
 	/*
 		Reserved for future use.
 	*/
-	Version string `json:"version"`
+	Version string `json:"version,omitempty"`
 }
 
 /*
@@ -125,9 +151,11 @@ type GetAllScopesResponse struct {
 type Scope struct {
 
 	/*
-		Identifies the current Security Application Manager configuration by its system-defined ID.
+		Identifies the current Security Application Manager configuration by its system-defined ID
+
+		Note: leave blank for new Scopes
 	*/
-	ID string `json:"id"`
+	ID string `json:"id,omitempty"`
 
 	/*
 		Indicates the name assigned to the Security Application Manager configuration.
@@ -225,7 +253,7 @@ type Scope struct {
 		Describes the type of action that will take place
 		when the custom rule set defined within the RuleAuditID property is violated.
 	*/
-	RuleAuditAction *AuditAction `json:"rule_audit_action"`
+	RuleAuditAction *AuditAction `json:"rules_audit_action"`
 
 	/*
 		Indicates the system-defined ID for the custom rule set that will
@@ -233,13 +261,13 @@ type Scope struct {
 
 		Note: Use WAFService.GetAllCustomRuleSets to retrieve a list of custom rule sets and their IDs.
 	*/
-	RuleAuditID *string `json:"rule_audit_id,omitempty"`
+	RuleAuditID *string `json:"rules_audit_id,omitempty"`
 
 	/*
 		Describes the type of action that will take place
 		when the custom rule set defined within the RuleProdID property is violated.
 	*/
-	RuleProdAction *ProdAction `json:"rule_prod_action"`
+	RuleProdAction *ProdAction `json:"rules_prod_action"`
 
 	/*
 		Indicates the system-defined ID for the custom rule set that will
@@ -247,7 +275,7 @@ type Scope struct {
 
 		Note: Use WAFService.GetAllCustomRuleSets to retrieve a list of custom rule sets and their IDs.
 	*/
-	RuleProdID *string `json:"rule_prod_id,omitempty"`
+	RuleProdID *string `json:"rules_prod_id,omitempty"`
 }
 
 /*
@@ -256,8 +284,8 @@ type Scope struct {
 */
 type AuditAction struct {
 
-	// Reserved for future use.
-	ID string `json:"id"`
+	// Reserved for future use. Leave blank for new AuditActions.
+	ID string `json:"id,omitempty"`
 
 	// Indicates the name assigned to this enforcement action configuration.
 	Name string `json:"name"`
@@ -273,9 +301,9 @@ type AuditAction struct {
 type ProdAction struct {
 
 	/*
-		Reserved for future use.
+		Reserved for future use. Leave blank for new ProdActions.
 	*/
-	ID string `json:"id"`
+	ID string `json:"id,omitempty"`
 
 	/*
 		Indicates the name assigned to this enforcement action configuration.
@@ -294,6 +322,8 @@ type ProdAction struct {
 		REDIRECT_302: Redirect (HTTP 302)
 
 		CUSTOM_RESPONSE: Custom Response
+
+		BROWSER_CHALLENGE: 	Browser Challenge (only valid for Bot Rules)
 	*/
 	ENFType string `json:"enf_type"`
 
@@ -312,16 +342,26 @@ type ProdAction struct {
 	ResponseHeaders *map[string]string `json:"response_headers"`
 
 	/*
+		Note: Only valid when ENFType is set to CUSTOM_RESPONSE or BROWSER_CHALLENGE
+
 		Indicates the HTTP status code (e.g., 404) for the custom response that will be sent to malicious traffic.
 	*/
-	Status *int `json:"status"`
+	Status *int `json:"status,omitempty"`
 
 	/*
 		Note: Only valid when ENFType is set to REDIRECT_302
 
 		Indicates the URL to which malicious requests will be redirected.
 	*/
-	URL *string `json:"url"`
+	URL *string `json:"url,omitempty"`
+
+	/*
+		Note: Only valid when ENFType is set to BROWSER_CHALLENGE
+
+		Indicates the length of time in seconds that a browser challenge success cookie remains valid.
+		This cookie is assigned when the user solves the challenge and prevents further challenges.
+	*/
+	ValidForSec *int `json:"valid_for_sec,omitempty"`
 }
 
 /*
