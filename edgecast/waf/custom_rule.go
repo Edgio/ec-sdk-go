@@ -355,3 +355,24 @@ func (svc *WAFService) GetCustomRuleSet(accountNumber string, customRuleID strin
 
 	return parsedResponse, nil
 }
+
+//UpdateCustomRuleSet that defines custom threat assessment criteria.
+func (svc *WAFService) UpdateCustomRuleSet(customRuleSet CustomRuleSetDetail, accountNumber string, ID string) (*UpdateRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%s", accountNumber, ID)
+
+	request, err := svc.Client.BuildRequest("PUT", url, customRuleSet)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> custom_rule.go -> UpdateCustomRuleSet: %v", err)
+	}
+
+	var parsedResponse = &UpdateRuleResponse{}
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> custom_rule.go -> UpdateCustomRuleSet: %v", err)
+	}
+
+	return parsedResponse, nil
+}
