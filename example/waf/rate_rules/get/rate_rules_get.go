@@ -12,7 +12,7 @@ import (
 // GET a WAF rate rule
 //
 // Usage:
-// go run rate_rules.go -api-token "<api-token>"
+// go run rate_rules_get.go -api-token "<api-token>"
 // -account-number "account number"
 func main() {
 

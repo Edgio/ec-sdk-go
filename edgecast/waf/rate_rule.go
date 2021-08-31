@@ -253,7 +253,7 @@ func (svc *WAFService) UpdateRateRule(rule RateRule, ruleID string) (*UpdateRule
 	return parsedResponse, nil
 }
 
-type GetRateRuleListResponse struct {
+type RateRuleLight struct {
 	RateRule
 
 	/*
@@ -274,7 +274,7 @@ type GetRateRuleListResponse struct {
 }
 
 // GetRateRules associated with the provided account number.
-func (svc *WAFService) GetAllRateRules(accountNumber string) ([]GetRateRuleListResponse, error) {
+func (svc *WAFService) GetAllRateRules(accountNumber string) ([]RateRuleLight, error) {
 	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit", accountNumber)
 
 	request, err := svc.Client.BuildRequest("GET", url, nil)
@@ -283,13 +283,13 @@ func (svc *WAFService) GetAllRateRules(accountNumber string) ([]GetRateRuleListR
 		return nil, fmt.Errorf("waf -> rate_rule.go -> GetAllRateRules: %v", err)
 	}
 
-	var rateRuleList = &[]GetRateRuleListResponse{}
+	var rateRuleLight = &[]RateRuleLight{}
 
-	_, err = svc.Client.SendRequest(request, &rateRuleList)
+	_, err = svc.Client.SendRequest(request, &rateRuleLight)
 
 	if err != nil {
 		return nil, fmt.Errorf("waf -> rate_rule.go -> GetAllRateRules: %v", err)
 	}
 
-	return *rateRuleList, nil
+	return *rateRuleLight, nil
 }
