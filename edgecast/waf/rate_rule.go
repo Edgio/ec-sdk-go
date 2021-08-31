@@ -252,3 +252,24 @@ func (svc *WAFService) UpdateRateRule(rule RateRule, ruleID string) (*UpdateRule
 
 	return parsedResponse, nil
 }
+
+// DeleteRateRuleByID delete rate rule.
+func (svc *WAFService) DeleteRateRuleByID(accountNumber string, ID string) (*DeleteRuleResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit/%s", accountNumber, ID)
+
+	request, err := svc.Client.BuildRequest("DELETE", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> rate_rule.go -> DeleteRateRuleByID: %v", err)
+	}
+
+	var parsedResponse = &DeleteRuleResponse{}
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> rate_rule.go -> DeleteRateRuleByID: %v", err)
+	}
+
+	return parsedResponse, nil
+}

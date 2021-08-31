@@ -3,6 +3,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
@@ -115,4 +116,15 @@ func main() {
 	} else {
 		fmt.Printf("Successfully updated rate rule: %+v\n", updateResponse)
 	}
+
+	//Now delete rate rule by ID
+	deleteResponse, err := wafService.DeleteRateRuleByID(customerID, addResponse.ID)
+	if err != nil {
+		fmt.Printf("Failed to delete rate rule: %+v\n", err)
+	}
+	prettyJSON, err := json.MarshalIndent(deleteResponse, "", "    ")
+	if err != nil {
+		fmt.Println("Failed to generate json", err)
+	}
+	fmt.Printf("%s\n", string(prettyJSON))
 }
