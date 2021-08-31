@@ -13,7 +13,7 @@ import (
 // Deletes a rate rule
 //
 // Usage:
-// go run rate_rule_delete.go -api-token "<api-token>
+// go run rate_rule_delete.go -api-token "<api-token>"
 //-account-number "<account-number>" -ID "<ID>"
 func main() {
 
