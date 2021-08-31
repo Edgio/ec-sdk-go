@@ -252,3 +252,44 @@ func (svc *WAFService) UpdateRateRule(rule RateRule, ruleID string) (*UpdateRule
 
 	return parsedResponse, nil
 }
+
+type RateRuleLight struct {
+	RateRule
+
+	/*
+	   Indicates the system-defined ID for the rate rule.
+	*/
+	ID string `json:"id"`
+
+	/*
+		Indicates the timestamp at which the rate rule was last modified.
+
+		Syntax:
+			YYYY-MM-DDThh:mm:ss:ffffffZ
+	*/
+	LastModifiedDate string `json:"last_modified_date"`
+
+	// Indicates the name of the rate rule.
+	Name string `json:"name,omitempty"`
+}
+
+// GetRateRules associated with the provided account number.
+func (svc *WAFService) GetAllRateRules(accountNumber string) ([]RateRuleLight, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/limit", accountNumber)
+
+	request, err := svc.Client.BuildRequest("GET", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> rate_rule.go -> GetAllRateRules: %v", err)
+	}
+
+	var rateRuleLight = &[]RateRuleLight{}
+
+	_, err = svc.Client.SendRequest(request, &rateRuleLight)
+
+	if err != nil {
+		return nil, fmt.Errorf("waf -> rate_rule.go -> GetAllRateRules: %v", err)
+	}
+
+	return *rateRuleLight, nil
+}
