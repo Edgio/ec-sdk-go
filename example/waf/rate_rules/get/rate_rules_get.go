@@ -9,6 +9,11 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 
+// GET a WAF rate rule
+//
+// Usage:
+// go run rate_rules_get.go -api-token "<api-token>"
+// -account-number "account number"
 func main() {
 
 	// Setup
@@ -26,13 +31,13 @@ func main() {
 		return
 	}
 
-	// Get All Access Rules Example
-	accessRules, err := wafService.GetAllAccessRules(*accountNumber)
+	// Get All Rate Rules Example
+	rateRules, err := wafService.GetAllRateRules(*accountNumber)
 
 	if err != nil {
-		fmt.Printf("Error retrieving access rules: %v\n", err)
+		fmt.Printf("Error retrieving all rate rules: %v\n", err)
 		return
 	} else {
-		fmt.Printf("Successfully retrieved access rules: %+v\n", accessRules)
+		fmt.Printf("Successfully retrieved rate rule: %+v\n", rateRules)
 	}
 }
