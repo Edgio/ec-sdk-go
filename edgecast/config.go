@@ -1,4 +1,4 @@
-// Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
+// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
 
 package edgecast
 
@@ -13,7 +13,7 @@ import (
 const (
 	defaultBaseAPIURL       string = "https://api.vdms.io"
 	defaultBaseAPIURLLegacy string = "https://api.edgecast.com"
-	defaultBaseIDSURL       string = "https://id.vdms.io"
+	defaultBaseIDSURL       string = "https://stg.vdms.io"
 	defaultUserAgentFormat  string = "edgecast/%s:%s"
 )
 
