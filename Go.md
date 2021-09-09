@@ -440,7 +440,7 @@ func main() {
 * [Effective Go](https://golang.org/doc/effective_go.html)
 * [Go by Example](https://gobyexample.com)
 * [Awesome Go](https://awesome-go.com)
-* [JustForFunc Youtube](yhttps://www.youtube.com/channel/UC_BzFbxG2za3bp5NRRRXJSw)
+* [JustForFunc Youtube](https://www.youtube.com/channel/UC_BzFbxG2za3bp5NRRRXJSw)
 * [Style Guide](https://github.com/golang/go/wiki/CodeReviewComments)
 * [Edgecast Go Style](https://gitlab.edgecastcdn.net/edgecast/docs/developer-guide/-/blob/master/style/go/go.md)
 
