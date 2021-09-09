@@ -1,14 +1,14 @@
 # Go Guide
 This document describes followings:
 * [IDE](#IDE)
-* [Go Extension for VS Code](#GoExtensionforVSCode)
-* [Linter tool](#Lintertool)
+* [Go Extension for VS Code](#Go-Extension-for-VS-Code)
+* [Linter tool](#Linter-tool)
 * [Naming](#Naming)
-* [Getter and Setter](#GetterandSetter)
-* [Mixed Caps](#MixedCaps)
-* [Interface Naming](#InterfaceNaming)
-* [Go Cheat Sheet](#GoCheatSheet)
-* [Useful Links including `go style guide`](#UsefulLink)
+* [Getter and Setter](#Getter-and-Setter)
+* [Mixed Caps](#Mixed-Caps)
+* [Interface Naming](#Interface-Naming)
+* [Go Cheat Sheet](#Go-Cheat-Sheet)
+* [Useful Links including `go style guide`](#Useful-Links)
 
 
 For the go style guideline, please read `go style` in the `Useful Links`
