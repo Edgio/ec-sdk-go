@@ -1,4 +1,4 @@
-#Go Guide
+# Go Guide
 This document describes followings:
 * IDE
 * Go Extension for VS Code
@@ -13,11 +13,11 @@ This document describes followings:
 
 For the go style guideline, please read `go style` in the `Useful Links`
 
-### IDE
+## IDE
 Visual Studio Code is the IDE we are using in this SDK.
 You can download it [here](https://code.visualstudio.com/download)
 
-### Go Extension for VS Code
+## Go Extension for VS Code
 Go extension for VS Code should be installed.
 It allows to to choose a linter tool for the project.
 
@@ -25,42 +25,42 @@ It allows to to choose a linter tool for the project.
 Use golangci-lint. You can set this up  by going to settings (CTRL+,), typing go.lintTool and selecting it in the dropdownlist.
 This extension would take care of go lang source code format.
 
-### Naming
+## Naming
 *By convention, packages are given lower case, single-word names;there should be no need for underscores or mixedCaps. 
 *Another convention is that the package name is the base name of its source directory; 
 *The importer of a package will use the name to refer to its contents, so exported names in the package can use that fact to avoid repetition. For example, bufio.reader not bufReader
 
-### Getter and Setter
+## Getter and Setter
 For Getter, do not use `Get` prefix, but do use `Set` postfix for the setter
 
-### Mixed Caps
+## Mixed Caps
 If you are using multi-words for variables, func, or methods, instead of using `-`, use upper camel case or lower camel case based on needs.
 
-### interface Naming
+## interface Naming
 By convention, one-method interfaces are named by the method name plus an -er suffix or similar modification to construct an agent noun: Reader, Writer, Formatter, CloseNotifier etc.
 
 
-### Go Cheat Sheet
+## Go Cheat Sheet
 
-##### Variables
-* declaration
+#### Variables
+declaration
 ```
 var msg string
 msg = "Hello"
 ```
 
-* Shortcut of above (Infers type)
+Shortcut of above (Infers type)
 ```
 msg := "Hello"
 ```
 
-##### Constants
+#### Constants
 Constants can be character, string, boolean, or numeric values.
 ```
 const Phi = 1.618
 ```
 
-##### Strings
+#### Strings
 ```
 str := "Hello"
 str := `Multiline
@@ -68,7 +68,7 @@ string`
 ```
 Strings are of type string.
 
-##### Pointers
+#### Pointers
 ```
 func main () {
   b := *getPointer()
@@ -85,7 +85,7 @@ a := new(int)
 ```
 Pointers point to a memory location of a variable. Go is fully garbage-collected.
 
-##### Numbers
+#### Numbers
 Typical types
 ```
 num := 3          // int
@@ -98,28 +98,28 @@ Other types
 var u uint = 7        // uint (unsigned)
 var p float32 = 22.7  // 32-bit float
 ```
-##### Type conversions
+#### Type conversions
 ```
 i := 2
 f := float64(i)
 u := uint(i)
 ```
-##### 
+####
 ```
 // var numbers [5]int
 numbers := [...]int{0, 0, 0, 0, 0}
 ```
 Arrays have a fixed size.
 
-##### Slices
+#### Slices
 ```
 slice := []int{2, 3, 4}
 slice := []byte("Hello")
 ```
 Slices have a dynamic size, unlike arrays.
 
-#### Flow control
-##### Conditional
+### Flow control
+#### Conditional
 ```
 if day == "sunday" || day == "saturday" {
   rest()
@@ -129,7 +129,7 @@ if day == "sunday" || day == "saturday" {
   work()
 }
 ```
-##### Statements in if
+#### Statements in if
 ```
 if _, err := doThing(); err != nil {
   fmt.Println("Uh oh")
@@ -137,7 +137,7 @@ if _, err := doThing(); err != nil {
 ```
 A condition in an if statement can be preceded with a statement before a ;. Variables declared by the statement are only in scope until the end of the if.
 
-##### Switch
+#### Switch
 ```
 switch day {
   case "sunday":
@@ -151,20 +151,20 @@ switch day {
     work()
 }
 ```
-##### For loop
+#### For loop
 ```
 for count := 0; count <= 10; count++ {
   fmt.Println("My counter is at", count)
 }
 ```
-##### For-Range loop
+#### For-Range loop
 ```
 entry := []string{"Jack","John","Jones"}
 for i, val := range entry {
   fmt.Printf("At position %d, the character %s is present\n", i, val)
 }
 ```
-##### While loop
+#### While loop
 ```
 n := 0
 x := 42
@@ -172,8 +172,8 @@ for n != x {
   n := guess()
 }
 ```
-#### Functions
-##### Lambdas
+### Functions
+#### Lambdas
 ```
 myfunc := func() bool {
   return x > 10000
@@ -181,14 +181,14 @@ myfunc := func() bool {
 ```
 Functions are first class objects.
 
-##### Multiple return types
+#### Multiple return types
 ```
 a, b := getMessage()
 func getMessage() (a string, b string) {
   return "Hello", "World"
 }
 ```
-##### Named return values
+#### Named return values
 ```
 func split(sum int) (x, y int) {
   x = sum * 4 / 9
@@ -199,8 +199,8 @@ func split(sum int) (x, y int) {
 
 By defining the return value names in the signature, a return (no args) will return variables with those names.
 
-#### Packages
-##### Importing
+### Packages
+#### Importing
 ```
 import "fmt"
 import "math/rand"
@@ -211,7 +211,7 @@ import (
 ```
 Both are the same.
 
-##### Aliases
+#### Aliases
 ```
 import r "math/rand"
  
@@ -223,12 +223,12 @@ func Hello () {
 ```
 Exported names begin with capital letters.
 
-##### Packages
+#### Packages
 package hello
 Every package file has to start with package.
 
-#### Concurrency
-##### Goroutines
+### Concurrency
+#### Goroutines
 ```
 func main() {
   // A "channel"
@@ -252,7 +252,7 @@ func push(name string, ch chan string) {
 ```
 Channels are concurrency-safe communication objects, used in goroutines.
 
-##### Buffered channels
+#### Buffered channels
 ```
 ch := make(chan int, 2)
 ch <- 1
@@ -264,7 +264,7 @@ ch <- 3
  
 Buffered channels limit the amount of messages it can keep.
 
-##### Closing channels
+#### Closing channels
 Closes a channel
 ```
 ch <- 1
@@ -272,7 +272,7 @@ ch <- 2
 ch <- 3
 close(ch)
 ``` 
-##### Iterates across a channel until its closed
+#### Iterates across a channel until its closed
 ```
 for i := range ch {
   ···
@@ -306,8 +306,8 @@ func doOperation(item string) {
 ```
 A WaitGroup waits for a collection of goroutines to finish. The main goroutine calls Add to set the number of goroutines to wait for. The goroutine calls wg.Done() when it finishes. See: WaitGroup
 
-#### Error control
-##### Defer
+### Error control
+#### Defer
 ```
 func main() {
   defer fmt.Println("Done")
@@ -316,7 +316,7 @@ func main() {
 ```
 Defers running a function until the surrounding function returns. The arguments are evaluated immediately, but the function call is not ran until later.
 
-##### Deferring functions
+#### Deferring functions
 ```
 func main() {
   defer func() {
@@ -338,8 +338,8 @@ func main() {
 ``` 
 The defer func uses current value of d, unless we use a pointer to get final value at end of main.
 
-#### Structs
-##### Defining
+### Structs
+#### Defining
 ```
 type Vertex struct {
   X int
@@ -353,7 +353,7 @@ func main() {
 }
 ```
 
-##### Literals
+#### Literals
 ```
 v := Vertex{X: 1, Y: 2}
 // Field names can be omitted
@@ -363,15 +363,15 @@ v := Vertex{X: 1}
 ```
 You can also put field names.
 
-##### Pointers to structs
+#### Pointers to structs
 ```
 v := &Vertex{1, 2}
 v.X = 2
 ```
 Doing v.X is the same as doing (*v).X, when v is a pointer.
 
-#### Methods
-##### Receivers
+### Methods
+#### Receivers
 ```
 type Vertex struct {
   X, Y float64
@@ -385,7 +385,7 @@ v.Abs()
 ```
 There are no classes, but you can define functions with receivers.
 
-##### Mutation
+#### Mutation
 ```
 func (v *Vertex) Scale(f float64) {
   v.X = v.X * f
@@ -398,15 +398,15 @@ v.Scale(0.5)
 // `v` is updated
 By defining your receiver as a pointer (*Vertex), you can do mutations.
 
-#### Interfaces
-##### A basic interface
+### Interfaces
+#### A basic interface
 ```
 type Shape interface {
   Area() float64
   Perimeter() float64
 }
 ```
-##### Struct
+#### Struct
 ```
 type Rectangle struct {
   Length, Width float64
@@ -414,7 +414,7 @@ type Rectangle struct {
 ```
 Struct Rectangle implicitly implements interface Shape by implementing all of its methods.
 
-##### Methods
+#### Methods
 ```
 func (r Rectangle) Area() float64 {
   return r.Length * r.Width
@@ -426,7 +426,7 @@ func (r Rectangle) Perimeter() float64 {
 ```
 The methods defined in Shape are implemented in Rectangle.
 
-##### Interface example
+#### Interface example
 ```
 func main() {
   var r Shape = Rectangle{Length: 3, Width: 4}
@@ -434,13 +434,13 @@ func main() {
 }
 ```
 
-### Useful Links
-*[A tour of Go](https://tour.golang.org)
-*[Golang wiki](https://github.com/golang/go/wiki)
-*[Effective Go](https://golang.org/doc/effective_go.html)
-*[Go by Example](https://gobyexample.com)
-*[Awesome Go](https://awesome-go.com)
-*[JustForFunc Youtube](yhttps://www.youtube.com/channel/UC_BzFbxG2za3bp5NRRRXJSw)
-*[Style Guide](https://github.com/golang/go/wiki/CodeReviewComments)
-*[Edgecast Go Style](https://gitlab.edgecastcdn.net/edgecast/docs/developer-guide/-/blob/master/style/go/go.md)
+## Useful Links
+* [A tour of Go](https://tour.golang.org)
+* [Golang wiki](https://github.com/golang/go/wiki)
+* [Effective Go](https://golang.org/doc/effective_go.html)
+* [Go by Example](https://gobyexample.com)
+* [Awesome Go](https://awesome-go.com)
+* [JustForFunc Youtube](yhttps://www.youtube.com/channel/UC_BzFbxG2za3bp5NRRRXJSw)
+* [Style Guide](https://github.com/golang/go/wiki/CodeReviewComments)
+* [Edgecast Go Style](https://gitlab.edgecastcdn.net/edgecast/docs/developer-guide/-/blob/master/style/go/go.md)
 
