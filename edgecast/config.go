@@ -38,9 +38,6 @@ type SDKConfig struct {
 
 	// The User Agent for outgoing HTTP requests
 	UserAgent string
-
-	// Determines whether failed operations should be retried
-	DisableRetry bool
 }
 
 func NewSDKConfig(
@@ -59,7 +56,6 @@ func NewSDKConfig(
 		APIToken:         apiToken,
 		IDSCredentials:   idsCredentials,
 		UserAgent:        getDefaultUserAgent(),
-		DisableRetry:     false,
 	}
 }
 
