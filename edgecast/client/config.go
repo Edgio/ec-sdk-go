@@ -1,9 +1,11 @@
-// Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
+// Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license.
+// See LICENSE file in project root for terms.
 
 package client
 
 import (
 	"net/url"
+	"time"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
@@ -21,4 +23,10 @@ type ClientConfig struct {
 	UserAgent string
 
 	Logger logging.Logger
+
+	RetryWaitMin *time.Duration
+
+	RetryWaitMax *time.Duration
+
+	RetryMax *int
 }

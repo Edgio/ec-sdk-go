@@ -1,4 +1,5 @@
-// Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
+// Copyright Verizon Media, Licensed under the terms of the Apache 2.0 license.
+// See LICENSE file in project root for terms.
 
 package edgecast
 
@@ -37,10 +38,15 @@ type SDKConfig struct {
 
 	// The User Agent for outgoing HTTP requests
 	UserAgent string
+
+	// Determines whether failed operations should be retried
+	DisableRetry bool
 }
 
-func NewSDKConfig(apiToken string, idsCredentials auth.OAuth2Credentials) SDKConfig {
-
+func NewSDKConfig(
+	apiToken string,
+	idsCredentials auth.OAuth2Credentials,
+) SDKConfig {
 	baseAPIURL, _ := url.Parse(defaultBaseAPIURL)
 	baseAPIURLLegacy, _ := url.Parse(defaultBaseAPIURLLegacy)
 	baseIDSURL, _ := url.Parse(defaultBaseIDSURL)
@@ -53,6 +59,7 @@ func NewSDKConfig(apiToken string, idsCredentials auth.OAuth2Credentials) SDKCon
 		APIToken:         apiToken,
 		IDSCredentials:   idsCredentials,
 		UserAgent:        getDefaultUserAgent(),
+		DisableRetry:     false,
 	}
 }
 
