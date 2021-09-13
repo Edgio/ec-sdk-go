@@ -174,7 +174,7 @@ type Scope struct {
 		this Security Application Manager configuration and the enforcement
 		action that will be applied to rate limited requests.
 	*/
-	Limits *[]Limit `json:"limits"`
+	Limits *[]Limit `json:"limits,omitempty"`
 
 	/*
 		Describes a URL match condition.
@@ -185,7 +185,7 @@ type Scope struct {
 		Describe the type of action that will take place when
 		the access rule defined within the ACLAuditID property is violated.
 	*/
-	ACLAuditAction *AuditAction `json:"acl_audit_action"`
+	ACLAuditAction *AuditAction `json:"acl_audit_action,omitempty"`
 
 	/*
 		Indicates the system-defined ID for the access rule that will
@@ -199,7 +199,7 @@ type Scope struct {
 		Describes the type of action that will take place
 		when the access rule defined within the ACLProdID property is violated.
 	*/
-	ACLProdAction *ProdAction `json:"acl_prod_action"`
+	ACLProdAction *ProdAction `json:"acl_prod_action,omitempty"`
 
 	/*
 		Indicates the system-defined ID for the access rule that will
@@ -219,13 +219,13 @@ type Scope struct {
 		Describes the type of action that will take place
 		when the bots rule defined within the BotsProdID property is violated.
 	*/
-	BotsProdAction *ProdAction `json:"bots_prod_action"`
+	BotsProdAction *ProdAction `json:"bots_prod_action,omitempty"`
 
 	/*
 		Describes the type of action that will take place
 		when the managed rule defined within the ProfileAuditID property is violated.
 	*/
-	ProfileAuditAction *AuditAction `json:"profile_audit_action"`
+	ProfileAuditAction *AuditAction `json:"profile_audit_action,omitempty"`
 
 	/*
 		Indicates the system-defined ID for the managed rule that will
@@ -239,7 +239,7 @@ type Scope struct {
 		Describes the type of action that will take place
 		when the managed rule defined within the ProfileProdID property is violated.
 	*/
-	ProfileProdAction *ProdAction `json:"profile_prod_action"`
+	ProfileProdAction *ProdAction `json:"profile_prod_action,omitempty"`
 
 	/*
 		Indicates the system-defined ID for the managed rule that will
@@ -253,7 +253,7 @@ type Scope struct {
 		Describes the type of action that will take place
 		when the custom rule set defined within the RuleAuditID property is violated.
 	*/
-	RuleAuditAction *AuditAction `json:"rules_audit_action"`
+	RuleAuditAction *AuditAction `json:"rules_audit_action,omitempty"`
 
 	/*
 		Indicates the system-defined ID for the custom rule set that will
@@ -267,7 +267,7 @@ type Scope struct {
 		Describes the type of action that will take place
 		when the custom rule set defined within the RuleProdID property is violated.
 	*/
-	RuleProdAction *ProdAction `json:"rules_prod_action"`
+	RuleProdAction *ProdAction `json:"rules_prod_action,omitempty"`
 
 	/*
 		Indicates the system-defined ID for the custom rule set that will

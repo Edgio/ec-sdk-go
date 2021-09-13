@@ -1,4 +1,5 @@
-// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
+// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license.
+// See LICENSE file in project root for terms.
 
 package edgecast
 
@@ -39,8 +40,10 @@ type SDKConfig struct {
 	UserAgent string
 }
 
-func NewSDKConfig(apiToken string, idsCredentials auth.OAuth2Credentials) SDKConfig {
-
+func NewSDKConfig(
+	apiToken string,
+	idsCredentials auth.OAuth2Credentials,
+) SDKConfig {
 	baseAPIURL, _ := url.Parse(defaultBaseAPIURL)
 	baseAPIURLLegacy, _ := url.Parse(defaultBaseAPIURLLegacy)
 	baseIDSURL, _ := url.Parse(defaultBaseIDSURL)
