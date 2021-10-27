@@ -49,7 +49,7 @@ type Directive struct {
 // Defines a custom rule
 type SecRule struct {
 
-	// Determines whether the string identified in a variable object will ne
+	// Determines whether the string identified in a variable object will be
 	// transformed and the metadata that will be assigned to malicious traffic.
 	Action Action `json:"action"`
 
