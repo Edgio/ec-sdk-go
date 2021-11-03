@@ -322,7 +322,7 @@ type AuditAction struct {
 	Name string `json:"name,omitempty"`
 
 	// Returns ALERT. This indicates that malicious traffic will be audited.
-	Type string `json:"type"`
+	Type string `json:"enf_type"`
 }
 
 /*
