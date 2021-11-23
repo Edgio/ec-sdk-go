@@ -1,4 +1,5 @@
-// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc. Licensed under the terms of the Apache 2.0 license.
+// See LICENSE file in project root for terms.
 
 package waf
 
@@ -125,7 +126,7 @@ type Scopes struct {
 		Syntax:
 			YYYY-MM-DDThh:mm:ss:ffffffZ
 
-		Learn more: https://dev.vdms.com/cdn/api/Content/References/Report_Date_Time_Format.htm
+		Learn more: https://developer.edgecast.com/cdn/api/Content/References/Report_Date_Time_Format.htm
 	*/
 	LastModifiedDate string `json:"last_modified_date,omitempty"`
 
