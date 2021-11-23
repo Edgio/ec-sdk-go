@@ -19,21 +19,24 @@ import (
 //
 // Usage:
 // go run custom_rule_update.go -api-token "<api-token>"
-// -file-path "waf_custom_rule.json" -ID "rule ID" -account-number "account number"
+// -file-path "waf_custom_rule.json" -ID "custom rule ID"
+// -account-number "account number"
 func main() {
 	if len(os.Args) < 4 {
-		fmt.Println("please specify api-token, file path, account-number, rule ID")
+		fmt.Println("please specify api-token, file path, account-number, ruleID")
 		return
 	}
 
 	apiToken := flag.String("api-token", "", "API Token provided to you")
-	filePath := flag.String("file-path", "", "File containing the custom rule set in json format")
+	filePath := flag.String("file-path",
+		"",
+		"File containing the custom rule set in json format",
+	)
 	ID := flag.String("ID", "", "Rule ID")
 	accountNumber := flag.String("account-number", "", "Customer hex id.")
 	flag.Parse()
 
 	jsonFile, err := os.Open(*filePath)
-
 	if err != nil {
 		fmt.Printf("Error reading json file: %+v\n", err)
 		return
@@ -42,14 +45,12 @@ func main() {
 	defer jsonFile.Close()
 
 	bytes, err := ioutil.ReadAll(jsonFile)
-
 	if err != nil {
 		fmt.Printf("Error reading json file: %+v\n", err)
 		return
 	}
 
-	var rule waf.CustomRuleSetDetail
-
+	var rule waf.UpdateCustomRuleSetRequest
 	err = json.Unmarshal(bytes, &rule)
 
 	if err != nil {
@@ -68,7 +69,7 @@ func main() {
 		return
 	}
 
-	resp, err := wafService.UpdateCustomRuleSet(rule, *accountNumber, *ID)
+	resp, err := wafService.UpdateCustomRuleSet(*accountNumber, *ID, rule)
 
 	if err != nil {
 		fmt.Println("failed", err)
