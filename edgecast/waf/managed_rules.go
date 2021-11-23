@@ -46,7 +46,7 @@ type ManagedRule struct {
 	GeneralSettings GeneralSettings `json:"general_settings"`
 
 	// Contains a list of policies that have been enabled on this managed rule.
-	// Available policies https://dev.edgecast.com/cdn/api/Content/Media_Management/WAF/Get-Available-Policies.htm
+	// Available policies https://developer.edgecast.com/cdn/api/Content/Media_Management/WAF/Get-Available-Policies.htm
 	Policies []string `json:"policies"`
 
 	// Defines one or more targets that will be ignored and/or replaced. A maximum of 25 target configurations may be created.

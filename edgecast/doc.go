@@ -6,6 +6,6 @@
 
 	For more information about EdgeCast, refer to: https://docs.edgecast.com/
 
-	For API documentation, refer to: https://dev.edgecast.com/cdn/api/index.html
+	For API documentation, refer to: https://developer.edgecast.com/cdn/api/index.html
 */
 package edgecast

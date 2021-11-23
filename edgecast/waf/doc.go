@@ -13,6 +13,6 @@
 
 	For more information about WAF, refer to: https://docs.edgecast.com/cdn/index.html#HTTP_and_HTTPS_Data_Delivery/WAF/Introduction.htm
 
-	For API documentation, refer to: https://dev.edgecast.com/cdn/api/index.html#Media_Management/Web-Security/Web-Security.htm
+	For API documentation, refer to: https://developer.edgecast.com/cdn/api/index.html#Media_Management/Web-Security/Web-Security.htm
 */
 package waf
