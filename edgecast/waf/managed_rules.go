@@ -1,4 +1,5 @@
-// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license. See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
+// See LICENSE file in project root for terms.
 
 package waf
 
@@ -45,7 +46,7 @@ type ManagedRule struct {
 	GeneralSettings GeneralSettings `json:"general_settings"`
 
 	// Contains a list of policies that have been enabled on this managed rule.
-	// Available policies https://dev.vdms.com/cdn/api/Content/Media_Management/WAF/Get-Available-Policies.htm
+	// Available policies https://developer.edgecast.com/cdn/api/Content/Media_Management/WAF/Get-Available-Policies.htm
 	Policies []string `json:"policies"`
 
 	// Defines one or more targets that will be ignored and/or replaced. A maximum of 25 target configurations may be created.
@@ -122,7 +123,7 @@ type GeneralSettings struct {
 	MaxNumArgs int `json:"max_num_args"`
 
 	// Indicates the balance between the level of protection and false positives. Valid values are: 1 | 2 | 3 | 4
-	// Learn more at https://docs.vdms.com/cdn/index.html#Web-Security/Managed-Rules.htm#RuleSet
+	// Learn more at https://docs.edgecast.com/cdn/index.html#Web-Security/Managed-Rules.htm#RuleSet
 	ParanoiaLevel int `json:"paranoia_level"`
 
 	// Indicates whether WAF will inspect a POST request body.
