@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/collections"
@@ -84,6 +85,82 @@ func (c Client) BuildRequest(
 	}
 
 	absoluteURL := c.Config.BaseAPIURL.ResolveReference(relativeURL)
+
+	var payload interface{}
+
+	if body != nil {
+		switch b := body.(type) {
+		case string:
+			payload = []byte(b)
+		default:
+			buf := new(bytes.Buffer)
+			err := json.NewEncoder(buf).Encode(body)
+			if err != nil {
+				return nil, err
+			}
+			logMsg := jsonutil.CreateRequestBodyLogMessage(
+				method,
+				absoluteURL.String(),
+				body)
+			c.Config.Logger.Debug(logMsg)
+			payload = buf
+
+		}
+	}
+
+	req, err := retryablehttp.NewRequest(method, absoluteURL.String(), payload)
+
+	if err != nil {
+		return nil, fmt.Errorf("BuildRequest: NewRequest: %v", err)
+	}
+
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	authHeader, err := c.Config.AuthProvider.GetAuthorizationHeader()
+
+	if err != nil {
+		return nil,
+			fmt.Errorf("BuildRequest: Failed to get authorization: %v", err)
+	}
+
+	req.Header.Set("Authorization", authHeader)
+	req.Header.Set("User-Agent", c.Config.UserAgent)
+
+	return req, nil
+}
+
+// BuildRequest creates a new Request for the Edgecast API,
+// adding appropriate headers
+func (c Client) PrepareRequest(
+	method, path string,
+	body interface{},
+	queryParams map[string]string,
+	pathParams map[string]string,
+) (*retryablehttp.Request, error) {
+
+	// Adding Path Params
+	for k, v := range pathParams {
+		path = strings.Replace(path, "{"+k+"}", fmt.Sprintf("%v", v), -1)
+	}
+
+	relativeURL, err := url.Parse(path)
+	if err != nil {
+		return nil, fmt.Errorf("Client.BuildRequest: url.Parse: %v", err)
+	}
+
+	absoluteURL := c.Config.BaseAPIURL.ResolveReference(relativeURL)
+
+	// Adding Query Param
+	query := absoluteURL.Query()
+	for k, v := range queryParams {
+		query.Add(k, v)
+	}
+	// Encode the parameters.
+	absoluteURL.RawQuery = query.Encode()
 
 	var payload interface{}
 
