@@ -22,7 +22,7 @@ Simply import the SDK and provide the API credentials provided to you. They may 
 ### Web Application Firewall (WAF)
 Our WAF service provides a layer of security between many security threats and your external web infrastructure. WAF increases security by monitoring, detecting, and preventing application layer attacks. It inspects inbound HTTP/HTTPS traffic against reactive and proactive security policies and blocks malicious activity in-band and on a real-time basis.
 
-For more information, please read the [official documentation](https://docs.vdms.com/cdn/index.html#Web-Security/Web-Security.htm%3FTocPath%3DSecurity%7CWeb%2520Application%2520Firewall%2520(WAF)%7C_____0).
+For more information, please read the [official documentation](https://docs.edgecast.com/cdn/index.html#Web-Security/Web-Security.htm%3FTocPath%3DSecurity%7CWeb%2520Application%2520Firewall%2520(WAF)%7C_____0).
 
 To use the WAF service, use the API Token provided to you.
 
@@ -45,9 +45,9 @@ import (
 ```
 
 ## Resources
-[CDN Reference Documentation](https://docs.vdms.com/cdn/index.html) - This is a useful resource for learning about EdgeCast CDN. It is a good starting point before using this SDK.
+[CDN Reference Documentation](https://docs.edgecast.com/cdn/index.html) - This is a useful resource for learning about EdgeCast CDN. It is a good starting point before using this SDK.
 
-[API Documentation](https://docs.vdms.com/cdn/index.html#REST-API.htm%3FTocPath%3D_____8) - For developers that want to interact directly with the EdgeCast CDN API, refer to this documentation. It contains all of the available operations as well as their inputs and outputs.
+[API Documentation](https://docs.edgecast.com/cdn/index.html#REST-API.htm%3FTocPath%3D_____8) - For developers that want to interact directly with the EdgeCast CDN API, refer to this documentation. It contains all of the available operations as well as their inputs and outputs.
 
 [Examples](https://github.com/EdgeCast/ec-sdk-go/tree/main/example) - Examples to get started can be found here.
 

@@ -1,4 +1,5 @@
-// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license . See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
+// See LICENSE file in project root for terms.
 
 // Package jsonutil provides helper methods for working with JSON
 package jsonutil
