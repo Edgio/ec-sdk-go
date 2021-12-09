@@ -163,13 +163,15 @@ func (c Client) PrepareRequest(
 	absoluteURL.RawQuery = query.Encode()
 
 	var payload interface{}
-	contentType := "application/json"
+	reqContentType := "application/json"
+	reqAccept := "application/json"
 
 	if body != nil {
 		switch b := body.(type) {
 		case string:
 			payload = []byte(b)
-			contentType = "text/plain; charset=utf-8"
+			reqContentType = "text/plain; charset=utf-8"
+			reqAccept = "application/json, text/html"
 		default:
 			buf := new(bytes.Buffer)
 			err := json.NewEncoder(buf).Encode(body)
@@ -193,10 +195,10 @@ func (c Client) PrepareRequest(
 	}
 
 	if body != nil {
-		req.Header.Set("Content-Type", contentType)
+		req.Header.Set("Content-Type", reqContentType)
 	}
 
-	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Accept", reqAccept)
 
 	authHeader, err := c.Config.AuthProvider.GetAuthorizationHeader()
 
