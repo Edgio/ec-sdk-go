@@ -45,7 +45,7 @@ Variables:
 *Use i, j for your indexing of a loop.
 *Use camelCasing. 
 
-Comstants:
+Constants:
 *Use mixedCaps for naming constants.
 *No underscore unless it's generated code. So, use `statusActive` instead of `STATUS_ACTIVE`.
 *All constants of same type or represent a same values of something should be named with same prefix for easier to remember.
