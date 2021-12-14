@@ -4,6 +4,8 @@ package customer
 
 import (
 	"fmt"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/urlutil"
 )
 
 // CustomerUser -
@@ -27,24 +29,31 @@ type CustomerUser struct {
 	LastLoginDate string // read-only
 }
 
+type AddCustomerUserParams struct {
+	Customer     GetCustomerOK
+	CustomerUser CustomerUser
+}
+
+func NewAddCustomerUserParams() *AddCustomerUserParams {
+	return &AddCustomerUserParams{}
+}
+
 // AddCustomerUser -
 func (svc *CustomerService) AddCustomerUser(
-	customer *GetCustomerResponse,
-	customerUser *CustomerUser,
-) (int, error) {
+	params AddCustomerUserParams) (int, error) {
 	// TODO: support custom id types, not just Hex ID ANs
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/users?idtype=an&id=%s",
-		customer.HexID,
+		params.Customer.HexID,
 	)
 
-	if customer.PartnerID == 0 {
+	if params.Customer.PartnerID == 0 {
 		return 0, fmt.Errorf("PartnerID was not provided")
 	}
 
-	relURL := FormatURLAddPartnerID(baseURL, customer.PartnerID)
+	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
 
-	request, err := svc.Client.BuildRequest("POST", relURL, customerUser)
+	request, err := svc.Client.BuildRequest("POST", relURL, params.CustomerUser)
 
 	if err != nil {
 		return 0, fmt.Errorf("AddCustomerUser: %v", err)
@@ -63,19 +72,26 @@ func (svc *CustomerService) AddCustomerUser(
 	return parsedResponse.CustomerUserID, nil
 }
 
+type GetCustomerUserParams struct {
+	Customer       GetCustomerOK
+	CustomerUserID int
+}
+
+func NewGetCustomerUserParams() *GetCustomerUserParams {
+	return &GetCustomerUserParams{}
+}
+
 // GetCustomerUser -
 func (svc *CustomerService) GetCustomerUser(
-	customer *GetCustomerResponse,
-	customerUserID int,
-) (*CustomerUser, error) {
+	params GetCustomerUserParams) (*CustomerUser, error) {
 
 	// TODO: support custom id types, not just Hex ID ANs
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/users/%d?idtype=an&id=%s",
-		customerUserID,
-		customer.HexID,
+		params.CustomerUserID,
+		params.Customer.HexID,
 	)
-	relURL := FormatURLAddPartnerID(baseURL, customer.PartnerID)
+	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
 
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
 
@@ -94,20 +110,27 @@ func (svc *CustomerService) GetCustomerUser(
 	return parsedResponse, nil
 }
 
+type UpdateCustomerUserParams struct {
+	Customer     GetCustomerOK
+	CustomerUser CustomerUser
+}
+
+func NewUpdateCustomerUserParams() *UpdateCustomerUserParams {
+	return &UpdateCustomerUserParams{}
+}
+
 // UpdateCustomerUser -
 func (svc *CustomerService) UpdateCustomerUser(
-	customer *GetCustomerResponse,
-	customerUser *CustomerUser,
-) error {
+	params UpdateCustomerUserParams) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/users/%d?idtype=an&id=%s",
-		customerUser.Id,
-		customer.HexID,
+		params.CustomerUser.Id,
+		params.Customer.HexID,
 	)
-	relURL := FormatURLAddPartnerID(baseURL, customer.PartnerID)
+	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
 
-	request, err := svc.Client.BuildRequest("PUT", relURL, customerUser)
+	request, err := svc.Client.BuildRequest("PUT", relURL, params.CustomerUser)
 
 	if err != nil {
 		return fmt.Errorf("UpdateCustomerUser: %v", err)
@@ -122,18 +145,24 @@ func (svc *CustomerService) UpdateCustomerUser(
 	return nil
 }
 
+type DeleteCustomerUserParams struct {
+	Customer     GetCustomerOK
+	CustomerUser CustomerUser
+}
+
+func NewDeleteCustomerUserParams() *DeleteCustomerUserParams {
+	return &DeleteCustomerUserParams{}
+}
+
 // DeleteCustomerUser -
-func (svc *CustomerService) DeleteCustomerUser(
-	customer *GetCustomerResponse,
-	customerUser CustomerUser,
-) error {
+func (svc *CustomerService) DeleteCustomerUser(params DeleteCustomerUserParams) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/users/%d?idtype=an&id=%s",
-		customerUser.Id,
-		customer.HexID,
+		params.CustomerUser.Id,
+		params.Customer.HexID,
 	)
-	relURL := FormatURLAddPartnerID(baseURL, customer.PartnerID)
+	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
 
 	request, err := svc.Client.BuildRequest("DELETE", relURL, nil)
 

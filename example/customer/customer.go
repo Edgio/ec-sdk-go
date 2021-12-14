@@ -19,6 +19,7 @@ func main() {
 	idsCredentials := auth.OAuth2Credentials{}
 
 	sdkConfig := edgecast.NewSDKConfig(*apiToken, idsCredentials)
+	sdkConfig.BaseAPIURLLegacy.Host = "qa-api.edgecast.com"
 	customerService, err := customer.New(sdkConfig)
 
 	if err != nil {
@@ -67,7 +68,9 @@ func main() {
 		Status:                    1,
 	}
 
-	accountNumber, err := customerService.AddCustomer(&newCustomer)
+	addParams := customer.NewAddCustomerParams()
+	addParams.Customer = newCustomer
+	accountNumber, err := customerService.AddCustomer(addParams)
 
 	if err != nil {
 		fmt.Printf("error creating customer: %v\n", err)
@@ -77,7 +80,9 @@ func main() {
 	fmt.Printf("Customer created. Account number: %s", accountNumber)
 
 	// Get Customer
-	customerResponse, err := customerService.GetCustomer(accountNumber)
+	getParams := customer.NewGetCustomerParams()
+	getParams.AccountNumber = accountNumber
+	customerResponse, err := customerService.GetCustomer(*getParams)
 
 	if err != nil {
 		fmt.Printf("error retrieving customer: %v\n", err)
@@ -91,15 +96,19 @@ func main() {
 	// Configure customer services and access
 	err = ConfigureCustomerAccount(*customerService, *customerResponse)
 	if err != nil {
-		fmt.Println("error configuring customer account")
+		fmt.Printf("Error configuring customer account: %v", err)
 		return
 	}
 
 	fmt.Printf("Customer configured. Account number: %s", accountNumber)
 
 	// Update Customer
-	customerResponse.ContactFirstName = "ContactFirstUpdated"
-	err = customerService.UpdateCustomer(customerResponse)
+	updateParams := customer.NewUpdateCustomerParams()
+	updateParams.Customer = *customerResponse
+
+	updateParams.Customer.ContactFirstName = "ContactFirstUpdated"
+
+	err = customerService.UpdateCustomer(updateParams)
 
 	if err != nil {
 		fmt.Printf("error updating customer: %v\n", err)
@@ -127,9 +136,11 @@ func main() {
 	}
 
 	// Add Customer User
+	addCustomerUserParams := customer.NewAddCustomerUserParams()
+	addCustomerUserParams.Customer = *customerResponse
+	addCustomerUserParams.CustomerUser = customerUser
 	customerUserID, err := customerService.AddCustomerUser(
-		customerResponse,
-		&customerUser,
+		*addCustomerUserParams,
 	)
 
 	if err != nil {
@@ -138,9 +149,11 @@ func main() {
 	}
 
 	// Get Customer User
+	getCustomerUserParams := customer.NewGetCustomerUserParams()
+	getCustomerUserParams.Customer = *customerResponse
+	getCustomerUserParams.CustomerUserID = customerUserID
 	customerUserResponse, err := customerService.GetCustomerUser(
-		customerResponse,
-		customerUserID,
+		*getCustomerUserParams,
 	)
 
 	if err != nil {
@@ -149,11 +162,11 @@ func main() {
 	}
 
 	// Update Customer User
-	customerUserResponse.FirstName = "CustomerUserUpdated"
-	err = customerService.UpdateCustomerUser(
-		customerResponse,
-		customerUserResponse,
-	)
+	updateCustomerUserParams := customer.NewUpdateCustomerUserParams()
+	updateCustomerUserParams.Customer = *customerResponse
+	updateCustomerUserParams.CustomerUser = *customerUserResponse
+	updateCustomerUserParams.CustomerUser.FirstName = "CustomerUserUpdated"
+	err = customerService.UpdateCustomerUser(*updateCustomerUserParams)
 
 	if err != nil {
 		fmt.Printf("error updating customer user: %v\n", err)
@@ -161,10 +174,10 @@ func main() {
 	}
 
 	// Delete Customer User
-	err = customerService.DeleteCustomerUser(
-		customerResponse,
-		*customerUserResponse,
-	)
+	deleteCustomerUserParams := customer.NewDeleteCustomerUserParams()
+	deleteCustomerUserParams.Customer = *customerResponse
+	deleteCustomerUserParams.CustomerUser = *customerUserResponse
+	err = customerService.DeleteCustomerUser(*deleteCustomerUserParams)
 
 	if err != nil {
 		fmt.Printf("error deleting customer user: %v\n", err)
@@ -172,7 +185,9 @@ func main() {
 	}
 
 	// Delete Customer
-	err = customerService.DeleteCustomer(customerResponse)
+	deleteParams := customer.NewDeleteCustomerParams()
+	deleteParams.Customer = *customerResponse
+	err = customerService.DeleteCustomer(deleteParams)
 
 	if err != nil {
 		fmt.Printf("error deleting customer: %v\n", err)
@@ -184,11 +199,15 @@ func main() {
 
 func ConfigureCustomerAccount(
 	customerService customer.CustomerService,
-	customer customer.GetCustomerResponse,
+	customerResponse customer.GetCustomerOK,
 ) error {
 
 	// Get customers available services
-	services, err := customerService.GetCustomerServices(customer.HexID)
+	getCustomerServicesParams := customer.NewGetCustomerServicesParams()
+	getCustomerServicesParams.Customer = customerResponse
+	services, err := customerService.GetCustomerServices(
+		*getCustomerServicesParams,
+	)
 
 	if err != nil {
 		fmt.Printf("error retrieving available customer services: %v\n", err)
@@ -208,8 +227,11 @@ func ConfigureCustomerAccount(
 	fmt.Printf("HTTP large service IDs identified: %v", serviceIDs)
 
 	// Update customer services
-	status := 1 // 1 Enable, 0 Disable
-	err = customerService.UpdateCustomerServices(customer.HexID, serviceIDs, status)
+	updateCustomerServicesParams := customer.NewUpdateCustomerServicesParams()
+	updateCustomerServicesParams.Customer = customerResponse
+	updateCustomerServicesParams.ServiceIDs = serviceIDs
+	updateCustomerServicesParams.Status = 1 // 1 Enable, 0 Disable
+	err = customerService.UpdateCustomerServices(*updateCustomerServicesParams)
 
 	if err != nil {
 		fmt.Printf("error updating customer services: %v\n", err)
@@ -219,7 +241,11 @@ func ConfigureCustomerAccount(
 	fmt.Printf("Enabled services with IDs: %v", serviceIDs)
 
 	// Get customer delivery region
-	deliveryRegionID, err := customerService.GetCustomerDeliveryRegion(customer.HexID)
+	getCustomerDeliveryRegionParams := customer.NewGetCustomerDeliveryRegionParams()
+	getCustomerDeliveryRegionParams.Customer = customerResponse
+	deliveryRegionID, err := customerService.GetCustomerDeliveryRegion(
+		*getCustomerDeliveryRegionParams,
+	)
 
 	if err != nil {
 		fmt.Printf("error retriving customer delivery region: %v\n", err)
@@ -229,8 +255,12 @@ func ConfigureCustomerAccount(
 	fmt.Printf("Currently enabled regionID: %v", deliveryRegionID)
 
 	// Update delivery regions
-	deliveryRegionID = 2 // North America and Europe
-	err = customerService.UpdateCustomerDeliveryRegion(customer, deliveryRegionID)
+	updateCustomerDeliveryRegionParams := customer.NewUpdateCustomerDeliveryRegionParams()
+	updateCustomerDeliveryRegionParams.Customer = customerResponse
+	updateCustomerDeliveryRegionParams.DeliveryRegionID = 2 // North America and Europe
+	err = customerService.UpdateCustomerDeliveryRegion(
+		*updateCustomerDeliveryRegionParams,
+	)
 
 	if err != nil {
 		fmt.Printf("error updating customer delivery region: %v\n", err)
@@ -240,7 +270,11 @@ func ConfigureCustomerAccount(
 	fmt.Printf("Updated customer regionID: %v", deliveryRegionID)
 
 	// Get customer access modules
-	accessModules, err := customerService.GetCustomerAccessModules(customer)
+	getCustomerAccessModulesParams := customer.NewGetCustomerAccessModulesParams()
+	getCustomerAccessModulesParams.Customer = customerResponse
+	accessModules, err := customerService.GetCustomerAccessModules(
+		*getCustomerAccessModulesParams,
+	)
 
 	if err != nil {
 		fmt.Printf("error retrieving customer access modules: %v\n", err)
@@ -252,16 +286,20 @@ func ConfigureCustomerAccount(
 
 	// Update customer access modules
 	var accessModuleIDs []int
-	var disableAttribute = 0
 	for _, accessModule := range *accessModules {
 		if accessModule.Name == "Storage" {
 			accessModuleIDs = append(accessModuleIDs, accessModule.ID)
 		}
 	}
+
+	updateCustomerAccessModuleParams := customer.NewUpdateCustomerAccessModuleParams()
+	updateCustomerAccessModuleParams.Customer = customerResponse
+	updateCustomerAccessModuleParams.AccesModuleIDs = accessModuleIDs
+	updateCustomerAccessModuleParams.Status = 0 // 0 Disable, 1 Enable
+
 	err = customerService.UpdateCustomerAccessModule(
-		customer,
-		accessModuleIDs,
-		disableAttribute)
+		*updateCustomerAccessModuleParams,
+	)
 
 	if err != nil {
 		fmt.Printf("error updating customer access modules: %v\n", err)

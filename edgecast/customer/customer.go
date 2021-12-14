@@ -5,6 +5,8 @@ package customer
 
 import (
 	"fmt"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/urlutil"
 )
 
 type Customer struct {
@@ -47,14 +49,22 @@ type Customer struct {
 	Status                    int
 }
 
+type AddCustomerParams struct {
+	Customer Customer
+}
+
+func NewAddCustomerParams() *AddCustomerParams {
+	return &AddCustomerParams{}
+}
+
 // AddCustomer -
-func (svc *CustomerService) AddCustomer(customer *Customer) (string, error) {
+func (svc *CustomerService) AddCustomer(params *AddCustomerParams) (string, error) {
 	relURL := "v2/pcc/customers"
-	if customer.PartnerUserID != 0 {
-		relURL = relURL + fmt.Sprintf("?partneruserid=%d", customer.PartnerUserID)
+	if params.Customer.PartnerUserID != 0 {
+		relURL = relURL + fmt.Sprintf("?partneruserid=%d", params.Customer.PartnerUserID)
 	}
 
-	request, err := svc.Client.BuildRequest("POST", relURL, customer)
+	request, err := svc.Client.BuildRequest("POST", relURL, params.Customer)
 
 	if err != nil {
 		return "", fmt.Errorf("AddCustomer: %v", err)
@@ -73,8 +83,8 @@ func (svc *CustomerService) AddCustomer(customer *Customer) (string, error) {
 	return parsedResponse.AccountNumber, nil
 }
 
-// GetCustomerResponse -
-type GetCustomerResponse struct {
+// GetCustomerOK -
+type GetCustomerOK struct {
 	Customer
 	ID                   int32  `json:"Id,omitempty"`
 	CustomID             string `json:"CustomId,omitempty"`
@@ -86,18 +96,26 @@ type GetCustomerResponse struct {
 	WholesaleName        string
 }
 
+type GetCustomerParams struct {
+	AccountNumber string
+}
+
+func NewGetCustomerParams() *GetCustomerParams {
+	return &GetCustomerParams{}
+}
+
 // GetCustomer retrieves a Customer's info using the Hex Account Number
 func (svc *CustomerService) GetCustomer(
-	accountNumber string,
-) (*GetCustomerResponse, error) {
-	relURL := fmt.Sprintf("v2/pcc/customers/%s", accountNumber)
+	params GetCustomerParams,
+) (*GetCustomerOK, error) {
+	relURL := fmt.Sprintf("v2/pcc/customers/%s", params.AccountNumber)
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("GetCustomer: %v", err)
 	}
 
-	parsedResponse := &GetCustomerResponse{}
+	parsedResponse := &GetCustomerOK{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
@@ -108,13 +126,21 @@ func (svc *CustomerService) GetCustomer(
 	return parsedResponse, nil
 }
 
-// UpdateCustomer -
-func (svc *CustomerService) UpdateCustomer(customer *GetCustomerResponse) error {
-	// TODO: support custom ids for accounts
-	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", customer.HexID)
-	relURL := FormatURLAddPartnerID(baseURL, customer.PartnerID)
+type UpdateCustomerParams struct {
+	Customer GetCustomerOK
+}
 
-	request, err := svc.Client.BuildRequest("PUT", relURL, customer)
+func NewUpdateCustomerParams() *UpdateCustomerParams {
+	return &UpdateCustomerParams{}
+}
+
+// UpdateCustomer -
+func (svc *CustomerService) UpdateCustomer(params *UpdateCustomerParams) error {
+	// TODO: support custom ids for accounts
+	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", params.Customer.HexID)
+	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
+
+	request, err := svc.Client.BuildRequest("PUT", relURL, params.Customer)
 
 	if err != nil {
 		return fmt.Errorf("UpdateCustomer: %v", err)
@@ -129,11 +155,19 @@ func (svc *CustomerService) UpdateCustomer(customer *GetCustomerResponse) error 
 	return nil
 }
 
+type DeleteCustomerParams struct {
+	Customer GetCustomerOK
+}
+
+func NewDeleteCustomerParams() *DeleteCustomerParams {
+	return &DeleteCustomerParams{}
+}
+
 // DeleteCustomer -
-func (svc *CustomerService) DeleteCustomer(customer *GetCustomerResponse) error {
+func (svc *CustomerService) DeleteCustomer(params *DeleteCustomerParams) error {
 	// TODO: support custom ids for accounts
-	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", customer.HexID)
-	relURL := FormatURLAddPartnerID(baseURL, customer.PartnerID)
+	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", params.Customer.HexID)
+	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
 
 	request, err := svc.Client.BuildRequest("DELETE", relURL, nil)
 
@@ -182,12 +216,20 @@ func (svc *CustomerService) GetAvailableCustomerServices() (*[]Service, error) {
 	return &services, nil
 }
 
+type GetCustomerServicesParams struct {
+	Customer GetCustomerOK
+}
+
+func NewGetCustomerServicesParams() *GetCustomerServicesParams {
+	return &GetCustomerServicesParams{}
+}
+
 // GetCustomerServices gets the list of services available to a customer and
 // whether each is active for the customer
 func (svc *CustomerService) GetCustomerServices(
-	accountNumber string,
+	params GetCustomerServicesParams,
 ) (*[]Service, error) {
-	relURL := fmt.Sprintf("v2/pcc/customers/%s/services", accountNumber)
+	relURL := fmt.Sprintf("v2/pcc/customers/%s/services", params.Customer.HexID)
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
 
 	if err != nil {
@@ -205,20 +247,27 @@ func (svc *CustomerService) GetCustomerServices(
 	return &services, nil
 }
 
+type UpdateCustomerServicesParams struct {
+	Customer   GetCustomerOK
+	ServiceIDs []int
+	Status     int
+}
+
+func NewUpdateCustomerServicesParams() *UpdateCustomerServicesParams {
+	return &UpdateCustomerServicesParams{}
+}
+
 // UpdateCustomerServices -
 func (svc *CustomerService) UpdateCustomerServices(
-	accountNumber string,
-	serviceIDs []int,
-	status int,
-) error {
-	for _, serviceID := range serviceIDs {
+	params UpdateCustomerServicesParams) error {
+	for _, serviceID := range params.ServiceIDs {
 		relUrl := fmt.Sprintf("v2/pcc/customers/%s/services/%v",
-			accountNumber, serviceID)
+			params.Customer.HexID, serviceID)
 
 		body := &struct {
 			Status int
 		}{
-			Status: status,
+			Status: params.Status,
 		}
 
 		request, err := svc.Client.BuildRequest("PUT", relUrl, body)
@@ -248,12 +297,23 @@ func (svc *CustomerService) UpdateCustomerServices(
 	return nil
 }
 
+type GetCustomerDeliveryRegionParams struct {
+	Customer GetCustomerOK
+}
+
+func NewGetCustomerDeliveryRegionParams() *GetCustomerDeliveryRegionParams {
+	return &GetCustomerDeliveryRegionParams{}
+}
+
 // GetCustomerDeliveryRegion gets the current active delivery region set for
 // the customer
 func (svc *CustomerService) GetCustomerDeliveryRegion(
-	accountNumber string,
+	params GetCustomerDeliveryRegionParams,
 ) (int, error) {
-	relURL := fmt.Sprintf("v2/pcc/customers/%s/deliveryregions", accountNumber)
+	relURL := fmt.Sprintf(
+		"v2/pcc/customers/%s/deliveryregions",
+		params.Customer.HexID,
+	)
 
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
 
@@ -276,22 +336,29 @@ func (svc *CustomerService) GetCustomerDeliveryRegion(
 	return parsedResponse.DeliveryRegionID, nil
 }
 
+type UpdateCustomerDeliveryRegionParams struct {
+	Customer         GetCustomerOK
+	DeliveryRegionID int
+}
+
+func NewUpdateCustomerDeliveryRegionParams() *UpdateCustomerDeliveryRegionParams {
+	return &UpdateCustomerDeliveryRegionParams{}
+}
+
 // UpdateCustomerDeliveryRegion -
 func (svc *CustomerService) UpdateCustomerDeliveryRegion(
-	customer GetCustomerResponse,
-	deliveryRegionID int,
-) error {
+	params UpdateCustomerDeliveryRegionParams) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/deliveryregions?idtype=an&id=%s",
-		customer.HexID,
+		params.Customer.HexID,
 	)
-	relURL := FormatURLAddPartnerID(baseURL, customer.PartnerID)
+	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
 
 	body := &struct {
 		ID int `json:"Id"`
 	}{
-		ID: deliveryRegionID,
+		ID: params.DeliveryRegionID,
 	}
 
 	request, err := svc.Client.BuildRequest("PUT", relURL, body)
@@ -332,25 +399,32 @@ func (svc *CustomerService) GetCustomerDomainTypes() ([]DomainType, error) {
 	return *parsedResponse, nil
 }
 
+type UpdateCustomerDomainURLParams struct {
+	Customer   GetCustomerOK
+	DomainType int
+	Url        string
+}
+
+func NewUpdateCustomerDomainURLParams() *UpdateCustomerDomainURLParams {
+	return &UpdateCustomerDomainURLParams{}
+}
+
 // UpdateCustomerDomainURL -
 func (svc *CustomerService) UpdateCustomerDomainURL(
-	customer GetCustomerResponse,
-	domainType int,
-	url string,
-) error {
+	params UpdateCustomerDomainURLParams) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/domains/%d/url?idtype=an&id=%s",
-		domainType,
-		customer.HexID,
+		params.DomainType,
+		params.Customer.HexID,
 	)
 
-	relURL := FormatURLAddPartnerID(baseURL, customer.PartnerID)
+	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
 
 	body := &struct {
 		URL string `json:"Url"`
 	}{
-		URL: url,
+		URL: params.Url,
 	}
 
 	request, err := svc.Client.BuildRequest("PUT", relURL, body)
@@ -375,12 +449,22 @@ type AccessModule struct {
 	ParentID *int
 }
 
+type GetCustomerAccessModulesParams struct {
+	Customer GetCustomerOK
+}
+
+func NewGetCustomerAccessModulesParams() *GetCustomerAccessModulesParams {
+	return &GetCustomerAccessModulesParams{}
+}
+
 // GetCustomerAccessModules retrieves a list of access modules the customer has
 // access to enable
 func (svc *CustomerService) GetCustomerAccessModules(
-	customer GetCustomerResponse,
-) (*[]AccessModule, error) {
-	relURL := fmt.Sprintf("v2/pcc/customers/%s/accessmodules", customer.HexID)
+	params GetCustomerAccessModulesParams) (*[]AccessModule, error) {
+	relURL := fmt.Sprintf(
+		"v2/pcc/customers/%s/accessmodules",
+		params.Customer.HexID,
+	)
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
 
 	if err != nil {
@@ -398,23 +482,30 @@ func (svc *CustomerService) GetCustomerAccessModules(
 	return &accessModules, nil
 }
 
+type UpdateCustomerAccessModuleParams struct {
+	Customer       GetCustomerOK
+	AccesModuleIDs []int
+	Status         int
+}
+
+func NewUpdateCustomerAccessModuleParams() *UpdateCustomerAccessModuleParams {
+	return &UpdateCustomerAccessModuleParams{}
+}
+
 // UpdateCustomerAccessModule -
 func (svc *CustomerService) UpdateCustomerAccessModule(
-	customer GetCustomerResponse,
-	accessModuleIDs []int,
-	status int,
-) error {
+	params UpdateCustomerAccessModuleParams) error {
 	// TODO: support custom ids for accounts
-	for _, accessModuleID := range accessModuleIDs {
+	for _, accessModuleID := range params.AccesModuleIDs {
 		baseURL := fmt.Sprintf(
 			"v2/pcc/customers/accessmodules/%d/status?idtype=an&id=%s",
-			accessModuleID, customer.HexID)
-		relURL := FormatURLAddPartnerID(baseURL, customer.PartnerID)
+			accessModuleID, params.Customer.HexID)
+		relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
 
 		body := &struct {
 			Status int8
 		}{
-			Status: int8(status)}
+			Status: int8(params.Status)}
 
 		request, err := svc.Client.BuildRequest("PUT", relURL, body)
 
@@ -429,14 +520,4 @@ func (svc *CustomerService) UpdateCustomerAccessModule(
 		}
 	}
 	return nil
-}
-
-// FormatURLAddPartnerID is a utility function for adding the optional
-// partner ID query string param
-func FormatURLAddPartnerID(originalURL string, partnerID int) string {
-	if partnerID != 0 {
-		return originalURL + fmt.Sprintf("&partnerid=%d", partnerID)
-	}
-
-	return originalURL
 }
