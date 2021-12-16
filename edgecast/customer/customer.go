@@ -9,7 +9,8 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/urlutil"
 )
 
-// AddCustomer -
+// AddCustomer creates a new Customer under the Partner associated with the API
+// token used for this request.
 func (svc *CustomerService) AddCustomer(params *AddCustomerParams) (string, error) {
 	relURL := "v2/pcc/customers"
 	if params.Customer.PartnerUserID != 0 {
@@ -35,7 +36,8 @@ func (svc *CustomerService) AddCustomer(params *AddCustomerParams) (string, erro
 	return parsedResponse.AccountNumber, nil
 }
 
-// GetCustomer retrieves a Customer's info using the Hex Account Number
+// GetCustomer retrieves a Customer's information for the provided
+// Hex Account Number
 func (svc *CustomerService) GetCustomer(
 	params GetCustomerParams,
 ) (*GetCustomer, error) {
@@ -57,7 +59,7 @@ func (svc *CustomerService) GetCustomer(
 	return parsedResponse, nil
 }
 
-// UpdateCustomer -
+// UpdateCustomer updates a Customer's information
 func (svc *CustomerService) UpdateCustomer(params *UpdateCustomerParams) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", params.Customer.HexID)
@@ -78,7 +80,7 @@ func (svc *CustomerService) UpdateCustomer(params *UpdateCustomerParams) error {
 	return nil
 }
 
-// DeleteCustomer -
+// DeleteCustomer deletes the provided Customer
 func (svc *CustomerService) DeleteCustomer(params *DeleteCustomerParams) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", params.Customer.HexID)
@@ -99,8 +101,8 @@ func (svc *CustomerService) DeleteCustomer(params *DeleteCustomerParams) error {
 	return nil
 }
 
-// GetAvailableCustomerServices gets all services available for a partner to
-// administor to their customers
+// GetAvailableCustomerServices retrieves all services available for a partner
+// to enable on the customers they manage
 func (svc *CustomerService) GetAvailableCustomerServices() (*[]Service, error) {
 	request, err := svc.Client.BuildRequest(
 		"GET",
@@ -123,8 +125,8 @@ func (svc *CustomerService) GetAvailableCustomerServices() (*[]Service, error) {
 	return &services, nil
 }
 
-// GetCustomerServices gets the list of services available to a customer and
-// whether each is active for the customer
+// GetCustomerServices gets the list of services available to the provided
+// customer and whether each service is enabled or disabled.
 func (svc *CustomerService) GetCustomerServices(
 	params GetCustomerServicesParams,
 ) (*[]Service, error) {
@@ -146,7 +148,8 @@ func (svc *CustomerService) GetCustomerServices(
 	return &services, nil
 }
 
-// UpdateCustomerServices -
+// UpdateCustomerServices enables or disables the provided services based on the
+// status provided.
 func (svc *CustomerService) UpdateCustomerServices(
 	params UpdateCustomerServicesParams) error {
 	for _, serviceID := range params.ServiceIDs {
@@ -186,8 +189,8 @@ func (svc *CustomerService) UpdateCustomerServices(
 	return nil
 }
 
-// GetCustomerDeliveryRegion gets the current active delivery region set for
-// the customer
+// GetCustomerDeliveryRegion retrieves the current active delivery region for
+// the provided customer
 func (svc *CustomerService) GetCustomerDeliveryRegion(
 	params GetCustomerDeliveryRegionParams,
 ) (int, error) {
@@ -217,7 +220,8 @@ func (svc *CustomerService) GetCustomerDeliveryRegion(
 	return parsedResponse.DeliveryRegionID, nil
 }
 
-// UpdateCustomerDeliveryRegion -
+// UpdateCustomerDeliveryRegion changes the delivery region for the provided
+// customer
 func (svc *CustomerService) UpdateCustomerDeliveryRegion(
 	params UpdateCustomerDeliveryRegionParams) error {
 	// TODO: support custom ids for accounts
@@ -248,25 +252,26 @@ func (svc *CustomerService) UpdateCustomerDeliveryRegion(
 	return nil
 }
 
+// GetCustomerDomainTypes retrieves all available domain types
 func (svc *CustomerService) GetCustomerDomainTypes() ([]DomainType, error) {
 	relURL := "v2/pcc/customers/domaintypes"
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
 
 	if err != nil {
-		return nil, fmt.Errorf("UpdateCustomerDomainURL: %v", err)
+		return nil, fmt.Errorf("GetCustomerDomainTypes: %v", err)
 	}
 
 	parsedResponse := &[]DomainType{}
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
-		return nil, fmt.Errorf("UpdateCustomerDomainURL: %v", err)
+		return nil, fmt.Errorf("GetCustomerDomainTypes: %v", err)
 	}
 
 	return *parsedResponse, nil
 }
 
-// UpdateCustomerDomainURL -
+// UpdateCustomerDomainURL changes the domain associated with the customer CDN URLs
 func (svc *CustomerService) UpdateCustomerDomainURL(
 	params UpdateCustomerDomainURLParams) error {
 	// TODO: support custom ids for accounts
@@ -299,8 +304,8 @@ func (svc *CustomerService) UpdateCustomerDomainURL(
 	return nil
 }
 
-// GetCustomerAccessModules retrieves a list of access modules the customer has
-// access to enable
+// GetCustomerAccessModules retrieves a list of all access modules (features)
+// that may be enabled or disabled for the provided customer
 func (svc *CustomerService) GetCustomerAccessModules(
 	params GetCustomerAccessModulesParams) (*[]AccessModule, error) {
 	relURL := fmt.Sprintf(
@@ -324,7 +329,8 @@ func (svc *CustomerService) GetCustomerAccessModules(
 	return &accessModules, nil
 }
 
-// UpdateCustomerAccessModule -
+// UpdateCustomerAccessModule enables or disables the provided
+// access module (feature) for the provided customer
 func (svc *CustomerService) UpdateCustomerAccessModule(
 	params UpdateCustomerAccessModuleParams) error {
 	// TODO: support custom ids for accounts

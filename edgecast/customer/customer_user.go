@@ -8,7 +8,7 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/urlutil"
 )
 
-// AddCustomerUser -
+// AddCustomerUser creates a Customer User under the provided (parent) Customer
 func (svc *CustomerService) AddCustomerUser(
 	params AddCustomerUserParams) (int, error) {
 	// TODO: support custom id types, not just Hex ID ANs
@@ -42,7 +42,7 @@ func (svc *CustomerService) AddCustomerUser(
 	return parsedResponse.CustomerUserID, nil
 }
 
-// GetCustomerUser -
+// GetCustomerUser retrieves a Customer User
 func (svc *CustomerService) GetCustomerUser(
 	params GetCustomerUserParams) (*CustomerUser, error) {
 
@@ -71,7 +71,7 @@ func (svc *CustomerService) GetCustomerUser(
 	return parsedResponse, nil
 }
 
-// UpdateCustomerUser -
+// UpdateCustomerUser updates a Customer User
 func (svc *CustomerService) UpdateCustomerUser(
 	params UpdateCustomerUserParams) error {
 	// TODO: support custom ids for accounts
@@ -97,7 +97,7 @@ func (svc *CustomerService) UpdateCustomerUser(
 	return nil
 }
 
-// DeleteCustomerUser -
+// DeleteCustomerUser deletes a Customer User from the parent Customer account
 func (svc *CustomerService) DeleteCustomerUser(params DeleteCustomerUserParams) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
