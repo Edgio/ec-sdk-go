@@ -294,7 +294,7 @@ func ConfigureCustomerAccount(
 
 	updateCustomerAccessModuleParams := customer.NewUpdateCustomerAccessModuleParams()
 	updateCustomerAccessModuleParams.Customer = customerResponse
-	updateCustomerAccessModuleParams.AccesModuleIDs = accessModuleIDs
+	updateCustomerAccessModuleParams.AccessModuleIDs = accessModuleIDs
 	updateCustomerAccessModuleParams.Status = 0 // 0 Disable, 1 Enable
 
 	err = customerService.UpdateCustomerAccessModule(

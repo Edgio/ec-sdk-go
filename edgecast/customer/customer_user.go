@@ -8,36 +8,6 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/urlutil"
 )
 
-// CustomerUser -
-type CustomerUser struct {
-	Address1      string
-	Address2      string
-	City          string
-	State         string
-	Zip           string
-	Country       string
-	Mobile        string
-	Phone         string
-	Fax           string
-	Email         string
-	Title         string
-	FirstName     string
-	LastName      string
-	Id            int    `json:",omitempty"` // read-only
-	CustomID      string `json:"CustomId"`   // read-only
-	IsAdmin       int8   // 1 true, 0 false
-	LastLoginDate string // read-only
-}
-
-type AddCustomerUserParams struct {
-	Customer     GetCustomerOK
-	CustomerUser CustomerUser
-}
-
-func NewAddCustomerUserParams() *AddCustomerUserParams {
-	return &AddCustomerUserParams{}
-}
-
 // AddCustomerUser -
 func (svc *CustomerService) AddCustomerUser(
 	params AddCustomerUserParams) (int, error) {
@@ -72,15 +42,6 @@ func (svc *CustomerService) AddCustomerUser(
 	return parsedResponse.CustomerUserID, nil
 }
 
-type GetCustomerUserParams struct {
-	Customer       GetCustomerOK
-	CustomerUserID int
-}
-
-func NewGetCustomerUserParams() *GetCustomerUserParams {
-	return &GetCustomerUserParams{}
-}
-
 // GetCustomerUser -
 func (svc *CustomerService) GetCustomerUser(
 	params GetCustomerUserParams) (*CustomerUser, error) {
@@ -110,15 +71,6 @@ func (svc *CustomerService) GetCustomerUser(
 	return parsedResponse, nil
 }
 
-type UpdateCustomerUserParams struct {
-	Customer     GetCustomerOK
-	CustomerUser CustomerUser
-}
-
-func NewUpdateCustomerUserParams() *UpdateCustomerUserParams {
-	return &UpdateCustomerUserParams{}
-}
-
 // UpdateCustomerUser -
 func (svc *CustomerService) UpdateCustomerUser(
 	params UpdateCustomerUserParams) error {
@@ -143,15 +95,6 @@ func (svc *CustomerService) UpdateCustomerUser(
 	}
 
 	return nil
-}
-
-type DeleteCustomerUserParams struct {
-	Customer     GetCustomerOK
-	CustomerUser CustomerUser
-}
-
-func NewDeleteCustomerUserParams() *DeleteCustomerUserParams {
-	return &DeleteCustomerUserParams{}
 }
 
 // DeleteCustomerUser -

@@ -9,54 +9,6 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/urlutil"
 )
 
-type Customer struct {
-	AccountID                 string `json:"AccountId,omitempty"` // TODO: This might be completely unused. Verify
-	Address1                  string
-	Address2                  string
-	City                      string
-	State                     string
-	Zip                       string
-	Country                   string
-	BandwidthUsageLimit       int64
-	BillingAccountTag         string
-	BillingAddress1           string
-	BillingAddress2           string
-	BillingCity               string
-	BillingContactEmail       string
-	BillingContactFax         string
-	BillingContactFirstName   string
-	BillingContactLastName    string
-	BillingContactMobile      string
-	BillingContactPhone       string
-	BillingContactTitle       string
-	BillingCountry            string
-	BillingRateInfo           string
-	BillingState              string
-	BillingZip                string
-	ContactEmail              string
-	ContactFax                string
-	ContactFirstName          string
-	ContactLastName           string
-	ContactMobile             string
-	ContactPhone              string
-	ContactTitle              string
-	CompanyName               string
-	DataTransferredUsageLimit int64
-	Notes                     string
-	PartnerUserID             int // Required when providing a PCC token
-	ServiceLevelCode          string
-	Website                   string
-	Status                    int
-}
-
-type AddCustomerParams struct {
-	Customer Customer
-}
-
-func NewAddCustomerParams() *AddCustomerParams {
-	return &AddCustomerParams{}
-}
-
 // AddCustomer -
 func (svc *CustomerService) AddCustomer(params *AddCustomerParams) (string, error) {
 	relURL := "v2/pcc/customers"
@@ -83,31 +35,10 @@ func (svc *CustomerService) AddCustomer(params *AddCustomerParams) (string, erro
 	return parsedResponse.AccountNumber, nil
 }
 
-// GetCustomerOK -
-type GetCustomerOK struct {
-	Customer
-	ID                   int32  `json:"Id,omitempty"`
-	CustomID             string `json:"CustomId,omitempty"`
-	HexID                string
-	UsageLimitUpdateDate string
-	PartnerID            int `json:"PartnerId,omitempty"`
-	PartnerName          string
-	WholesaleID          int `json:"WholesaleId,omitempty"`
-	WholesaleName        string
-}
-
-type GetCustomerParams struct {
-	AccountNumber string
-}
-
-func NewGetCustomerParams() *GetCustomerParams {
-	return &GetCustomerParams{}
-}
-
 // GetCustomer retrieves a Customer's info using the Hex Account Number
 func (svc *CustomerService) GetCustomer(
 	params GetCustomerParams,
-) (*GetCustomerOK, error) {
+) (*GetCustomer, error) {
 	relURL := fmt.Sprintf("v2/pcc/customers/%s", params.AccountNumber)
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
 
@@ -115,7 +46,7 @@ func (svc *CustomerService) GetCustomer(
 		return nil, fmt.Errorf("GetCustomer: %v", err)
 	}
 
-	parsedResponse := &GetCustomerOK{}
+	parsedResponse := &GetCustomer{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
@@ -124,14 +55,6 @@ func (svc *CustomerService) GetCustomer(
 	}
 
 	return parsedResponse, nil
-}
-
-type UpdateCustomerParams struct {
-	Customer GetCustomerOK
-}
-
-func NewUpdateCustomerParams() *UpdateCustomerParams {
-	return &UpdateCustomerParams{}
 }
 
 // UpdateCustomer -
@@ -155,14 +78,6 @@ func (svc *CustomerService) UpdateCustomer(params *UpdateCustomerParams) error {
 	return nil
 }
 
-type DeleteCustomerParams struct {
-	Customer GetCustomerOK
-}
-
-func NewDeleteCustomerParams() *DeleteCustomerParams {
-	return &DeleteCustomerParams{}
-}
-
 // DeleteCustomer -
 func (svc *CustomerService) DeleteCustomer(params *DeleteCustomerParams) error {
 	// TODO: support custom ids for accounts
@@ -184,16 +99,8 @@ func (svc *CustomerService) DeleteCustomer(params *DeleteCustomerParams) error {
 	return nil
 }
 
-// Service -
-type Service struct {
-	ID       int `json:"Id,omitempty"`
-	Name     string
-	ParentID int `json:"parentId,omitempty"`
-	Status   int8
-}
-
-// GetAvailableCustomerServices gets all service information available for a
-// partner to administor to thier customers
+// GetAvailableCustomerServices gets all services available for a partner to
+// administor to their customers
 func (svc *CustomerService) GetAvailableCustomerServices() (*[]Service, error) {
 	request, err := svc.Client.BuildRequest(
 		"GET",
@@ -214,14 +121,6 @@ func (svc *CustomerService) GetAvailableCustomerServices() (*[]Service, error) {
 	}
 
 	return &services, nil
-}
-
-type GetCustomerServicesParams struct {
-	Customer GetCustomerOK
-}
-
-func NewGetCustomerServicesParams() *GetCustomerServicesParams {
-	return &GetCustomerServicesParams{}
 }
 
 // GetCustomerServices gets the list of services available to a customer and
@@ -245,16 +144,6 @@ func (svc *CustomerService) GetCustomerServices(
 	}
 
 	return &services, nil
-}
-
-type UpdateCustomerServicesParams struct {
-	Customer   GetCustomerOK
-	ServiceIDs []int
-	Status     int
-}
-
-func NewUpdateCustomerServicesParams() *UpdateCustomerServicesParams {
-	return &UpdateCustomerServicesParams{}
 }
 
 // UpdateCustomerServices -
@@ -297,14 +186,6 @@ func (svc *CustomerService) UpdateCustomerServices(
 	return nil
 }
 
-type GetCustomerDeliveryRegionParams struct {
-	Customer GetCustomerOK
-}
-
-func NewGetCustomerDeliveryRegionParams() *GetCustomerDeliveryRegionParams {
-	return &GetCustomerDeliveryRegionParams{}
-}
-
 // GetCustomerDeliveryRegion gets the current active delivery region set for
 // the customer
 func (svc *CustomerService) GetCustomerDeliveryRegion(
@@ -334,15 +215,6 @@ func (svc *CustomerService) GetCustomerDeliveryRegion(
 	}
 
 	return parsedResponse.DeliveryRegionID, nil
-}
-
-type UpdateCustomerDeliveryRegionParams struct {
-	Customer         GetCustomerOK
-	DeliveryRegionID int
-}
-
-func NewUpdateCustomerDeliveryRegionParams() *UpdateCustomerDeliveryRegionParams {
-	return &UpdateCustomerDeliveryRegionParams{}
 }
 
 // UpdateCustomerDeliveryRegion -
@@ -376,11 +248,6 @@ func (svc *CustomerService) UpdateCustomerDeliveryRegion(
 	return nil
 }
 
-type DomainType struct {
-	Id   int
-	Name string
-}
-
 func (svc *CustomerService) GetCustomerDomainTypes() ([]DomainType, error) {
 	relURL := "v2/pcc/customers/domaintypes"
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
@@ -397,16 +264,6 @@ func (svc *CustomerService) GetCustomerDomainTypes() ([]DomainType, error) {
 	}
 
 	return *parsedResponse, nil
-}
-
-type UpdateCustomerDomainURLParams struct {
-	Customer   GetCustomerOK
-	DomainType int
-	Url        string
-}
-
-func NewUpdateCustomerDomainURLParams() *UpdateCustomerDomainURLParams {
-	return &UpdateCustomerDomainURLParams{}
 }
 
 // UpdateCustomerDomainURL -
@@ -442,21 +299,6 @@ func (svc *CustomerService) UpdateCustomerDomainURL(
 	return nil
 }
 
-// AccessModule represents a feature that a customer has access to
-type AccessModule struct {
-	ID       int
-	Name     string
-	ParentID *int
-}
-
-type GetCustomerAccessModulesParams struct {
-	Customer GetCustomerOK
-}
-
-func NewGetCustomerAccessModulesParams() *GetCustomerAccessModulesParams {
-	return &GetCustomerAccessModulesParams{}
-}
-
 // GetCustomerAccessModules retrieves a list of access modules the customer has
 // access to enable
 func (svc *CustomerService) GetCustomerAccessModules(
@@ -482,21 +324,11 @@ func (svc *CustomerService) GetCustomerAccessModules(
 	return &accessModules, nil
 }
 
-type UpdateCustomerAccessModuleParams struct {
-	Customer       GetCustomerOK
-	AccesModuleIDs []int
-	Status         int
-}
-
-func NewUpdateCustomerAccessModuleParams() *UpdateCustomerAccessModuleParams {
-	return &UpdateCustomerAccessModuleParams{}
-}
-
 // UpdateCustomerAccessModule -
 func (svc *CustomerService) UpdateCustomerAccessModule(
 	params UpdateCustomerAccessModuleParams) error {
 	// TODO: support custom ids for accounts
-	for _, accessModuleID := range params.AccesModuleIDs {
+	for _, accessModuleID := range params.AccessModuleIDs {
 		baseURL := fmt.Sprintf(
 			"v2/pcc/customers/accessmodules/%d/status?idtype=an&id=%s",
 			accessModuleID, params.Customer.HexID)
