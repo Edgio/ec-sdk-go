@@ -145,37 +145,38 @@ type Customer struct {
 	Status int
 }
 
-// GetCustomer -
+// GetCustomer is used specifically when retrieving a Customer and contains
+// additional read-only properties.
 type GetCustomer struct {
 	Customer
 	// An integer that indicates a customer's ID.
-	ID int32 `json:"Id,omitempty"`
+	ID int32 `json:"Id,omitempty"` // read-only
 
 	// A string that indicates the unique custom identifier assigned to a
 	// customer. This value was assigned to the customer by your organization.
-	CustomID string `json:"CustomId,omitempty"`
+	CustomID string `json:"CustomId,omitempty"` // read-only
 
 	// A string, also referred to as Account Number, that represents the
 	// hexadecimal value of the ID
-	HexID string
+	HexID string // read-only
 
 	// A string indicating the date and time (UTC) for the last time that the
 	// usage limit was updated. Syntax: YYYY-MM-DD hh:mm:ssZ
-	UsageLimitUpdateDate string
+	UsageLimitUpdateDate string // read-only
 
 	// An integer identifying the Partner associated with this Customer
-	PartnerID int `json:"PartnerId,omitempty"`
+	PartnerID int `json:"PartnerId,omitempty"` // read-only
 
 	// A string representing the Partner name associated with this Customer
-	PartnerName string
+	PartnerName string // read-only
 
 	// An integer identifying the Wholesaler associated with Partner that is
 	// then associated with this Customer
-	WholesaleID int `json:"WholesaleId,omitempty"`
+	WholesaleID int `json:"WholesaleId,omitempty"` // read-only
 
 	// A string representing the Wholsaler name associated with Partner that is
 	// then associated with this Customer
-	WholesaleName string
+	WholesaleName string // read-only
 }
 
 // AddCustomerParams object contains the properties necessary to create a
