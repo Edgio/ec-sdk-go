@@ -44,7 +44,7 @@ func (svc *CustomerService) AddCustomerUser(
 
 // GetCustomerUser retrieves a Customer User
 func (svc *CustomerService) GetCustomerUser(
-	params GetCustomerUserParams) (*CustomerUser, error) {
+	params GetCustomerUserParams) (*GetCustomerUser, error) {
 
 	// TODO: support custom id types, not just Hex ID ANs
 	baseURL := fmt.Sprintf(
@@ -60,7 +60,7 @@ func (svc *CustomerService) GetCustomerUser(
 		return nil, fmt.Errorf("GetCustomerUser: %v", err)
 	}
 
-	parsedResponse := &CustomerUser{}
+	parsedResponse := &GetCustomerUser{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 

@@ -199,7 +199,7 @@ func main() {
 
 func ConfigureCustomerAccount(
 	customerService customer.CustomerService,
-	customerResponse customer.GetCustomerOK,
+	customerResponse customer.GetCustomer,
 ) error {
 
 	// Get customers available services
