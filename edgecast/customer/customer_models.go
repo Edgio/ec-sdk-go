@@ -28,8 +28,8 @@ type Customer struct {
 	// of the Web Services REST API (Partner) document
 	State string
 
-	// A string identifying the zip code associated with a customers's address.
-	Zip string
+	// A string identifying the ZIP code associated with a customers's address.
+	ZIP string `json:"Zip"`
 
 	// A string identifying the country associated with the customers's
 	// address. Valid values for this parameter must be an exact match to a
@@ -96,8 +96,8 @@ type Customer struct {
 	// of the Web Services REST API (Partner) document
 	BillingState string
 
-	// A string identifying the zip code associated with a customer's address.
-	BillingZip string
+	// A string identifying the ZIP code associated with a customer's address.
+	BillingZIP string `json:"BillingZip"`
 
 	// A string identifying the e-mail address associated with the customer.
 	ContactEmail string
