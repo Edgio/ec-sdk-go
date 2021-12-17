@@ -11,7 +11,9 @@ import (
 
 // AddCustomer creates a new Customer under the Partner associated with the API
 // token used for this request.
-func (svc *CustomerService) AddCustomer(params *AddCustomerParams) (string, error) {
+func (svc *CustomerService) AddCustomer(
+	params AddCustomerParams,
+) (string, error) {
 	relURL := "v2/pcc/customers"
 	if params.Customer.PartnerUserID != 0 {
 		relURL = relURL + fmt.Sprintf("?partneruserid=%d", params.Customer.PartnerUserID)
@@ -24,7 +26,7 @@ func (svc *CustomerService) AddCustomer(params *AddCustomerParams) (string, erro
 	}
 
 	parsedResponse := &struct {
-		AccountNumber string
+		AccountNumber string `json:"AccountNumber"`
 	}{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
@@ -60,7 +62,7 @@ func (svc *CustomerService) GetCustomer(
 }
 
 // UpdateCustomer updates a Customer's information
-func (svc *CustomerService) UpdateCustomer(params *UpdateCustomerParams) error {
+func (svc *CustomerService) UpdateCustomer(params UpdateCustomerParams) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", params.Customer.HexID)
 	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
@@ -81,7 +83,7 @@ func (svc *CustomerService) UpdateCustomer(params *UpdateCustomerParams) error {
 }
 
 // DeleteCustomer deletes the provided Customer
-func (svc *CustomerService) DeleteCustomer(params *DeleteCustomerParams) error {
+func (svc *CustomerService) DeleteCustomer(params DeleteCustomerParams) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", params.Customer.HexID)
 	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
@@ -151,13 +153,14 @@ func (svc *CustomerService) GetCustomerServices(
 // UpdateCustomerServices enables or disables the provided services based on the
 // status provided.
 func (svc *CustomerService) UpdateCustomerServices(
-	params UpdateCustomerServicesParams) error {
+	params UpdateCustomerServicesParams,
+) error {
 	for _, serviceID := range params.ServiceIDs {
 		relUrl := fmt.Sprintf("v2/pcc/customers/%s/services/%v",
 			params.Customer.HexID, serviceID)
 
 		body := &struct {
-			Status int
+			Status int `json:"Status"`
 		}{
 			Status: params.Status,
 		}
@@ -206,9 +209,9 @@ func (svc *CustomerService) GetCustomerDeliveryRegion(
 	}
 
 	parsedResponse := &struct {
-		AccountNumber    string
-		CustomID         string
-		DeliveryRegionID int
+		AccountNumber    string `json:"AccountNumber"`
+		CustomID         string `json:"CustomId"`
+		DeliveryRegionID int    `json:"DeliveryRegionId"`
 	}{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
@@ -223,7 +226,8 @@ func (svc *CustomerService) GetCustomerDeliveryRegion(
 // UpdateCustomerDeliveryRegion changes the delivery region for the provided
 // customer
 func (svc *CustomerService) UpdateCustomerDeliveryRegion(
-	params UpdateCustomerDeliveryRegionParams) error {
+	params UpdateCustomerDeliveryRegionParams,
+) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/deliveryregions?idtype=an&id=%s",
@@ -273,7 +277,8 @@ func (svc *CustomerService) GetCustomerDomainTypes() ([]DomainType, error) {
 
 // UpdateCustomerDomainURL changes the domain associated with the customer CDN URLs
 func (svc *CustomerService) UpdateCustomerDomainURL(
-	params UpdateCustomerDomainURLParams) error {
+	params UpdateCustomerDomainURLParams,
+) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/domains/%d/url?idtype=an&id=%s",
@@ -307,7 +312,8 @@ func (svc *CustomerService) UpdateCustomerDomainURL(
 // GetCustomerAccessModules retrieves a list of all access modules (features)
 // that may be enabled or disabled for the provided customer
 func (svc *CustomerService) GetCustomerAccessModules(
-	params GetCustomerAccessModulesParams) (*[]AccessModule, error) {
+	params GetCustomerAccessModulesParams,
+) (*[]AccessModule, error) {
 	relURL := fmt.Sprintf(
 		"v2/pcc/customers/%s/accessmodules",
 		params.Customer.HexID,
@@ -332,7 +338,8 @@ func (svc *CustomerService) GetCustomerAccessModules(
 // UpdateCustomerAccessModule enables or disables the provided
 // access module (feature) for the provided customer
 func (svc *CustomerService) UpdateCustomerAccessModule(
-	params UpdateCustomerAccessModuleParams) error {
+	params UpdateCustomerAccessModuleParams,
+) error {
 	// TODO: support custom ids for accounts
 	for _, accessModuleID := range params.AccessModuleIDs {
 		baseURL := fmt.Sprintf(
@@ -341,7 +348,7 @@ func (svc *CustomerService) UpdateCustomerAccessModule(
 		relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
 
 		body := &struct {
-			Status int8
+			Status int8 `json:"Status"`
 		}{
 			Status: int8(params.Status)}
 

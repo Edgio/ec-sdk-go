@@ -10,7 +10,8 @@ import (
 
 // AddCustomerUser creates a Customer User under the provided (parent) Customer
 func (svc *CustomerService) AddCustomerUser(
-	params AddCustomerUserParams) (int, error) {
+	params AddCustomerUserParams,
+) (int, error) {
 	// TODO: support custom id types, not just Hex ID ANs
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/users?idtype=an&id=%s",
@@ -44,7 +45,8 @@ func (svc *CustomerService) AddCustomerUser(
 
 // GetCustomerUser retrieves a Customer User
 func (svc *CustomerService) GetCustomerUser(
-	params GetCustomerUserParams) (*GetCustomerUser, error) {
+	params GetCustomerUserParams,
+) (*GetCustomerUser, error) {
 
 	// TODO: support custom id types, not just Hex ID ANs
 	baseURL := fmt.Sprintf(
@@ -73,7 +75,8 @@ func (svc *CustomerService) GetCustomerUser(
 
 // UpdateCustomerUser updates a Customer User
 func (svc *CustomerService) UpdateCustomerUser(
-	params UpdateCustomerUserParams) error {
+	params UpdateCustomerUserParams,
+) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/users/%d?idtype=an&id=%s",
@@ -98,7 +101,9 @@ func (svc *CustomerService) UpdateCustomerUser(
 }
 
 // DeleteCustomerUser deletes a Customer User from the parent Customer account
-func (svc *CustomerService) DeleteCustomerUser(params DeleteCustomerUserParams) error {
+func (svc *CustomerService) DeleteCustomerUser(
+	params DeleteCustomerUserParams,
+) error {
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/users/%d?idtype=an&id=%s",
