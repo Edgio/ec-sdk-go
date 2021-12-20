@@ -17,7 +17,7 @@ import (
 	"time"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/collections"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/jsonutil"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/jsonhelper"
 	"github.com/hashicorp/go-retryablehttp"
 )
 
@@ -33,17 +33,42 @@ type LiteralResponse struct {
 	Value interface{}
 }
 
+// Client defines structs that can provide HTTP Client functionality
+type Client interface {
+	BuildRequest(
+		method,
+		path string,
+		body interface{},
+	) (*retryablehttp.Request, error)
+	PrepareRequest(
+		method, path string,
+		body interface{},
+		queryParams map[string]string,
+		pathParams map[string]string,
+	) (*retryablehttp.Request, error)
+	SendRequest(
+		req *retryablehttp.Request,
+		parsedResponse interface{},
+	) (*http.Response, error)
+	SendRequestWithStringResponse(
+		req *retryablehttp.Request,
+	) (*string, error)
+}
+
 // Client is the primary means for services to interact with the EdgeCast API
-type Client struct {
+type ECClient struct {
 	// Config holds the configuration values for this client
 	Config ClientConfig
 
 	// Internal HTTP client
 	HTTPClient *retryablehttp.Client
+
+	// Internal JSON Helper
+	jsonHelper jsonhelper.JSONHelper
 }
 
 // Creates a new client pointing to EdgeCast APIs
-func NewClient(config ClientConfig) Client {
+func New(config ClientConfig) ECClient {
 	httpClient := retryablehttp.NewClient()
 	httpClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
 	httpClient.Logger = config.Logger
@@ -65,19 +90,19 @@ func NewClient(config ClientConfig) Client {
 		httpClient.RetryMax = defaultRetryMax
 	}
 
-	return Client{
+	return ECClient{
 		HTTPClient: httpClient,
 		Config:     config,
+		jsonHelper: jsonhelper.New(),
 	}
 }
 
 // BuildRequest creates a new Request for the Edgecast API,
 // adding appropriate headers
-func (c Client) BuildRequest(
+func (c ECClient) BuildRequest(
 	method, path string,
 	body interface{},
 ) (*retryablehttp.Request, error) {
-
 	relativeURL, err := url.Parse(path)
 
 	if err != nil {
@@ -85,7 +110,7 @@ func (c Client) BuildRequest(
 	}
 
 	absoluteURL := c.Config.BaseAPIURL.ResolveReference(relativeURL)
-
+	c.logRequestBody(method, absoluteURL.String(), body)
 	var payload interface{}
 
 	if body != nil {
@@ -93,18 +118,12 @@ func (c Client) BuildRequest(
 		case string:
 			payload = []byte(b)
 		default:
-			buf := new(bytes.Buffer)
-			err := json.NewEncoder(buf).Encode(body)
+			payload, err = c.jsonHelper.ConvertToJSONBuffer(b)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf(
+					"Client.BuildRequest: ConvertToJSONBuffer: %v",
+					err)
 			}
-			logMsg := jsonutil.CreateRequestBodyLogMessage(
-				method,
-				absoluteURL.String(),
-				body)
-			c.Config.Logger.Debug(logMsg)
-			payload = buf
-
 		}
 	}
 
@@ -119,7 +138,6 @@ func (c Client) BuildRequest(
 	}
 
 	req.Header.Set("Accept", "application/json")
-
 	authHeader, err := c.Config.AuthProvider.GetAuthorizationHeader()
 
 	if err != nil {
@@ -135,7 +153,7 @@ func (c Client) BuildRequest(
 
 // BuildRequest creates a new Request for the Edgecast API,
 // adding appropriate headers
-func (c Client) PrepareRequest(
+func (c ECClient) PrepareRequest(
 	method, path string,
 	body interface{},
 	queryParams map[string]string,
@@ -178,11 +196,7 @@ func (c Client) PrepareRequest(
 			if err != nil {
 				return nil, err
 			}
-			logMsg := jsonutil.CreateRequestBodyLogMessage(
-				method,
-				absoluteURL.String(),
-				body)
-			c.Config.Logger.Debug(logMsg)
+			c.logRequestBody(method, absoluteURL.String(), body)
 			payload = buf
 
 		}
@@ -215,7 +229,7 @@ func (c Client) PrepareRequest(
 
 // SendRequest sends an HTTP request and,
 // if applicable, sets the response to parsedResponse
-func (c *Client) SendRequest(
+func (c ECClient) SendRequest(
 	req *retryablehttp.Request,
 	parsedResponse interface{},
 ) (*http.Response, error) {
@@ -228,9 +242,8 @@ func (c *Client) SendRequest(
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	bodyAsString := string(body)
-
-	logMsg := jsonutil.CreateJSONLogMessage("Response", bodyAsString)
+	bodyAsString, _ := c.jsonHelper.ConvertToJSONString(body, true)
+	logMsg := fmt.Sprintf("[[[RESPONSE-BODY]]]:%s\n", bodyAsString)
 	c.Config.Logger.Debug(logMsg)
 
 	if resp.StatusCode >= 400 && resp.StatusCode <= 599 {
@@ -254,14 +267,12 @@ func (c *Client) SendRequest(
 			return nil, fmt.Errorf("malformed Json Array response:%v", err)
 		}
 	} else {
-		if jsonutil.IsJSONString(bodyAsString) {
+		if c.jsonHelper.IsJSONString(bodyAsString) {
 			err = json.Unmarshal([]byte(bodyAsString), parsedResponse)
-
 			if err != nil {
 				return nil, fmt.Errorf("SendRequest: Decode error: %v", err)
 			}
 		} else {
-
 			// if response is not json string
 			switch v := parsedResponse.(type) {
 			case LiteralResponse:
@@ -275,7 +286,6 @@ func (c *Client) SendRequest(
 			default:
 				fmt.Println("unknown")
 			}
-
 		}
 	}
 	return resp, nil
@@ -283,10 +293,9 @@ func (c *Client) SendRequest(
 
 // SendRequest sends an HTTP request and,
 // if applicable, sets the response to parsedResponse
-func (c *Client) SendRequestWithStringResponse(
+func (c ECClient) SendRequestWithStringResponse(
 	req *retryablehttp.Request,
 ) (*string, error) {
-
 	resp, err := c.HTTPClient.Do(req)
 
 	if err != nil {
@@ -295,7 +304,9 @@ func (c *Client) SendRequestWithStringResponse(
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	bodyAsString := string(body)
+	bodyAsString, _ := c.jsonHelper.ConvertToJSONString(body, true)
+	logMsg := fmt.Sprintf("[[[RESPONSE-BODY]]]:%s\n", bodyAsString)
+	c.Config.Logger.Debug(logMsg)
 
 	if resp.StatusCode >= 400 && resp.StatusCode <= 599 {
 		if err != nil {
@@ -308,6 +319,13 @@ func (c *Client) SendRequestWithStringResponse(
 	c.Config.Logger.Debug("SendRequest: Response Body: %s", body)
 
 	return &bodyAsString, nil
+}
+
+func (c ECClient) logRequestBody(method string, url string, body interface{}) {
+	bodyJSON, _ := c.jsonHelper.ConvertToJSONString(body, true)
+	logMsg := fmt.Sprintf("[[[REQUEST-URI]]]:[%s] %s\n", method, url)
+	logMsg += fmt.Sprintf("[[[REQUEST-BODY]]]:%s\n", bodyJSON)
+	c.Config.Logger.Debug(logMsg)
 }
 
 // ExponentialJitterBackoff calculates exponential backoff, with jitter,

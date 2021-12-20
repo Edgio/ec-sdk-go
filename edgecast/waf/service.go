@@ -24,14 +24,13 @@ type WAFService struct {
 
 // New creates a new WAF service
 func New(config edgecast.SDKConfig) (*WAFService, error) {
-
 	authProvider, err := auth.NewTokenAuthorizationProvider(config.APIToken)
 
 	if err != nil {
 		return nil, fmt.Errorf("waf.New(): %v", err)
 	}
 
-	c := client.NewClient(client.ClientConfig{
+	c := client.New(client.ClientConfig{
 		AuthProvider: authProvider,
 		BaseAPIURL:   config.BaseAPIURLLegacy,
 		UserAgent:    config.UserAgent,
