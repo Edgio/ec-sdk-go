@@ -58,7 +58,7 @@ func (a *Client) {{ pascalize .Name }}(params *{{ pascalize .Name }}Params{{ if 
 
   url := a.Config.BaseAPIURL.String() + {{ printf "%q" .Path }}
 
-  request, err := a.Client.BuildRequest({{ printf "%q" .Method }}, url, results.Body)
+  request, err := a.Client.PrepareRequest({{ printf "%q" .Method }}, url, results.Body, results.QueryParams, results.PathParams)
   if err != nil {
     return {{ if .SuccessResponse }}nil,{{ end }} fmt.Errorf("{{ pascalize .Name }}: %v", err)
   }
@@ -73,7 +73,6 @@ func (a *Client) {{ pascalize .Name }}(params *{{ pascalize .Name }}Params{{ if 
   }
 
  return {{if .SuccessResponse }}parsedResponse,{{ end }} nil
-
 }
 {{- end }}
 
