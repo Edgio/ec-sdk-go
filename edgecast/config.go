@@ -40,10 +40,8 @@ type SDKConfig struct {
 	UserAgent string
 }
 
-func NewSDKConfig(
-	apiToken string,
-	idsCredentials auth.OAuth2Credentials,
-) SDKConfig {
+// NewSDKConfig creates a default instance of SDKConfig without credentials
+func NewSDKConfig() SDKConfig {
 	baseAPIURL, _ := url.Parse(defaultBaseAPIURL)
 	baseAPIURLLegacy, _ := url.Parse(defaultBaseAPIURLLegacy)
 	baseIDSURL, _ := url.Parse(defaultBaseIDSURL)
@@ -53,8 +51,6 @@ func NewSDKConfig(
 		BaseAPIURLLegacy: *baseAPIURLLegacy,
 		BaseIDSURL:       *baseIDSURL,
 		Logger:           logging.NewStandardLogger(),
-		APIToken:         apiToken,
-		IDSCredentials:   idsCredentials,
 		UserAgent:        getDefaultUserAgent(),
 	}
 }

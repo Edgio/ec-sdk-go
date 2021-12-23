@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package auth
 
@@ -34,9 +34,14 @@ type IDSAuthorizationProvider struct {
 
 // Creates a new IDSAuthorizationProvider with the given credentials
 // that retrieves tokens from the specified URL
-func NewIDSAuthorizationProvider(baseIDSURL url.URL, credentials OAuth2Credentials) (*IDSAuthorizationProvider, error) {
-	if len(credentials.ClientID) == 0 || len(credentials.ClientSecret) == 0 || len(credentials.Scope) == 0 {
-		return nil, errors.New("NewIDSAuthorizationProvider: Client ID, Secret, and Scope required")
+func NewIDSAuthorizationProvider(
+	baseIDSURL url.URL,
+	credentials OAuth2Credentials,
+) (*IDSAuthorizationProvider, error) {
+	if len(credentials.ClientID) == 0 ||
+		len(credentials.ClientSecret) == 0 ||
+		len(credentials.Scope) == 0 {
+		return nil, errors.New("client ID, secret, and scope required")
 	}
 
 	return &IDSAuthorizationProvider{
@@ -45,12 +50,14 @@ func NewIDSAuthorizationProvider(baseIDSURL url.URL, credentials OAuth2Credentia
 	}, nil
 }
 
-// GetAuthorizationHeader creates an authorization header value for the current token, refreshing it if it has expired.
-// Used for EdgeCast APIs that use IDS OAuth 2.0 tokens.
+// GetAuthorizationHeader creates an authorization header value for the current
+// token, refreshing it if it has expired. Used for EdgeCast APIs that use IDS
+// OAuth 2.0 tokens.
 func (ip *IDSAuthorizationProvider) GetAuthorizationHeader() (string, error) {
 
 	// If there is no cached token or it's expired, get a new one
-	if ip.CurrentToken == nil || ip.CurrentToken.ExpirationTime.Before(time.Now()) {
+	if ip.CurrentToken == nil ||
+		ip.CurrentToken.ExpirationTime.Before(time.Now()) {
 
 		model, err := ip.TokenClient.GetToken(ip.Credentials)
 
@@ -59,7 +66,8 @@ func (ip *IDSAuthorizationProvider) GetAuthorizationHeader() (string, error) {
 		}
 
 		if model == nil {
-			return "", fmt.Errorf("no access token retrieved, please check your IDS credentials")
+			return "", errors.New(
+				"no access token retrieved, please check your IDS credentials")
 		}
 
 		expiresIn := time.Second * time.Duration(model.ExpiresIn)

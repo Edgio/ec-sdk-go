@@ -2,7 +2,7 @@
 // See LICENSE file in project root for terms.
 
 /*
-	Package client provides a base client implementation for interacting with EdgeCast CDN APIs.
-	Configuration and authentication types are also provided.
+	Package client provides a base client implementation for interacting with
+	EdgeCast CDN APIs. Configuration and authentication types are also provided.
 */
 package client

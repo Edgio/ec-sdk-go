@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package logging
 
@@ -12,7 +12,8 @@ const (
 	logFlag int = log.Ldate | log.Ltime
 )
 
-// Logger defines the the basic implementation that meets the SDK's logging needs
+// Logger defines the the basic implementation that meets the SDK's logging
+// needs
 type Logger interface {
 	// Debug writes debug messages
 	Debug(format string, v ...interface{})
@@ -29,7 +30,8 @@ type Logger interface {
 
 // Creates a logger that writes to a single log file
 func NewFileLogger(filePath string) Logger {
-	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	file, err := os.OpenFile(
+		filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}

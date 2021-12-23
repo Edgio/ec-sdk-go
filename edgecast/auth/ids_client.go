@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package auth
 
@@ -23,26 +23,30 @@ func NewIDSClient(baseURL url.URL) IDSClient {
 }
 
 // Gets a new token from the IDS Token Endpoint
-func (c IDSClient) GetToken(credentials OAuth2Credentials) (*OAuth2TokenResponse, error) {
+func (c IDSClient) GetToken(
+	credentials OAuth2Credentials,
+) (*OAuth2TokenResponse, error) {
 	data := url.Values{}
 	data.Set("grant_type", "client_credentials")
 	data.Add("scope", credentials.Scope)
 	data.Add("client_id", credentials.ClientID)
 	data.Add("client_secret", credentials.ClientSecret)
-
 	idsTokenEndpoint := fmt.Sprintf("%s/connect/token", c.IDSBaseUrl.String())
-
 	dataString := data.Encode()
-	newTokenRequest, err := http.NewRequest("POST", idsTokenEndpoint, bytes.NewBufferString(dataString))
+	newTokenRequest, err := http.NewRequest(
+		"POST",
+		idsTokenEndpoint,
+		bytes.NewBufferString(dataString))
 
 	if err != nil {
 		return nil, err
 	}
 
-	newTokenRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	newTokenRequest.Header.Add(
+		"Content-Type",
+		"application/x-www-form-urlencoded")
 	newTokenRequest.Header.Add("Cache-Control", "no-cache")
 	newTokenRequest.Header.Add("Content-Length", strconv.Itoa(len(dataString)))
-
 	httpClient := &http.Client{}
 	resp, err := httpClient.Do(newTokenRequest)
 

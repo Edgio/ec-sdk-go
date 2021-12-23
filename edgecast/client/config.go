@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package client
 
@@ -22,11 +22,15 @@ type ClientConfig struct {
 	// The User Agent for outgoing HTTP requests
 	UserAgent string
 
+	// Logger -
 	Logger logging.Logger
 
+	// The minimum wait time for retries on API errors
 	RetryWaitMin *time.Duration
 
+	// The maximum wait time for retries on API errors
 	RetryWaitMax *time.Duration
 
+	// The maximum number of retries on API errors
 	RetryMax *int
 }

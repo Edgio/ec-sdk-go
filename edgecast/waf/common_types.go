@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package waf
 
@@ -17,7 +17,8 @@ type WAFResponse struct {
 	Errors []WAFError
 }
 
-// AddRuleResponse contains the response from the WAF API when adding a new rule
+// AddRuleResponse contains the response from the WAF API
+// when adding a new rule
 type AddRuleResponse struct {
 	// ID indicates the generated ID for the newly created Rule
 	ID string
@@ -25,7 +26,8 @@ type AddRuleResponse struct {
 	WAFResponse
 }
 
-// UpdateRuleResponse contains the response from the WAF API when updating a rule
+// UpdateRuleResponse contains the response from the WAF API
+// when updating a rule
 type UpdateRuleResponse struct {
 	// ID indicates the generated ID for the newly created Rule
 	ID string
@@ -33,9 +35,10 @@ type UpdateRuleResponse struct {
 	WAFResponse
 }
 
-// DeleteRuleResponse contains the response from the WAF API when deleting a rule
+// DeleteRuleResponse contains the response from the WAF API
+// when deleting a rule
 type DeleteRuleResponse struct {
-	// ID indicates the generated ID for the newly created Rule
+	// ID indicates the generated ID for the newly deleted Rule
 	ID string
 
 	WAFResponse

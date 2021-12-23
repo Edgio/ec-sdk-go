@@ -1,71 +1,207 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package waf
 
 /*
 	This file contains operations and types specific to WAF Custom Rule Sets.
+
+	Use custom rules to tailor how WAF identifies malicious traffic. This
+	provides added flexibility for threat identification that allows you to
+	target malicious traffic with minimal impact to legitimate traffic.
+	Custom threat identification combined with rapid testing and deployment
+	enables you to quickly address long-term and zero-day vulnerabilities.
+
+	For detailed information about Custom Rules in WAF, please refer to:
+	https://docs.edgecast.com/cdn/#Web-Security/Custom-Rules.htm
 */
 
 import (
 	"fmt"
 )
 
-// CustomRuleSetDetail is a detailed representation of a custom rule set.
-// A custom rule set defines custom threat assessment criteria.
-type CustomRuleSetDetail struct {
+// AddCustomRuleSet creates a Custom Rule Set for the provided account number.
+func (svc WAFService) AddCustomRuleSet(
+	params AddCustomRuleSetParams,
+) (*AddCustomRuleSetResponse, error) {
+	url := fmt.Sprintf(
+		"/v2/mcc/customers/%s/waf/v1.0/rules",
+		params.AccountNumber)
+	req, err := svc.Client.BuildRequest("POST", url, params.CustomRuleSet)
+	if err != nil {
+		return nil, fmt.Errorf("AddCustomRuleSet: %v", err)
+	}
 
-	// Contains custom rules.
-	// Each directive object defines a custom rule via the sec_rule object.
-	// You may create up to 10 custom rules.
+	parsedResponse := &AddCustomRuleSetResponse{}
+	_, err = svc.Client.SendRequest(req, &parsedResponse)
+	if err != nil {
+		return nil, fmt.Errorf("AddCustomRuleSet: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+// GetAllCustomRuleSets retrieves the list of Custom Rule Sets for the provided
+// account number.
+func (svc WAFService) GetAllCustomRuleSets(
+	params GetAllCustomRuleSetsParams,
+) (*[]CustomRuleSetLight, error) {
+	url := fmt.Sprintf(
+		"/v2/mcc/customers/%s/waf/v1.0/rules",
+		params.AccountNumber)
+	req, err := svc.Client.BuildRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("GetAllCustomRuleSets: %v", err)
+	}
+
+	var parsedResponse = &[]CustomRuleSetLight{}
+	_, err = svc.Client.SendRequest(req, &parsedResponse)
+	if err != nil {
+		return nil, fmt.Errorf("GetAllCustomRuleSets: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+// DeleteCustomRuleSet deletes a Custom Rule Set for the provided account number
+// with the provided Custom Rule Set ID.
+func (svc WAFService) DeleteCustomRuleSet(
+	params DeleteCustomRuleSetParams,
+) (*DeleteCustomRuleSetResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%v",
+		params.AccountNumber,
+		params.CustomRuleSetID)
+	req, err := svc.Client.BuildRequest("DELETE", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("DeleteCustomRuleSet: %v", err)
+	}
+
+	parsedResponse := &DeleteCustomRuleSetResponse{}
+	_, err = svc.Client.SendRequest(req, &parsedResponse)
+	if err != nil {
+		return nil, fmt.Errorf("DeleteCustomRuleSet: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+// GetCustomRuleSet retrieves a Custom Rule Set for the provided account number
+// with the provided Custom Rule Set ID.
+func (svc WAFService) GetCustomRuleSet(
+	params GetCustomRuleSetParams,
+) (*GetCustomRuleSetResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%v",
+		params.AccountNumber,
+		params.CustomRuleSetID)
+	req, err := svc.Client.BuildRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("GetCustomRuleSet: %v", err)
+	}
+
+	parsedResponse := &GetCustomRuleSetResponse{}
+	_, err = svc.Client.SendRequest(req, &parsedResponse)
+	if err != nil {
+		return nil, fmt.Errorf("GetCustomRuleSet: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+// UpdateCustomRuleSet updates a Custom Rule Set for the provided account number
+// using the provided Custom Rule Set ID and Custom Rule Set properties.
+func (svc WAFService) UpdateCustomRuleSet(
+	params UpdateCustomRuleSetParams,
+) (*UpdateCustomRuleSetResponse, error) {
+	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%s",
+		params.AccountNumber,
+		params.CustomRuleSetID)
+	req, err := svc.Client.BuildRequest("PUT", url, params.CustomRuleSet)
+	if err != nil {
+		return nil,
+			fmt.Errorf("UpdateCustomRuleSet: %v", err)
+	}
+
+	var parsedResponse = &UpdateCustomRuleSetResponse{}
+	_, err = svc.Client.SendRequest(req, &parsedResponse)
+	if err != nil {
+		return nil,
+			fmt.Errorf("UpdateCustomRuleSet: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+// CustomRuleSet is a detailed representation of a Custom Rule Set.
+type CustomRuleSet struct {
+	/*
+		Contains custom rules. Each directive object defines a custom rule via
+		the sec_rule object. You may create up to 10 custom rules.
+	*/
 	Directives []Directive `json:"directive"`
 
-	// Indicates the name of the custom rule.
+	/*
+		Indicates the name of the custom rule.
+	*/
 	Name string `json:"name,omitempty"`
 }
 
-// CustomRuleSetLight is a lightweight representation of a Custom Rule Set
+// CustomRuleSetLight is a lightweight representation of a Custom Rule Set.
 type CustomRuleSetLight struct {
-
-	// Indicates the system-defined ID for the custom rule set.
+	/*
+		Indicates the system-defined ID for the Custom Rule Set.
+	*/
 	ID string `json:"id"`
 
-	// Indicates the date and time at which the custom rule was last modified.
-	//	Syntax:
-	// 		MM/DD/YYYYhh:mm:ss [AM|PM]
+	/*
+		Indicates the date and time at which the custom rule was last modified.
+		Syntax:
+		 	MM/DD/YYYYhh:mm:ss [AM|PM]
+	*/
 	LastModifiedDate string `json:"last_modified_date"`
 
-	// Indicates the name of the custom rule set.
+	/*
+		Indicates the name of the Custom Rule Set.
+	*/
 	Name string `json:"name"`
+
+	// TODO: Convert LastModifiedDate to time.Time
 }
 
-// Contains custom rules.
-// Each directive object defines a custom rule via the sec_rule object.
+// Directive contains custom rules. Each directive object defines a custom rule
+// via the sec_rule object.
 type Directive struct {
-
 	// Defines a custom rule
 	SecRule SecRule `json:"sec_rule"`
 }
 
-// Defines a custom rule
+// SecRule defines a custom rule
 type SecRule struct {
-
-	// Determines whether the string identified in a variable object will be
-	// transformed and the metadata that will be assigned to malicious traffic.
+	/*
+		Determines whether the string identified in a variable object will be
+		transformed and the metadata that will be assigned to malicious traffic.
+	*/
 	Action Action `json:"action"`
 
-	// Contains additional criteria that must be satisfied to
-	// identify a malicious request.
+	/*
+		Contains additional criteria that must be satisfied to
+		identify a malicious request.
+	*/
 	ChainedRules []ChainedRule `json:"chained_rule,omitempty"`
 
-	// Indicates the name assigned to this custom rule.
+	/*
+		Indicates the name assigned to this custom rule.
+	*/
 	Name string `json:"name,omitempty"`
 
-	// Indicates the comparison that will be performed against the request
-	// element(s) identified within a variable object.
+	/*
+		Indicates the comparison that will be performed against the request
+		element(s) identified within a variable object.
+	*/
 	Operator Operator `json:"operator"`
 
-	// Contains criteria that identifies a request element.
+	/*
+		Contains criteria that identifies a request element.
+	*/
 	Variables []Variable `json:"variable"`
 }
 
@@ -75,7 +211,6 @@ type SecRule struct {
 	and the metadata that will be used to identify malicious traffic.
 */
 type Action struct {
-
 	/*
 		Determines the custom ID that will be assigned to this custom rule.
 		This custom ID is exposed via the Threats Dashboard.
@@ -119,32 +254,36 @@ type Action struct {
 					the source value.
 
 		Note: A criterion is satisfied if the source value or any of the
-		modified string values meet the conditions defined by the operator object.
+		modified string values meet the conditions defined by the operator
+		object.
 	*/
 	Transformations []string `json:"t,omitempty"`
 }
 
-// Each object within the chained_rule array describes an additional set of
-// criteria that must be satisfied in order to identify a malicious request.
+// ChainedRule describes an additional set of criteria that must be satisfied in
+// order to identify a malicious request.
 type ChainedRule struct {
-
-	// Determines whether the string value derived from the request element
-	// identified in a variable object will be transformed and the metadata
-	// that will be used to identify malicious traffic.
+	/*
+		Determines whether the string value derived from the request element
+		identified in a variable object will be transformed and the metadata
+		that will be used to identify malicious traffic.
+	*/
 	Action Action `json:"action"`
 
-	// Indicates the comparison that will be performed on the string value(s)
-	// derived from the request element(s) defined within the variable array.
+	/*
+		Indicates the comparison that will be performed on the string value(s)
+		derived from the request element(s) defined within the variable array.
+	*/
 	Operator Operator `json:"operator"`
 
-	// Identifies each request element for which a comparison will be made.
+	/*
+		Identifies each request element for which a comparison will be made.
+	*/
 	Variables []Variable `json:"variable"`
 }
 
-// The variable array identifies each request element for which a comparison
-// will be made using its properties
+// Variable identifies each request element for which a comparison will be made
 type Variable struct {
-
 	/*
 		Determines the request element that will be assessed.
 
@@ -166,8 +305,10 @@ type Variable struct {
 	*/
 	Type string `json:"type"`
 
-	// Contains comparison settings for the request element identified by the
-	// type property.
+	/*
+		Contains comparison settings for the request element identified by the
+		type property.
+	*/
 	Matches []Match `json:"match,omitempty"`
 
 	/*
@@ -213,7 +354,8 @@ type Operator struct {
 		Valid values are:
 
 			RX:Indicates that the string value derived from the request element
-				must satisfy the regular expression defined in the value property.
+				must satisfy the regular expression defined in the value
+				property.
 			STREQ: Indicates that the string value derived from the request
 				element must be an exact match to the value property.
 			CONTAINS: Indicates that the value property must contain the string
@@ -239,7 +381,8 @@ type Operator struct {
 
 		Note: If you are identifying traffic via a URL path (REQUEST_URI),
 		then you should	specify a URL path pattern that starts directly after
-		the hostname. Exclude a protocol or a hostname when defining this property.
+		the hostname. Exclude a protocol or a hostname when defining this
+		property.
 
 		Sample values:
 			/marketing
@@ -248,8 +391,8 @@ type Operator struct {
 	Value string `json:"value,omitempty"`
 }
 
-// The match array determines the comparison conditions for the request
-// element identified by the type property.
+// Match determines the comparison conditions for the request element identified
+// by the type property.
 type Match struct {
 
 	/*
@@ -286,171 +429,68 @@ type Match struct {
 	Value string `json:"value,omitempty"`
 }
 
-// GetCustomRuleSetResponse represents the response from the WAF API when
-// retrieving a custom rule set
-type GetCustomRuleSetResponse struct {
-
-	// ID indicates the generated ID for the newly deleted Rule
-	ID string
-
-	CustomRuleSetDetail
-
-	// Indicates the date and time at which the custom rule was last modified.
-	//	Syntax:
-	// 		MM/DD/YYYYhh:mm:ss [AM|PM]
-	LastModifiedDate string `json:"last_modified_date"`
+// GetAllCustomRuleSetsParams -
+type GetAllCustomRuleSetsParams struct {
+	AccountNumber string
 }
 
-// AddCustomRuleSetResponse represents the response from the WAF API when
-// adding a new custom rule
+// GetCustomRuleSetParams -
+type GetCustomRuleSetParams struct {
+	AccountNumber   string
+	CustomRuleSetID string
+}
+
+// GetCustomRuleSetResponse -
+type GetCustomRuleSetResponse struct {
+
+	/*
+		Indicates the generated ID for the Custom Rule Set
+	*/
+	ID string
+
+	CustomRuleSet
+
+	/*
+		Indicates the date and time at which the custom rule was last modified.
+		Syntax:
+		 	MM/DD/YYYYhh:mm:ss [AM|PM]
+	*/
+	LastModifiedDate string `json:"last_modified_date"`
+
+	// TODO: Convert LastModifiedDate to time.Time
+}
+
+// AddCustomRuleSetParams -
+type AddCustomRuleSetParams struct {
+	CustomRuleSet CustomRuleSet
+	AccountNumber string
+}
+
+// AddCustomRuleSetResponse -
 type AddCustomRuleSetResponse struct {
 	AddRuleResponse
 }
 
-// DeleteCustomRuleSetResponse represents the response from the WAF API when
-// deleting a custom rule set
+// DeleteCustomRuleSetParams -
+type DeleteCustomRuleSetParams struct {
+	AccountNumber   string
+	CustomRuleSetID string
+}
+
+// DeleteCustomRuleSetResponse -
 type DeleteCustomRuleSetResponse struct {
-
-	// ID indicates the generated ID for the newly deleted Rule
-	ID string
-
-	WAFResponse
+	DeleteRuleResponse
 }
 
-// Updates a custom rule set that identifies a rule set configuration and
-// describes a valid request.
-type UpdateCustomRuleSetRequest struct {
-	CustomRuleSetDetail
+// UpdateCustomRuleSetParams -
+type UpdateCustomRuleSetParams struct {
+	AccountNumber   string
+	CustomRuleSetID string
+	CustomRuleSet   CustomRuleSet
 }
 
-// Contains the response from the WAF API when updating a custom rule set
+//  UpdateCustomRuleSetResponse represents the response from the WAF API when
+// updating a Custom Rule Set
 type UpdateCustomRuleSetResponse struct {
 	UpdateRuleResponse
-}
-
-// Creates a custom rule set that defines custom threat assessment criteria.
-func (svc *WAFService) AddCustomRuleSet(
-	customRuleSet CustomRuleSetDetail,
-	accountNumber string,
-) (*AddCustomRuleSetResponse, error) {
-
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules", accountNumber)
-
-	request, err := svc.Client.BuildRequest("POST", url, customRuleSet)
-	if err != nil {
-		return nil, fmt.Errorf("AddCustomRuleSet: %v", err)
-	}
-
-	parsedResponse := &AddCustomRuleSetResponse{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("AddCustomRuleSet: %v", err)
-	}
-
-	return parsedResponse, nil
-}
-
-// Retrieves a list of custom rule sets.
-// A custom rule set allows you to define custom threat assessment criterion.
-func (svc *WAFService) GetAllCustomRuleSets(
-	accountNumber string,
-) ([]CustomRuleSetLight, error) {
-
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules", accountNumber)
-
-	request, err := svc.Client.BuildRequest("GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("GetAllCustomRuleSets: %v", err)
-	}
-
-	var customRuleSets = &[]CustomRuleSetLight{}
-
-	_, err = svc.Client.SendRequest(request, &customRuleSets)
-	if err != nil {
-		return nil, fmt.Errorf("GetAllCustomRuleSets: %v", err)
-	}
-
-	return *customRuleSets, nil
-}
-
-// Deletes a custom rule.
-func (svc *WAFService) DeleteCustomRuleSet(
-	accountNumber string,
-	customRuleID string,
-) (*DeleteCustomRuleSetResponse, error) {
-
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%v",
-		accountNumber,
-		customRuleID,
-	)
-
-	request, err := svc.Client.BuildRequest("DELETE", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("DeleteCustomRuleSet: %v", err)
-	}
-
-	parsedResponse := &DeleteCustomRuleSetResponse{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("DeleteCustomRuleSet: %v", err)
-	}
-
-	return parsedResponse, nil
-}
-
-// GetCustomRuleSet retrieves a custom rule.
-func (svc *WAFService) GetCustomRuleSet(
-	accountNumber string,
-	customRuleID string,
-) (*GetCustomRuleSetResponse, error) {
-
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%v",
-		accountNumber,
-		customRuleID,
-	)
-
-	request, err := svc.Client.BuildRequest("GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("GetCustomRuleSet: %v", err)
-	}
-
-	parsedResponse := &GetCustomRuleSetResponse{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("GetCustomRuleSet: %v", err)
-	}
-
-	return parsedResponse, nil
-}
-
-//UpdateCustomRuleSet that defines custom threat assessment criteria.
-func (svc *WAFService) UpdateCustomRuleSet(
-	accountNumber string,
-	ID string,
-	customRuleSet UpdateCustomRuleSetRequest,
-) (*UpdateCustomRuleSetResponse, error) {
-
-	url := fmt.Sprintf("/v2/mcc/customers/%s/waf/v1.0/rules/%s",
-		accountNumber,
-		ID,
-	)
-
-	request, err := svc.Client.BuildRequest("PUT", url, customRuleSet)
-	if err != nil {
-		return nil,
-			fmt.Errorf("waf -> custom_rule.go -> UpdateCustomRuleSet: %v", err)
-	}
-
-	var parsedResponse = &UpdateCustomRuleSetResponse{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-	if err != nil {
-		return nil,
-			fmt.Errorf("waf -> custom_rule.go -> UpdateCustomRuleSet: %v", err)
-	}
-
-	return parsedResponse, nil
 }

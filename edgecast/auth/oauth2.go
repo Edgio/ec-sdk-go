@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package auth
 
@@ -10,7 +10,8 @@ type OAuth2Credentials struct {
 	Scope        string
 }
 
-// OAuth2TokenResponse represents the response from an identity server when retrieving a new token
+// OAuth2TokenResponse represents the response from an identity server when
+// retrieving a new token
 type OAuth2TokenResponse struct {
 	AccessToken string  `json:"access_token"`
 	ExpiresIn   float64 `json:"expires_in"`

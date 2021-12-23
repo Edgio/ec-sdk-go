@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package auth
 
@@ -85,7 +85,9 @@ type TestIDSClient struct {
 	StaticToken *OAuth2TokenResponse
 }
 
-// GetToken returns the same token every tie
-func (c TestIDSClient) GetToken(credentials OAuth2Credentials) (*OAuth2TokenResponse, error) {
+// GetToken is a test implementation that returns the same token every time
+func (c TestIDSClient) GetToken(
+	credentials OAuth2Credentials,
+) (*OAuth2TokenResponse, error) {
 	return c.StaticToken, nil
 }

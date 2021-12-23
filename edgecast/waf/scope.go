@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package waf
 
@@ -7,6 +7,9 @@ package waf
 
 	This file contains methods and types for Security Application Manager
 	configurations (Scopes)
+
+	For detailed information, please refer to:
+	https://docs.edgecast.com/cdn/#Web-Security/SAM.htm
 
 	Each configuration/scope:
 
