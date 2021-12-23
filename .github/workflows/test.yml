@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [ DEN-169 ]
+    branches: [ DEN-169_workflow ]
   pull_request:
-    branches: [ DEN-169 ]
+    branches: [ DEN-169_workflow]
 
 jobs:
 
