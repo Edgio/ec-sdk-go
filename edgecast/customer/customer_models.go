@@ -11,143 +11,143 @@ type Customer struct {
 	AccountID string `json:"AccountId,omitempty"`
 
 	// A string identifying the street address for the customer.
-	Address1 string
+	Address1 string `json:"Address1,omitempty"`
 
 	// A string providing additional location information for the customer.
 	// Typically, this parameter is used to define a suite number or an
 	// apartment number.
-	Address2 string
+	Address2 string `json:"Address2,omitempty"`
 
 	// A string identifying the city associated with the customer's address.
-	City string
+	City string `json:"City,omitempty"`
 
 	// A string identifying the state associated with the customer's address.
 	// If the country associated with this account is "United States," then
 	// valid values for this parameter are restricted to the two character
 	// state abbreviations defined in the State/Province section in Appendix D.
 	// of the Web Services REST API (Partner) document
-	State string
+	State string `json:"State,omitempty"`
 
 	// A string identifying the ZIP code associated with a customers's address.
-	ZIP string `json:"Zip"`
+	ZIP string `json:"Zip,omitempty"`
 
 	// A string identifying the country associated with the customers's
 	// address. Valid values for this parameter must be an exact match to a
 	// country defined in the Country section in Appendix D of the Web Services
 	// REST API (Partner) document
-	Country string
+	Country string `json:"Country,omitempty"`
 
 	// A 64-bit integer that is reserved for future use.
-	BandwidthUsageLimit int64
+	BandwidthUsageLimit int64 `json:"BandwidthUsageLimit,omitempty"`
 
 	// A string that is reserved for future use.
-	BillingAccountTag string
+	BillingAccountTag string `json:"BillingAccountTag,omitempty"`
 
 	// A string identifying the billing address for the customer.
-	BillingAddress1 string
+	BillingAddress1 string `json:"BillingAddress1,omitempty"`
 
 	// A string providing additional location information for the billing
 	// address associated with the customer. Typically, this parameter is
 	// used to define a suite number or an apartment number.
-	BillingAddress2 string
+	BillingAddress2 string `json:"BillingAddress2,omitempty"`
 
 	// A string identifying the city associated with the customers's
 	// billing address.
-	BillingCity string
+	BillingCity string `json:"BillingCity,omitempty"`
 
 	// A string identifying the billing e-mail address associated with the
 	// customer.
-	BillingContactEmail string
+	BillingContactEmail string `json:"BillingContactEmail,omitempty"`
 
 	// A string identifying the billing fax number associated with the
 	// customer.
-	BillingContactFax string
+	BillingContactFax string `json:"BillingContactFax,omitempty"`
 
 	// A string identifying the billing contact first name of the customer.
-	BillingContactFirstName string
+	BillingContactFirstName string `json:"BillingContactFirstName,omitempty"`
 
 	// A string identifying the billing contact last name of the customer.
-	BillingContactLastName string
+	BillingContactLastName string `json:"BillingContactLastName,omitempty"`
 
 	// A string identifying the billing contact cell phone number of the
 	// customer.
-	BillingContactMobile string
+	BillingContactMobile string `json:"BillingContactMobile,omitempty"`
 
 	// A string identifying the billing contact main phone number of the
 	// customer.
-	BillingContactPhone string
+	BillingContactPhone string `json:"BillingContactPhone,omitempty"`
 
 	// A string identifying the billing contact title of the customer.
-	BillingContactTitle string
+	BillingContactTitle string `json:"BillingContactTitle,omitempty"`
 
 	// A string identifying the country associated with the customer's
 	// billing address. Valid values for this parameter must be an exact match
 	// to a country defined in the Country section in Appendix D of the Web
 	// Services REST API (Partner) document
-	BillingCountry string
+	BillingCountry string `json:"BillingCountry,omitempty"`
 
 	// A string that is reserved for future use.
-	BillingRateInfo string
+	BillingRateInfo string `json:"BillingRateInfo,omitempty"`
 
 	// A string identifying the state associated with the customer's billing
 	// address. If the country associated with this account is "United States,"
 	// then valid values for this parameter are restricted to the two character
 	// state abbreviations defined in the State/Province section in Appendix D
 	// of the Web Services REST API (Partner) document
-	BillingState string
+	BillingState string `json:"BillingState,omitempty"`
 
 	// A string identifying the ZIP code associated with a customer's address.
-	BillingZIP string `json:"BillingZip"`
+	BillingZIP string `json:"BillingZip,omitempty"`
 
 	// A string identifying the e-mail address associated with the customer.
-	ContactEmail string
+	ContactEmail string `json:"ContactEmail,omitempty"`
 
 	// A string identifying the fax number associated with the customer.
-	ContactFax string
+	ContactFax string `json:"ContactFax,omitempty"`
 
 	// A string identifying the first name of the customer.
-	ContactFirstName string
+	ContactFirstName string `json:"ContactFirstName,omitempty"`
 
 	// A string identifying the last name of the customer.
-	ContactLastName string
+	ContactLastName string `json:"ContactLastName,omitempty"`
 
 	// A string identifying the cell phone number of the customer.
-	ContactMobile string
+	ContactMobile string `json:"ContactMobile,omitempty"`
 
 	// A string identifying the main phone number of the customer.
-	ContactPhone string
+	ContactPhone string `json:"ContactPhone,omitempty"`
 
 	// A string identifying the title of the customer.
-	ContactTitle string
+	ContactTitle string `json:"ContactTitle,omitempty"`
 
 	// A string identifying the company name of the customer
-	CompanyName string
+	CompanyName string `json:"CompanyName,omitempty"`
 
 	// A 64-bit integer that is reserved for future use.
-	DataTransferredUsageLimit int64
+	DataTransferredUsageLimit int64 `json:"DataTransferredUsageLimit,omitempty"`
 
 	// A string that may contain any notes associated to the customer.
-	Notes string
+	Notes string `json:"Notes,omitempty"`
 
 	// Required when providing a PCC token. An integer that contains the Partner
 	// User ID associated with the PCC token provided.
-	PartnerUserID int
+	PartnerUserID int `json:"PartnerUserId,omitempty"`
 
 	// A string that should always be set to "STND"
-	ServiceLevelCode string
+	ServiceLevelCode string `json:"ServiceLevelCode,omitempty"`
 
 	// A string identifying the website for the customer
-	Website string
+	Website string `json:"Website,omitempty"`
 
 	// An integer that indicates whether the customer is active or inactive
 	// 0: Indicates that the customer is inactive
 	// 1: Indicates that the customer is active
-	Status int
+	Status int `json:"Status,omitempty"`
 }
 
-// GetCustomer is used specifically when retrieving a Customer and contains
+// CustomerGetOK is used specifically when retrieving a Customer and contains
 // additional read-only properties.
-type GetCustomer struct {
+type CustomerGetOK struct {
 	Customer
 	// An integer that indicates a customer's ID.
 	ID int32 `json:"Id,omitempty"` // read-only
@@ -158,17 +158,17 @@ type GetCustomer struct {
 
 	// A string, also referred to as Account Number, that represents the
 	// hexadecimal value of the ID
-	HexID string // read-only
+	HexID string `json:"HexId,omitempty"` // read-only
 
 	// A string indicating the date and time (UTC) for the last time that the
 	// usage limit was updated. Syntax: YYYY-MM-DD hh:mm:ssZ
-	UsageLimitUpdateDate string // read-only
+	UsageLimitUpdateDate string `json:"UsageLimitUpdateDate,omitempty"` // read-only
 
 	// An integer identifying the Partner associated with this Customer
 	PartnerID int `json:"PartnerId,omitempty"` // read-only
 
 	// A string representing the Partner name associated with this Customer
-	PartnerName string // read-only
+	PartnerName string `json:"PartnerName,omitempty"` // read-only
 
 	// An integer identifying the Wholesaler associated with Partner that is
 	// then associated with this Customer
@@ -176,7 +176,7 @@ type GetCustomer struct {
 
 	// A string representing the Wholsaler name associated with Partner that is
 	// then associated with this Customer
-	WholesaleName string // read-only
+	WholesaleName string `json:"WholesaleName,omitempty"` // read-only
 }
 
 // AddCustomerParams object contains the properties necessary to create a
@@ -207,7 +207,7 @@ func NewGetCustomerParams() *GetCustomerParams {
 // UpdateCustomerParams object contains the properties necessary to update a
 // Customer via the API.
 type UpdateCustomerParams struct {
-	Customer GetCustomer
+	Customer CustomerGetOK
 }
 
 // NewUpdateCustomerParams creates an object with the parameters necessary
@@ -220,7 +220,7 @@ func NewUpdateCustomerParams() *UpdateCustomerParams {
 // DeleteCustomerParams object contains the properties necessary to delete a
 // Customer via the API.
 type DeleteCustomerParams struct {
-	Customer GetCustomer
+	Customer CustomerGetOK
 }
 
 // NewDeleteCustomerParams creates an object with the parameters necessary
@@ -237,21 +237,21 @@ type Service struct {
 	ID int `json:"Id,omitempty"`
 
 	// A string identifying the name of the service.
-	Name string
+	Name string `json:"Name,omitempty"`
 
 	// An integer that represents a service's parent ID
-	ParentID int `json:"parentId,omitempty"`
+	ParentID int `json:"ParentId,omitempty"`
 
 	// An integer that indicates whether the service is active or inactive
 	// 0: Indicates that the service is inactive
 	// 1: Indicates that the service is active
-	Status int8
+	Status int8 `json:"Status,omitempty"`
 }
 
 // GetCustomerServicesParams object contains the properties necessary to
 // retrieve a Customer's available services via the API.
 type GetCustomerServicesParams struct {
-	Customer GetCustomer
+	Customer CustomerGetOK
 }
 
 // NewGetCustomerServicesParams creates an object with the parameters necessary
@@ -264,7 +264,7 @@ func NewGetCustomerServicesParams() *GetCustomerServicesParams {
 // UpdateCustomerServicesParams object contains the properties necessary to
 // update a Customer's available services via the API.
 type UpdateCustomerServicesParams struct {
-	Customer GetCustomer
+	Customer CustomerGetOK
 	// Array of integers representing Service.ID values to be enabled or disabled
 	ServiceIDs []int
 
@@ -282,10 +282,16 @@ func NewUpdateCustomerServicesParams() *UpdateCustomerServicesParams {
 	return &UpdateCustomerServicesParams{}
 }
 
+type DeliveryRegion struct {
+	AccountNumber    string `json:"AccountNumber,omitempty"`
+	CustomID         string `json:"CustomId,omitempty"`
+	DeliveryRegionID int    `json:"DeliveryRegionId,omitempty"`
+}
+
 // GetCustomerDeliveryRegionParams object contains the properties necessary to
 // retrieve a Customer's available delivery regions via the API.
 type GetCustomerDeliveryRegionParams struct {
-	Customer GetCustomer
+	Customer CustomerGetOK
 }
 
 // NewGetCustomerDeliveryRegionParams creates an object with the parameters
@@ -298,7 +304,7 @@ func NewGetCustomerDeliveryRegionParams() *GetCustomerDeliveryRegionParams {
 // UpdateCustomerDeliveryRegionParams object contains the properties necessary
 // to update a Customer's available delivery region via the API.
 type UpdateCustomerDeliveryRegionParams struct {
-	Customer         GetCustomer
+	Customer         CustomerGetOK
 	DeliveryRegionID int
 }
 
@@ -322,7 +328,7 @@ type DomainType struct {
 // UpdateCustomerDomainURLParams object contains the properties necessary
 // to update a Customer's URLs via the API.
 type UpdateCustomerDomainURLParams struct {
-	Customer GetCustomer
+	Customer CustomerGetOK
 
 	// An integer that indicates the DomainType.ID value.
 	DomainType int
@@ -342,19 +348,19 @@ func NewUpdateCustomerDomainURLParams() *UpdateCustomerDomainURLParams {
 // for a customer
 type AccessModule struct {
 	// An integer that indicates an access module's ID.
-	ID int
+	ID int `json:"Id,omitempty"`
 
 	// An string that indicates an access module's name.
-	Name string
+	Name string `json:"Name,omitempty"`
 
 	// An integer that indicates the parent ID of an access module.
-	ParentID *int
+	ParentID *int `json:"ParentId,omitempty"`
 }
 
 // GetCustomerAccessModulesParams object contains the properties necessary
 // to retrieve a Customer's access modules via the API.
 type GetCustomerAccessModulesParams struct {
-	Customer GetCustomer
+	Customer CustomerGetOK
 }
 
 // NewGetCustomerAccessModulesParams creates an object with the parameters
@@ -367,7 +373,7 @@ func NewGetCustomerAccessModulesParams() *GetCustomerAccessModulesParams {
 // UpdateCustomerAccessModuleParams object contains the properties necessary
 // to update a Customer's access modules enablement status via the API.
 type UpdateCustomerAccessModuleParams struct {
-	Customer GetCustomer
+	Customer CustomerGetOK
 
 	// A list of integers that indicate the AccessModule.ID values to enable or
 	// disable

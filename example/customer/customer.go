@@ -70,7 +70,7 @@ func main() {
 
 	addParams := customer.NewAddCustomerParams()
 	addParams.Customer = newCustomer
-	accountNumber, err := customerService.AddCustomer(addParams)
+	accountNumber, err := customerService.AddCustomer(*addParams)
 
 	if err != nil {
 		fmt.Printf("error creating customer: %v\n", err)
@@ -108,7 +108,7 @@ func main() {
 
 	updateParams.Customer.ContactFirstName = "ContactFirstUpdated"
 
-	err = customerService.UpdateCustomer(updateParams)
+	err = customerService.UpdateCustomer(*updateParams)
 
 	if err != nil {
 		fmt.Printf("error updating customer: %v\n", err)
@@ -187,7 +187,7 @@ func main() {
 	// Delete Customer
 	deleteParams := customer.NewDeleteCustomerParams()
 	deleteParams.Customer = *customerResponse
-	err = customerService.DeleteCustomer(deleteParams)
+	err = customerService.DeleteCustomer(*deleteParams)
 
 	if err != nil {
 		fmt.Printf("error deleting customer: %v\n", err)
@@ -199,7 +199,7 @@ func main() {
 
 func ConfigureCustomerAccount(
 	customerService customer.CustomerService,
-	customerResponse customer.GetCustomer,
+	customerResponse customer.CustomerGetOK,
 ) error {
 
 	// Get customers available services
@@ -243,7 +243,7 @@ func ConfigureCustomerAccount(
 	// Get customer delivery region
 	getCustomerDeliveryRegionParams := customer.NewGetCustomerDeliveryRegionParams()
 	getCustomerDeliveryRegionParams.Customer = customerResponse
-	deliveryRegionID, err := customerService.GetCustomerDeliveryRegion(
+	deliveryRegion, err := customerService.GetCustomerDeliveryRegion(
 		*getCustomerDeliveryRegionParams,
 	)
 
@@ -252,7 +252,7 @@ func ConfigureCustomerAccount(
 		return err
 	}
 
-	fmt.Printf("Currently enabled regionID: %v", deliveryRegionID)
+	fmt.Printf("Currently selected delivery region: %v", deliveryRegion)
 
 	// Update delivery regions
 	updateCustomerDeliveryRegionParams := customer.NewUpdateCustomerDeliveryRegionParams()
@@ -267,7 +267,10 @@ func ConfigureCustomerAccount(
 		return err
 	}
 
-	fmt.Printf("Updated customer regionID: %v", deliveryRegionID)
+	fmt.Printf(
+		"Updated customer delivery region id: %v",
+		updateCustomerDeliveryRegionParams.DeliveryRegionID,
+	)
 
 	// Get customer access modules
 	getCustomerAccessModulesParams := customer.NewGetCustomerAccessModulesParams()

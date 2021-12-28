@@ -42,7 +42,7 @@ func (svc *CustomerService) AddCustomer(
 // Hex Account Number
 func (svc *CustomerService) GetCustomer(
 	params GetCustomerParams,
-) (*GetCustomer, error) {
+) (*CustomerGetOK, error) {
 	relURL := fmt.Sprintf("v2/pcc/customers/%s", params.AccountNumber)
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
 
@@ -50,7 +50,7 @@ func (svc *CustomerService) GetCustomer(
 		return nil, fmt.Errorf("GetCustomer: %v", err)
 	}
 
-	parsedResponse := &GetCustomer{}
+	parsedResponse := &CustomerGetOK{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
@@ -196,7 +196,7 @@ func (svc *CustomerService) UpdateCustomerServices(
 // the provided customer
 func (svc *CustomerService) GetCustomerDeliveryRegion(
 	params GetCustomerDeliveryRegionParams,
-) (int, error) {
+) (*DeliveryRegion, error) {
 	relURL := fmt.Sprintf(
 		"v2/pcc/customers/%s/deliveryregions",
 		params.Customer.HexID,
@@ -205,22 +205,18 @@ func (svc *CustomerService) GetCustomerDeliveryRegion(
 	request, err := svc.Client.BuildRequest("GET", relURL, nil)
 
 	if err != nil {
-		return 0, fmt.Errorf("GetCustomerDeliveryRegion: %v", err)
+		return nil, fmt.Errorf("GetCustomerDeliveryRegion: %v", err)
 	}
 
-	parsedResponse := &struct {
-		AccountNumber    string `json:"AccountNumber"`
-		CustomID         string `json:"CustomId"`
-		DeliveryRegionID int    `json:"DeliveryRegionId"`
-	}{}
+	parsedResponse := &DeliveryRegion{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
-		return 0, fmt.Errorf("GetCustomerDeliveryRegion: %v", err)
+		return nil, fmt.Errorf("GetCustomerDeliveryRegion: %v", err)
 	}
 
-	return parsedResponse.DeliveryRegionID, nil
+	return parsedResponse, nil
 }
 
 // UpdateCustomerDeliveryRegion changes the delivery region for the provided

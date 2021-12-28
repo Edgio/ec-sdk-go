@@ -46,7 +46,7 @@ func (svc *CustomerService) AddCustomerUser(
 // GetCustomerUser retrieves a Customer User
 func (svc *CustomerService) GetCustomerUser(
 	params GetCustomerUserParams,
-) (*GetCustomerUser, error) {
+) (*CustomerUserGetOK, error) {
 
 	// TODO: support custom id types, not just Hex ID ANs
 	baseURL := fmt.Sprintf(
@@ -62,7 +62,7 @@ func (svc *CustomerService) GetCustomerUser(
 		return nil, fmt.Errorf("GetCustomerUser: %v", err)
 	}
 
-	parsedResponse := &GetCustomerUser{}
+	parsedResponse := &CustomerUserGetOK{}
 
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
@@ -80,7 +80,7 @@ func (svc *CustomerService) UpdateCustomerUser(
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/users/%d?idtype=an&id=%s",
-		params.CustomerUser.Id,
+		params.CustomerUser.ID,
 		params.Customer.HexID,
 	)
 	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
@@ -107,7 +107,7 @@ func (svc *CustomerService) DeleteCustomerUser(
 	// TODO: support custom ids for accounts
 	baseURL := fmt.Sprintf(
 		"v2/pcc/customers/users/%d?idtype=an&id=%s",
-		params.CustomerUser.Id,
+		params.CustomerUser.ID,
 		params.Customer.HexID,
 	)
 	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
