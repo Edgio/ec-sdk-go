@@ -49,7 +49,7 @@ func (a *Client) SettingsGetRlSettings(params *SettingsGetRlSettingsParams) (*Se
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/settings"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("SettingsGetRlSettings: %v", err)
 	}
@@ -62,7 +62,6 @@ func (a *Client) SettingsGetRlSettings(params *SettingsGetRlSettingsParams) (*Se
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -82,7 +81,7 @@ func (a *Client) SettingsGetSettingsByPlatform(params *SettingsGetSettingsByPlat
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/platforms/{platformId}/settings"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("SettingsGetSettingsByPlatform: %v", err)
 	}
@@ -95,7 +94,6 @@ func (a *Client) SettingsGetSettingsByPlatform(params *SettingsGetSettingsByPlat
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -115,7 +113,7 @@ func (a *Client) SettingsGetWafSettings(params *SettingsGetWafSettingsParams) (*
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/waf/settings"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("SettingsGetWafSettings: %v", err)
 	}
@@ -128,7 +126,6 @@ func (a *Client) SettingsGetWafSettings(params *SettingsGetWafSettingsParams) (*
 	}
 
 	return parsedResponse, nil
-
 }
 
 type RequestParameters struct {

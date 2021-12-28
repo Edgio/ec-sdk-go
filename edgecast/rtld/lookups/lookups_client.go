@@ -67,7 +67,7 @@ func (a *Client) LookupsGetAwsRegions(params *LookupsGetAwsRegionsParams) (*Look
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/aws-regions"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetAwsRegions: %v", err)
 	}
@@ -80,7 +80,6 @@ func (a *Client) LookupsGetAwsRegions(params *LookupsGetAwsRegionsParams) (*Look
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -100,7 +99,7 @@ func (a *Client) LookupsGetAzureAccessTypes(params *LookupsGetAzureAccessTypesPa
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/azure-access-types"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetAzureAccessTypes: %v", err)
 	}
@@ -113,7 +112,6 @@ func (a *Client) LookupsGetAzureAccessTypes(params *LookupsGetAzureAccessTypesPa
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -133,7 +131,7 @@ func (a *Client) LookupsGetCustomItems(params *LookupsGetCustomItemsParams) (*Lo
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/custom-items"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetCustomItems: %v", err)
 	}
@@ -146,7 +144,6 @@ func (a *Client) LookupsGetCustomItems(params *LookupsGetCustomItemsParams) (*Lo
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -166,7 +163,7 @@ func (a *Client) LookupsGetDeliveryMethods(params *LookupsGetDeliveryMethodsPara
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/delivery-methods"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetDeliveryMethods: %v", err)
 	}
@@ -179,7 +176,6 @@ func (a *Client) LookupsGetDeliveryMethods(params *LookupsGetDeliveryMethodsPara
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -199,7 +195,7 @@ func (a *Client) LookupsGetDownsamplingRates(params *LookupsGetDownsamplingRates
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/downsampling-rates"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetDownsamplingRates: %v", err)
 	}
@@ -212,7 +208,6 @@ func (a *Client) LookupsGetDownsamplingRates(params *LookupsGetDownsamplingRates
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -232,7 +227,7 @@ func (a *Client) LookupsGetFieldRl(params *LookupsGetFieldRlParams) (*LookupsGet
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/fields"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetFieldRl: %v", err)
 	}
@@ -245,7 +240,6 @@ func (a *Client) LookupsGetFieldRl(params *LookupsGetFieldRlParams) (*LookupsGet
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -265,7 +259,7 @@ func (a *Client) LookupsGetFieldsCdn(params *LookupsGetFieldsCdnParams) (*Lookup
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/cdn/fields"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetFieldsCdn: %v", err)
 	}
@@ -278,7 +272,6 @@ func (a *Client) LookupsGetFieldsCdn(params *LookupsGetFieldsCdnParams) (*Lookup
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -298,7 +291,7 @@ func (a *Client) LookupsGetFieldsWaf(params *LookupsGetFieldsWafParams) (*Lookup
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/waf/fields"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetFieldsWaf: %v", err)
 	}
@@ -311,7 +304,6 @@ func (a *Client) LookupsGetFieldsWaf(params *LookupsGetFieldsWafParams) (*Lookup
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -331,7 +323,7 @@ func (a *Client) LookupsGetHTTPAuthenticationMethods(params *LookupsGetHTTPAuthe
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/http-authentication-methods"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetHTTPAuthenticationMethods: %v", err)
 	}
@@ -344,7 +336,6 @@ func (a *Client) LookupsGetHTTPAuthenticationMethods(params *LookupsGetHTTPAuthe
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -364,7 +355,7 @@ func (a *Client) LookupsGetLogFormats(params *LookupsGetLogFormatsParams) (*Look
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/log-formats"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetLogFormats: %v", err)
 	}
@@ -377,7 +368,6 @@ func (a *Client) LookupsGetLogFormats(params *LookupsGetLogFormatsParams) (*Look
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -397,7 +387,7 @@ func (a *Client) LookupsGetPlatforms(params *LookupsGetPlatformsParams) (*Lookup
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/platforms"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetPlatforms: %v", err)
 	}
@@ -410,7 +400,6 @@ func (a *Client) LookupsGetPlatforms(params *LookupsGetPlatformsParams) (*Lookup
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -430,7 +419,7 @@ func (a *Client) LookupsGetStatusCodes(params *LookupsGetStatusCodesParams) (*Lo
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/status-codes"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("LookupsGetStatusCodes: %v", err)
 	}
@@ -443,7 +432,6 @@ func (a *Client) LookupsGetStatusCodes(params *LookupsGetStatusCodesParams) (*Lo
 	}
 
 	return parsedResponse, nil
-
 }
 
 type RequestParameters struct {

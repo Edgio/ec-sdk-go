@@ -57,7 +57,7 @@ func (a *Client) ProfilesRlDeleteCustomerSettingsByID(params *ProfilesRlDeleteCu
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}"
 
-	request, err := a.Client.BuildRequest("DELETE", url, results.Body)
+	request, err := a.Client.PrepareRequest("DELETE", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRlDeleteCustomerSettingsByID: %v", err)
 	}
@@ -70,7 +70,6 @@ func (a *Client) ProfilesRlDeleteCustomerSettingsByID(params *ProfilesRlDeleteCu
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -90,7 +89,7 @@ func (a *Client) ProfilesRlUpdateCustomerSetting(params *ProfilesRlUpdateCustome
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}"
 
-	request, err := a.Client.BuildRequest("PUT", url, results.Body)
+	request, err := a.Client.PrepareRequest("PUT", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRlUpdateCustomerSetting: %v", err)
 	}
@@ -103,7 +102,6 @@ func (a *Client) ProfilesRlUpdateCustomerSetting(params *ProfilesRlUpdateCustome
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -123,7 +121,7 @@ func (a *Client) ProfilesWafAddCustomerSetting(params *ProfilesWafAddCustomerSet
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/waf/profiles"
 
-	request, err := a.Client.BuildRequest("POST", url, results.Body)
+	request, err := a.Client.PrepareRequest("POST", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesWafAddCustomerSetting: %v", err)
 	}
@@ -136,7 +134,6 @@ func (a *Client) ProfilesWafAddCustomerSetting(params *ProfilesWafAddCustomerSet
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -156,7 +153,7 @@ func (a *Client) ProfilesWafDeleteCustomerSettingsByID(params *ProfilesWafDelete
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/waf/profiles/{id}"
 
-	request, err := a.Client.BuildRequest("DELETE", url, results.Body)
+	request, err := a.Client.PrepareRequest("DELETE", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesWafDeleteCustomerSettingsByID: %v", err)
 	}
@@ -169,7 +166,6 @@ func (a *Client) ProfilesWafDeleteCustomerSettingsByID(params *ProfilesWafDelete
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -189,7 +185,7 @@ func (a *Client) ProfilesWafGetCustomerSettings(params *ProfilesWafGetCustomerSe
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/waf/profiles"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesWafGetCustomerSettings: %v", err)
 	}
@@ -202,7 +198,6 @@ func (a *Client) ProfilesWafGetCustomerSettings(params *ProfilesWafGetCustomerSe
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -222,7 +217,7 @@ func (a *Client) ProfilesWafGetCustomerSettingsByID(params *ProfilesWafGetCustom
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/waf/profiles/{id}"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesWafGetCustomerSettingsByID: %v", err)
 	}
@@ -235,7 +230,6 @@ func (a *Client) ProfilesWafGetCustomerSettingsByID(params *ProfilesWafGetCustom
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -255,7 +249,7 @@ func (a *Client) ProfilesWafUpdateCustomerSetting(params *ProfilesWafUpdateCusto
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/waf/profiles/{id}"
 
-	request, err := a.Client.BuildRequest("PUT", url, results.Body)
+	request, err := a.Client.PrepareRequest("PUT", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesWafUpdateCustomerSetting: %v", err)
 	}
@@ -268,7 +262,6 @@ func (a *Client) ProfilesWafUpdateCustomerSetting(params *ProfilesWafUpdateCusto
 	}
 
 	return parsedResponse, nil
-
 }
 
 type RequestParameters struct {

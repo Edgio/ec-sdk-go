@@ -49,7 +49,7 @@ func (a *Client) ProfilesRateLimitingAddCustomerSetting(params *ProfilesRateLimi
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles"
 
-	request, err := a.Client.BuildRequest("POST", url, results.Body)
+	request, err := a.Client.PrepareRequest("POST", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRateLimitingAddCustomerSetting: %v", err)
 	}
@@ -62,7 +62,6 @@ func (a *Client) ProfilesRateLimitingAddCustomerSetting(params *ProfilesRateLimi
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -82,7 +81,7 @@ func (a *Client) ProfilesRateLimitingGetCustomerSettings(params *ProfilesRateLim
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRateLimitingGetCustomerSettings: %v", err)
 	}
@@ -95,7 +94,6 @@ func (a *Client) ProfilesRateLimitingGetCustomerSettings(params *ProfilesRateLim
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -115,7 +113,7 @@ func (a *Client) ProfilesRlGetCustomerSettingsByID(params *ProfilesRlGetCustomer
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRlGetCustomerSettingsByID: %v", err)
 	}
@@ -128,7 +126,6 @@ func (a *Client) ProfilesRlGetCustomerSettingsByID(params *ProfilesRlGetCustomer
 	}
 
 	return parsedResponse, nil
-
 }
 
 type RequestParameters struct {

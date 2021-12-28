@@ -53,7 +53,7 @@ func (a *Client) ProfilesAddCustomerSetting(params *ProfilesAddCustomerSettingPa
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/cdn/profiles"
 
-	request, err := a.Client.BuildRequest("POST", url, results.Body)
+	request, err := a.Client.PrepareRequest("POST", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesAddCustomerSetting: %v", err)
 	}
@@ -66,7 +66,6 @@ func (a *Client) ProfilesAddCustomerSetting(params *ProfilesAddCustomerSettingPa
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -86,7 +85,7 @@ func (a *Client) ProfilesDeleteCustomerSettingsByID(params *ProfilesDeleteCustom
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/cdn/profiles/{id}"
 
-	request, err := a.Client.BuildRequest("DELETE", url, results.Body)
+	request, err := a.Client.PrepareRequest("DELETE", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesDeleteCustomerSettingsByID: %v", err)
 	}
@@ -99,7 +98,6 @@ func (a *Client) ProfilesDeleteCustomerSettingsByID(params *ProfilesDeleteCustom
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -119,7 +117,7 @@ func (a *Client) ProfilesGetCustomerSettings(params *ProfilesGetCustomerSettings
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/cdn/profiles"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesGetCustomerSettings: %v", err)
 	}
@@ -132,7 +130,6 @@ func (a *Client) ProfilesGetCustomerSettings(params *ProfilesGetCustomerSettings
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -152,7 +149,7 @@ func (a *Client) ProfilesGetCustomerSettingsByID(params *ProfilesGetCustomerSett
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/cdn/profiles/{id}"
 
-	request, err := a.Client.BuildRequest("GET", url, results.Body)
+	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesGetCustomerSettingsByID: %v", err)
 	}
@@ -165,7 +162,6 @@ func (a *Client) ProfilesGetCustomerSettingsByID(params *ProfilesGetCustomerSett
 	}
 
 	return parsedResponse, nil
-
 }
 
 /*
@@ -185,7 +181,7 @@ func (a *Client) ProfilesUpdateCustomerSetting(params *ProfilesUpdateCustomerSet
 
 	url := a.Config.BaseAPIURL.String() + "/v1.0/cdn/profiles/{id}"
 
-	request, err := a.Client.BuildRequest("PUT", url, results.Body)
+	request, err := a.Client.PrepareRequest("PUT", url, results.Body, results.QueryParams, results.PathParams)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesUpdateCustomerSetting: %v", err)
 	}
@@ -198,7 +194,6 @@ func (a *Client) ProfilesUpdateCustomerSetting(params *ProfilesUpdateCustomerSet
 	}
 
 	return parsedResponse, nil
-
 }
 
 type RequestParameters struct {
