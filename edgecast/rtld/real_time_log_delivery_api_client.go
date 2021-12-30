@@ -27,7 +27,7 @@ const (
 	DefaultHost string = "localhost"
 	// DefaultBasePath is the default BasePath
 	// found in Meta (info) section of spec file
-	DefaultBasePath string = "/cps/base"
+	DefaultBasePath string = "/rtld"
 )
 
 // DefaultSchemes are the default schemes found in Meta (info) section of spec file
