@@ -241,7 +241,7 @@ func (c *Client) SendRequest(
 		return nil, fmt.Errorf("SendRequest failed: %s", bodyAsString)
 	}
 	if parsedResponse == nil {
-		return nil, nil
+		return resp, nil
 	}
 
 	var f interface{}
