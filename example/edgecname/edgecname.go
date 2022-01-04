@@ -12,7 +12,11 @@ import (
 func main() {
 	// Setup
 	apiToken := flag.String("api-token", "", "API Token provided to you")
-	accountNumber := flag.String("account-number", "", "Account number, aka hex")
+	accountNumber := flag.String(
+		"account-number",
+		"",
+		"Account number you wish to manage an Edge CNAME for",
+	)
 
 	flag.Parse()
 
