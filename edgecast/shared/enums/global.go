@@ -5,7 +5,7 @@ type Platform int
 const (
 	HttpLarge Platform = 3
 	HttpSmall          = 8
-	Adn                = 14
+	ADN                = 14
 )
 
 func (p Platform) String() string {
@@ -14,7 +14,7 @@ func (p Platform) String() string {
 		return "httplarge"
 	case HttpSmall:
 		return "httpsmall"
-	case Adn:
+	case ADN:
 		return "adn"
 	}
 	return "unknown"
