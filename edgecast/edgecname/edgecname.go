@@ -3,13 +3,42 @@
 
 package edgecname
 
-import "fmt"
+import (
+	"fmt"
+)
 
-// GetAllEdgeCnames
-// TODO: Add
+// GetAllEdgeCnames retrieves all edge CNAMEs for the provided platform.
+func (svc *EdgeCnameService) GetAllEdgeCnames(
+	params GetAllEdgeCnameParams,
+) (*[]EdgeCnameGetOK, error) {
+
+	request, err := svc.Client.BuildRequest(
+		"GET",
+		fmt.Sprintf(
+			"v2/mcc/customers/%s/cnames/%s",
+			params.AccountNumber,
+			params.Platform.String(),
+		),
+		nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetAllEdgeCnames: %v", err)
+	}
+
+	parsedResponse := &[]EdgeCnameGetOK{}
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetAllEdgeCnames: %v", err)
+	}
+
+	return parsedResponse, nil
+}
 
 // AddEdgeCname creates an edge CNAME.
-func (svc *EdgeCnameService) AddEdgeCname(params AddEdgeCnameParams) (*int, error) {
+func (svc *EdgeCnameService) AddEdgeCname(
+	params AddEdgeCnameParams,
+) (*int, error) {
 	request, err := svc.Client.BuildRequest(
 		"POST",
 		fmt.Sprintf("v2/mcc/customers/%s/cnames", params.AccountNumber),
@@ -17,7 +46,7 @@ func (svc *EdgeCnameService) AddEdgeCname(params AddEdgeCnameParams) (*int, erro
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("AddCname: %v", err)
+		return nil, fmt.Errorf("AddEdgeCname: %v", err)
 	}
 
 	parsedResponse := &struct {
@@ -27,13 +56,13 @@ func (svc *EdgeCnameService) AddEdgeCname(params AddEdgeCnameParams) (*int, erro
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
-		return nil, fmt.Errorf("AddCname: %v", err)
+		return nil, fmt.Errorf("AddEdgeCname: %v", err)
 	}
 
 	return &parsedResponse.CnameID, nil
 }
 
-// GetEdgeCname retrieves an edge CNAME configuration.
+// GetEdgeCname retrieves a single edge CNAME configuration.
 func (svc *EdgeCnameService) GetEdgeCname(
 	params GetEdgeCnameParams,
 ) (*EdgeCnameGetOK, error) {
@@ -47,14 +76,14 @@ func (svc *EdgeCnameService) GetEdgeCname(
 		nil)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetCname: %v", err)
+		return nil, fmt.Errorf("GetEdgeCname: %v", err)
 	}
 
 	parsedResponse := &EdgeCnameGetOK{}
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetCname: %v", err)
+		return nil, fmt.Errorf("GetEdgeCname: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -75,7 +104,7 @@ func (svc *EdgeCnameService) UpdateEdgeCname(
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("UpdateCname: %v", err)
+		return nil, fmt.Errorf("UpdateEdgeCname: %v", err)
 	}
 
 	parsedResponse := &struct {
@@ -84,7 +113,7 @@ func (svc *EdgeCnameService) UpdateEdgeCname(
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
-		return nil, fmt.Errorf("UpdateCname: %v", err)
+		return nil, fmt.Errorf("UpdateEdgeCname: %v", err)
 	}
 
 	return &parsedResponse.CnameID, nil
@@ -103,18 +132,43 @@ func (svc *EdgeCnameService) DeleteEdgeCname(params DeleteEdgeCnameParams) error
 	)
 
 	if err != nil {
-		return fmt.Errorf("DeleteCname: %v", err)
+		return fmt.Errorf("DeleteEdgeCname: %v", err)
 	}
 
 	_, err = svc.Client.SendRequest(request, nil)
 
 	if err != nil {
-		return fmt.Errorf("DeleteCname: %v", err)
+		return fmt.Errorf("DeleteEdgeCname: %v", err)
 	}
 
 	return nil
 
 }
 
-// Get Edge CNAME status
-// TODO: add
+// GetEdgeCnamePropagationStatus Retrieves the propagation status for an edge
+// CNAME configuration.
+func (svc *EdgeCnameService) GetEdgeCnamePropagationStatus(
+	params GetEdgeCnamePropagationStatus,
+) (*PropagationStatus, error) {
+	request, err := svc.Client.BuildRequest(
+		"GET",
+		fmt.Sprintf(
+			"v2/mcc/customers/%s/cnames/%d/status",
+			params.AccountNumber,
+			params.EdgeCnameID,
+		),
+		nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetEdgeCnamePropagationStatus: %v", err)
+	}
+
+	parsedResponse := &PropagationStatus{}
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetEdgeCnamePropagationStatus: %v", err)
+	}
+
+	return parsedResponse, nil
+}

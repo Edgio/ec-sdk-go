@@ -7,6 +7,7 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/edgecname"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/enums"
 )
 
 func main() {
@@ -51,7 +52,21 @@ func main() {
 		return
 	}
 
-	// Get Edge CNAME
+	// Get all Edge CNAMEs by MediaType
+	getAllParms := edgecname.NewGetAllEdgeCnameParams()
+	getAllParms.AccountNumber = *accountNumber
+	getAllParms.Platform = enums.HttpLarge
+
+	edgeCnames, err := edgecnameService.GetAllEdgeCnames(*getAllParms)
+
+	if err != nil {
+		fmt.Printf("error retrieving all Edge CNAMEs: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Edge CNAMEs retrieved: %v", edgeCnames)
+
+	// Get a single Edge CNAME
 	getParams := edgecname.NewGetEdgeCnameParams()
 	getParams.AccountNumber = *accountNumber
 	getParams.EdgeCnameID = *edgeCnameID
@@ -62,6 +77,22 @@ func main() {
 		fmt.Printf("error retrieving Edge CNAME: %v\n", err)
 		return
 	}
+
+	// Get Edge CNAME propgation status
+	getStatusParams := edgecname.NewGetEdgeCnamePropagationStatusParams()
+	getStatusParams.AccountNumber = *accountNumber
+	getStatusParams.EdgeCnameID = *edgeCnameID
+
+	propagationStatus, err := edgecnameService.GetEdgeCnamePropagationStatus(
+		*getStatusParams,
+	)
+
+	if err != nil {
+		fmt.Printf("error retrieving Edge CNAME propagation status: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Edge CNAME propagation status: %v\n", propagationStatus)
 
 	// Update Edge CNAME
 	edgeCnameObj.EnableCustomReports = 0

@@ -3,6 +3,10 @@
 
 package edgecname
 
+import (
+	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/enums"
+)
+
 // EdgeCname is a user-friendly URL, which is known as an edge CNAME URL,
 // instead of a CDN URL. Edge CNAME URLs are typically shorter and easier to
 // remember than CDN URLs. Additionally, you may set up an edge CNAME URL to
@@ -79,6 +83,45 @@ type EdgeCnameGetOK struct {
 	OriginString string `json:"OriginString,omitempty"`
 }
 
+// PropagationStatus retrieves the propagation status for an edge CNAME
+// configuration.
+type PropagationStatus struct {
+	// Indicates the edge CNAME 's current propagation status. Valid values are:
+	// New: Indicates that the configuration has been created, but the
+	// propagation process has not started.
+	// propagating: Indicates that the configuration is in the process of being
+	// propagated.
+	// propagated: Indicates that the configuration has been propagated across
+	// the entire network.
+	Status string `json:"status,omitempty"`
+
+	// Indicates the average configuration propagation percentage across all POPs.
+	PercentPropagated float32 `json:"Percent_propagated,omitempty"`
+
+	// Contains a list of POPs and their current configuration propagation
+	// percentage.
+	Pops []PopPropagationStatus `json:"Popsomitempty"`
+}
+
+// PopPropagationStatus represents propagation status for a POP
+type PopPropagationStatus struct {
+	// Identifies a POP by region and name.
+	Name string `json:"name,omitempty"`
+
+	// Indicates the percentage of servers within a POP to which the
+	// configuration has been propagated.
+	PercentPropagated float32 `json:"percentage_propagated,omitempty"`
+}
+
+type GetAllEdgeCnameParams struct {
+	AccountNumber string
+	Platform      enums.Platform
+}
+
+func NewGetAllEdgeCnameParams() *GetAllEdgeCnameParams {
+	return &GetAllEdgeCnameParams{}
+}
+
 type AddEdgeCnameParams struct {
 	EdgeCname     EdgeCname
 	AccountNumber string
@@ -113,4 +156,13 @@ type DeleteEdgeCnameParams struct {
 
 func NewDeleteEdgeCnameParams() *DeleteEdgeCnameParams {
 	return &DeleteEdgeCnameParams{}
+}
+
+type GetEdgeCnamePropagationStatus struct {
+	EdgeCnameID   int
+	AccountNumber string
+}
+
+func NewGetEdgeCnamePropagationStatusParams() *GetEdgeCnamePropagationStatus {
+	return &GetEdgeCnamePropagationStatus{}
 }
