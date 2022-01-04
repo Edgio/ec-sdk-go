@@ -5,15 +5,15 @@ package edgecname
 
 import "fmt"
 
-//GetAllEdgeCnames
+// GetAllEdgeCnames
 // TODO: Add
 
 // AddEdgeCname creates an edge CNAME.
-func (svc *CnameService) AddEdgeCname(params *AddCnameParams) (*int, error) {
+func (svc *EdgeCnameService) AddEdgeCname(params AddEdgeCnameParams) (*int, error) {
 	request, err := svc.Client.BuildRequest(
 		"POST",
 		fmt.Sprintf("v2/mcc/customers/%s/cnames", params.AccountNumber),
-		params.Cname,
+		params.EdgeCname,
 	)
 
 	if err != nil {
@@ -34,13 +34,15 @@ func (svc *CnameService) AddEdgeCname(params *AddCnameParams) (*int, error) {
 }
 
 // GetEdgeCname retrieves an edge CNAME configuration.
-func (svc *CnameService) GetEdgeCname(params GetCnameParams) (*EdgeCname, error) {
+func (svc *EdgeCnameService) GetEdgeCname(
+	params GetEdgeCnameParams,
+) (*EdgeCnameGetOK, error) {
 	request, err := svc.Client.BuildRequest(
 		"GET",
 		fmt.Sprintf(
 			"v2/mcc/customers/%s/cnames/%d",
 			params.AccountNumber,
-			params.CnameID,
+			params.EdgeCnameID,
 		),
 		nil)
 
@@ -48,7 +50,7 @@ func (svc *CnameService) GetEdgeCname(params GetCnameParams) (*EdgeCname, error)
 		return nil, fmt.Errorf("GetCname: %v", err)
 	}
 
-	parsedResponse := &EdgeCname{}
+	parsedResponse := &EdgeCnameGetOK{}
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
@@ -59,15 +61,17 @@ func (svc *CnameService) GetEdgeCname(params GetCnameParams) (*EdgeCname, error)
 }
 
 // UpdateEdgeCname updates the configuration for the specified edge CNAME.
-func (svc *CnameService) UpdateEdgeCname(params *UpdateCnameParams) (*int, error) {
+func (svc *EdgeCnameService) UpdateEdgeCname(
+	params UpdateEdgeCnameParams,
+) (*int, error) {
 	request, err := svc.Client.BuildRequest(
 		"PUT",
 		fmt.Sprintf(
 			"v2/mcc/customers/%s/cnames/%d",
 			params.AccountNumber,
-			params.Cname.ID,
+			params.EdgeCname.ID,
 		),
-		params.Cname,
+		params.EdgeCname,
 	)
 
 	if err != nil {
@@ -87,13 +91,13 @@ func (svc *CnameService) UpdateEdgeCname(params *UpdateCnameParams) (*int, error
 }
 
 // DeleteEdgeCname deletes an edge CNAME.
-func (svc *CnameService) DeleteEdgeCname(params DeleteCnameParams) error {
+func (svc *EdgeCnameService) DeleteEdgeCname(params DeleteEdgeCnameParams) error {
 	request, err := svc.Client.BuildRequest(
 		"DELETE",
 		fmt.Sprintf(
 			"v2/mcc/customers/%s/cnames/%d",
 			params.AccountNumber,
-			params.Cname.ID,
+			params.EdgeCname.ID,
 		),
 		nil,
 	)

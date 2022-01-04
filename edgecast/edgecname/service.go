@@ -13,13 +13,13 @@ import (
 )
 
 // Cname service interacts with the EdgeCast API for managing Cnames
-type CnameService struct {
+type EdgeCnameService struct {
 	client.Client
 	Logger logging.Logger
 }
 
 // New creates a new Cname service
-func New(config edgecast.SDKConfig) (*CnameService, error) {
+func New(config edgecast.SDKConfig) (*EdgeCnameService, error) {
 
 	authProvider, err := auth.NewTokenAuthorizationProvider(config.APIToken)
 
@@ -34,7 +34,7 @@ func New(config edgecast.SDKConfig) (*CnameService, error) {
 		Logger:       config.Logger,
 	})
 
-	return &CnameService{
+	return &EdgeCnameService{
 		Client: c,
 		Logger: config.Logger,
 	}, nil

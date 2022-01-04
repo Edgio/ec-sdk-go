@@ -56,8 +56,9 @@ type EdgeCname struct {
 	MediaTypeID int `json:"MediaTypeId,omitempty"`
 }
 
-//CnameGetOk -
-type CnameGetOk struct {
+// EdgeCnameGetOK is used specifically when retrieving an Edge CNAME and contains
+// additional read-only properties.
+type EdgeCnameGetOK struct {
 	EdgeCname
 
 	// Indicates the ID for the edge CNAME.
@@ -78,38 +79,38 @@ type CnameGetOk struct {
 	OriginString string `json:"OriginString,omitempty"`
 }
 
-type AddCnameParams struct {
-	Cname         EdgeCname
+type AddEdgeCnameParams struct {
+	EdgeCname     EdgeCname
 	AccountNumber string
 }
 
-func NewAddCnameParams() *AddCnameParams {
-	return &AddCnameParams{}
+func NewAddEdgeCnameParams() *AddEdgeCnameParams {
+	return &AddEdgeCnameParams{}
 }
 
-type GetCnameParams struct {
-	CnameID       int
+type GetEdgeCnameParams struct {
+	EdgeCnameID   int
 	AccountNumber string
 }
 
-func NewGetCnameParams() *GetCnameParams {
-	return &GetCnameParams{}
+func NewGetEdgeCnameParams() *GetEdgeCnameParams {
+	return &GetEdgeCnameParams{}
 }
 
-type UpdateCnameParams struct {
-	Cname         CnameGetOk
+type UpdateEdgeCnameParams struct {
+	EdgeCname     EdgeCnameGetOK
 	AccountNumber string
 }
 
-func NewUpdateCnameParams() *UpdateCnameParams {
-	return &UpdateCnameParams{}
+func NewUpdateEdgeCnameParams() *UpdateEdgeCnameParams {
+	return &UpdateEdgeCnameParams{}
 }
 
-type DeleteCnameParams struct {
-	Cname         CnameGetOk
+type DeleteEdgeCnameParams struct {
+	EdgeCname     EdgeCnameGetOK
 	AccountNumber string
 }
 
-func NewDeleteCnameParams() *DeleteCnameParams {
-	return &DeleteCnameParams{}
+func NewDeleteEdgeCnameParams() *DeleteEdgeCnameParams {
+	return &DeleteEdgeCnameParams{}
 }
