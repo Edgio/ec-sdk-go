@@ -21,7 +21,7 @@ func main() {
 
 	flag.Parse()
 
-	// Customer management does not use IDS credentials
+	// Edge CNAME management does not use IDS credentials
 	idsCredentials := auth.OAuth2Credentials{}
 
 	sdkConfig := edgecast.NewSDKConfig(*apiToken, idsCredentials)
