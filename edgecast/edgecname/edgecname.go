@@ -145,7 +145,7 @@ func (svc *EdgeCnameService) DeleteEdgeCname(params DeleteEdgeCnameParams) error
 
 }
 
-// GetEdgeCnamePropagationStatus Retrieves the propagation status for an edge
+// GetEdgeCnamePropagationStatus retrieves the propagation status for an edge
 // CNAME configuration.
 func (svc *EdgeCnameService) GetEdgeCnamePropagationStatus(
 	params GetEdgeCnamePropagationStatus,
