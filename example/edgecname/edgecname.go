@@ -52,7 +52,7 @@ func main() {
 		return
 	}
 
-	// Get all Edge CNAMEs by MediaType
+	// Get all Edge CNAMEs by Platform
 	getAllParms := edgecname.NewGetAllEdgeCnameParams()
 	getAllParms.AccountNumber = *accountNumber
 	getAllParms.Platform = enums.HttpLarge
