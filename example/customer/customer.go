@@ -19,7 +19,6 @@ func main() {
 	idsCredentials := auth.OAuth2Credentials{}
 
 	sdkConfig := edgecast.NewSDKConfig(*apiToken, idsCredentials)
-	sdkConfig.BaseAPIURLLegacy.Host = "qa-api.edgecast.com"
 	customerService, err := customer.New(sdkConfig)
 
 	if err != nil {
