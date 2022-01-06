@@ -15,27 +15,29 @@ package waf
 
 import (
 	"fmt"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
 )
 
 // AddAccessRule creates a new Access Rule for the provided account number.
 func (svc WAFService) AddAccessRule(
 	params AddAccessRuleParams,
 ) (*AddAccessRuleResponse, error) {
-	url := fmt.Sprintf(
-		"/v2/mcc/customers/%s/waf/v1.0/acl",
-		params.AccountNumber)
-	req, err := svc.Client.BuildRequest("POST", url, params.AccessRule)
+	resp, err := svc.client.Do(client.DoParams{
+		Method: "POST",
+		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl",
+		Body:   params.AccessRule,
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+	})
 	if err != nil {
-		return nil, fmt.Errorf("AddAccessRule: %v", err)
+		return nil, fmt.Errorf("WAFService.AddAccessRule: %v", err)
 	}
-
-	parsedResponse := &AddAccessRuleResponse{}
-	_, err = svc.Client.SendRequest(req, &parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("AddAccessRule: %v", err)
+	if parsedResponse, ok := resp.(*AddAccessRuleResponse); ok {
+		return parsedResponse, nil
 	}
-
-	return parsedResponse, nil
+	return nil, fmt.Errorf(ErrAssertFailed, "AddAccessRuleResponse", resp, err)
 }
 
 // GetAllAccessRules retrieves all of the Access Rules for the provided
@@ -43,22 +45,20 @@ func (svc WAFService) AddAccessRule(
 func (svc WAFService) GetAllAccessRules(
 	params GetAllAccessRulesParams,
 ) (*[]AccessRuleLight, error) {
-	url := fmt.Sprintf(
-		"/v2/mcc/customers/%s/waf/v1.0/acl",
-		params.AccountNumber)
-	req, err := svc.Client.BuildRequest("GET", url, nil)
+	resp, err := svc.client.Do(client.DoParams{
+		Method: "GET",
+		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
+		return nil, fmt.Errorf("WAFService.AddAccessRule: %v", err)
 	}
-
-	var parsedResponse = &[]AccessRuleLight{}
-	_, err = svc.Client.SendRequest(req, &parsedResponse)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
+	if parsedResponse, ok := resp.(*[]AccessRuleLight); ok {
+		return parsedResponse, nil
 	}
-
-	return parsedResponse, nil
+	return nil, fmt.Errorf(ErrAssertFailed, "[]AccessRuleLight", resp, err)
 }
 
 // GetAccessRule retrieves an Access Rule for the provided account number
@@ -66,45 +66,45 @@ func (svc WAFService) GetAllAccessRules(
 func (svc WAFService) GetAccessRule(
 	params GetAccessRuleParams,
 ) (*GetAccessRuleResponse, error) {
-	url := fmt.Sprintf(
-		"/v2/mcc/customers/%s/waf/v1.0/acl/%s",
-		params.AccountNumber,
-		params.AccessRuleID)
-	req, err := svc.Client.BuildRequest("GET", url, nil)
+	resp, err := svc.client.Do(client.DoParams{
+		Method: "GET",
+		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl/{id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"id":             params.AccessRuleID,
+		},
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAccessRule: %v", err)
+		return nil, fmt.Errorf("WAFService.AddAccessRule: %v", err)
 	}
-
-	var parsedResponse = &GetAccessRuleResponse{}
-	_, err = svc.Client.SendRequest(req, &parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("GetAccessRule: %v", err)
+	if parsedResponse, ok := resp.(*GetAccessRuleResponse); ok {
+		return parsedResponse, nil
 	}
-
-	return parsedResponse, nil
+	return nil, fmt.Errorf(ErrAssertFailed, "GetAccessRuleResponse", resp, err)
 }
 
 // UpdateAccessRule updates an Access Rule for the given account number using
 // the provided Access Rule ID and Access Rule properties.
 func (svc WAFService) UpdateAccessRule(
 	params UpdateAccessRuleParams,
-) (*UpdateRuleResponse, error) {
-	url := fmt.Sprintf(
-		"/v2/mcc/customers/%s/waf/v1.0/acl/%s",
-		params.AccountNumber,
-		params.AccessRuleID)
-	req, err := svc.Client.BuildRequest("PUT", url, params.AccessRule)
+) (*UpdateAccessRuleResponse, error) {
+	resp, err := svc.client.Do(client.DoParams{
+		Method: "PUT",
+		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl/{id}",
+		Body:   params.AccessRule,
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"id":             params.AccessRuleID,
+		},
+	})
 	if err != nil {
-		return nil, fmt.Errorf("UpdateAccessRule: %v", err)
+		return nil, fmt.Errorf("WAFService.AddAccessRule: %v", err)
 	}
-
-	var parsedResponse = &UpdateRuleResponse{}
-	_, err = svc.Client.SendRequest(req, &parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("UpdateAccessRule: %v", err)
+	if parsedResponse, ok := resp.(*UpdateAccessRuleResponse); ok {
+		return parsedResponse, nil
 	}
-
-	return parsedResponse, nil
+	return nil, fmt.Errorf(
+		ErrAssertFailed, "UpdateAccessRuleResponse", resp, err)
 }
 
 // DeleteAccessRule deletes an Access Rule for the given account number using
@@ -112,22 +112,22 @@ func (svc WAFService) UpdateAccessRule(
 func (svc WAFService) DeleteAccessRule(
 	params DeleteAccessRuleParams,
 ) (*DeleteAccessRuleResponse, error) {
-	url := fmt.Sprintf(
-		"/v2/mcc/customers/%s/waf/v1.0/acl/%s",
-		params.AccountNumber,
-		params.AccessRuleID)
-	req, err := svc.Client.BuildRequest("DELETE", url, nil)
+	resp, err := svc.client.Do(client.DoParams{
+		Method: "DELETE",
+		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl/{id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"id":             params.AccessRuleID,
+		},
+	})
 	if err != nil {
-		return nil, fmt.Errorf("DeleteAccessRule: %v", err)
+		return nil, fmt.Errorf("WAFService.AddAccessRule: %v", err)
 	}
-
-	var parsedResponse = &DeleteAccessRuleResponse{}
-	_, err = svc.Client.SendRequest(req, &parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("DeleteAccessRule: %v", err)
+	if parsedResponse, ok := resp.(*DeleteAccessRuleResponse); ok {
+		return parsedResponse, nil
 	}
-
-	return parsedResponse, nil
+	return nil, fmt.Errorf(
+		ErrAssertFailed, "DeleteAccessRuleResponse", resp, err)
 }
 
 // AccessRule contains the shared properties for the Create, Get, Update models

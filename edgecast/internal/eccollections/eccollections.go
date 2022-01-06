@@ -3,7 +3,7 @@
 
 // Package collection provides helper methods for working with
 // aggregate/collection types
-package collections
+package eccollections
 
 // IsInterfaceArray determines if an interface{} is actually an []interface{}
 func IsInterfaceArray(input interface{}) bool {

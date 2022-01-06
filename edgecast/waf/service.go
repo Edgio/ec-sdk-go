@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package waf
 
@@ -16,13 +16,13 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-// WAF service interacts with the EdgeCast API for WAF
+// WAFService interacts with the EdgeCast API for WAF
 type WAFService struct {
-	client.Client
+	client client.APIClient
 	Logger logging.Logger
 }
 
-// New creates a new WAF service
+// New creates a new instance of WAFservice using the provided configuration
 func New(config edgecast.SDKConfig) (*WAFService, error) {
 	authProvider, err := auth.NewTokenAuthorizationProvider(config.APIToken)
 
@@ -30,30 +30,29 @@ func New(config edgecast.SDKConfig) (*WAFService, error) {
 		return nil, fmt.Errorf("waf.New(): %v", err)
 	}
 
-	c := client.New(client.ClientConfig{
+	retryPolicy := checkRetryForWAFScopes
+
+	c := client.NewECClient(client.ClientConfig{
 		AuthProvider: authProvider,
 		BaseAPIURL:   config.BaseAPIURLLegacy,
 		UserAgent:    config.UserAgent,
 		Logger:       config.Logger,
+		CheckRetry:   &retryPolicy,
 	})
 
-	// Special retry policy for WAF Scopes
-	c.HTTPClient.CheckRetry = CheckRetryScopes
-
 	return &WAFService{
-		Client: c,
+		client: c,
 		Logger: config.Logger,
 	}, nil
 }
 
-// RetryPolicy provides a callback to check if we
+// checkRetryForWAFScopes provides a callback to check if we
 // will retry on connection errors and server errors.
-func CheckRetryScopes(
+func checkRetryForWAFScopes(
 	ctx context.Context,
 	resp *http.Response,
 	err error,
 ) (bool, error) {
-
 	// The WAF API throws a 400 Bad Request when the rules
 	// being used for a scope have not been fully processed
 	// We will retry in that situation until a more specific error is provided
