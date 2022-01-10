@@ -20,7 +20,7 @@ type PropagationStatus struct {
 
 	// Contains a list of POPs and their current configuration propagation
 	// percentage.
-	Pops []PopPropagationStatus `json:"Popsomitempty"`
+	Pops []PopPropagationStatus `json:"Pops,omitempty"`
 }
 
 // PopPropagationStatus represents propagation status for a POP
