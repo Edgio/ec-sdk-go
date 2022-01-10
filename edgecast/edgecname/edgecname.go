@@ -1,10 +1,12 @@
-// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license.
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
 // See LICENSE file in project root for terms.
 
 package edgecname
 
 import (
 	"fmt"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/ecmodels"
 )
 
 // GetAllEdgeCnames retrieves all edge CNAMEs for the provided platform.
@@ -149,7 +151,7 @@ func (svc *EdgeCnameService) DeleteEdgeCname(params DeleteEdgeCnameParams) error
 // CNAME configuration.
 func (svc *EdgeCnameService) GetEdgeCnamePropagationStatus(
 	params GetEdgeCnamePropagationStatus,
-) (*PropagationStatus, error) {
+) (*ecmodels.PropagationStatus, error) {
 	request, err := svc.Client.BuildRequest(
 		"GET",
 		fmt.Sprintf(
@@ -163,7 +165,7 @@ func (svc *EdgeCnameService) GetEdgeCnamePropagationStatus(
 		return nil, fmt.Errorf("GetEdgeCnamePropagationStatus: %v", err)
 	}
 
-	parsedResponse := &PropagationStatus{}
+	parsedResponse := &ecmodels.PropagationStatus{}
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
