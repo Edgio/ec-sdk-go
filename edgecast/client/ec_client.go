@@ -13,8 +13,9 @@ import (
 	"strings"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/eccollections"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecjson"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/collectionhelper"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/jsonhelper"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
 )
 
 const (
@@ -40,7 +41,7 @@ func NewECClient(config ClientConfig) ECClient {
 }
 
 // Do invokes an HTTP request with the given parameters
-func (c ECClient) Do(params DoParams) (interface{}, error) {
+func (c ECClient) Do(params DoParams) (*Response, error) {
 	req, err := c.reqBuilder.buildRequest(buildRequestParams{
 		method:      params.Method,
 		path:        params.Path,
@@ -49,6 +50,9 @@ func (c ECClient) Do(params DoParams) (interface{}, error) {
 		pathParams:  params.PathParams,
 		userAgent:   c.config.UserAgent,
 	})
+
+	// Provides an object to be filled in when unmarshaling the API response
+	req.parsedResponse = params.ParsedResponse
 
 	if err != nil {
 		return nil, fmt.Errorf("ECClient.Do: %v", err)
@@ -65,9 +69,9 @@ func (c ECClient) Do(params DoParams) (interface{}, error) {
 	if err != nil {
 		return nil, fmt.Errorf("ECClient.Do: %v", err)
 	}
-	bodyAsString, _ := ecjson.ConvertToJSONString(resp.data, true)
+	bodyAsString, _ := jsonhelper.ConvertToJSONString(resp.Data, true)
 	c.config.Logger.Debug("[RESPONSE-BODY]:%s\n", bodyAsString)
-	return resp.data, nil
+	return resp, nil
 }
 
 // ecRequestBuilder builds requests to be sent to the Edgecast API
@@ -91,14 +95,14 @@ func newECRequestBuilder(config ClientConfig) ecRequestBuilder {
 // adding appropriate headers
 func (eb ecRequestBuilder) buildRequest(
 	params buildRequestParams,
-) (*request, error) {
+) (*Request, error) {
 	relativeURL, err := url.Parse(params.path)
 	if err != nil {
 		return nil,
 			fmt.Errorf("ecRequestBuilder.buildRequest: url.Parse: %v", err)
 	}
 
-	req := request{
+	req := Request{
 		method:  params.method,
 		url:     eb.baseAPIURL.ResolveReference(relativeURL),
 		headers: make(map[string]string),
@@ -129,7 +133,7 @@ func (eb ecRequestBuilder) buildRequest(
 	return &req, nil
 }
 
-func (req *request) setPathParams(params map[string]string) {
+func (req *Request) setPathParams(params map[string]string) {
 	// Apply path parameters
 	// e.g.
 	// path = "/customers/{id}/policies/{id}""
@@ -144,7 +148,7 @@ func (req *request) setPathParams(params map[string]string) {
 	}
 }
 
-func (req *request) setQueryParams(queryParams map[string]string) {
+func (req *Request) setQueryParams(queryParams map[string]string) {
 	// Adding Query Params
 	query := req.url.Query()
 	for k, v := range queryParams {
@@ -154,7 +158,7 @@ func (req *request) setQueryParams(queryParams map[string]string) {
 	req.url.RawQuery = query.Encode()
 }
 
-func (req *request) setBody(rawBody interface{}) error {
+func (req *Request) setBody(rawBody interface{}) error {
 	switch b := rawBody.(type) {
 	case string:
 		req.rawBody = []byte(b)
@@ -173,7 +177,7 @@ func (req *request) setBody(rawBody interface{}) error {
 	return nil
 }
 
-func (req *request) setAuthorization(
+func (req *Request) setAuthorization(
 	auth auth.AuthorizationProvider,
 ) error {
 	authHeader, err := auth.GetAuthorizationHeader()
@@ -189,12 +193,14 @@ func (req *request) setAuthorization(
 // ecRequestSender sends requests to the Edgecast API
 type ecRequestSender struct {
 	clientAdapter clientAdapter
+	logger        logging.Logger
 }
 
 // newECRequestSender creates a default instance of ecRequestSender
 func newECRequestSender(config ClientConfig) ecRequestSender {
 	return ecRequestSender{
 		clientAdapter: newRetryableHTTPClientAdapter(config),
+		logger:        config.Logger,
 	}
 }
 
@@ -204,9 +210,13 @@ type literalResponse struct {
 	value interface{}
 }
 
-// sendRequest sends an HTTP request and returns the Response with any Response
-// body data, if applicable
-func (es ecRequestSender) sendRequest(req request) (*response, error) {
+// sendRequest sends a Request and returns the Response.
+// If Request.ParsedResponse is non-nil, then the response body will be
+// unmarshaled to it.
+// Response.Data will always have the unmarshaled response body. Note that if
+// Request.ParsedResponse is nil, then Response.Data will be a map[string]string
+// as a result of unmarshaling JSON.
+func (es ecRequestSender) sendRequest(req Request) (*Response, error) {
 	httpResp, err := es.clientAdapter.do(req)
 	if err != nil {
 		return nil, fmt.Errorf("SendRequest:%v", err)
@@ -235,7 +245,7 @@ func (es ecRequestSender) sendRequest(req request) (*response, error) {
 				jsonUnmarshalErr)
 	}
 
-	if eccollections.IsInterfaceArray(temp) {
+	if collectionhelper.IsInterfaceArray(temp) {
 		if err := json.Unmarshal([]byte(body), &req.parsedResponse); err != nil {
 			return nil,
 				fmt.Errorf(
@@ -243,7 +253,7 @@ func (es ecRequestSender) sendRequest(req request) (*response, error) {
 					err)
 		}
 	} else {
-		if ecjson.IsJSONString(bodyAsString) {
+		if jsonhelper.IsJSONString(bodyAsString) {
 			err = json.Unmarshal([]byte(bodyAsString), &req.parsedResponse)
 			if err != nil {
 				return nil, fmt.Errorf(
@@ -266,16 +276,16 @@ func (es ecRequestSender) sendRequest(req request) (*response, error) {
 			}
 		}
 	}
-	return &response{
-		data:         req.parsedResponse,
-		httpResponse: httpResp,
+	return &Response{
+		Data:         req.parsedResponse,
+		HTTPResponse: httpResp,
 	}, nil
 }
 
 // sendRequestWithStringResponse sends an HTTP request and returns the response
 // body as a string
 func (es ecRequestSender) sendRequestWithStringResponse(
-	req request,
+	req Request,
 ) (*string, error) {
 	httpResp, err := es.clientAdapter.do(req)
 	if err != nil {

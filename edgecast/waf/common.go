@@ -5,10 +5,6 @@ package waf
 
 // This file contains common types that are used for multiple WAF operations
 
-const (
-	ErrAssertFailed string = "failed to parse response as %s:raw:'%v':error:%v"
-)
-
 // WAF response contains the response from the WAF API
 type WAFResponse struct {
 	// Success indicates whether the operation completed successfully

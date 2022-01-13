@@ -11,7 +11,7 @@ import (
 // APIClient describes structs that can send HTTP requests to an API given the
 // request's method, path relative to the API base path.
 type APIClient interface {
-	Do(params DoParams) (interface{}, error)
+	Do(params DoParams) (*Response, error)
 }
 
 type DoParams struct {
@@ -25,7 +25,7 @@ type DoParams struct {
 }
 
 // request contains the properties of an HTTP request
-type request struct {
+type Request struct {
 	method  string
 	url     *url.URL
 	headers map[string]string
@@ -36,9 +36,9 @@ type request struct {
 
 // response contains the parsed response from a request along with the raw
 // http.Response itself if present
-type response struct {
-	data         interface{}
-	httpResponse *http.Response
+type Response struct {
+	Data         interface{}
+	HTTPResponse *http.Response
 }
 
 // buildRequestParams contains the parameters necessary to construct a new
@@ -54,17 +54,17 @@ type buildRequestParams struct {
 
 // requestBuilder builds a new request using the given parameters
 type requestBuilder interface {
-	buildRequest(params buildRequestParams) (*request, error)
+	buildRequest(params buildRequestParams) (*Request, error)
 }
 
 // requestSender sends a request to an API
 type requestSender interface {
-	sendRequest(req request) (*response, error)
-	sendRequestWithStringResponse(req request) (*string, error)
+	sendRequest(req Request) (*Response, error)
+	sendRequestWithStringResponse(req Request) (*string, error)
 }
 
 // Describes structs can take client.Response objects, adapt them to a 3rd
 // party http library, and return the http.Response from the library
 type clientAdapter interface {
-	do(req request) (*http.Response, error)
+	do(req Request) (*http.Response, error)
 }

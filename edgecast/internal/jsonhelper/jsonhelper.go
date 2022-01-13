@@ -1,8 +1,8 @@
 // Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-// Package ecjson provides helper methods for working with JSON
-package ecjson
+// Package jsonhelper provides helper methods for working with JSON
+package jsonhelper
 
 import (
 	"bytes"

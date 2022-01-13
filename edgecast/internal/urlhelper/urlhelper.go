@@ -2,7 +2,7 @@
 // license. See LICENSE file in project root for terms.
 
 // Package urlhelper provides helper methods for working with URLs
-package ecurl
+package urlhelper
 
 import "fmt"
 

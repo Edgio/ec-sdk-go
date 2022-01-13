@@ -51,7 +51,7 @@ func newRetryableHTTPClientAdapter(
 	}
 }
 
-func (c retryableHTTPClientAdapter) do(req request) (*http.Response, error) {
+func (c retryableHTTPClientAdapter) do(req Request) (*http.Response, error) {
 	retryablehttpReq, err := retryablehttp.NewRequest(
 		req.method,
 		req.url.String(),

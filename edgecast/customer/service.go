@@ -14,20 +14,19 @@ import (
 
 // Customer service interacts with the EdgeCast API for Customer
 type CustomerService struct {
-	client.Client
+	client client.APIClient
 	Logger logging.Logger
 }
 
 // New creates a new Customer service
 func New(config edgecast.SDKConfig) (*CustomerService, error) {
-
 	authProvider, err := auth.NewTokenAuthorizationProvider(config.APIToken)
 
 	if err != nil {
 		return nil, fmt.Errorf("customer.New(): %v", err)
 	}
 
-	c := client.NewClient(client.ClientConfig{
+	c := client.NewECClient(client.ClientConfig{
 		AuthProvider: authProvider,
 		BaseAPIURL:   config.BaseAPIURLLegacy,
 		UserAgent:    config.UserAgent,
@@ -35,7 +34,7 @@ func New(config edgecast.SDKConfig) (*CustomerService, error) {
 	})
 
 	return &CustomerService{
-		Client: c,
+		client: c,
 		Logger: config.Logger,
 	}, nil
 }
