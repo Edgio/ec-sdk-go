@@ -1,4 +1,4 @@
-// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license.
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
 // See LICENSE file in project root for terms.
 
 package edgecname
@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/ecmodels"
 )
 
 // GetAllEdgeCnames retrieves all edge CNAMEs for the provided platform.
@@ -117,14 +118,15 @@ func (svc *EdgeCnameService) DeleteEdgeCname(
 // CNAME configuration.
 func (svc *EdgeCnameService) GetEdgeCnamePropagationStatus(
 	params GetEdgeCnamePropagationStatus,
-) (*PropagationStatus, error) {
-	parsedResponse := &PropagationStatus{}
+
+) (*ecmodels.PropagationStatus, error) {
+	parsedResponse := &ecmodels.PropagationStatus{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "GET",
-		Path:   "v2/mcc/customers/{account_number}/cnames/{edge_cname_id}/status",
+		Path:   "v2/mcc/customers/{account_number}/cnames/{edgecname_id}/status",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"edge_cname_id":  strconv.Itoa(params.EdgeCnameID),
+			"edgecname_id":   strconv.Itoa(params.EdgeCnameID),
 		},
 		ParsedResponse: parsedResponse,
 	})
