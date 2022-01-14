@@ -39,7 +39,7 @@ func main() {
 	fmt.Println("**** CREATE ****")
 	fmt.Println("")
 	fmt.Printf("Creating Access Rule: %+v\n", rule)
-	addResponse, err := wafService.AddAccessRule(waf.AddAccessRuleParams{
+	ruleID, err := wafService.AddAccessRule(waf.AddAccessRuleParams{
 		AccountNumber: accountNumber,
 		AccessRule:    rule,
 	})
@@ -48,7 +48,7 @@ func main() {
 		fmt.Printf("failed to create Access Rule: %+v\n", err)
 		return
 	} else {
-		fmt.Printf("successfully created Access Rule: %+v\n", addResponse)
+		fmt.Printf("successfully created Access Rule: %+v\n", ruleID)
 	}
 
 	fmt.Println("")
@@ -56,7 +56,7 @@ func main() {
 	fmt.Println("")
 	getResponse, err := wafService.GetAccessRule(waf.GetAccessRuleParams{
 		AccountNumber: accountNumber,
-		AccessRuleID:  addResponse.ID,
+		AccessRuleID:  ruleID,
 	})
 
 	if err != nil {
@@ -87,9 +87,9 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	updateResponse, err := wafService.UpdateAccessRule(waf.UpdateAccessRuleParams{
+	err = wafService.UpdateAccessRule(waf.UpdateAccessRuleParams{
 		AccountNumber: accountNumber,
-		AccessRuleID:  addResponse.ID,
+		AccessRuleID:  ruleID,
 		AccessRule:    rule,
 	})
 
@@ -97,20 +97,20 @@ func main() {
 		fmt.Printf("Failed to update Access Rule: %+v\n", err)
 		return
 	} else {
-		fmt.Printf("Successfully updated Access Rule: %+v\n", updateResponse)
+		fmt.Println("Successfully updated Access Rule")
 	}
 
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	deleteResponse, err := wafService.DeleteAccessRule(waf.DeleteAccessRuleParams{
+	err = wafService.DeleteAccessRule(waf.DeleteAccessRuleParams{
 		AccountNumber: accountNumber,
-		AccessRuleID:  addResponse.ID,
+		AccessRuleID:  ruleID,
 	})
 	if err != nil {
 		fmt.Printf("Failed to delete Access Rule: %+v\n", err)
 	} else {
-		fmt.Printf("Successfully deleted Access Rule: %+v\n", deleteResponse)
+		fmt.Println("Successfully deleted Access Rule")
 	}
 }
 

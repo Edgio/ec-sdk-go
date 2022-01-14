@@ -9,13 +9,13 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 )
 
 // Customer service interacts with the EdgeCast API for Customer
 type CustomerService struct {
 	client client.APIClient
-	Logger logging.Logger
+	Logger eclog.Logger
 }
 
 // New creates a new Customer service

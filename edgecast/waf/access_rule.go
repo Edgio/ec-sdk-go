@@ -19,14 +19,15 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
 )
 
-// AddAccessRule creates a new Access Rule for the provided account number.
+// AddAccessRule creates a new Access Rule for the provided account number
+// and returns the new rule's system-generated ID
 func (svc WAFService) AddAccessRule(
 	params AddAccessRuleParams,
-) (*AddAccessRuleOK, error) {
-	parsedResponse := &AddAccessRuleOK{}
+) (string, error) {
+	parsedResponse := &AccessRuleAddOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "POST",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl",
 		Body:   params.AccessRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -34,27 +35,27 @@ func (svc WAFService) AddAccessRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.AddAccessRule: %v", err)
+		return "", fmt.Errorf("AddAccessRule: %v", err)
 	}
-	return parsedResponse, nil
+	return parsedResponse.ID, nil
 }
 
 // GetAllAccessRules retrieves all of the Access Rules for the provided
 // account number.
 func (svc WAFService) GetAllAccessRules(
 	params GetAllAccessRulesParams,
-) (*[]AccessRuleLight, error) {
-	parsedResponse := &[]AccessRuleLight{}
+) (*[]AccessRuleGetAllOK, error) {
+	parsedResponse := &[]AccessRuleGetAllOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "GET",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.GetAllAccessRules: %v", err)
+		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -63,19 +64,19 @@ func (svc WAFService) GetAllAccessRules(
 // with the provided Access Rule ID.
 func (svc WAFService) GetAccessRule(
 	params GetAccessRuleParams,
-) (*GetAccessRuleOK, error) {
-	parsedResponse := &GetAccessRuleOK{}
+) (*AccessRuleGetOK, error) {
+	parsedResponse := &AccessRuleGetOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "GET",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.AccessRuleID,
+			"rule_id":        params.AccessRuleID,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.GetAccessRule: %v", err)
+		return nil, fmt.Errorf("GetAccessRule: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -84,41 +85,37 @@ func (svc WAFService) GetAccessRule(
 // the provided Access Rule ID and Access Rule properties.
 func (svc WAFService) UpdateAccessRule(
 	params UpdateAccessRuleParams,
-) (*UpdateAccessRuleOK, error) {
-	parsedResponse := &UpdateAccessRuleOK{}
+) error {
 	_, err := svc.client.Do(client.DoParams{
 		Method: "PUT",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl/{rule_id}",
 		Body:   params.AccessRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.AccessRuleID,
+			"rule_id":        params.AccessRuleID,
 		},
-		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.UpdateAccessRule: %v", err)
+		return fmt.Errorf("UpdateAccessRule: %v", err)
 	}
-	return parsedResponse, nil
+	return nil
 }
 
 // DeleteAccessRule deletes an Access Rule for the given account number using
 // the provided Access Rule ID.
 func (svc WAFService) DeleteAccessRule(
 	params DeleteAccessRuleParams,
-) (*DeleteAccessRuleOK, error) {
-	parsedResponse := &DeleteAccessRuleOK{}
+) error {
 	_, err := svc.client.Do(client.DoParams{
 		Method: "DELETE",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/acl/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.AccessRuleID,
+			"rule_id":        params.AccessRuleID,
 		},
-		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.DeleteAccessRule: %v", err)
+		return fmt.Errorf("DeleteAccessRule: %v", err)
 	}
-	return parsedResponse, nil
+	return nil
 }

@@ -17,28 +17,6 @@ type CustomRuleSet struct {
 	Name string `json:"name,omitempty"`
 }
 
-// CustomRuleSetLight is a lightweight representation of a Custom Rule Set.
-type CustomRuleSetLight struct {
-	/*
-		Indicates the system-defined ID for the Custom Rule Set.
-	*/
-	ID string `json:"id"`
-
-	/*
-		Indicates the date and time at which the custom rule was last modified.
-		Syntax:
-		 	MM/DD/YYYYhh:mm:ss [AM|PM]
-	*/
-	LastModifiedDate string `json:"last_modified_date"`
-
-	/*
-		Indicates the name of the Custom Rule Set.
-	*/
-	Name string `json:"name"`
-
-	// TODO: Convert LastModifiedDate to time.Time
-}
-
 // Directive contains custom rules. Each directive object defines a custom rule
 // via the sec_rule object.
 type Directive struct {
@@ -306,14 +284,36 @@ type GetAllCustomRuleSetsParams struct {
 	AccountNumber string
 }
 
+// CustomRuleSetGetAllOK is a lightweight representation of a Custom Rule Set.
+type CustomRuleSetGetAllOK struct {
+	/*
+		Indicates the system-defined ID for the Custom Rule Set.
+	*/
+	ID string `json:"id"`
+
+	/*
+		Indicates the date and time at which the custom rule was last modified.
+		Syntax:
+		 	MM/DD/YYYYhh:mm:ss [AM|PM]
+	*/
+	LastModifiedDate string `json:"last_modified_date"`
+
+	/*
+		Indicates the name of the Custom Rule Set.
+	*/
+	Name string `json:"name"`
+
+	// TODO: Convert LastModifiedDate to time.Time
+}
+
 // GetCustomRuleSetParams -
 type GetCustomRuleSetParams struct {
 	AccountNumber   string
 	CustomRuleSetID string
 }
 
-// GetCustomRuleSetOK -
-type GetCustomRuleSetOK struct {
+// CustomRuleSetGetOK -
+type CustomRuleSetGetOK struct {
 
 	/*
 		Indicates the generated ID for the Custom Rule Set
@@ -338,8 +338,8 @@ type AddCustomRuleSetParams struct {
 	AccountNumber string
 }
 
-// AddCustomRuleSetOK -
-type AddCustomRuleSetOK struct {
+// CustomRuleSetAddOK -
+type CustomRuleSetAddOK struct {
 	AddRuleResponse
 }
 
@@ -349,19 +349,9 @@ type DeleteCustomRuleSetParams struct {
 	CustomRuleSetID string
 }
 
-// DeleteCustomRuleSetOK -
-type DeleteCustomRuleSetOK struct {
-	DeleteRuleResponse
-}
-
 // UpdateCustomRuleSetParams -
 type UpdateCustomRuleSetParams struct {
 	AccountNumber   string
 	CustomRuleSetID string
 	CustomRuleSet   CustomRuleSet
-}
-
-//  UpdateCustomRuleSetOK -
-type UpdateCustomRuleSetOK struct {
-	UpdateRuleResponse
 }

@@ -20,21 +20,21 @@ import (
 )
 
 // GetAllManagedRules retrieves all of the Managed Rules for the provided
-// account number.
+// account number
 func (svc WAFService) GetAllManagedRules(
 	params GetAllManagedRulesParams,
 ) (*[]ManagedRuleLight, error) {
 	parsedResponse := &[]ManagedRuleLight{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "GET",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/profile",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.GetAllManagedRules: %v", err)
+		return nil, fmt.Errorf("GetAllManagedRules: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -43,31 +43,32 @@ func (svc WAFService) GetAllManagedRules(
 // number using the provided Managed Rule ID.
 func (svc WAFService) GetManagedRule(
 	params GetManagedRuleParams,
-) (*GetManagedRuleOK, error) {
-	parsedResponse := &GetManagedRuleOK{}
+) (*ManagedRuleGetOK, error) {
+	parsedResponse := &ManagedRuleGetOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "GET",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/profile/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.ManagedRuleID,
+			"rule_id":        params.ManagedRuleID,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.GetManagedRule: %v", err)
+		return nil, fmt.Errorf("GetManagedRule: %v", err)
 	}
 	return parsedResponse, nil
 }
 
-// AddManagedRule creates a Managed Rule for the provided account number.
+// AddManagedRule creates a Managed Rule for the provided account number
+// and returns the new rule's system-generated ID
 func (svc WAFService) AddManagedRule(
 	params AddManagedRuleParams,
-) (*AddManagedRuleOK, error) {
+) (string, error) {
 	parsedResponse := &AddManagedRuleOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "POST",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/profile",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile",
 		Body:   params.ManagedRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -75,50 +76,46 @@ func (svc WAFService) AddManagedRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.AddManagedRule: %v", err)
+		return "", fmt.Errorf("AddManagedRule: %v", err)
 	}
-	return parsedResponse, nil
+	return parsedResponse.ID, nil
 }
 
 // UpdateManagedRule updates a Managed Rule for the provided account number
 // using the provided Managed Rule ID and Managed Rule properties.
 func (svc WAFService) UpdateManagedRule(
 	params UpdateManagedRuleParams,
-) (*UpdateManagedRuleOK, error) {
-	parsedResponse := &UpdateManagedRuleOK{}
+) error {
 	_, err := svc.client.Do(client.DoParams{
 		Method: "PUT",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/profile/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
 		Body:   params.ManagedRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.ManagedRuleID,
+			"rule_id":        params.ManagedRuleID,
 		},
-		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.UpdateManagedRule: %v", err)
+		return fmt.Errorf("UpdateManagedRule: %v", err)
 	}
-	return parsedResponse, nil
+	return nil
 }
 
 // DeleteManagedRule deletes a Managed Rule for the provided account number
 // using the provided Managed Rule ID.
 func (svc WAFService) DeleteManagedRule(
 	params DeleteManagedRuleParams,
-) (*DeleteManagedRuleOK, error) {
-	parsedResponse := &DeleteManagedRuleOK{}
+) error {
 	_, err := svc.client.Do(client.DoParams{
 		Method: "DELETE",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/profile/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.ManagedRuleID,
+			"rule_id":        params.ManagedRuleID,
 		},
-		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.DeleteManagedRule: %v", err)
+		return fmt.Errorf("DeleteManagedRule: %v", err)
 	}
-	return parsedResponse, nil
+	return nil
 }

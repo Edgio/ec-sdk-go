@@ -64,20 +64,6 @@ type AccessRule struct {
 	UserAgentAccessControls *AccessControls `json:"user_agent,omitempty"`
 }
 
-// AccessRuleLight is a lightweight representation of an Access Rule. It is used
-// specifically by the GetAllAccessRules action.
-type AccessRuleLight struct {
-	// Indicates the system-defined ID for the Access Rule.
-	ID string `json:"id"`
-
-	// Indicates the name of the Access Rule.
-	Name string `json:"name"`
-
-	// Indicates the date and time at which the Access Rule was last modified.
-	// TODO: Convert to time.Time
-	LastModifiedDate string `json:"last_modified_date"`
-}
-
 // AccessControls contains lists that identify traffic for access control
 type AccessControls struct {
 	// Contains entries that identify traffic that may access your content upon
@@ -99,8 +85,8 @@ type AddAccessRuleParams struct {
 	AccessRule    AccessRule
 }
 
-// AddAccessRuleOK -
-type AddAccessRuleOK struct {
+// AccessRuleAddOK -
+type AccessRuleAddOK struct {
 	AddRuleResponse
 }
 
@@ -109,13 +95,27 @@ type GetAllAccessRulesParams struct {
 	AccountNumber string
 }
 
+// AccessRuleGetAllOK is a lightweight representation of an Access Rule. It is used
+// specifically by the GetAllAccessRules action.
+type AccessRuleGetAllOK struct {
+	// Indicates the system-defined ID for the Access Rule.
+	ID string `json:"id"`
+
+	// Indicates the name of the Access Rule.
+	Name string `json:"name"`
+
+	// Indicates the date and time at which the Access Rule was last modified.
+	// TODO: Convert to time.Time
+	LastModifiedDate string `json:"last_modified_date"`
+}
+
 type GetAccessRuleParams struct {
 	AccountNumber string
 	AccessRuleID  string
 }
 
-// GetAccessRuleOK -
-type GetAccessRuleOK struct {
+// AccessRuleGetOK -
+type AccessRuleGetOK struct {
 	/*
 		Indicates the system-defined ID for the Access Rule.
 	*/
@@ -154,18 +154,8 @@ type UpdateAccessRuleParams struct {
 	AccessRule    AccessRule
 }
 
-// UpdateAccessRuleOK -
-type UpdateAccessRuleOK struct {
-	UpdateRuleResponse
-}
-
 // DeleteAccessRuleParams -
 type DeleteAccessRuleParams struct {
 	AccountNumber string
 	AccessRuleID  string
-}
-
-// DeleteAccessRuleOK -
-type DeleteAccessRuleOK struct {
-	DeleteRuleResponse
 }

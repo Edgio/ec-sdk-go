@@ -39,7 +39,7 @@ func main() {
 	fmt.Println("**** CREATE ****")
 	fmt.Println("")
 	fmt.Printf("Creating Managed Rule: %+v\n", rule)
-	addResponse, err := wafService.AddManagedRule(waf.AddManagedRuleParams{
+	ruleID, err := wafService.AddManagedRule(waf.AddManagedRuleParams{
 		ManagedRule: rule,
 	})
 
@@ -47,7 +47,7 @@ func main() {
 		fmt.Printf("failed to create Managed Rule: %+v\n", err)
 		return
 	} else {
-		fmt.Printf("successfully created Managed Rule: %+v\n", addResponse)
+		fmt.Printf("successfully created Managed Rule: %+v\n", ruleID)
 	}
 
 	fmt.Println("")
@@ -55,7 +55,7 @@ func main() {
 	fmt.Println("")
 	getResponse, err := wafService.GetManagedRule(waf.GetManagedRuleParams{
 		AccountNumber: accountNumber,
-		ManagedRuleID: addResponse.ID,
+		ManagedRuleID: ruleID,
 	})
 
 	if err != nil {
@@ -87,10 +87,10 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	updateResponse, err := wafService.UpdateManagedRule(
+	err = wafService.UpdateManagedRule(
 		waf.UpdateManagedRuleParams{
 			AccountNumber: accountNumber,
-			ManagedRuleID: addResponse.ID,
+			ManagedRuleID: ruleID,
 			ManagedRule:   rule,
 		})
 
@@ -98,21 +98,21 @@ func main() {
 		fmt.Printf("Failed to update Managed Rule: %+v\n", err)
 		return
 	} else {
-		fmt.Printf("Successfully updated Managed Rule: %+v\n", updateResponse)
+		fmt.Println("Successfully updated Managed Rule")
 	}
 
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	deleteResponse, err := wafService.DeleteManagedRule(
+	err = wafService.DeleteManagedRule(
 		waf.DeleteManagedRuleParams{
 			AccountNumber: accountNumber,
-			ManagedRuleID: addResponse.ID,
+			ManagedRuleID: ruleID,
 		})
 	if err != nil {
 		fmt.Printf("Failed to delete Managed Rule: %+v\n", err)
 	} else {
-		fmt.Printf("Successfully deleted Managed Rule: %+v\n", deleteResponse)
+		fmt.Println("Successfully deleted Managed Rule")
 	}
 }
 

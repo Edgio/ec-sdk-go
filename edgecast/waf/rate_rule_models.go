@@ -5,9 +5,9 @@ package waf
 
 import "encoding/json"
 
-// RateRuleLight is a lightweight representation of a Rate Rule used
+// RateRuleGetAllOK is a lightweight representation of a Rate Rule used
 // specifically by GetAllRateRules
-type RateRuleLight struct {
+type RateRuleGetAllOK struct {
 	RateRule
 
 	/*
@@ -227,8 +227,8 @@ type GetRateRuleParams struct {
 	RateRuleID    string
 }
 
-// GetRateRuleOK -
-type GetRateRuleOK struct {
+// RateRuleGetOK -
+type RateRuleGetOK struct {
 	RateRule
 
 	/*
@@ -263,8 +263,8 @@ type AddRateRuleParams struct {
 	RateRule      RateRule
 }
 
-// AddRateRuleOK -
-type AddRateRuleOK struct {
+// RateRuleAddOK -
+type RateRuleAddOK struct {
 	AddRuleResponse
 }
 
@@ -275,18 +275,8 @@ type UpdateRateRuleParams struct {
 	RateRule      RateRule
 }
 
-// UpdateRateRuleOK -
-type UpdateRateRuleOK struct {
-	UpdateRuleResponse
-}
-
 // DeleteRateRuleParams
 type DeleteRateRuleParams struct {
 	AccountNumber string
 	RateRuleID    string
-}
-
-// DeleteRateRuleOK -
-type DeleteRateRuleOK struct {
-	DeleteRuleResponse
 }

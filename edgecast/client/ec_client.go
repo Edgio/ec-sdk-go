@@ -13,9 +13,9 @@ import (
 	"strings"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/collectionhelper"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/jsonhelper"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
 )
 
 const (
@@ -108,7 +108,11 @@ func (eb ecRequestBuilder) buildRequest(
 		headers: make(map[string]string),
 	}
 
-	req.setPathParams(params.pathParams)
+	err = req.setPathParams(params.pathParams)
+	if err != nil {
+		return nil,
+			fmt.Errorf("ecRequestBuilder.buildRequest: %v", err)
+	}
 	req.setQueryParams(params.queryParams)
 
 	req.headers["User-Agent"] = params.userAgent
@@ -133,19 +137,28 @@ func (eb ecRequestBuilder) buildRequest(
 	return &req, nil
 }
 
-func (req *Request) setPathParams(params map[string]string) {
+func (req *Request) setPathParams(params map[string]string) error {
 	// Apply path parameters
 	// e.g.
-	// path = "/customers/{id}/policies/{id}""
-	// params = { id: 1, policy: 99 }
+	// path = "/customers/{customer_id}/policies/{policy_id}""
+	// params = { "customer_id": "1", "policy_id": "99" }
 	// result = "customers/1/policies/99"
 	for k, v := range params {
+		searchKey := fmt.Sprintf("{%s}", k)
+
+		if !strings.Contains(req.url.Path, searchKey) {
+			return fmt.Errorf(
+				"Request.setPathParams: param not found in path: %s",
+				k)
+		}
+
 		req.url.Path = strings.Replace(
 			req.url.Path,
-			"{"+k+"}",
+			searchKey,
 			fmt.Sprintf("%v", v),
 			-1)
 	}
+	return nil
 }
 
 func (req *Request) setQueryParams(queryParams map[string]string) {
@@ -159,6 +172,9 @@ func (req *Request) setQueryParams(queryParams map[string]string) {
 }
 
 func (req *Request) setBody(rawBody interface{}) error {
+	if req.headers == nil {
+		req.headers = make(map[string]string)
+	}
 	switch b := rawBody.(type) {
 	case string:
 		req.rawBody = []byte(b)
@@ -186,6 +202,9 @@ func (req *Request) setAuthorization(
 			"request.setAuthorization: failed to get authorization: %v",
 			err)
 	}
+	if req.headers == nil {
+		req.headers = make(map[string]string)
+	}
 	req.headers["Authorization"] = authHeader
 	return nil
 }
@@ -193,7 +212,7 @@ func (req *Request) setAuthorization(
 // ecRequestSender sends requests to the Edgecast API
 type ecRequestSender struct {
 	clientAdapter clientAdapter
-	logger        logging.Logger
+	logger        eclog.Logger
 }
 
 // newECRequestSender creates a default instance of ecRequestSender

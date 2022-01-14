@@ -22,14 +22,15 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
 )
 
-// AddCustomRuleSet creates a Custom Rule Set for the provided account number.
+// AddCustomRuleSet creates a Custom Rule Set for the provided account number
+// and returns the new rule's system-generated ID
 func (svc WAFService) AddCustomRuleSet(
 	params AddCustomRuleSetParams,
-) (*AddCustomRuleSetOK, error) {
-	parsedResponse := &AddCustomRuleSetOK{}
+) (string, error) {
+	parsedResponse := &CustomRuleSetAddOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "POST",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/rules",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules",
 		Body:   params.CustomRuleSet,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -37,27 +38,27 @@ func (svc WAFService) AddCustomRuleSet(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.AddCustomRuleSet: %v", err)
+		return "", fmt.Errorf("AddCustomRuleSet: %v", err)
 	}
-	return parsedResponse, nil
+	return parsedResponse.ID, nil
 }
 
 // GetAllCustomRuleSets retrieves the list of Custom Rule Sets for the provided
 // account number.
 func (svc WAFService) GetAllCustomRuleSets(
 	params GetAllCustomRuleSetsParams,
-) (*[]CustomRuleSetLight, error) {
-	parsedResponse := &[]CustomRuleSetLight{}
+) (*[]CustomRuleSetGetAllOK, error) {
+	parsedResponse := &[]CustomRuleSetGetAllOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "GET",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/rules",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.GetAllCustomRuleSets: %v", err)
+		return nil, fmt.Errorf("GetAllCustomRuleSets: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -66,40 +67,38 @@ func (svc WAFService) GetAllCustomRuleSets(
 // with the provided Custom Rule Set ID.
 func (svc WAFService) DeleteCustomRuleSet(
 	params DeleteCustomRuleSetParams,
-) (*DeleteCustomRuleSetOK, error) {
-	parsedResponse := &DeleteCustomRuleSetOK{}
+) error {
 	_, err := svc.client.Do(client.DoParams{
 		Method: "DELETE",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/rules/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.CustomRuleSetID,
+			"rule_id":        params.CustomRuleSetID,
 		},
-		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.DeleteCustomRuleSet: %v", err)
+		return fmt.Errorf("DeleteCustomRuleSet: %v", err)
 	}
-	return parsedResponse, nil
+	return nil
 }
 
 // GetCustomRuleSet retrieves a Custom Rule Set for the provided account number
 // with the provided Custom Rule Set ID.
 func (svc WAFService) GetCustomRuleSet(
 	params GetCustomRuleSetParams,
-) (*GetCustomRuleSetOK, error) {
-	parsedResponse := &GetCustomRuleSetOK{}
+) (*CustomRuleSetGetOK, error) {
+	parsedResponse := &CustomRuleSetGetOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "GET",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/rules/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.CustomRuleSetID,
+			"rule_id":        params.CustomRuleSetID,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.GetCustomRuleSet: %v", err)
+		return nil, fmt.Errorf("GetCustomRuleSet: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -108,20 +107,18 @@ func (svc WAFService) GetCustomRuleSet(
 // using the provided Custom Rule Set ID and Custom Rule Set properties.
 func (svc WAFService) UpdateCustomRuleSet(
 	params UpdateCustomRuleSetParams,
-) (*UpdateCustomRuleSetOK, error) {
-	parsedResponse := &UpdateCustomRuleSetOK{}
+) error {
 	_, err := svc.client.Do(client.DoParams{
 		Method: "PUT",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/rules/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		Body:   params.CustomRuleSet,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.CustomRuleSetID,
+			"rule_id":        params.CustomRuleSetID,
 		},
-		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.UpdateCustomRuleSet: %v", err)
+		return fmt.Errorf("UpdateCustomRuleSet: %v", err)
 	}
-	return parsedResponse, nil
+	return nil
 }

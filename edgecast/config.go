@@ -8,7 +8,7 @@ import (
 	"net/url"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 )
 
 const (
@@ -30,7 +30,7 @@ type SDKConfig struct {
 	// BaseLegacyAPIURL contains the base URL for retrieving IDS tokens
 	BaseIDSURL url.URL
 
-	Logger logging.Logger
+	Logger eclog.Logger
 
 	APIToken string
 
@@ -50,7 +50,7 @@ func NewSDKConfig() SDKConfig {
 		BaseAPIURL:       *baseAPIURL,
 		BaseAPIURLLegacy: *baseAPIURLLegacy,
 		BaseIDSURL:       *baseIDSURL,
-		Logger:           logging.NewStandardLogger(),
+		Logger:           eclog.NewStandardLogger(),
 		UserAgent:        getDefaultUserAgent(),
 	}
 }

@@ -12,14 +12,14 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/hashicorp/go-retryablehttp"
 )
 
 // WAFService interacts with the EdgeCast API for WAF
 type WAFService struct {
 	client client.APIClient
-	Logger logging.Logger
+	Logger eclog.Logger
 }
 
 // New creates a new instance of WAFservice using the provided configuration

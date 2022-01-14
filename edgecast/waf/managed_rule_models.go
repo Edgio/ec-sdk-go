@@ -267,8 +267,8 @@ type GetManagedRuleParams struct {
 	ManagedRuleID string
 }
 
-// GetManagedRuleOK -
-type GetManagedRuleOK struct {
+// ManagedRuleGetOK -
+type ManagedRuleGetOK struct {
 	ManagedRule
 
 	/*
@@ -322,18 +322,8 @@ type UpdateManagedRuleParams struct {
 	ManagedRule   ManagedRule
 }
 
-// UpdateManagedRuleOK -
-type UpdateManagedRuleOK struct {
-	UpdateRuleResponse
-}
-
 // DeleteManagedRuleParams -
 type DeleteManagedRuleParams struct {
 	AccountNumber string
 	ManagedRuleID string
-}
-
-// DeleteManagedRuleOK -
-type DeleteManagedRuleOK struct {
-	DeleteRuleResponse
 }

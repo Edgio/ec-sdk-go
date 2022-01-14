@@ -187,8 +187,8 @@ type AddCustomerParams struct {
 
 // NewAddCustomerParams creates an object with the parameters necessary to
 // provide to the AddCustomer function in order to create a Customer via the API.
-func NewAddCustomerParams() *AddCustomerParams {
-	return &AddCustomerParams{}
+func NewAddCustomerParams() AddCustomerParams {
+	return AddCustomerParams{}
 }
 
 // GetCustomerParams object contains the properties necessary to retrieve a

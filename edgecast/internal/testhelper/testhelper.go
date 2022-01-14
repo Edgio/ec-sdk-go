@@ -8,15 +8,15 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 )
 
 // GetTestLoger creates a log file for a test run
-func GetTestLogger(prefix string) logging.Logger {
+func GetTestLogger(prefix string) eclog.Logger {
 	timeNowUTC := time.Now().UTC()
 	timeStamp := timeNowUTC.Format("20060102150405")
 	filePath := fmt.Sprintf("%s_%s.log", prefix, timeStamp)
-	return logging.NewFileLogger(filePath)
+	return eclog.NewFileLogger(filePath)
 }
 
 // URLParse provides a quick pass-through to url.Parse that will discard errors.

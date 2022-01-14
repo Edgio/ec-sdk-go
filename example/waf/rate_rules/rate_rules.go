@@ -39,7 +39,7 @@ func main() {
 	fmt.Println("**** CREATE ****")
 	fmt.Println("")
 	fmt.Printf("Creating Rate Rule: %+v\n", rule)
-	addResponse, err := wafService.AddRateRule(waf.AddRateRuleParams{
+	ruleID, err := wafService.AddRateRule(waf.AddRateRuleParams{
 		RateRule: rule,
 	})
 
@@ -47,7 +47,7 @@ func main() {
 		fmt.Printf("failed to create Rate Rule: %+v\n", err)
 		return
 	} else {
-		fmt.Printf("successfully created Rate Rule: %+v\n", addResponse)
+		fmt.Printf("successfully created Rate Rule: %+v\n", ruleID)
 	}
 
 	fmt.Println("")
@@ -55,7 +55,7 @@ func main() {
 	fmt.Println("")
 	getResponse, err := wafService.GetRateRule(waf.GetRateRuleParams{
 		AccountNumber: accountNumber,
-		RateRuleID:    addResponse.ID,
+		RateRuleID:    ruleID,
 	})
 
 	if err != nil {
@@ -86,30 +86,30 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	updateResponse, err := wafService.UpdateRateRule(waf.UpdateRateRuleParams{
+	err = wafService.UpdateRateRule(waf.UpdateRateRuleParams{
 		AccountNumber: accountNumber,
 		RateRule:      rule,
-		RateRuleID:    addResponse.ID,
+		RateRuleID:    ruleID,
 	})
 
 	if err != nil {
 		fmt.Printf("Failed to update Rate Rule: %+v\n", err)
 		return
 	} else {
-		fmt.Printf("Successfully updated Rate Rule: %+v\n", updateResponse)
+		fmt.Println("Successfully updated Rate Rule")
 	}
 
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	deleteResponse, err := wafService.DeleteRateRule(waf.DeleteRateRuleParams{
+	err = wafService.DeleteRateRule(waf.DeleteRateRuleParams{
 		AccountNumber: accountNumber,
-		RateRuleID:    addResponse.ID,
+		RateRuleID:    ruleID,
 	})
 	if err != nil {
 		fmt.Printf("Failed to delete Rate Rule: %+v\n", err)
 	} else {
-		fmt.Printf("Successfully deleted Rate Rule: %+v\n", deleteResponse)
+		fmt.Println("Successfully deleted Rate Rule")
 	}
 }
 

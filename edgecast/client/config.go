@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 )
 
 const (
@@ -31,7 +31,7 @@ type ClientConfig struct {
 	UserAgent string
 
 	// Logger -
-	Logger logging.Logger
+	Logger eclog.Logger
 
 	// The minimum wait time for retries on API errors
 	RetryWaitMin *time.Duration

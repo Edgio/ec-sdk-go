@@ -23,13 +23,14 @@ import (
 )
 
 // AddRateRule creates a rate rule for the provided account number
+// and returns the new rule's system-generated ID
 func (svc WAFService) AddRateRule(
 	params AddRateRuleParams,
-) (*AddRateRuleOK, error) {
-	parsedResponse := &AddRateRuleOK{}
+) (string, error) {
+	parsedResponse := &RateRuleAddOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "POST",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit",
 		Body:   params.RateRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -37,28 +38,28 @@ func (svc WAFService) AddRateRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.AddRateRule: %v", err)
+		return "", fmt.Errorf("AddRateRule: %v", err)
 	}
-	return parsedResponse, nil
+	return parsedResponse.ID, nil
 }
 
 // GetRateRule retrieves a rate rule for the provided account number and
 // Rate Rule ID
 func (svc WAFService) GetRateRule(
 	params GetRateRuleParams,
-) (*GetRateRuleOK, error) {
-	parsedResponse := &GetRateRuleOK{}
+) (*RateRuleGetOK, error) {
+	parsedResponse := &RateRuleGetOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "GET",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.RateRuleID,
+			"rule_id":        params.RateRuleID,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.GetRateRule: %v", err)
+		return nil, fmt.Errorf("GetRateRule: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -67,61 +68,57 @@ func (svc WAFService) GetRateRule(
 // provided Rate Rule ID and Rate Rule properties.
 func (svc WAFService) UpdateRateRule(
 	params UpdateRateRuleParams,
-) (*UpdateRateRuleOK, error) {
-	parsedResponse := &UpdateRateRuleOK{}
+) error {
 	_, err := svc.client.Do(client.DoParams{
 		Method: "PUT",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		Body:   params.RateRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.RateRuleID,
+			"rule_id":        params.RateRuleID,
 		},
-		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.UpdateRateRule: %v", err)
+		return fmt.Errorf("UpdateRateRule: %v", err)
 	}
-	return parsedResponse, nil
+	return nil
 }
 
 // DeleteRateRuleByID deletes a rate rule for the provided account numnber and
 // Rate Rule ID
 func (svc WAFService) DeleteRateRule(
 	params DeleteRateRuleParams,
-) (*DeleteRateRuleOK, error) {
-	parsedResponse := &DeleteRateRuleOK{}
+) error {
 	_, err := svc.client.Do(client.DoParams{
 		Method: "DELETE",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit/{id}",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             params.RateRuleID,
+			"rule_id":        params.RateRuleID,
 		},
-		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.DeleteRateRule: %v", err)
+		return fmt.Errorf("DeleteRateRule: %v", err)
 	}
-	return parsedResponse, nil
+	return nil
 }
 
 // GetAllRateRules retrives all of the Rate Rules for the provided account
 // number.
 func (svc WAFService) GetAllRateRules(
 	params GetAllRateRulesParams,
-) (*[]RateRuleLight, error) {
-	parsedResponse := &[]RateRuleLight{}
+) (*[]RateRuleGetAllOK, error) {
+	parsedResponse := &[]RateRuleGetAllOK{}
 	_, err := svc.client.Do(client.DoParams{
 		Method: "GET",
-		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.GetAllRateRules: %v", err)
+		return nil, fmt.Errorf("GetAllRateRules: %v", err)
 	}
 	return parsedResponse, nil
 }
