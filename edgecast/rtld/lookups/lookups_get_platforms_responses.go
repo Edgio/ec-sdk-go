@@ -19,5 +19,5 @@ func NewLookupsGetPlatformsOK() *LookupsGetPlatformsOK {
 Success
 */
 type LookupsGetPlatformsOK struct {
-	*rtldmodels.HyperionCollectionCodeName
+	rtldmodels.HyperionCollectionCodeName
 }

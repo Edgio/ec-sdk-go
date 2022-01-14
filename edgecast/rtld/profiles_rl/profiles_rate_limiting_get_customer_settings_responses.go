@@ -19,5 +19,5 @@ func NewProfilesRateLimitingGetCustomerSettingsOK() *ProfilesRateLimitingGetCust
 Success
 */
 type ProfilesRateLimitingGetCustomerSettingsOK struct {
-	*rtldmodels.HyperionCollectionRateLimitingProfileDto
+	rtldmodels.HyperionCollectionRateLimitingProfileDto
 }

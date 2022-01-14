@@ -19,5 +19,5 @@ func NewProfilesAddCustomerSettingOK() *ProfilesAddCustomerSettingOK {
 Success
 */
 type ProfilesAddCustomerSettingOK struct {
-	*rtldmodels.CdnProfileDto
+	rtldmodels.CdnProfileDto
 }

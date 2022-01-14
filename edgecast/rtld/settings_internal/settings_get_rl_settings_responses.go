@@ -19,5 +19,5 @@ func NewSettingsGetRlSettingsOK() *SettingsGetRlSettingsOK {
 Success
 */
 type SettingsGetRlSettingsOK struct {
-	*rtldmodels.HyperionCollectionRtldRateLimitingSettingDto
+	rtldmodels.HyperionCollectionRtldRateLimitingSettingDto
 }

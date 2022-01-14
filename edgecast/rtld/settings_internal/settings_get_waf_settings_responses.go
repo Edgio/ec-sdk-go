@@ -19,5 +19,5 @@ func NewSettingsGetWafSettingsOK() *SettingsGetWafSettingsOK {
 Success
 */
 type SettingsGetWafSettingsOK struct {
-	*rtldmodels.HyperionCollectionRtldPlatformSettingDto
+	rtldmodels.HyperionCollectionRtldPlatformSettingDto
 }

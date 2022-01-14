@@ -29,7 +29,11 @@ type ClientService interface {
 
 	ProfilesRateLimitingGetCustomerSettings(params *ProfilesRateLimitingGetCustomerSettingsParams) (*ProfilesRateLimitingGetCustomerSettingsOK, error)
 
+	ProfilesRlDeleteCustomerSettingsByID(params *ProfilesRlDeleteCustomerSettingsByIDParams) (*ProfilesRlDeleteCustomerSettingsByIDNoContent, error)
+
 	ProfilesRlGetCustomerSettingsByID(params *ProfilesRlGetCustomerSettingsByIDParams) (*ProfilesRlGetCustomerSettingsByIDOK, error)
+
+	ProfilesRlUpdateCustomerSetting(params *ProfilesRlUpdateCustomerSettingParams) (*ProfilesRlUpdateCustomerSettingOK, error)
 }
 
 /*
@@ -97,6 +101,38 @@ func (a *Client) ProfilesRateLimitingGetCustomerSettings(params *ProfilesRateLim
 }
 
 /*
+  ProfilesRlDeleteCustomerSettingsByID profiles rl delete customer settings by Id API
+*/
+func (a *Client) ProfilesRlDeleteCustomerSettingsByID(params *ProfilesRlDeleteCustomerSettingsByIDParams) (*ProfilesRlDeleteCustomerSettingsByIDNoContent, error) {
+	// Validate the params before sending
+	if params == nil {
+		params = NewProfilesRlDeleteCustomerSettingsByIDParams()
+	}
+
+	//Set parameters
+	results, err := WriteToRequestProfilesRlDeleteCustomerSettingsByIDParams(params)
+	if err != nil {
+		return nil, err
+	}
+
+	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}"
+
+	request, err := a.Client.PrepareRequest("DELETE", url, results.Body, results.QueryParams, results.PathParams)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesRlDeleteCustomerSettingsByID: %v", err)
+	}
+
+	parsedResponse := &ProfilesRlDeleteCustomerSettingsByIDNoContent{}
+
+	_, err = a.Client.SendRequest(request, parsedResponse)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesRlDeleteCustomerSettingsByID: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+/*
   ProfilesRlGetCustomerSettingsByID profiles rl get customer settings by Id API
 */
 func (a *Client) ProfilesRlGetCustomerSettingsByID(params *ProfilesRlGetCustomerSettingsByIDParams) (*ProfilesRlGetCustomerSettingsByIDOK, error) {
@@ -123,6 +159,38 @@ func (a *Client) ProfilesRlGetCustomerSettingsByID(params *ProfilesRlGetCustomer
 	_, err = a.Client.SendRequest(request, parsedResponse)
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRlGetCustomerSettingsByID: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+/*
+  ProfilesRlUpdateCustomerSetting profiles rl update customer setting API
+*/
+func (a *Client) ProfilesRlUpdateCustomerSetting(params *ProfilesRlUpdateCustomerSettingParams) (*ProfilesRlUpdateCustomerSettingOK, error) {
+	// Validate the params before sending
+	if params == nil {
+		params = NewProfilesRlUpdateCustomerSettingParams()
+	}
+
+	//Set parameters
+	results, err := WriteToRequestProfilesRlUpdateCustomerSettingParams(params)
+	if err != nil {
+		return nil, err
+	}
+
+	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}"
+
+	request, err := a.Client.PrepareRequest("PUT", url, results.Body, results.QueryParams, results.PathParams)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesRlUpdateCustomerSetting: %v", err)
+	}
+
+	parsedResponse := &ProfilesRlUpdateCustomerSettingOK{}
+
+	_, err = a.Client.SendRequest(request, parsedResponse)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesRlUpdateCustomerSetting: %v", err)
 	}
 
 	return parsedResponse, nil

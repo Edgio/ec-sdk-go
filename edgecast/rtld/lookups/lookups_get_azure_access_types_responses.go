@@ -19,5 +19,5 @@ func NewLookupsGetAzureAccessTypesOK() *LookupsGetAzureAccessTypesOK {
 Success
 */
 type LookupsGetAzureAccessTypesOK struct {
-	*rtldmodels.HyperionCollectionCodeName
+	rtldmodels.HyperionCollectionCodeName
 }
