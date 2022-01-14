@@ -1,7 +1,7 @@
 // Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
 // See LICENSE file in project root for terms.
 
-package customer
+package origin
 
 import (
 	"fmt"
@@ -12,19 +12,19 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
 )
 
-// Customer service interacts with the EdgeCast API for Customer
-type CustomerService struct {
+// Origin service interacts with the EdgeCast API for managing Origins
+type OriginService struct {
 	client.Client
 	Logger logging.Logger
 }
 
-// New creates a new Customer service
-func New(config edgecast.SDKConfig) (*CustomerService, error) {
+// New creates a new Origin service
+func New(config edgecast.SDKConfig) (*OriginService, error) {
 
 	authProvider, err := auth.NewTokenAuthorizationProvider(config.APIToken)
 
 	if err != nil {
-		return nil, fmt.Errorf("customer.New(): %v", err)
+		return nil, fmt.Errorf("origin.New(): %v", err)
 	}
 
 	c := client.NewClient(client.ClientConfig{
@@ -34,7 +34,7 @@ func New(config edgecast.SDKConfig) (*CustomerService, error) {
 		Logger:       config.Logger,
 	})
 
-	return &CustomerService{
+	return &OriginService{
 		Client: c,
 		Logger: config.Logger,
 	}, nil
