@@ -307,7 +307,7 @@ func TestBuildRequest(t *testing.T) {
 			},
 			input: buildRequestParams{
 				method:  "POST",
-				path:    "/customers/{customer_id}/policies/{policy_id}",
+				path:    "customers/{customer_id}/policies/{policy_id}",
 				rawBody: goodSampleData,
 				queryParams: map[string]string{
 					"q1": "val1",

@@ -79,6 +79,7 @@ type ecRequestBuilder struct {
 	baseAPIURL   url.URL
 	authProvider *auth.AuthorizationProvider
 	userAgent    string
+	logger       eclog.Logger
 }
 
 // newECRequestBuilder creates a default instance of ecRequestBuilder using the
@@ -88,6 +89,7 @@ func newECRequestBuilder(config ClientConfig) ecRequestBuilder {
 		baseAPIURL:   config.BaseAPIURL,
 		authProvider: &config.AuthProvider,
 		userAgent:    config.UserAgent,
+		logger:       config.Logger,
 	}
 }
 

@@ -58,7 +58,7 @@ func (svc *WAFService) GetAllScopes(accountNumber string) (*Scopes, error) {
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.GetAllScopes: %v", err)
+		return nil, fmt.Errorf("GetAllScopes: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -98,7 +98,7 @@ func (svc *WAFService) ModifyAllScopes(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("WAFService.ModifyAllScopes: %v", err)
+		return nil, fmt.Errorf("ModifyAllScopes: %v", err)
 	}
 	return parsedResponse, nil
 }

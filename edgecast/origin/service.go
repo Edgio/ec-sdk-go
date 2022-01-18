@@ -9,13 +9,13 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 )
 
 // Origin service interacts with the EdgeCast API for managing Origins
 type OriginService struct {
-	client.Client
-	Logger logging.Logger
+	client client.APIClient
+	Logger eclog.Logger
 }
 
 // New creates a new Origin service
@@ -27,7 +27,7 @@ func New(config edgecast.SDKConfig) (*OriginService, error) {
 		return nil, fmt.Errorf("origin.New(): %v", err)
 	}
 
-	c := client.NewClient(client.ClientConfig{
+	c := client.NewECClient(client.ClientConfig{
 		AuthProvider: authProvider,
 		BaseAPIURL:   config.BaseAPIURLLegacy,
 		UserAgent:    config.UserAgent,
@@ -35,7 +35,7 @@ func New(config edgecast.SDKConfig) (*OriginService, error) {
 	})
 
 	return &OriginService{
-		Client: c,
+		client: c,
 		Logger: config.Logger,
 	}, nil
 }

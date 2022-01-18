@@ -4,7 +4,9 @@ package origin
 
 import (
 	"fmt"
+	"strconv"
 
+	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/ecmodels"
 )
 
@@ -13,123 +15,97 @@ import (
 func (svc *OriginService) GetAllOrigins(
 	params GetAllOriginsParams,
 ) (*[]OriginGetOK, error) {
-	request, err := svc.BuildRequest(
-		"GET",
-		fmt.Sprintf("v2/mcc/customers/%s/origins/%s",
-			params.AccountNumber,
-			params.MediaTypeID.String(),
-		),
-		nil,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("GetAllOrigins: %v", err)
-	}
-
 	parsedResponse := &[]OriginGetOK{}
-	_, err = svc.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.Do(client.DoParams{
+		Method: "GET",
+		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"platform_id":    params.MediaTypeID.String(),
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("GetAllOrigins: %v", err)
 	}
-
 	return parsedResponse, nil
 }
 
 // AddOrigin adds a customer origin to the specified platform.
 func (svc *OriginService) AddOrigin(params AddOriginParams) (*int, error) {
-	request, err := svc.BuildRequest(
-		"POST",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/origins/%s", params.AccountNumber,
-			params.MediaTypeID.String(),
-		),
-		params.Origin,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("AddOrigin: %v", err)
-	}
-
 	parsedResponse := &AddUpdateOriginOK{}
-	_, err = svc.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.Do(client.DoParams{
+		Method: "POST",
+		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"platform_id":    params.MediaTypeID.String(),
+		},
+		Body:           params.Origin,
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("AddOrigin: %v", err)
 	}
-
 	return &parsedResponse.CustomerOriginID, nil
 }
 
 // GetOrigin retrieves the properties of a customer origin configuration.
-func (svc *OriginService) GetOrigin(params GetOriginParams) (*OriginGetOK, error) {
-	request, err := svc.BuildRequest(
-		"GET",
-		fmt.Sprintf("v2/mcc/customers/%s/origins/%s/%d",
-			params.AccountNumber,
-			params.MediaTypeID.String(),
-			params.CustomerOriginID,
-		),
-		nil,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("GetOrigin: %v", err)
-	}
-
+func (svc *OriginService) GetOrigin(
+	params GetOriginParams,
+) (*OriginGetOK, error) {
 	parsedResponse := &OriginGetOK{}
-	_, err = svc.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.Do(client.DoParams{
+		Method: "GET",
+		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"platform_id":    params.MediaTypeID.String(),
+			"origin_id":      strconv.Itoa(params.CustomerOriginID),
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("GetOrigin: %v", err)
 	}
-
 	return parsedResponse, nil
 }
 
 // UpdateOrigin sets the properties for a customer origin.
-func (svc *OriginService) UpdateOrigin(params UpdateOriginParams) (*int, error) {
-	request, err := svc.BuildRequest(
-		"PUT",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/origins/%s/%d",
-			params.AccountNumber,
-			params.Origin.MediaTypeID,
-			params.Origin.ID,
-		),
-		params.Origin,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("UpdateOrigin: %v", err)
-	}
-
+func (svc *OriginService) UpdateOrigin(
+	params UpdateOriginParams,
+) (*int, error) {
 	parsedResponse := &AddUpdateOriginOK{}
-	_, err = svc.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.Do(client.DoParams{
+		Method: "PUT",
+		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"platform_id":    params.Origin.MediaTypeID.String(),
+			"origin_id":      strconv.Itoa(params.Origin.ID),
+		},
+		Body:           params.Origin,
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("UpdateOrigin: %v", err)
 	}
-
 	return &parsedResponse.CustomerOriginID, nil
 }
 
 // DeleteOrigin deletes a customer origin.
 func (svc *OriginService) DeleteOrigin(params DeleteOriginParams) error {
-	request, err := svc.BuildRequest(
-		"DELETE",
-		fmt.Sprintf("v2/mcc/customers/%s/origins/%d",
-			params.AccountNumber,
-			params.Origin.ID,
-		),
-		nil,
-	)
+	_, err := svc.client.Do(client.DoParams{
+		Method: "DELETE",
+		Path:   "v2/mcc/customers/{account_number}/origins/{origin_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"origin_id":      strconv.Itoa(params.Origin.ID),
+		},
+	})
 	if err != nil {
 		return fmt.Errorf("DeleteOrigin: %v", err)
 	}
-
-	_, err = svc.SendRequest(request, nil)
-
-	if err != nil {
-		return fmt.Errorf("DeleteOrigin: %v", err)
-	}
-
 	return nil
 }
 
@@ -137,18 +113,15 @@ func (svc *OriginService) DeleteOrigin(params DeleteOriginParams) error {
 // service. Ensure that our CDN may communicate with your web servers by
 // allowlisting these IP blocks on your firewall.
 func (svc *OriginService) GetCDNIPBlocks() (*CDNIPBlocksOK, error) {
-	request, err := svc.BuildRequest("GET", "v2/mcc/customers/superblocks", nil)
-	if err != nil {
-		return nil, fmt.Errorf("GetCDNIPBlocks: %v", err)
-	}
-
 	parsedResponse := &CDNIPBlocksOK{}
-	_, err = svc.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.Do(client.DoParams{
+		Method:         "GET",
+		Path:           "v2/mcc/customers/superblocks",
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCDNIPBlocks: %v", err)
+		return nil, fmt.Errorf("GetOrigin: %v", err)
 	}
-
 	return parsedResponse, nil
 }
 
@@ -158,26 +131,19 @@ func (svc *OriginService) GetCDNIPBlocks() (*CDNIPBlocksOK, error) {
 func (svc *OriginService) GetOriginPropagationStatus(
 	params GetOriginPropagationStatusParams,
 ) (*ecmodels.PropagationStatus, error) {
-	request, err := svc.BuildRequest(
-		"GET",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/origins/%d/status",
-			params.AccountNumber,
-			params.CustomerOriginID,
-		),
-		nil,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("GetOriginPropagationStatus: %v", err)
-	}
-
 	parsedResponse := &ecmodels.PropagationStatus{}
-	_, err = svc.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.Do(client.DoParams{
+		Method: "GET",
+		Path:   "v2/mcc/customers/{account_number}/origins/{origin_id}/status",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"origin_id":      strconv.Itoa(params.CustomerOriginID),
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("GetOriginPropagationStatus: %v", err)
 	}
-
 	return parsedResponse, nil
 }
 
@@ -190,26 +156,19 @@ func (svc *OriginService) GetOriginPropagationStatus(
 func (svc *OriginService) GetOriginShieldPOPs(
 	params GetOriginShieldPOPsParams,
 ) (*[]ShieldPOP, error) {
-	request, err := svc.BuildRequest(
-		"GET",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/origins/%s/shieldpops",
-			params.AccountNumber,
-			params.MediaTypeID.String(),
-		),
-		nil,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("GetOriginShieldPOPs: %v", err)
-	}
-
 	parsedResponse := &[]ShieldPOP{}
-	_, err = svc.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.Do(client.DoParams{
+		Method: "GET",
+		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/shieldpops",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"platform_id":    params.MediaTypeID.String(),
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("GetOriginShieldPOPs: %v", err)
 	}
-
 	return parsedResponse, nil
 }
 
@@ -219,24 +178,17 @@ func (svc *OriginService) GetOriginShieldPOPs(
 func (svc *OriginService) ReselectADNGateways(
 	params ReselectADNGatewaysParams,
 ) error {
-	request, err := svc.BuildRequest(
-		"PUT",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/origins/%s/%v/reselect",
-			params.AccountNumber,
-			params.MediaTypeID.String(),
-			params.CustomerOriginID,
-		),
-		nil,
-	)
+	_, err := svc.client.Do(client.DoParams{
+		Method: "PUT",
+		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"platform_id":    params.MediaTypeID.String(),
+			"origin_id":      strconv.Itoa(params.CustomerOriginID),
+		},
+	})
 	if err != nil {
 		return fmt.Errorf("ReselectADNGateways: %v", err)
 	}
-	_, err = svc.SendRequest(request, nil)
-
-	if err != nil {
-		return fmt.Errorf("ReselectADNGateways: %v", err)
-	}
-
 	return nil
 }

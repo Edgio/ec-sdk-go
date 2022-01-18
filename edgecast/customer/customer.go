@@ -31,7 +31,7 @@ func (svc *CustomerService) AddCustomer(
 	}
 	_, err := svc.client.Do(doParams)
 	if err != nil {
-		return "", fmt.Errorf("CustomerService.AddCustomer: %v", err)
+		return "", fmt.Errorf("AddCustomer: %v", err)
 	}
 	return parsedResponse.AccountNumber, nil
 }
@@ -51,7 +51,7 @@ func (svc *CustomerService) GetCustomer(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("CustomerService.GetCustomer: %v", err)
+		return nil, fmt.Errorf("GetCustomer: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -70,7 +70,7 @@ func (svc *CustomerService) UpdateCustomer(params UpdateCustomerParams) error {
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("CustomerService.UpdateCustomer: %v", err)
+		return fmt.Errorf("UpdateCustomer: %v", err)
 	}
 	return nil
 }
@@ -88,7 +88,7 @@ func (svc *CustomerService) DeleteCustomer(params DeleteCustomerParams) error {
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("CustomerService.DeleteCustomer: %v", err)
+		return fmt.Errorf("DeleteCustomer: %v", err)
 	}
 	return nil
 }
@@ -104,7 +104,7 @@ func (svc *CustomerService) GetAvailableCustomerServices() (*[]Service, error) {
 	})
 	if err != nil {
 		return nil,
-			fmt.Errorf("CustomerService.GetAvailableCustomerServices: %v", err)
+			fmt.Errorf("GetAvailableCustomerServices: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -125,7 +125,7 @@ func (svc *CustomerService) GetCustomerServices(
 	})
 	if err != nil {
 		return nil,
-			fmt.Errorf("CustomerService.GetCustomerServices: %v", err)
+			fmt.Errorf("GetCustomerServices: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -180,7 +180,7 @@ func (svc *CustomerService) GetCustomerDeliveryRegion(
 	})
 	if err != nil {
 		return nil,
-			fmt.Errorf("CustomerService.GetCustomerDeliveryRegion: %v", err)
+			fmt.Errorf("GetCustomerDeliveryRegion: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -208,7 +208,7 @@ func (svc *CustomerService) UpdateCustomerDeliveryRegion(
 	})
 	if err != nil {
 		return fmt.Errorf(
-			"CustomerService.UpdateCustomerDeliveryRegion: %v",
+			"UpdateCustomerDeliveryRegion: %v",
 			err)
 	}
 	return nil
@@ -224,7 +224,7 @@ func (svc *CustomerService) GetCustomerDomainTypes() (*[]DomainType, error) {
 	})
 	if err != nil {
 		return nil,
-			fmt.Errorf("CustomerService.GetCustomerDomainTypes: %v", err)
+			fmt.Errorf("GetCustomerDomainTypes: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -253,7 +253,7 @@ func (svc *CustomerService) UpdateCustomerDomainURL(
 	})
 	if err != nil {
 		return fmt.Errorf(
-			"CustomerService.UpdateCustomerDomainURL: %v",
+			"UpdateCustomerDomainURL: %v",
 			err)
 	}
 	return nil
@@ -275,7 +275,7 @@ func (svc *CustomerService) GetCustomerAccessModules(
 	})
 	if err != nil {
 		return nil,
-			fmt.Errorf("CustomerService.GetCustomerAccessModules: %v", err)
+			fmt.Errorf("GetCustomerAccessModules: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -307,7 +307,7 @@ func (svc *CustomerService) UpdateCustomerAccessModule(
 		})
 		if err != nil {
 			return fmt.Errorf(
-				"CustomerService.UpdateCustomerAccessModule: %v",
+				"UpdateCustomerAccessModule: %v",
 				err)
 		}
 	}

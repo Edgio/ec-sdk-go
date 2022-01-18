@@ -118,7 +118,6 @@ func (svc *EdgeCnameService) DeleteEdgeCname(
 // CNAME configuration.
 func (svc *EdgeCnameService) GetEdgeCnamePropagationStatus(
 	params GetEdgeCnamePropagationStatus,
-
 ) (*ecmodels.PropagationStatus, error) {
 	parsedResponse := &ecmodels.PropagationStatus{}
 	_, err := svc.client.Do(client.DoParams{

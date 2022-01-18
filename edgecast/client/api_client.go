@@ -4,6 +4,7 @@
 package client
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -32,6 +33,17 @@ type Request struct {
 	rawBody interface{}
 	// parsedResponse will be filled in using the API response
 	parsedResponse interface{}
+}
+
+func (r Request) String() string {
+	s := fmt.Sprintf("%s %s", r.method, r.url)
+	if len(r.headers) > 0 {
+		s = s + fmt.Sprintf("\nHeaders:%v", r.headers)
+	}
+	if r.rawBody != nil {
+		s = s + fmt.Sprintf("\nBody:%v", r.rawBody)
+	}
+	return s
 }
 
 // response contains the parsed response from a request along with the raw
