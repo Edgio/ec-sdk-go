@@ -18,9 +18,9 @@ func main() {
 	apiToken := "MY_API_TOKEN"
 
 	idsCredentials := auth.OAuth2Credentials{
-		ClientID:     "e01af682-b6bf-4283-9649-14efee080c3c",
-		ClientSecret: "3mRC0cL0P0SO58PyF5ki9V3ZVwvzyt2t",
-		Scope:        "ec.rtld",
+		ClientID:     "CLIENT_ID",
+		ClientSecret: "CLIENT_SECRET",
+		Scope:        "SCOPE",
 	}
 
 	sdkConfig := edgecast.NewSDKConfig(apiToken, idsCredentials)
@@ -63,8 +63,6 @@ func main() {
 	}
 
 	color.Blue("successfully retrieved waf customer profile")
-
-	//fmt.Printf("%v v", customerSettingsByIdResp)
 	fmt.Print(ShowAsJson("customerSettingsByIdResp", customerSettingsByIdResp))
 
 	fmt.Println("")
@@ -95,7 +93,7 @@ func main() {
 	customerSettingsParam.SettingDto = &settingDto
 
 	color.Blue("Calling ProfilesWafAddCustomerSetting()")
-	//customerSettingsAddResp, err := rtldService.ProfilesWaf.ProfilesWafAddCustomerSetting(customerSettingsParam)
+	customerSettingsAddResp, err := rtldService.ProfilesWaf.ProfilesWafAddCustomerSetting(customerSettingsParam)
 
 	if err != nil {
 		color.Red("failed to add waf customer profile: %v\n", err)
@@ -103,13 +101,13 @@ func main() {
 	}
 
 	color.Blue("successfully added waf customer profile")
-	//fmt.Printf(ShowAsJson("customerSettingsAddResp", customerSettingsAddResp))
-	//fmt.Printf("new ID:%d", customerSettingsAddResp.ID)
+	fmt.Printf(ShowAsJson("customerSettingsAddResp", customerSettingsAddResp))
+	fmt.Printf("new ID:%d", customerSettingsAddResp.ID)
 	fmt.Println("")
 	color.Green("**** UPDATE CUSTOMER SETTINGS ****")
 	fmt.Println("")
 
-	//customerSettingsUpdateParam := profiles_waf.NewProfilesRlUpdateCustomerSettingParams()
+	customerSettingsUpdateParam := profiles_waf.NewProfilesWafUpdateCustomerSettingParams()
 	var updateDto rtldmodels.BaseProfileDto
 	updateDto.DeliveryMethod = "http_post"
 	updateDto.Enabled = true
@@ -119,7 +117,7 @@ func main() {
 
 	updateDto.Fields = []string{"account_number"}
 	var updfilters rtldmodels.RtldWafFiltersDto
-	updfilters.Cnames = []string{"somethig.com"}
+	updfilters.Cnames = []string{"something.com"}
 	updfilters.CnamesCondition = "in"
 
 	var updHttpPost rtldmodels.RtldHTTPPostSettingDto
@@ -130,11 +128,11 @@ func main() {
 	updateDto.HTTPPost = &httpPost
 
 	customerSettingsParam.SettingDto = &settingDto
-	//customerSettingsUpdateParam.ID = customerSettingsAddResp.ID //10870
-	//customerSettingsUpdateParam.Body.BaseProfileDto = updateDto
+	customerSettingsUpdateParam.ID = customerSettingsAddResp.ID
+	customerSettingsUpdateParam.Body.BaseProfileDto = updateDto
 
 	color.Blue("Calling ProfilesWafAddCustomerSetting()")
-	//customerSettingsUpdateResp, err := rtldService.ProfilesWaf.ProfilesRlUpdateCustomerSetting(customerSettingsUpdateParam)
+	customerSettingsUpdateResp, err := rtldService.ProfilesWaf.ProfilesWafUpdateCustomerSetting(customerSettingsUpdateParam)
 
 	if err != nil {
 		color.Red("failed to update waf customer profile: %v\n", err)
@@ -142,18 +140,18 @@ func main() {
 	}
 
 	color.Blue("successfully updated waf customer profile")
-	//fmt.Printf(ShowAsJson("customerSettingsUpdateResp", customerSettingsUpdateResp))
+	fmt.Printf(ShowAsJson("customerSettingsUpdateResp", customerSettingsUpdateResp))
 
 	fmt.Println("")
 	color.Green("**** DELETE CUSTOMER SETTINGS ****")
 	fmt.Println("")
 
-	//customerSettingsDelParam := profiles_waf.NewProfilesWafDeleteCustomerSettingsByIDParams()
+	customerSettingsDelParam := profiles_waf.NewProfilesWafDeleteCustomerSettingsByIDParams()
 
-	//customerSettingsDelParam.ID = customerSettingsAddResp.ID //10870
+	customerSettingsDelParam.ID = customerSettingsAddResp.ID
 
 	color.Blue("Calling ProfilesWafAddCustomerSetting()")
-	//customerSettingsDelResp, err := rtldService.ProfilesWaf.ProfilesWafDeleteCustomerSettingsByID(customerSettingsDelParam)
+	customerSettingsDelResp, err := rtldService.ProfilesWaf.ProfilesWafDeleteCustomerSettingsByID(customerSettingsDelParam)
 
 	if err != nil {
 		color.Red("failed to delete waf customer profile: %v\n", err)
@@ -161,8 +159,9 @@ func main() {
 	}
 
 	color.Blue("successfully deleted waf customer profile")
-	//fmt.Printf(ShowAsJson("customerSettingsDelResp", customerSettingsDelResp))
+	fmt.Printf(ShowAsJson("customerSettingsDelResp", customerSettingsDelResp))
 }
+
 func ShowAsJson(objName string, body interface{}) string {
 	fb, _ := json.MarshalIndent(body, "", "    ")
 	s := fmt.Sprintf("Object: %s\n", objName)
