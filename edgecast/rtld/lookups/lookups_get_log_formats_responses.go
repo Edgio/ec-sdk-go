@@ -19,5 +19,5 @@ func NewLookupsGetLogFormatsOK() *LookupsGetLogFormatsOK {
 Success
 */
 type LookupsGetLogFormatsOK struct {
-	*rtldmodels.HyperionCollectionCodeName
+	rtldmodels.HyperionCollectionCodeName
 }

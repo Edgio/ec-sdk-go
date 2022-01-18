@@ -19,5 +19,5 @@ func NewLookupsGetDeliveryMethodsOK() *LookupsGetDeliveryMethodsOK {
 Success
 */
 type LookupsGetDeliveryMethodsOK struct {
-	*rtldmodels.HyperionCollectionCodeName
+	rtldmodels.HyperionCollectionCodeName
 }

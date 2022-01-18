@@ -19,5 +19,5 @@ func NewProfilesWafGetCustomerSettingsByIDOK() *ProfilesWafGetCustomerSettingsBy
 Success
 */
 type ProfilesWafGetCustomerSettingsByIDOK struct {
-	*rtldmodels.WafProfileDto
+	rtldmodels.WafProfileDto
 }

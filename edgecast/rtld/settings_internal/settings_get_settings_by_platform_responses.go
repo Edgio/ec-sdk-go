@@ -19,5 +19,5 @@ func NewSettingsGetSettingsByPlatformOK() *SettingsGetSettingsByPlatformOK {
 Success
 */
 type SettingsGetSettingsByPlatformOK struct {
-	*rtldmodels.HyperionCollectionRtldPlatformSettingDto
+	rtldmodels.HyperionCollectionRtldPlatformSettingDto
 }

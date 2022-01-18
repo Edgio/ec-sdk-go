@@ -19,5 +19,5 @@ func NewProfilesGetCustomerSettingsOK() *ProfilesGetCustomerSettingsOK {
 Success
 */
 type ProfilesGetCustomerSettingsOK struct {
-	*rtldmodels.HyperionCollectionCdnProfileDto
+	rtldmodels.HyperionCollectionCdnProfileDto
 }

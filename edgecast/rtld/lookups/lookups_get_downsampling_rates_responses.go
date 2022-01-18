@@ -19,5 +19,5 @@ func NewLookupsGetDownsamplingRatesOK() *LookupsGetDownsamplingRatesOK {
 Success
 */
 type LookupsGetDownsamplingRatesOK struct {
-	*rtldmodels.HyperionCollectionSystemDouble
+	rtldmodels.HyperionCollectionSystemDouble
 }

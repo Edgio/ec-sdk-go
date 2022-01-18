@@ -19,5 +19,5 @@ func NewLookupsGetStatusCodesOK() *LookupsGetStatusCodesOK {
 Success
 */
 type LookupsGetStatusCodesOK struct {
-	*rtldmodels.HyperionCollectionCodeName
+	rtldmodels.HyperionCollectionCodeName
 }
