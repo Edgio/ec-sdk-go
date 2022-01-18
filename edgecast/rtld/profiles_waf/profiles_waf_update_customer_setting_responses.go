@@ -19,5 +19,5 @@ func NewProfilesWafUpdateCustomerSettingOK() *ProfilesWafUpdateCustomerSettingOK
 Success
 */
 type ProfilesWafUpdateCustomerSettingOK struct {
-	*rtldmodels.WafProfileDto
+	rtldmodels.WafProfileDto
 }

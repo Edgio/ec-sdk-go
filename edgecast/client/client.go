@@ -230,7 +230,7 @@ func (c *Client) SendRequest(
 	body, err := ioutil.ReadAll(resp.Body)
 	bodyAsString := string(body)
 
-	logMsg := jsonutil.CreateJSONLogMessage("Response", bodyAsString)
+	logMsg := jsonutil.CreateJSONLogMessage("Reading Response", bodyAsString)
 	c.Config.Logger.Debug(logMsg)
 
 	if resp.StatusCode >= 400 && resp.StatusCode <= 599 {
@@ -255,6 +255,7 @@ func (c *Client) SendRequest(
 		}
 	} else {
 		if jsonutil.IsJSONString(bodyAsString) {
+			fmt.Printf("parsedResponse:%v", parsedResponse)
 			err = json.Unmarshal([]byte(bodyAsString), parsedResponse)
 
 			if err != nil {

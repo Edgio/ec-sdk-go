@@ -7,6 +7,7 @@ package rtldmodels
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -30,6 +31,9 @@ func (m *WafProfileDto) UnmarshalJSON(raw []byte) error {
 	if err := swag.ReadJSON(raw, &aO0); err != nil {
 		return err
 	}
+	
+	fmt.Printf("\nm: %v\n",m)
+	
 	m.BaseProfileDto = aO0
 
 	// AO1
