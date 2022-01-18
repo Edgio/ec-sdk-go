@@ -19,5 +19,5 @@ func NewLookupsGetFieldsWafOK() *LookupsGetFieldsWafOK {
 Success
 */
 type LookupsGetFieldsWafOK struct {
-	*rtldmodels.HyperionCollectionLogFieldDto
+	rtldmodels.HyperionCollectionLogFieldDto
 }

@@ -19,5 +19,5 @@ func NewProfilesGetCustomerSettingsByIDOK() *ProfilesGetCustomerSettingsByIDOK {
 Success
 */
 type ProfilesGetCustomerSettingsByIDOK struct {
-	*rtldmodels.CdnProfileDto
+	rtldmodels.CdnProfileDto
 }

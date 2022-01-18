@@ -19,5 +19,5 @@ func NewLookupsGetHTTPAuthenticationMethodsOK() *LookupsGetHTTPAuthenticationMet
 Success
 */
 type LookupsGetHTTPAuthenticationMethodsOK struct {
-	*rtldmodels.HyperionCollectionCodeName
+	rtldmodels.HyperionCollectionCodeName
 }

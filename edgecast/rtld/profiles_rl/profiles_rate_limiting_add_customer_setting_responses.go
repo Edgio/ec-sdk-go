@@ -19,5 +19,5 @@ func NewProfilesRateLimitingAddCustomerSettingOK() *ProfilesRateLimitingAddCusto
 Success
 */
 type ProfilesRateLimitingAddCustomerSettingOK struct {
-	*rtldmodels.RateLimitingProfileDto
+	rtldmodels.RateLimitingProfileDto
 }

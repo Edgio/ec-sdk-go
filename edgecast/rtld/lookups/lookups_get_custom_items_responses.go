@@ -19,5 +19,5 @@ func NewLookupsGetCustomItemsOK() *LookupsGetCustomItemsOK {
 Success
 */
 type LookupsGetCustomItemsOK struct {
-	*rtldmodels.HyperionCollectionRtldCustomItemDto
+	rtldmodels.HyperionCollectionRtldCustomItemDto
 }

@@ -19,5 +19,5 @@ func NewProfilesRlGetCustomerSettingsByIDOK() *ProfilesRlGetCustomerSettingsByID
 Success
 */
 type ProfilesRlGetCustomerSettingsByIDOK struct {
-	*rtldmodels.RateLimitingProfileDto
+	rtldmodels.RateLimitingProfileDto
 }

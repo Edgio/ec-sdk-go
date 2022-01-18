@@ -19,5 +19,5 @@ func NewLookupsGetAwsRegionsOK() *LookupsGetAwsRegionsOK {
 Success
 */
 type LookupsGetAwsRegionsOK struct {
-	*rtldmodels.HyperionCollectionCodeName
+	rtldmodels.HyperionCollectionCodeName
 }

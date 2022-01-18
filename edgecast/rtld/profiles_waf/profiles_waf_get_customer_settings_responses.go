@@ -19,5 +19,5 @@ func NewProfilesWafGetCustomerSettingsOK() *ProfilesWafGetCustomerSettingsOK {
 Success
 */
 type ProfilesWafGetCustomerSettingsOK struct {
-	*rtldmodels.HyperionCollectionWafProfileDto
+	rtldmodels.HyperionCollectionWafProfileDto
 }

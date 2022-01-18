@@ -19,5 +19,5 @@ func NewLookupsGetFieldRlOK() *LookupsGetFieldRlOK {
 Success
 */
 type LookupsGetFieldRlOK struct {
-	*rtldmodels.HyperionCollectionLogFieldDto
+	rtldmodels.HyperionCollectionLogFieldDto
 }
