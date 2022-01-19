@@ -41,9 +41,9 @@ func NewECClient(config ClientConfig) ECClient {
 }
 
 // Do invokes an HTTP request with the given parameters
-func (c ECClient) Do(params DoParams) (*Response, error) {
+func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 	req, err := c.reqBuilder.buildRequest(buildRequestParams{
-		method:      params.Method,
+		method:      params.Method.String(),
 		path:        params.Path,
 		rawBody:     params.Body,
 		queryParams: params.QueryParams,

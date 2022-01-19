@@ -231,7 +231,7 @@ func TestSendRequest(t *testing.T) {
 func TestECClientDo(t *testing.T) {
 	cases := []struct {
 		name          string
-		input         DoParams
+		input         SubmitRequestParams
 		reqBuilder    requestBuilder
 		reqSender     requestSender
 		expected      interface{}
@@ -239,7 +239,7 @@ func TestECClientDo(t *testing.T) {
 	}{
 		{
 			name:  "Happy Path",
-			input: DoParams{},
+			input: SubmitRequestParams{},
 			reqBuilder: testReqBuilderAlwaysSafe{
 				method: "GET",
 				url:    "https://edgecast.com/test/1",
@@ -269,7 +269,7 @@ func TestECClientDo(t *testing.T) {
 			},
 		}
 
-		resp, err := client.Do(c.input)
+		resp, err := client.SubmitRequest(c.input)
 		if c.expectedError {
 			if err == nil {
 				t.Fatalf("Case '%s': expected an error, but got none", c.name)

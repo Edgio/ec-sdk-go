@@ -49,8 +49,8 @@ func (svc *WAFService) GetAllScopes(accountNumber string) (*Scopes, error) {
 		return nil, errors.New("accountNumber is required")
 	}
 	parsedResponse := &Scopes{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/scopes",
 		PathParams: map[string]string{
 			"account_number": accountNumber,
@@ -88,8 +88,8 @@ func (svc *WAFService) ModifyAllScopes(
 		return nil, errors.New("scopes.CustomerID is required")
 	}
 	parsedResponse := &ModifyAllScopesOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "POST",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Post,
 		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/scopes",
 		PathParams: map[string]string{
 			"account_number": scopes.CustomerID,

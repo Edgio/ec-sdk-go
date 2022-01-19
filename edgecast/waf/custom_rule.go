@@ -28,8 +28,8 @@ func (svc WAFService) AddCustomRuleSet(
 	params AddCustomRuleSetParams,
 ) (string, error) {
 	parsedResponse := &CustomRuleSetAddOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "POST",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Post,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules",
 		Body:   params.CustomRuleSet,
 		PathParams: map[string]string{
@@ -49,8 +49,8 @@ func (svc WAFService) GetAllCustomRuleSets(
 	params GetAllCustomRuleSetsParams,
 ) (*[]CustomRuleSetGetAllOK, error) {
 	parsedResponse := &[]CustomRuleSetGetAllOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -68,8 +68,8 @@ func (svc WAFService) GetAllCustomRuleSets(
 func (svc WAFService) DeleteCustomRuleSet(
 	params DeleteCustomRuleSetParams,
 ) error {
-	_, err := svc.client.Do(client.DoParams{
-		Method: "DELETE",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Delete,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -88,8 +88,8 @@ func (svc WAFService) GetCustomRuleSet(
 	params GetCustomRuleSetParams,
 ) (*CustomRuleSetGetOK, error) {
 	parsedResponse := &CustomRuleSetGetOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -108,8 +108,8 @@ func (svc WAFService) GetCustomRuleSet(
 func (svc WAFService) UpdateCustomRuleSet(
 	params UpdateCustomRuleSetParams,
 ) error {
-	_, err := svc.client.Do(client.DoParams{
-		Method: "PUT",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Put,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		Body:   params.CustomRuleSet,
 		PathParams: map[string]string{

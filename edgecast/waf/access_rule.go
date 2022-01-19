@@ -25,8 +25,8 @@ func (svc WAFService) AddAccessRule(
 	params AddAccessRuleParams,
 ) (string, error) {
 	parsedResponse := &AccessRuleAddOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "POST",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Post,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl",
 		Body:   params.AccessRule,
 		PathParams: map[string]string{
@@ -46,8 +46,8 @@ func (svc WAFService) GetAllAccessRules(
 	params GetAllAccessRulesParams,
 ) (*[]AccessRuleGetAllOK, error) {
 	parsedResponse := &[]AccessRuleGetAllOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -66,8 +66,8 @@ func (svc WAFService) GetAccessRule(
 	params GetAccessRuleParams,
 ) (*AccessRuleGetOK, error) {
 	parsedResponse := &AccessRuleGetOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -86,8 +86,8 @@ func (svc WAFService) GetAccessRule(
 func (svc WAFService) UpdateAccessRule(
 	params UpdateAccessRuleParams,
 ) error {
-	_, err := svc.client.Do(client.DoParams{
-		Method: "PUT",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Put,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl/{rule_id}",
 		Body:   params.AccessRule,
 		PathParams: map[string]string{
@@ -106,8 +106,8 @@ func (svc WAFService) UpdateAccessRule(
 func (svc WAFService) DeleteAccessRule(
 	params DeleteAccessRuleParams,
 ) error {
-	_, err := svc.client.Do(client.DoParams{
-		Method: "DELETE",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Delete,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,

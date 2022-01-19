@@ -12,11 +12,11 @@ import (
 // APIClient describes structs that can send HTTP requests to an API given the
 // request's method, path relative to the API base path.
 type APIClient interface {
-	Do(params DoParams) (*Response, error)
+	SubmitRequest(params SubmitRequestParams) (*Response, error)
 }
 
-type DoParams struct {
-	Method      string
+type SubmitRequestParams struct {
+	Method      HTTPMethod
 	Path        string
 	Body        interface{}
 	QueryParams map[string]string
@@ -79,4 +79,42 @@ type requestSender interface {
 // party http library, and return the http.Response from the library
 type clientAdapter interface {
 	do(req Request) (*http.Response, error)
+}
+
+type HTTPMethod int
+
+const (
+	Connect HTTPMethod = iota
+	Delete
+	Get
+	Head
+	Options
+	Patch
+	Post
+	Put
+	Trace
+)
+
+func (m HTTPMethod) String() string {
+	switch m {
+	case Connect:
+		return "CONNECT"
+	case Delete:
+		return "DELETE"
+	case Get:
+		return "GET"
+	case Head:
+		return "HEAD"
+	case Options:
+		return "OPTIONS"
+	case Patch:
+		return "PATCH"
+	case Post:
+		return "POST"
+	case Put:
+		return "PUT"
+	case Trace:
+		return "TRACE"
+	}
+	return "UNKNOWN"
 }

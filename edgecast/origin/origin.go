@@ -16,8 +16,8 @@ func (svc *OriginService) GetAllOrigins(
 	params GetAllOriginsParams,
 ) (*[]OriginGetOK, error) {
 	parsedResponse := &[]OriginGetOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -34,8 +34,8 @@ func (svc *OriginService) GetAllOrigins(
 // AddOrigin adds a customer origin to the specified platform.
 func (svc *OriginService) AddOrigin(params AddOriginParams) (*int, error) {
 	parsedResponse := &AddUpdateOriginOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "POST",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Post,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -55,8 +55,8 @@ func (svc *OriginService) GetOrigin(
 	params GetOriginParams,
 ) (*OriginGetOK, error) {
 	parsedResponse := &OriginGetOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -76,8 +76,8 @@ func (svc *OriginService) UpdateOrigin(
 	params UpdateOriginParams,
 ) (*int, error) {
 	parsedResponse := &AddUpdateOriginOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "PUT",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Put,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -95,8 +95,8 @@ func (svc *OriginService) UpdateOrigin(
 
 // DeleteOrigin deletes a customer origin.
 func (svc *OriginService) DeleteOrigin(params DeleteOriginParams) error {
-	_, err := svc.client.Do(client.DoParams{
-		Method: "DELETE",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Delete,
 		Path:   "v2/mcc/customers/{account_number}/origins/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -114,8 +114,8 @@ func (svc *OriginService) DeleteOrigin(params DeleteOriginParams) error {
 // allowlisting these IP blocks on your firewall.
 func (svc *OriginService) GetCDNIPBlocks() (*CDNIPBlocksOK, error) {
 	parsedResponse := &CDNIPBlocksOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method:         "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method:         client.Get,
 		Path:           "v2/mcc/customers/superblocks",
 		ParsedResponse: parsedResponse,
 	})
@@ -132,8 +132,8 @@ func (svc *OriginService) GetOriginPropagationStatus(
 	params GetOriginPropagationStatusParams,
 ) (*ecmodels.PropagationStatus, error) {
 	parsedResponse := &ecmodels.PropagationStatus{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "v2/mcc/customers/{account_number}/origins/{origin_id}/status",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -157,8 +157,8 @@ func (svc *OriginService) GetOriginShieldPOPs(
 	params GetOriginShieldPOPsParams,
 ) (*[]ShieldPOP, error) {
 	parsedResponse := &[]ShieldPOP{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/shieldpops",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -178,8 +178,8 @@ func (svc *OriginService) GetOriginShieldPOPs(
 func (svc *OriginService) ReselectADNGateways(
 	params ReselectADNGatewaysParams,
 ) error {
-	_, err := svc.client.Do(client.DoParams{
-		Method: "PUT",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Put,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,

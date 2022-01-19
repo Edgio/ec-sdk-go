@@ -18,18 +18,18 @@ func (svc *CustomerService) AddCustomer(
 	parsedResponse := &struct {
 		AccountNumber string `json:"AccountNumber"`
 	}{}
-	doParams := client.DoParams{
-		Method:         "POST",
+	submitRequestParams := client.SubmitRequestParams{
+		Method:         client.Post,
 		Path:           "/v2/pcc/customers",
 		Body:           params.Customer,
 		ParsedResponse: parsedResponse,
 	}
 	if params.Customer.PartnerUserID != 0 {
-		doParams.QueryParams = map[string]string{
+		submitRequestParams.QueryParams = map[string]string{
 			"partneruserid": strconv.Itoa(params.Customer.PartnerUserID),
 		}
 	}
-	_, err := svc.client.Do(doParams)
+	_, err := svc.client.SubmitRequest(submitRequestParams)
 	if err != nil {
 		return "", fmt.Errorf("AddCustomer: %v", err)
 	}
@@ -42,8 +42,8 @@ func (svc *CustomerService) GetCustomer(
 	params GetCustomerParams,
 ) (*CustomerGetOK, error) {
 	parsedResponse := &CustomerGetOK{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "/v2/pcc/customers/{account_number}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -58,8 +58,8 @@ func (svc *CustomerService) GetCustomer(
 
 // UpdateCustomer updates a Customer's information
 func (svc *CustomerService) UpdateCustomer(params UpdateCustomerParams) error {
-	_, err := svc.client.Do(client.DoParams{
-		Method: "PUT",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Put,
 		Path:   "/v2/pcc/customers",
 		Body:   params.Customer,
 		QueryParams: map[string]string{
@@ -77,8 +77,8 @@ func (svc *CustomerService) UpdateCustomer(params UpdateCustomerParams) error {
 
 // DeleteCustomer deletes the provided Customer
 func (svc *CustomerService) DeleteCustomer(params DeleteCustomerParams) error {
-	_, err := svc.client.Do(client.DoParams{
-		Method: "DELETE",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Delete,
 		Path:   "/v2/pcc/customers",
 		QueryParams: map[string]string{
 			// TODO: support custom ids for accounts
@@ -97,8 +97,8 @@ func (svc *CustomerService) DeleteCustomer(params DeleteCustomerParams) error {
 // to enable on the customers they manage
 func (svc *CustomerService) GetAvailableCustomerServices() (*[]Service, error) {
 	parsedResponse := &[]Service{}
-	_, err := svc.client.Do(client.DoParams{
-		Method:         "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method:         client.Get,
 		Path:           "/v2/pcc/customers/services",
 		ParsedResponse: parsedResponse,
 	})
@@ -115,8 +115,8 @@ func (svc *CustomerService) GetCustomerServices(
 	params GetCustomerServicesParams,
 ) (*[]Service, error) {
 	parsedResponse := &[]Service{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "/v2/pcc/customers/{account_number}/services",
 		PathParams: map[string]string{
 			"account_number": params.Customer.HexID,
@@ -141,8 +141,8 @@ func (svc *CustomerService) UpdateCustomerServices(
 		}{
 			Status: params.Status,
 		}
-		resp, err := svc.client.Do(client.DoParams{
-			Method: "PUT",
+		resp, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+			Method: client.Put,
 			Path:   "/v2/pcc/customers/{account_number}/services/{id}",
 			Body:   body,
 			PathParams: map[string]string{
@@ -170,8 +170,8 @@ func (svc *CustomerService) GetCustomerDeliveryRegion(
 	params GetCustomerDeliveryRegionParams,
 ) (*DeliveryRegion, error) {
 	parsedResponse := &DeliveryRegion{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "/v2/pcc/customers/{account_number}/deliveryregions",
 		PathParams: map[string]string{
 			"account_number": params.Customer.HexID,
@@ -195,8 +195,8 @@ func (svc *CustomerService) UpdateCustomerDeliveryRegion(
 	}{
 		ID: params.DeliveryRegionID,
 	}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "PUT",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Put,
 		Path:   "/v2/pcc/customers/deliveryregions",
 		Body:   body,
 		QueryParams: map[string]string{
@@ -217,8 +217,8 @@ func (svc *CustomerService) UpdateCustomerDeliveryRegion(
 // GetCustomerDomainTypes retrieves all available domain types
 func (svc *CustomerService) GetCustomerDomainTypes() (*[]DomainType, error) {
 	parsedResponse := &[]DomainType{}
-	_, err := svc.client.Do(client.DoParams{
-		Method:         "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method:         client.Get,
 		Path:           "/v2/pcc/customers/domaintypes",
 		ParsedResponse: parsedResponse,
 	})
@@ -229,12 +229,13 @@ func (svc *CustomerService) GetCustomerDomainTypes() (*[]DomainType, error) {
 	return parsedResponse, nil
 }
 
-// UpdateCustomerDomainURL changes the domain associated with the customer CDN URLs
+// UpdateCustomerDomainURL changes the domain associated with the customer CDN
+// URLs
 func (svc *CustomerService) UpdateCustomerDomainURL(
 	params UpdateCustomerDomainURLParams,
 ) error {
-	_, err := svc.client.Do(client.DoParams{
-		Method: "PUT",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Put,
 		Path:   "/v2/pcc/customers/domains/{domain_type}/url",
 		Body: &struct {
 			URL string `json:"Url"`
@@ -265,8 +266,8 @@ func (svc *CustomerService) GetCustomerAccessModules(
 	params GetCustomerAccessModulesParams,
 ) (*[]AccessModule, error) {
 	parsedResponse := &[]AccessModule{}
-	_, err := svc.client.Do(client.DoParams{
-		Method: "GET",
+	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+		Method: client.Get,
 		Path:   "/v2/pcc/customers/{account_number}/accessmodules",
 		PathParams: map[string]string{
 			"account_number": params.Customer.HexID,
@@ -287,8 +288,8 @@ func (svc *CustomerService) UpdateCustomerAccessModule(
 ) error {
 	// TODO: support custom ids for accounts
 	for _, accessModuleID := range params.AccessModuleIDs {
-		_, err := svc.client.Do(client.DoParams{
-			Method: "PUT",
+		_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
+			Method: client.Put,
 			Path:   "/v2/pcc/customers/accessmodules/{access_module_id}/status",
 			Body: &struct {
 				Status int8 `json:"Status"`
