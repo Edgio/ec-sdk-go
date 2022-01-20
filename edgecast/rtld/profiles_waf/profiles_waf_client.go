@@ -9,7 +9,6 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/rtldmodels"
 )
 
 // New creates a new profiles waf API client.
@@ -156,7 +155,6 @@ func (a *Client) ProfilesWafGetCustomerSettingsByID(params *ProfilesWafGetCustom
 	}
 
 	parsedResponse := &ProfilesWafGetCustomerSettingsByIDOK{}
-	parsedResponse.WafProfileDto = &rtldmodels.WafProfileDto{}
 
 	_, err = a.Client.SendRequest(request, parsedResponse)
 	if err != nil {
