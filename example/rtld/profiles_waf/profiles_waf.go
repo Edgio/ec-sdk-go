@@ -36,8 +36,12 @@ func main() {
 	color.Green("**** GET WAF CUSTOMER PROFILE ****")
 	fmt.Println("")
 
-	profileGetParam := profiles_waf.NewProfilesWafGetCustomerSettingsParams()
-	profileWafGetCustomerSettingsResp, err := rtldService.ProfilesWaf.ProfilesWafGetCustomerSettings(profileGetParam)
+	profileGetParam :=
+		profiles_waf.NewProfilesWafGetCustomerSettingsParams()
+	profileWafGetCustomerSettingsResp, err :=
+		rtldService.
+			ProfilesWaf.
+			ProfilesWafGetCustomerSettings(profileGetParam)
 
 	if err != nil {
 		color.Red("failed to get waf customer profile: %v\n", err)
@@ -45,18 +49,24 @@ func main() {
 	}
 
 	color.Blue("successfully retrieved waf customer profile")
-	fmt.Printf(ShowAsJson("profileWafGetCustomerSettingsResp", profileWafGetCustomerSettingsResp))
+	fmt.Printf(ShowAsJson("response:", profileWafGetCustomerSettingsResp))
 
 	fmt.Println("")
 	color.Green("**** GET WAF CUSTOMER PROFILE BY ID****")
 	fmt.Println("")
 
 	color.Blue("customerSettingsByIdParam")
-	customerSettingsByIdParam := profiles_waf.NewProfilesWafGetCustomerSettingsByIDParams()
+	customerSettingsByIdParam :=
+		profiles_waf.
+			NewProfilesWafGetCustomerSettingsByIDParams()
+
 	customerSettingsByIdParam.ID = 10869
 	color.Blue("ProfilesWafGetCustomerSettingsByID")
-	customerSettingsByIdResp, err := rtldService.ProfilesWaf.ProfilesWafGetCustomerSettingsByID(customerSettingsByIdParam)
-	color.Blue("10862-1")
+	customerSettingsByIdResp, err :=
+		rtldService.
+			ProfilesWaf.
+			ProfilesWafGetCustomerSettingsByID(customerSettingsByIdParam)
+
 	if err != nil {
 		color.Red("failed to get waf customer profile: %v\n", err)
 		return
@@ -69,7 +79,10 @@ func main() {
 	color.Green("**** ADD CUSTOMER SETTINGS ****")
 	fmt.Println("")
 
-	customerSettingsParam := profiles_waf.NewProfilesWafAddCustomerSettingParams()
+	customerSettingsParam :=
+		profiles_waf.
+			NewProfilesWafAddCustomerSettingParams()
+
 	var settingDto rtldmodels.WafProfileDto
 	settingDto.DeliveryMethod = "http_post"
 	settingDto.Enabled = true
@@ -93,7 +106,10 @@ func main() {
 	customerSettingsParam.SettingDto = &settingDto
 
 	color.Blue("Calling ProfilesWafAddCustomerSetting()")
-	customerSettingsAddResp, err := rtldService.ProfilesWaf.ProfilesWafAddCustomerSetting(customerSettingsParam)
+	customerSettingsAddResp, err :=
+		rtldService.
+			ProfilesWaf.
+			ProfilesWafAddCustomerSetting(customerSettingsParam)
 
 	if err != nil {
 		color.Red("failed to add waf customer profile: %v\n", err)
@@ -107,7 +123,8 @@ func main() {
 	color.Green("**** UPDATE CUSTOMER SETTINGS ****")
 	fmt.Println("")
 
-	customerSettingsUpdateParam := profiles_waf.NewProfilesWafUpdateCustomerSettingParams()
+	customerSettingsUpdateParam :=
+		profiles_waf.NewProfilesWafUpdateCustomerSettingParams()
 	var updateDto rtldmodels.BaseProfileDto
 	updateDto.DeliveryMethod = "http_post"
 	updateDto.Enabled = true
@@ -132,7 +149,10 @@ func main() {
 	customerSettingsUpdateParam.Body.BaseProfileDto = updateDto
 
 	color.Blue("Calling ProfilesWafAddCustomerSetting()")
-	customerSettingsUpdateResp, err := rtldService.ProfilesWaf.ProfilesWafUpdateCustomerSetting(customerSettingsUpdateParam)
+	customerSettingsUpdateResp, err :=
+		rtldService.
+			ProfilesWaf.
+			ProfilesWafUpdateCustomerSetting(customerSettingsUpdateParam)
 
 	if err != nil {
 		color.Red("failed to update waf customer profile: %v\n", err)
@@ -146,12 +166,16 @@ func main() {
 	color.Green("**** DELETE CUSTOMER SETTINGS ****")
 	fmt.Println("")
 
-	customerSettingsDelParam := profiles_waf.NewProfilesWafDeleteCustomerSettingsByIDParams()
+	customerSettingsDelParam :=
+		profiles_waf.NewProfilesWafDeleteCustomerSettingsByIDParams()
 
 	customerSettingsDelParam.ID = customerSettingsAddResp.ID
 
 	color.Blue("Calling ProfilesWafAddCustomerSetting()")
-	customerSettingsDelResp, err := rtldService.ProfilesWaf.ProfilesWafDeleteCustomerSettingsByID(customerSettingsDelParam)
+	customerSettingsDelResp, err :=
+		rtldService.
+			ProfilesWaf.
+			ProfilesWafDeleteCustomerSettingsByID(customerSettingsDelParam)
 
 	if err != nil {
 		color.Red("failed to delete waf customer profile: %v\n", err)
