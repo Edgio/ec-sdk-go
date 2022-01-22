@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -13,6 +12,10 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/testhelper"
+)
+
+var (
+	testLog = testhelper.GetTestLogger("ec_client_test")
 )
 
 func TestSetBody(t *testing.T) {
@@ -39,7 +42,7 @@ func TestSetBody(t *testing.T) {
 		},
 	}
 	for _, c := range cases {
-		req := Request{}
+		req := request{}
 		req.setBody(c.body)
 
 		var actual string
@@ -78,7 +81,7 @@ func TestSetAuthorization(t *testing.T) {
 		},
 	}
 	for _, c := range cases {
-		req := Request{}
+		req := request{}
 		authProvider := testAuthProvider{
 			Auth:  c.token,
 			Error: c.throwError,
@@ -122,7 +125,7 @@ func TestSetQueryParams(t *testing.T) {
 		},
 	}
 	for _, c := range cases {
-		req := Request{
+		req := request{
 			url: testhelper.URLParse(c.baseURL),
 		}
 		req.setQueryParams(c.params)
@@ -172,7 +175,7 @@ func TestSetPathParams(t *testing.T) {
 		},
 	}
 	for _, c := range cases {
-		req := Request{
+		req := request{
 			url: testhelper.URLParse(c.baseURL),
 		}
 		err := req.setPathParams(c.params)
@@ -190,37 +193,134 @@ func TestSetPathParams(t *testing.T) {
 
 }
 
+type testBodyParser struct {
+	bodyValue     interface{}
+	errorToReturn error
+}
+
+func (bp testBodyParser) parseBody(
+	body []byte,
+	parsedResponse interface{},
+) error {
+	if bp.errorToReturn != nil {
+		return bp.errorToReturn
+	}
+	pv := reflect.ValueOf(parsedResponse)
+	if pv.Kind() != reflect.Ptr {
+		panic("parsedResponse not a pointer")
+	}
+	pv.Elem().Set(reflect.ValueOf(bp.bodyValue))
+	return nil
+}
+
 func TestSendRequest(t *testing.T) {
+	// Used for Happy Path below - has to be the same struct for the
+	// equality check to work
+	jsonBody := testhelper.ToIOReadCloser(`{"id":"1"}`)
+	stringBody := testhelper.ToIOReadCloser("hello world!")
+
 	cases := []struct {
 		name          string
-		rawResponse   string
-		request       Request
-		expected      testOKResponse
+		request       request
+		clientAdapter clientAdapter
+		parser        bodyParser
+		expected      *Response
 		expectedError bool
 	}{
 		{
-			name:        "Happy Path",
-			rawResponse: `{"id":"1","name":"test 1"}`,
-			request: Request{
-				method:         "GET",
-				url:            testhelper.URLParse("https://edgecast.com/tests/1"),
-				parsedResponse: &testOKResponse{},
+			name: "Happy Path - json response",
+			clientAdapter: testClientAdapter{
+				response: http.Response{
+					StatusCode: 200,
+					Body:       jsonBody,
+				},
 			},
-			expected:      testOKResponse{ID: "1", Name: "test 1"},
-			expectedError: false,
+			parser: testBodyParser{
+				bodyValue: &testOKResponse{ID: "1"},
+			},
+			expected: &Response{
+				Data: &testOKResponse{ID: "1"},
+				HTTPResponse: &http.Response{
+					StatusCode: 200,
+					Body:       jsonBody,
+				},
+			},
+		},
+		{
+			name: "Happy Path - non-JSON string response",
+			clientAdapter: testClientAdapter{
+				response: http.Response{
+					StatusCode: 200,
+					Body:       stringBody,
+				},
+			},
+			request: request{
+				parsedResponse: testhelper.EmptyPointerString(),
+			},
+			expected: &Response{
+				Data: testhelper.WrapStringInPointer("hello world!"),
+				HTTPResponse: &http.Response{
+					StatusCode: 200,
+					Body:       stringBody,
+				},
+			},
+		},
+		{
+			name: "Error Path: client adapter error",
+			clientAdapter: testClientAdapter{
+				errorToReturn: errors.New("error from client adapter!"),
+			},
+			expectedError: true,
+		},
+		{
+			name: "Error Path: HTTP Error Code",
+			clientAdapter: testClientAdapter{
+				response: http.Response{
+					StatusCode: 400,
+					Body:       testhelper.ToIOReadCloser("bad request!"),
+				},
+			},
+			expectedError: true,
+		},
+		{
+			name: "Error Path: unable to read body",
+			clientAdapter: testClientAdapter{
+				response: http.Response{
+					StatusCode: 200,
+					Body:       badReadCloser{},
+				},
+			},
+			expectedError: true,
+		},
+		{
+			name: "Error Path: body parser error",
+			clientAdapter: testClientAdapter{
+				response: http.Response{
+					StatusCode: 200,
+					Body:       testhelper.ToIOReadCloser(`{"id":"1"}`),
+				},
+			},
+			parser: testBodyParser{
+				errorToReturn: errors.New("error from body parser!"),
+			},
+			expectedError: true,
 		},
 	}
 	for _, c := range cases {
 		sender := ecRequestSender{
-			clientAdapter: testClientAdapter{json: c.rawResponse},
+			clientAdapter: c.clientAdapter,
+			parser:        c.parser,
+			logger:        testLog,
 		}
-		resp, err := sender.sendRequest(c.request)
+		actual, err := sender.sendRequest(c.request)
 		if c.expectedError {
 			if err == nil {
 				t.Fatalf("Case '%s': expected an error, but got none", c.name)
 			}
 		} else {
-			actual := *resp.Data.(*testOKResponse)
+			if err != nil {
+				t.Fatalf("Case '%s': unexpected error: %v", c.name, err)
+			}
 			if !reflect.DeepEqual(c.expected, actual) {
 				t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected, actual)
 			}
@@ -228,7 +328,66 @@ func TestSendRequest(t *testing.T) {
 	}
 }
 
-func TestECClientDo(t *testing.T) {
+func TestJSONParseBody(t *testing.T) {
+	cases := []struct {
+		name           string
+		body           []byte
+		parsedResponse interface{}
+		expected       interface{}
+		expectedError  bool
+	}{
+		{
+			name: "Happy Path - parsed response schema",
+			body: testhelper.ToJSONBytes(
+				testOKResponse{
+					ID:   "1",
+					Name: "resource 1",
+				}),
+			parsedResponse: &testOKResponse{},
+			expected: &testOKResponse{
+				ID:   "1",
+				Name: "resource 1",
+			},
+		},
+		{
+			name:     "Happy Path - literal/non-JSON response",
+			body:     testhelper.ToJSONBytes(100.99),
+			expected: 100.99,
+		},
+		{
+			// json.Unmarshal does not support simple strings
+			name:          "Error Path - non-JSON string response",
+			body:          []byte("hello world!"),
+			expectedError: true,
+		},
+		{
+			name:           "Error Path: string is not json",
+			body:           []byte("hello world"),
+			parsedResponse: testhelper.EmptyPointerFloat64(),
+			expected:       100.99,
+			expectedError:  true,
+		},
+	}
+	for _, c := range cases {
+		parser := newJSONBodyParser()
+		err := parser.parseBody(c.body, &c.parsedResponse)
+
+		if c.expectedError {
+			if err == nil {
+				t.Fatalf("Case '%s': expected an error, but got none", c.name)
+			}
+		} else {
+			if err != nil {
+				t.Fatalf("Case '%s': unexpected error: %v", c.name, err)
+			}
+			if !reflect.DeepEqual(c.expected, c.parsedResponse) {
+				t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected, c.parsedResponse)
+			}
+		}
+	}
+}
+
+func TestECClientSubmitRequest(t *testing.T) {
 	cases := []struct {
 		name          string
 		input         SubmitRequestParams
@@ -240,11 +399,11 @@ func TestECClientDo(t *testing.T) {
 		{
 			name:  "Happy Path",
 			input: SubmitRequestParams{},
-			reqBuilder: testReqBuilderAlwaysSafe{
+			reqBuilder: testReqBuilder{
 				method: "GET",
 				url:    "https://edgecast.com/test/1",
 			},
-			reqSender: testReqSenderAlwaysSafe{
+			reqSender: testReqSender{
 				returnData: sampleData{
 					StringData: "some string",
 					IntData:    1,
@@ -258,6 +417,24 @@ func TestECClientDo(t *testing.T) {
 			},
 			expectedError: false,
 		},
+		{
+			name: "Error Path - builder error",
+			reqBuilder: testReqBuilder{
+				errorToReturn: errors.New("something happened!"),
+			},
+			expectedError: true,
+		},
+		{
+			name: "Error Path - sender error",
+			reqBuilder: testReqBuilder{
+				method: "GET",
+				url:    "https://edgecast.com/test/1",
+			},
+			reqSender: testReqSender{
+				errorToReturn: errors.New("something happened!"),
+			},
+			expectedError: true,
+		},
 	}
 
 	for _, c := range cases {
@@ -265,7 +442,7 @@ func TestECClientDo(t *testing.T) {
 			reqBuilder: c.reqBuilder,
 			reqSender:  c.reqSender,
 			config: ClientConfig{
-				Logger: testhelper.GetTestLogger("ec_client_test"),
+				Logger: testLog,
 			},
 		}
 
@@ -295,7 +472,7 @@ func TestBuildRequest(t *testing.T) {
 		baseAPIURL    string
 		authProvider  auth.AuthorizationProvider
 		input         buildRequestParams
-		expected      *Request
+		expected      *request
 		expectedError bool
 	}{
 		{
@@ -306,7 +483,7 @@ func TestBuildRequest(t *testing.T) {
 				Error: false,
 			},
 			input: buildRequestParams{
-				method:  "POST",
+				method:  Post,
 				path:    "customers/{customer_id}/policies/{policy_id}",
 				rawBody: goodSampleData,
 				queryParams: map[string]string{
@@ -319,7 +496,7 @@ func TestBuildRequest(t *testing.T) {
 				},
 				userAgent: "test-app",
 			},
-			expected: &Request{
+			expected: &request{
 				method: "POST",
 				url:    testhelper.URLParse("https://edgecast.com/customers/HEX/policies/100?q1=val1&q2=val2"),
 				headers: map[string]string{
@@ -332,9 +509,46 @@ func TestBuildRequest(t *testing.T) {
 			},
 		},
 		{
-			name: "Error path - malformed url path",
+			name: "malformed url path",
 			input: buildRequestParams{
 				path: "h ttp://edgecast.com",
+			},
+			expectedError: true,
+		},
+		{
+			name: "Error path - invalid method",
+			input: buildRequestParams{
+				method: HTTPMethod(999),
+			},
+			expectedError: true,
+		},
+		{
+			name: "Error path - set path params error",
+			input: buildRequestParams{
+				method:     Get,
+				path:       "test/{key}",
+				pathParams: map[string]string{"otherkey": "val"},
+			},
+			expectedError: true,
+		},
+		{
+			name: "Error path - set body error",
+			input: buildRequestParams{
+				method:  Get,
+				path:    "test/1",
+				rawBody: func() {}, // funcs cannot be marshaled to json
+			},
+			expectedError: true,
+		},
+		{
+			name:       "Error path - auth provider error",
+			baseAPIURL: "https://edgecast.com",
+			authProvider: testAuthProvider{
+				Error: true,
+			},
+			input: buildRequestParams{
+				method: Get,
+				path:   "customers/1",
 			},
 			expectedError: true,
 		},
@@ -346,6 +560,7 @@ func TestBuildRequest(t *testing.T) {
 			baseAPIURL:   *baseAPIURL,
 			authProvider: &c.authProvider,
 			userAgent:    "test",
+			logger:       testLog,
 		}
 
 		actual, err := builder.buildRequest(c.input)
@@ -353,32 +568,31 @@ func TestBuildRequest(t *testing.T) {
 			if err == nil {
 				t.Fatalf("Case '%s': expected an error, but got none", c.name)
 			}
-			return
-		}
-
-		// Need to check each property because of rawBody
-		if !reflect.DeepEqual(c.expected.method, actual.method) {
-			t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected.method, actual.method)
-		}
-		if !reflect.DeepEqual(c.expected.url, actual.url) {
-			t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected.url, actual.url)
-		}
-		if !reflect.DeepEqual(c.expected.headers, actual.headers) {
-			t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected.headers, actual.headers)
-		}
-		if bodyBuffer, ok := actual.rawBody.(*bytes.Buffer); ok {
-			var resultParsed sampleData
-			bufBytes := bodyBuffer.Bytes()
-			err := json.Unmarshal(bufBytes, &resultParsed)
-			if err == nil {
-				if !reflect.DeepEqual(c.expected.rawBody, resultParsed) {
-					t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected.rawBody, resultParsed)
+		} else {
+			// Need to check each property because of rawBody
+			if !reflect.DeepEqual(c.expected.method, actual.method) {
+				t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected.method, actual.method)
+			}
+			if !reflect.DeepEqual(c.expected.url, actual.url) {
+				t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected.url, actual.url)
+			}
+			if !reflect.DeepEqual(c.expected.headers, actual.headers) {
+				t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected.headers, actual.headers)
+			}
+			if bodyBuffer, ok := actual.rawBody.(*bytes.Buffer); ok {
+				var resultParsed sampleData
+				bufBytes := bodyBuffer.Bytes()
+				err := json.Unmarshal(bufBytes, &resultParsed)
+				if err == nil {
+					if !reflect.DeepEqual(c.expected.rawBody, resultParsed) {
+						t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected.rawBody, resultParsed)
+					}
+				} else {
+					t.Fatalf("%s: failed to parse rawBody result as json:%+v", c.name, actual.rawBody)
 				}
 			} else {
-				t.Fatalf("%s: failed to parse rawBody result as json:%+v", c.name, actual.rawBody)
+				t.Fatalf("%s: rawBody expected to be bytes.Buffer, Actual:%T", c.name, actual.rawBody)
 			}
-		} else {
-			t.Fatalf("%s: rawBody expected to be bytes.Buffer, Actual:%T", c.name, actual.rawBody)
 		}
 	}
 }
@@ -411,54 +625,57 @@ type testOKResponse struct {
 }
 
 type testClientAdapter struct {
-	doFn func(req Request) (*http.Response, error)
-	json string
+	response      http.Response
+	errorToReturn error
 }
 
-func (c testClientAdapter) do(req Request) (*http.Response, error) {
-	// Check for custom function
-	if c.doFn != nil {
-		return c.doFn(req)
+func (c testClientAdapter) Do(
+	method string,
+	url *url.URL,
+	headers map[string]string,
+	rawBody interface{},
+) (*http.Response, error) {
+	if c.errorToReturn != nil {
+		return nil, c.errorToReturn
 	}
-
-	data := c.json
-
-	// Default implementation
-	resp := &http.Response{
-		Status:     "200 OK",
-		StatusCode: 200,
-		Body:       io.NopCloser(strings.NewReader(data)),
-	}
-	return resp, nil
+	return &c.response, nil
 }
 
-type testReqBuilderAlwaysSafe struct {
-	method string
-	url    string
+type testReqBuilder struct {
+	method        string
+	url           string
+	errorToReturn error
 }
 
-func (rb testReqBuilderAlwaysSafe) buildRequest(
+func (rb testReqBuilder) buildRequest(
 	params buildRequestParams,
-) (*Request, error) {
+) (*request, error) {
+	if rb.errorToReturn != nil {
+		return nil, rb.errorToReturn
+	}
 	var u *url.URL
 	if len(rb.url) > 0 {
 		u, _ = url.Parse(rb.url)
 	} else {
 		u, _ = url.Parse("https://edgecast.com")
 	}
-	return &Request{
+	return &request{
 		method: rb.method,
 		url:    u,
 	}, nil
 }
 
-type testReqSenderAlwaysSafe struct {
-	returnData interface{}
+type testReqSender struct {
+	returnData    interface{}
+	errorToReturn error
 }
 
-func (rs testReqSenderAlwaysSafe) sendRequest(
-	req Request,
+func (rs testReqSender) sendRequest(
+	req request,
 ) (*Response, error) {
+	if rs.errorToReturn != nil {
+		return nil, rs.errorToReturn
+	}
 	var data interface{}
 	data = "some data"
 	if rs.returnData != nil {
@@ -467,9 +684,22 @@ func (rs testReqSenderAlwaysSafe) sendRequest(
 	return &Response{Data: data}, nil
 }
 
-func (rb testReqSenderAlwaysSafe) sendRequestWithStringResponse(
-	req Request,
-) (*string, error) {
-	data := "some data"
-	return &data, nil
+type badReadCloser struct {
+	data          string
+	errorToReturn error
+}
+
+func (rc badReadCloser) Read(p []byte) (n int, err error) {
+	if rc.errorToReturn != nil {
+		return 0, rc.errorToReturn
+	}
+	if len(rc.data) == 0 {
+		return 0, errors.New("no data")
+	}
+	b := []byte(rc.data)
+	copy(p, b)
+	return len(b), nil
+}
+func (rc badReadCloser) Close() error {
+	return nil
 }

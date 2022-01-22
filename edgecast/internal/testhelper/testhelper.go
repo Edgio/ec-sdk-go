@@ -4,8 +4,13 @@
 package testhelper
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/url"
+	"reflect"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
@@ -27,4 +32,53 @@ func URLParse(urlRaw string) *url.URL {
 		panic(err)
 	}
 	return result
+}
+
+func EmptyPointerFloat64() *float64 {
+	var v float64
+	return &v
+}
+
+func EmptyPointerString() *string {
+	var v string
+	return &v
+}
+
+func WrapStringInPointer(v string) *string {
+	return &v
+}
+
+func WrapDurationInPointer(v time.Duration) *time.Duration {
+	return &v
+}
+
+func WrapIntInPointer(v int) *int {
+	return &v
+}
+
+func ToIOReadCloser(v interface{}) io.ReadCloser {
+	str := ToString(v)
+	return io.NopCloser(strings.NewReader(str))
+}
+
+func ToString(v interface{}) string {
+	switch d := v.(type) {
+	case string:
+		return d
+	case int:
+		return strconv.Itoa(d)
+	default:
+		return fmt.Sprintf("%+v", d)
+	}
+}
+
+func ToJSONBytes(v interface{}) []byte {
+	bytes, _ := json.Marshal(v)
+	return bytes
+}
+
+func TypeEqual(actual interface{}, expected interface{}) bool {
+	actualType := reflect.TypeOf(actual)
+	expectedType := reflect.TypeOf(expected)
+	return actualType == expectedType
 }

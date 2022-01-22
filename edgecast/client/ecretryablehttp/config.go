@@ -1,29 +1,23 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package client
+package ecretryablehttp
 
 import (
 	"context"
 	"net/http"
-	"net/url"
 	"time"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 )
 
-// ClientConfig provides configuration for the core SDK client code
-type ClientConfig struct {
-	// Generates Authorization Header values for HTTP requests
-	AuthProvider auth.AuthorizationProvider
+const (
+	DefaultRetryWaitMinSeconds = 1
+	DefaultRetryWaitMaxSeconds = 60
+	DefaultRetryMax            = 5
+)
 
-	// APIURL contains the base URL for the target API
-	BaseAPIURL url.URL
-
-	// The User Agent for outgoing HTTP requests
-	UserAgent string
-
+type RetryConfig struct {
 	// Logger -
 	Logger eclog.Logger
 

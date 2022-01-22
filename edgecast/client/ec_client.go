@@ -7,13 +7,13 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/url"
 	"strings"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/collectionhelper"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/jsonhelper"
 )
@@ -23,27 +23,10 @@ const (
 	defaultHeaderContentType string = "application/json"
 )
 
-// ECClient -
-type ECClient struct {
-	reqBuilder requestBuilder
-	reqSender  requestSender
-	config     ClientConfig
-}
-
-// NewECClient creates a default instance of ECClient using the provided
-// configuration
-func NewECClient(config ClientConfig) ECClient {
-	return ECClient{
-		reqBuilder: newECRequestBuilder(config),
-		reqSender:  newECRequestSender(config),
-		config:     config,
-	}
-}
-
 // Do invokes an HTTP request with the given parameters
 func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 	req, err := c.reqBuilder.buildRequest(buildRequestParams{
-		method:      params.Method.String(),
+		method:      params.Method,
 		path:        params.Path,
 		rawBody:     params.Body,
 		queryParams: params.QueryParams,
@@ -51,12 +34,12 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 		userAgent:   c.config.UserAgent,
 	})
 
+	if err != nil {
+		return nil, fmt.Errorf("SubmitRequest: %v", err)
+	}
+
 	// Provides an object to be filled in when unmarshaling the API response
 	req.parsedResponse = params.ParsedResponse
-
-	if err != nil {
-		return nil, fmt.Errorf("ECClient.Do: %v", err)
-	}
 
 	c.config.Logger.Debug(
 		"[REQUEST-URI]:[%s] %s\n",
@@ -67,45 +50,32 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 
 	resp, err := c.reqSender.sendRequest(*req)
 	if err != nil {
-		return nil, fmt.Errorf("ECClient.Do: %v", err)
+		return nil, fmt.Errorf("SubmitRequest: %v", err)
 	}
 	bodyAsString, _ := jsonhelper.ConvertToJSONString(resp.Data, true)
 	c.config.Logger.Debug("[RESPONSE-BODY]:%s\n", bodyAsString)
 	return resp, nil
 }
 
-// ecRequestBuilder builds requests to be sent to the Edgecast API
-type ecRequestBuilder struct {
-	baseAPIURL   url.URL
-	authProvider *auth.AuthorizationProvider
-	userAgent    string
-	logger       eclog.Logger
-}
-
-// newECRequestBuilder creates a default instance of ecRequestBuilder using the
-// provided configuration
-func newECRequestBuilder(config ClientConfig) ecRequestBuilder {
-	return ecRequestBuilder{
-		baseAPIURL:   config.BaseAPIURL,
-		authProvider: &config.AuthProvider,
-		userAgent:    config.UserAgent,
-		logger:       config.Logger,
-	}
-}
-
 // buildRequest creates a new Request for the Edgecast API with query params,
 // adding appropriate headers
 func (eb ecRequestBuilder) buildRequest(
 	params buildRequestParams,
-) (*Request, error) {
+) (*request, error) {
+	eb.logger.Debug("Building Request: %+v", params)
 	relativeURL, err := url.Parse(params.path)
 	if err != nil {
 		return nil,
 			fmt.Errorf("ecRequestBuilder.buildRequest: url.Parse: %v", err)
 	}
 
-	req := Request{
-		method:  params.method,
+	if !params.method.IsValid() {
+		return nil,
+			errors.New("ecRequestBuilder.buildRequest: invalid HTTP method")
+	}
+
+	req := request{
+		method:  params.method.String(),
 		url:     eb.baseAPIURL.ResolveReference(relativeURL),
 		headers: make(map[string]string),
 	}
@@ -139,7 +109,7 @@ func (eb ecRequestBuilder) buildRequest(
 	return &req, nil
 }
 
-func (req *Request) setPathParams(params map[string]string) error {
+func (req *request) setPathParams(params map[string]string) error {
 	// Apply path parameters
 	// e.g.
 	// path = "/customers/{customer_id}/policies/{policy_id}""
@@ -163,7 +133,7 @@ func (req *Request) setPathParams(params map[string]string) error {
 	return nil
 }
 
-func (req *Request) setQueryParams(queryParams map[string]string) {
+func (req *request) setQueryParams(queryParams map[string]string) {
 	// Adding Query Params
 	query := req.url.Query()
 	for k, v := range queryParams {
@@ -173,7 +143,7 @@ func (req *Request) setQueryParams(queryParams map[string]string) {
 	req.url.RawQuery = query.Encode()
 }
 
-func (req *Request) setBody(rawBody interface{}) error {
+func (req *request) setBody(rawBody interface{}) error {
 	if req.headers == nil {
 		req.headers = make(map[string]string)
 	}
@@ -195,7 +165,7 @@ func (req *Request) setBody(rawBody interface{}) error {
 	return nil
 }
 
-func (req *Request) setAuthorization(
+func (req *request) setAuthorization(
 	auth auth.AuthorizationProvider,
 ) error {
 	authHeader, err := auth.GetAuthorizationHeader()
@@ -211,84 +181,40 @@ func (req *Request) setAuthorization(
 	return nil
 }
 
-// ecRequestSender sends requests to the Edgecast API
-type ecRequestSender struct {
-	clientAdapter clientAdapter
-	logger        eclog.Logger
-}
-
-// newECRequestSender creates a default instance of ecRequestSender
-func newECRequestSender(config ClientConfig) ecRequestSender {
-	return ecRequestSender{
-		clientAdapter: newRetryableHTTPClientAdapter(config),
-		logger:        config.Logger,
-	}
-}
-
-// literalResponse is used for unmarshaling response data
-// that is in an unrecognized format
-type literalResponse struct {
-	value interface{}
-}
-
-// sendRequest sends a Request and returns the Response.
-// If Request.ParsedResponse is non-nil, then the response body will be
-// unmarshaled to it.
-// Response.Data will always have the unmarshaled response body. Note that if
-// Request.ParsedResponse is nil, then Response.Data will be a map[string]string
-// as a result of unmarshaling JSON.
-func (es ecRequestSender) sendRequest(req Request) (*Response, error) {
-	httpResp, err := es.clientAdapter.do(req)
-	if err != nil {
-		return nil, fmt.Errorf("SendRequest:%v", err)
-	}
-
-	defer httpResp.Body.Close()
-	body, err := ioutil.ReadAll(httpResp.Body)
-	bodyAsString := string(body)
-	if httpResp.StatusCode >= 400 && httpResp.StatusCode <= 599 {
-		if err != nil {
-			return nil,
-				fmt.Errorf(
-					"ecRequestSender.sendRequest: ioutil.ReadAll: %v",
-					err)
-		}
-		return nil,
-			fmt.Errorf(
-				"ecRequestSender.sendRequest failed: %s", bodyAsString)
-	}
-
+func (bp jsonBodyParser) parseBody(
+	body []byte,
+	parsedResponse interface{},
+) error {
 	var temp interface{}
-	if jsonUnmarshalErr := json.Unmarshal(body, &temp); err != nil {
-		return nil,
-			fmt.Errorf(
-				"ecRequestSender.sendRequest: malformed JSON response: %v",
-				jsonUnmarshalErr)
+	if err := json.Unmarshal(body, &temp); err != nil {
+		return fmt.Errorf(
+			"json.Unmarshal: malformed JSON response: %v",
+			err)
 	}
 
 	if collectionhelper.IsInterfaceArray(temp) {
-		if err := json.Unmarshal([]byte(body), &req.parsedResponse); err != nil {
-			return nil,
-				fmt.Errorf(
-					"ecRequestSender.sendRequest: malformed Json Array response:%v",
-					err)
+		if err := json.Unmarshal([]byte(body), &parsedResponse); err != nil {
+			return fmt.Errorf(
+				"json.Unmarshal: malformed JSON Array:%v",
+				err)
 		}
 	} else {
+		bodyAsString := string(body)
 		if jsonhelper.IsJSONString(bodyAsString) {
-			err = json.Unmarshal([]byte(bodyAsString), &req.parsedResponse)
+			err := json.Unmarshal([]byte(bodyAsString), &parsedResponse)
 			if err != nil {
-				return nil, fmt.Errorf(
-					"ecRequestSender.sendRequest: Decode error: %v",
+				return fmt.Errorf(
+					"json.Unmarshal: Decode error: %v",
 					err)
 			}
 		} else {
 			// if response is not json string
-			switch v := req.parsedResponse.(type) {
+			switch v := parsedResponse.(type) {
 			case literalResponse:
-				rs, ok := req.parsedResponse.(literalResponse)
+				rs, ok := parsedResponse.(literalResponse)
 				if ok {
 					rs.value = bodyAsString
-					req.parsedResponse = rs
+					parsedResponse = rs
 				}
 			case float64:
 				fmt.Println("float64:", v)
@@ -297,36 +223,54 @@ func (es ecRequestSender) sendRequest(req Request) (*Response, error) {
 			}
 		}
 	}
+	return nil
+}
+
+// sendRequest sends a Request and returns the Response.
+// If Request.ParsedResponse is non-nil, then the response body will be
+// unmarshaled to it.
+// Response.Data will always have the unmarshaled response body. Note that if
+// Request.ParsedResponse is nil, then Response.Data will be a map[string]string
+// as a result of unmarshaling JSON.
+func (es ecRequestSender) sendRequest(req request) (*Response, error) {
+	httpResp, err := es.clientAdapter.Do(
+		req.method,
+		req.url,
+		req.headers,
+		req.rawBody)
+	if err != nil {
+		return nil, fmt.Errorf("sendRequest: %v", err)
+	}
+
+	defer httpResp.Body.Close()
+	body, err := ioutil.ReadAll(httpResp.Body)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"sendRequest: ioutil.ReadAll: %v",
+			err)
+	}
+
+	if httpResp.StatusCode >= 400 && httpResp.StatusCode <= 599 {
+		bodyAsString := string(body)
+		return nil, fmt.Errorf(
+			"sendRequest failed (HTTP StatusCode:%d): %s",
+			httpResp.StatusCode,
+			bodyAsString)
+	}
+
+	// If a string response is expected, do not use the parser
+	if _, ok := req.parsedResponse.(*string); ok {
+		bodyAsString := string(body)
+		req.parsedResponse = &bodyAsString
+	} else {
+		err = es.parser.parseBody(body, &req.parsedResponse)
+		if err != nil {
+			return nil, fmt.Errorf("sendRequest: parseBody: %v", err)
+		}
+	}
+
 	return &Response{
 		Data:         req.parsedResponse,
 		HTTPResponse: httpResp,
 	}, nil
-}
-
-// sendRequestWithStringResponse sends an HTTP request and returns the response
-// body as a string
-func (es ecRequestSender) sendRequestWithStringResponse(
-	req Request,
-) (*string, error) {
-	httpResp, err := es.clientAdapter.do(req)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"ecRequestSender.sendRequestWithStringResponse: %v",
-			err)
-	}
-	defer httpResp.Body.Close()
-	body, err := ioutil.ReadAll(httpResp.Body)
-	bodyAsString := string(body)
-	if httpResp.StatusCode >= 400 && httpResp.StatusCode <= 599 {
-		if err != nil {
-			return nil, fmt.Errorf(
-				"ecRequestSender.sendRequestWithStringResponse: ioutil.ReadAll: %v",
-				err)
-		}
-
-		return nil, fmt.Errorf(
-			"ecRequestSender.sendRequestWithStringResponse failed: %s",
-			bodyAsString)
-	}
-	return &bodyAsString, nil
 }
