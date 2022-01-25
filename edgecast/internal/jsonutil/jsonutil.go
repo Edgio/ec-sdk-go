@@ -18,6 +18,14 @@ func CreateRequestBodyLogMessage(method string, url string, body interface{}) st
 	return s
 }
 
+// ShowAsJson shows obj in json pretty format.
+func ShowAsJson(objName string, body interface{}) string {
+	fb, _ := json.MarshalIndent(body, "", "    ")
+	s := fmt.Sprintf("Object: %s\n", objName)
+	s += fmt.Sprintf("Marshall as JSON:%s\n", fb)
+	return s
+}
+
 // JSONToLogMessage logs a json string with pretty format with a message
 func CreateJSONLogMessage(message string, jsonString string) string {
 	s := fmt.Sprintf("[[[%s]]]:", message)
