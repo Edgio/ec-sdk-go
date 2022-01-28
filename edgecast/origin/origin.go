@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/ecmodels"
 )
 
@@ -16,8 +16,8 @@ func (svc *OriginService) GetAllOrigins(
 	params GetAllOriginsParams,
 ) (*[]OriginGetOK, error) {
 	parsedResponse := &[]OriginGetOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -34,14 +34,14 @@ func (svc *OriginService) GetAllOrigins(
 // AddOrigin adds a customer origin to the specified platform.
 func (svc *OriginService) AddOrigin(params AddOriginParams) (*int, error) {
 	parsedResponse := &AddUpdateOriginOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Post,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Post,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 			"platform_id":    params.MediaTypeID.String(),
 		},
-		Body:           params.Origin,
+		RawBody:        params.Origin,
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
@@ -55,8 +55,8 @@ func (svc *OriginService) GetOrigin(
 	params GetOriginParams,
 ) (*OriginGetOK, error) {
 	parsedResponse := &OriginGetOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -76,15 +76,15 @@ func (svc *OriginService) UpdateOrigin(
 	params UpdateOriginParams,
 ) (*int, error) {
 	parsedResponse := &AddUpdateOriginOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Put,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Put,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 			"platform_id":    params.Origin.MediaTypeID.String(),
 			"origin_id":      strconv.Itoa(params.Origin.ID),
 		},
-		Body:           params.Origin,
+		RawBody:        params.Origin,
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
@@ -95,8 +95,8 @@ func (svc *OriginService) UpdateOrigin(
 
 // DeleteOrigin deletes a customer origin.
 func (svc *OriginService) DeleteOrigin(params DeleteOriginParams) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Delete,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
 		Path:   "v2/mcc/customers/{account_number}/origins/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -114,8 +114,8 @@ func (svc *OriginService) DeleteOrigin(params DeleteOriginParams) error {
 // allowlisting these IP blocks on your firewall.
 func (svc *OriginService) GetCDNIPBlocks() (*CDNIPBlocksOK, error) {
 	parsedResponse := &CDNIPBlocksOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method:         client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         ecclient.Get,
 		Path:           "v2/mcc/customers/superblocks",
 		ParsedResponse: parsedResponse,
 	})
@@ -132,8 +132,8 @@ func (svc *OriginService) GetOriginPropagationStatus(
 	params GetOriginPropagationStatusParams,
 ) (*ecmodels.PropagationStatus, error) {
 	parsedResponse := &ecmodels.PropagationStatus{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/origins/{origin_id}/status",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -157,8 +157,8 @@ func (svc *OriginService) GetOriginShieldPOPs(
 	params GetOriginShieldPOPsParams,
 ) (*[]ShieldPOP, error) {
 	parsedResponse := &[]ShieldPOP{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/shieldpops",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -178,8 +178,8 @@ func (svc *OriginService) GetOriginShieldPOPs(
 func (svc *OriginService) ReselectADNGateways(
 	params ReselectADNGatewaysParams,
 ) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Put,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Put,
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,

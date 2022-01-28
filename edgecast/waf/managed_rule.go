@@ -16,7 +16,7 @@ package waf
 import (
 	"fmt"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // GetAllManagedRules retrieves all of the Managed Rules for the provided
@@ -25,8 +25,8 @@ func (svc WAFService) GetAllManagedRules(
 	params GetAllManagedRulesParams,
 ) (*[]ManagedRuleLight, error) {
 	parsedResponse := &[]ManagedRuleLight{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -45,8 +45,8 @@ func (svc WAFService) GetManagedRule(
 	params GetManagedRuleParams,
 ) (*ManagedRuleGetOK, error) {
 	parsedResponse := &ManagedRuleGetOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -66,10 +66,10 @@ func (svc WAFService) AddManagedRule(
 	params AddManagedRuleParams,
 ) (string, error) {
 	parsedResponse := &AddManagedRuleOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Post,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile",
-		Body:   params.ManagedRule,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:  ecclient.Post,
+		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/profile",
+		RawBody: params.ManagedRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
@@ -86,10 +86,10 @@ func (svc WAFService) AddManagedRule(
 func (svc WAFService) UpdateManagedRule(
 	params UpdateManagedRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Put,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
-		Body:   params.ManagedRule,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:  ecclient.Put,
+		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
+		RawBody: params.ManagedRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 			"rule_id":        params.ManagedRuleID,
@@ -106,8 +106,8 @@ func (svc WAFService) UpdateManagedRule(
 func (svc WAFService) DeleteManagedRule(
 	params DeleteManagedRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Delete,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,

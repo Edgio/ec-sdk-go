@@ -1,15 +1,15 @@
 // Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package client
+package ecclient
 
 import (
 	"net/http"
 	"net/url"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client/ecretryablehttp"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient/ecretryablehttp"
 )
 
 // APIClient describes structs that can send HTTP requests to an API given the
@@ -21,7 +21,7 @@ type APIClient interface {
 type SubmitRequestParams struct {
 	Method      HTTPMethod
 	Path        string
-	Body        interface{}
+	RawBody     interface{}
 	QueryParams map[string]string
 	PathParams  map[string]string
 	// ParsedResponse will be filled in using the API response
@@ -84,9 +84,9 @@ type ECClient struct {
 	config     ClientConfig
 }
 
-// NewECClient creates a default instance of ECClient using the provided
+// New creates a default instance of ECClient using the provided
 // configuration
-func NewECClient(config ClientConfig) ECClient {
+func New(config ClientConfig) ECClient {
 	clientAdapter := ecretryablehttp.NewRetryableHTTPClientAdapter(
 		ecretryablehttp.RetryConfig{
 			Logger:       config.Logger,
@@ -105,7 +105,7 @@ func NewECClient(config ClientConfig) ECClient {
 // ecRequestBuilder builds requests to be sent to the Edgecast API
 type ecRequestBuilder struct {
 	baseAPIURL   url.URL
-	authProvider *auth.AuthorizationProvider
+	authProvider *ecauth.AuthorizationProvider
 	userAgent    string
 	logger       eclog.Logger
 }

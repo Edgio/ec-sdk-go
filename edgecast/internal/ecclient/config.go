@@ -1,7 +1,7 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package client
+package ecclient
 
 import (
 	"context"
@@ -9,14 +9,14 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
 )
 
 // ClientConfig provides configuration for the core SDK client code
 type ClientConfig struct {
 	// Generates Authorization Header values for HTTP requests
-	AuthProvider auth.AuthorizationProvider
+	AuthProvider ecauth.AuthorizationProvider
 
 	// APIURL contains the base URL for the target API
 	BaseAPIURL url.URL
@@ -24,7 +24,7 @@ type ClientConfig struct {
 	// The User Agent for outgoing HTTP requests
 	UserAgent string
 
-	// Logger -
+	// The Logger that APIClients will use to write messages
 	Logger eclog.Logger
 
 	// The minimum wait time for retries on API errors

@@ -19,7 +19,7 @@ package waf
 import (
 	"fmt"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // AddCustomRuleSet creates a Custom Rule Set for the provided account number
@@ -28,10 +28,10 @@ func (svc WAFService) AddCustomRuleSet(
 	params AddCustomRuleSetParams,
 ) (string, error) {
 	parsedResponse := &CustomRuleSetAddOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Post,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules",
-		Body:   params.CustomRuleSet,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:  ecclient.Post,
+		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/rules",
+		RawBody: params.CustomRuleSet,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
@@ -49,8 +49,8 @@ func (svc WAFService) GetAllCustomRuleSets(
 	params GetAllCustomRuleSetsParams,
 ) (*[]CustomRuleSetGetAllOK, error) {
 	parsedResponse := &[]CustomRuleSetGetAllOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -68,8 +68,8 @@ func (svc WAFService) GetAllCustomRuleSets(
 func (svc WAFService) DeleteCustomRuleSet(
 	params DeleteCustomRuleSetParams,
 ) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Delete,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -88,8 +88,8 @@ func (svc WAFService) GetCustomRuleSet(
 	params GetCustomRuleSetParams,
 ) (*CustomRuleSetGetOK, error) {
 	parsedResponse := &CustomRuleSetGetOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -108,10 +108,10 @@ func (svc WAFService) GetCustomRuleSet(
 func (svc WAFService) UpdateCustomRuleSet(
 	params UpdateCustomRuleSetParams,
 ) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Put,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
-		Body:   params.CustomRuleSet,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:  ecclient.Put,
+		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
+		RawBody: params.CustomRuleSet,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 			"rule_id":        params.CustomRuleSetID,

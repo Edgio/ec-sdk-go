@@ -1,15 +1,15 @@
 // Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package client
+package ecclient
 
 import (
 	"reflect"
 	"strings"
 	"testing"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client/ecretryablehttp"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient/ecretryablehttp"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/testhelper"
 )
 
@@ -76,7 +76,7 @@ func TestNewECClient(t *testing.T) {
 		UserAgent:    "TestNewECClient",
 	}
 
-	actual := NewECClient(config)
+	actual := New(config)
 	if !reflect.DeepEqual(config, actual.config) {
 		t.Fatalf("Expected %+v but got %+v", config, actual.config)
 	}

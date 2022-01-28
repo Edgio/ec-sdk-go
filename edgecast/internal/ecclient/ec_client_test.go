@@ -1,4 +1,7 @@
-package client
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
+
+package ecclient
 
 import (
 	"bytes"
@@ -10,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/testhelper"
 )
 
@@ -92,6 +95,11 @@ func TestSetAuthorization(t *testing.T) {
 				t.Fatalf("Case '%s': expected an error, but got none", c.name)
 			}
 		} else {
+			// Because of the way testAuthProvider is designed, err should never
+			// be non-nil here. However, we'll include the check anyway.
+			if err != nil {
+				t.Fatalf("Case '%s': unexpected error: %v", c.name, err)
+			}
 			actual := req.headers["Authorization"]
 			if strings.Compare(c.expected, actual) != 0 {
 				t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected, actual)
@@ -470,7 +478,7 @@ func TestBuildRequest(t *testing.T) {
 	cases := []struct {
 		name          string
 		baseAPIURL    string
-		authProvider  auth.AuthorizationProvider
+		authProvider  ecauth.AuthorizationProvider
 		input         buildRequestParams
 		expected      *request
 		expectedError bool

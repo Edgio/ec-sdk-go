@@ -39,7 +39,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // Retrieves the set of Security Application Manager configurations (Scopes)
@@ -49,8 +49,8 @@ func (svc *WAFService) GetAllScopes(accountNumber string) (*Scopes, error) {
 		return nil, errors.New("accountNumber is required")
 	}
 	parsedResponse := &Scopes{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/scopes",
 		PathParams: map[string]string{
 			"account_number": accountNumber,
@@ -88,13 +88,13 @@ func (svc *WAFService) ModifyAllScopes(
 		return nil, errors.New("scopes.CustomerID is required")
 	}
 	parsedResponse := &ModifyAllScopesOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Post,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Post,
 		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/scopes",
 		PathParams: map[string]string{
 			"account_number": scopes.CustomerID,
 		},
-		Body:           scopes,
+		RawBody:        scopes,
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {

@@ -19,7 +19,7 @@ package waf
 import (
 	"fmt"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // AddRateRule creates a rate rule for the provided account number
@@ -28,10 +28,10 @@ func (svc WAFService) AddRateRule(
 	params AddRateRuleParams,
 ) (string, error) {
 	parsedResponse := &RateRuleAddOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Post,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit",
-		Body:   params.RateRule,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:  ecclient.Post,
+		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/limit",
+		RawBody: params.RateRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
@@ -49,8 +49,8 @@ func (svc WAFService) GetRateRule(
 	params GetRateRuleParams,
 ) (*RateRuleGetOK, error) {
 	parsedResponse := &RateRuleGetOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -69,10 +69,10 @@ func (svc WAFService) GetRateRule(
 func (svc WAFService) UpdateRateRule(
 	params UpdateRateRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Put,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
-		Body:   params.RateRule,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:  ecclient.Put,
+		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
+		RawBody: params.RateRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 			"rule_id":        params.RateRuleID,
@@ -89,8 +89,8 @@ func (svc WAFService) UpdateRateRule(
 func (svc WAFService) DeleteRateRule(
 	params DeleteRateRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Delete,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -109,8 +109,8 @@ func (svc WAFService) GetAllRateRules(
 	params GetAllRateRulesParams,
 ) (*[]RateRuleGetAllOK, error) {
 	parsedResponse := &[]RateRuleGetAllOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,

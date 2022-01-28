@@ -1,4 +1,7 @@
-package client
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
+
+package ecclient
 
 /*
 	This file contains the concrete client implementation for the EC SDK
@@ -7,14 +10,13 @@ package client
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/url"
 	"strings"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/collectionhelper"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/jsonhelper"
 )
 
@@ -23,12 +25,12 @@ const (
 	defaultHeaderContentType string = "application/json"
 )
 
-// Do invokes an HTTP request with the given parameters
+// SubmitRequest invokes an HTTP request with the given parameters
 func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 	req, err := c.reqBuilder.buildRequest(buildRequestParams{
 		method:      params.Method,
 		path:        params.Path,
-		rawBody:     params.Body,
+		rawBody:     params.RawBody,
 		queryParams: params.QueryParams,
 		pathParams:  params.PathParams,
 		userAgent:   c.config.UserAgent,
@@ -71,7 +73,9 @@ func (eb ecRequestBuilder) buildRequest(
 
 	if !params.method.IsValid() {
 		return nil,
-			errors.New("ecRequestBuilder.buildRequest: invalid HTTP method")
+			fmt.Errorf(
+				"ecRequestBuilder.buildRequest: invalid HTTP method: %d",
+				params.method)
 	}
 
 	req := request{
@@ -166,7 +170,7 @@ func (req *request) setBody(rawBody interface{}) error {
 }
 
 func (req *request) setAuthorization(
-	auth auth.AuthorizationProvider,
+	auth ecauth.AuthorizationProvider,
 ) error {
 	authHeader, err := auth.GetAuthorizationHeader()
 	if err != nil {
@@ -219,7 +223,7 @@ func (bp jsonBodyParser) parseBody(
 			case float64:
 				fmt.Println("float64:", v)
 			default:
-				fmt.Println("unknown")
+				fmt.Printf("%T:%+v\n", v, v)
 			}
 		}
 	}

@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 )
 
@@ -34,10 +33,17 @@ type SDKConfig struct {
 
 	APIToken string
 
-	IDSCredentials auth.OAuth2Credentials
+	IDSCredentials IDSCredentials
 
 	// The User Agent for outgoing HTTP requests
 	UserAgent string
+}
+
+// Holds a customer's OAuth 2.0 Credentials
+type IDSCredentials struct {
+	ClientID     string
+	ClientSecret string
+	Scope        string
 }
 
 // NewSDKConfig creates a default instance of SDKConfig without credentials
@@ -50,7 +56,7 @@ func NewSDKConfig() SDKConfig {
 		BaseAPIURL:       *baseAPIURL,
 		BaseAPIURLLegacy: *baseAPIURLLegacy,
 		BaseIDSURL:       *baseIDSURL,
-		Logger:           eclog.NewStandardLogger(),
+		Logger:           eclog.NewNullLogger(),
 		UserAgent:        getDefaultUserAgent(),
 	}
 }

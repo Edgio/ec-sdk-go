@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // AddCustomerUser creates a Customer User under the provided (parent) Customer
@@ -20,10 +20,10 @@ func (svc *CustomerService) AddCustomerUser(
 	parsedResponse := &struct {
 		CustomerUserID int `json:"CustomerUserId"`
 	}{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method:         client.Post,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         ecclient.Post,
 		Path:           "/v2/pcc/customers/users",
-		Body:           params.CustomerUser,
+		RawBody:        params.CustomerUser,
 		ParsedResponse: parsedResponse,
 		QueryParams: map[string]string{
 			// TODO: support custom ids for accounts
@@ -43,8 +43,8 @@ func (svc *CustomerService) GetCustomerUser(
 	params GetCustomerUserParams,
 ) (*CustomerUserGetOK, error) {
 	parsedResponse := &CustomerUserGetOK{}
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method:         client.Get,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         ecclient.Get,
 		Path:           "/v2/pcc/customers/users/{customer_user_id}",
 		ParsedResponse: parsedResponse,
 		PathParams: map[string]string{
@@ -67,8 +67,8 @@ func (svc *CustomerService) GetCustomerUser(
 func (svc *CustomerService) UpdateCustomerUser(
 	params UpdateCustomerUserParams,
 ) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Put,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Put,
 		Path:   "/v2/pcc/customers/users/{customer_user_id}",
 		PathParams: map[string]string{
 			"customer_user_id": strconv.Itoa(params.CustomerUser.ID),
@@ -90,8 +90,8 @@ func (svc *CustomerService) UpdateCustomerUser(
 func (svc *CustomerService) DeleteCustomerUser(
 	params DeleteCustomerUserParams,
 ) error {
-	_, err := svc.client.SubmitRequest(client.SubmitRequestParams{
-		Method: client.Delete,
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
 		Path:   "/v2/pcc/customers/users/{customer_user_id}",
 		PathParams: map[string]string{
 			"customer_user_id": strconv.Itoa(params.CustomerUser.ID),
