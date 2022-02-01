@@ -88,8 +88,8 @@ func TestNewECClient(t *testing.T) {
 	}
 
 	b := actual.reqBuilder.(ecRequestBuilder)
-	if !reflect.DeepEqual(config.AuthProvider, *b.authProvider) {
-		t.Fatalf("Expected %+v but got %+v", config.AuthProvider, *b.authProvider)
+	if !reflect.DeepEqual(config.AuthProvider, b.authProvider) {
+		t.Fatalf("Expected %+v but got %+v", config.AuthProvider, b.authProvider)
 	}
 	if !reflect.DeepEqual(config.BaseAPIURL, b.baseAPIURL) {
 		t.Fatalf("Expected %+v but got %+v", config.BaseAPIURL, b.baseAPIURL)

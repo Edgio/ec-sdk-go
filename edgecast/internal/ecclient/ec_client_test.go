@@ -566,7 +566,7 @@ func TestBuildRequest(t *testing.T) {
 		baseAPIURL, _ := url.Parse(c.baseAPIURL)
 		builder := ecRequestBuilder{
 			baseAPIURL:   *baseAPIURL,
-			authProvider: &c.authProvider,
+			authProvider: c.authProvider,
 			userAgent:    "test",
 			logger:       testLog,
 		}

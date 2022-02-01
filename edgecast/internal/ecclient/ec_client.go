@@ -103,7 +103,7 @@ func (eb ecRequestBuilder) buildRequest(
 	}
 
 	if eb.authProvider != nil {
-		err := req.setAuthorization(*eb.authProvider)
+		err := req.setAuthorization(eb.authProvider)
 		if err != nil {
 			return nil, fmt.Errorf(
 				"ecRequestBuilder.buildRequest: %v", err)

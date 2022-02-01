@@ -105,7 +105,7 @@ func New(config ClientConfig) ECClient {
 // ecRequestBuilder builds requests to be sent to the Edgecast API
 type ecRequestBuilder struct {
 	baseAPIURL   url.URL
-	authProvider *ecauth.AuthorizationProvider
+	authProvider ecauth.AuthorizationProvider
 	userAgent    string
 	logger       eclog.Logger
 }
@@ -115,7 +115,7 @@ type ecRequestBuilder struct {
 func newECRequestBuilder(config ClientConfig) ecRequestBuilder {
 	return ecRequestBuilder{
 		baseAPIURL:   config.BaseAPIURL,
-		authProvider: &config.AuthProvider,
+		authProvider: config.AuthProvider,
 		userAgent:    config.UserAgent,
 		logger:       config.Logger,
 	}
