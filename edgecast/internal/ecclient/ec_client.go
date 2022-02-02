@@ -248,6 +248,11 @@ func (es ecRequestSender) sendRequest(req request) (*Response, error) {
 
 	defer httpResp.Body.Close()
 	body, err := ioutil.ReadAll(httpResp.Body)
+	bodyAsString := string(body)
+
+	logMsg := jsonhelper.CreateJSONLogMessage("Reading Response", bodyAsString)
+	es.logger.Debug(logMsg)
+
 	if err != nil {
 		return nil, fmt.Errorf(
 			"sendRequest: ioutil.ReadAll: %v",
@@ -255,7 +260,6 @@ func (es ecRequestSender) sendRequest(req request) (*Response, error) {
 	}
 
 	if httpResp.StatusCode >= 400 && httpResp.StatusCode <= 599 {
-		bodyAsString := string(body)
 		return nil, fmt.Errorf(
 			"sendRequest failed (HTTP StatusCode:%d): %s",
 			httpResp.StatusCode,
@@ -264,7 +268,6 @@ func (es ecRequestSender) sendRequest(req request) (*Response, error) {
 
 	// If a string response is expected, do not use the parser
 	if _, ok := req.parsedResponse.(*string); ok {
-		bodyAsString := string(body)
 		req.parsedResponse = &bodyAsString
 	} else {
 		err = es.parser.parseBody(body, &req.parsedResponse)

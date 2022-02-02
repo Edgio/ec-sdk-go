@@ -1,4 +1,4 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
 // Package jsonhelper provides helper methods for working with JSON
@@ -7,6 +7,7 @@ package jsonhelper
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // IsJSONString determines whether a string is JSON
@@ -48,4 +49,20 @@ func ConvertToJSONString(
 		return PrintPrettyJSON(s)
 	}
 	return s, nil
+}
+
+// ShowAsJSON shows obj in json pretty format.
+func ShowAsJSON(objName string, body interface{}) string {
+	fb, _ := json.MarshalIndent(body, "", "    ")
+	s := fmt.Sprintf("Object: %s\n", objName)
+	s += fmt.Sprintf("Marshall as JSON:%s\n", fb)
+	return s
+}
+
+// JSONToLogMessage logs a json string with pretty format with a message
+func CreateJSONLogMessage(message string, jsonString string) string {
+	s := fmt.Sprintf("[[[%s]]]:", message)
+	prettyJSON, _ := PrintPrettyJSON(s)
+	s += fmt.Sprintf("[[[Json]]]:%s", prettyJSON)
+	return s
 }
