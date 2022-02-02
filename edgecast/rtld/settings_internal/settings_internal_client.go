@@ -8,19 +8,20 @@ package settings_internal
 import (
 	"fmt"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // New creates a new settings internal API client.
-func New(c client.Client) ClientService {
-	return &Client{Client: c}
+func New(c ecclient.APIClient, cc ecclient.ClientConfig) ClientService {
+	return &Client{c, cc}
 }
 
 /*
 Client for settings internal API
 */
 type Client struct {
-	client.Client
+	client ecclient.APIClient
+	config ecclient.ClientConfig
 }
 
 // ClientService is the interface for Client methods
@@ -47,18 +48,24 @@ func (a *Client) SettingsGetRlSettings(params *SettingsGetRlSettingsParams) (*Se
 		return nil, err
 	}
 
-	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/settings"
-
-	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
+	method, err := ecclient.ToHTTPMethod("GET")
 	if err != nil {
 		return nil, fmt.Errorf("SettingsGetRlSettings: %v", err)
 	}
 
 	parsedResponse := &SettingsGetRlSettingsOK{}
 
-	_, err = a.Client.SendRequest(request, parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("SettingsGetRlSettings: %v", err)
+	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         method,
+		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/settings",
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+		ParsedResponse: parsedResponse,
+	})
+
+	if respErr != nil {
+		return nil, fmt.Errorf("SettingsGetRlSettings: %v", respErr)
 	}
 
 	return parsedResponse, nil
@@ -79,18 +86,24 @@ func (a *Client) SettingsGetSettingsByPlatform(params *SettingsGetSettingsByPlat
 		return nil, err
 	}
 
-	url := a.Config.BaseAPIURL.String() + "/v1.0/platforms/{platformId}/settings"
-
-	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
+	method, err := ecclient.ToHTTPMethod("GET")
 	if err != nil {
 		return nil, fmt.Errorf("SettingsGetSettingsByPlatform: %v", err)
 	}
 
 	parsedResponse := &SettingsGetSettingsByPlatformOK{}
 
-	_, err = a.Client.SendRequest(request, parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("SettingsGetSettingsByPlatform: %v", err)
+	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         method,
+		Path:           a.config.BaseAPIURL.String() + "/v1.0/platforms/{platformId}/settings",
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+		ParsedResponse: parsedResponse,
+	})
+
+	if respErr != nil {
+		return nil, fmt.Errorf("SettingsGetSettingsByPlatform: %v", respErr)
 	}
 
 	return parsedResponse, nil
@@ -111,18 +124,24 @@ func (a *Client) SettingsGetWafSettings(params *SettingsGetWafSettingsParams) (*
 		return nil, err
 	}
 
-	url := a.Config.BaseAPIURL.String() + "/v1.0/waf/settings"
-
-	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
+	method, err := ecclient.ToHTTPMethod("GET")
 	if err != nil {
 		return nil, fmt.Errorf("SettingsGetWafSettings: %v", err)
 	}
 
 	parsedResponse := &SettingsGetWafSettingsOK{}
 
-	_, err = a.Client.SendRequest(request, parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("SettingsGetWafSettings: %v", err)
+	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         method,
+		Path:           a.config.BaseAPIURL.String() + "/v1.0/waf/settings",
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+		ParsedResponse: parsedResponse,
+	})
+
+	if respErr != nil {
+		return nil, fmt.Errorf("SettingsGetWafSettings: %v", respErr)
 	}
 
 	return parsedResponse, nil

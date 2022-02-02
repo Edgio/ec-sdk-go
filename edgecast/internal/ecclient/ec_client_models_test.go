@@ -77,8 +77,8 @@ func TestNewECClient(t *testing.T) {
 	}
 
 	actual := New(config)
-	if !reflect.DeepEqual(config, actual.config) {
-		t.Fatalf("Expected %+v but got %+v", config, actual.config)
+	if !reflect.DeepEqual(config, actual.Config) {
+		t.Fatalf("Expected %+v but got %+v", config, actual.Config)
 	}
 	if !testhelper.TypeEqual(ecRequestBuilder{}, actual.reqBuilder) {
 		t.Fatalf("Expected Type: ecRequestBuilder but got %T", actual.reqBuilder)

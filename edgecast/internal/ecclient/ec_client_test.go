@@ -449,7 +449,7 @@ func TestECClientSubmitRequest(t *testing.T) {
 		client := ECClient{
 			reqBuilder: c.reqBuilder,
 			reqSender:  c.reqSender,
-			config: ClientConfig{
+			Config: ClientConfig{
 				Logger: testLog,
 			},
 		}

@@ -33,7 +33,7 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 		rawBody:     params.RawBody,
 		queryParams: params.QueryParams,
 		pathParams:  params.PathParams,
-		userAgent:   c.config.UserAgent,
+		userAgent:   c.Config.UserAgent,
 	})
 
 	if err != nil {
@@ -43,19 +43,19 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 	// Provides an object to be filled in when unmarshaling the API response
 	req.parsedResponse = params.ParsedResponse
 
-	c.config.Logger.Debug(
+	c.Config.Logger.Debug(
 		"[REQUEST-URI]:[%s] %s\n",
 		req.method,
 		req.url.String())
-	c.config.Logger.Debug("[REQUEST-BODY]:%v\n", req.rawBody)
-	c.config.Logger.Debug("[REQUEST-HEADERS]:%+v\n", req.headers)
+	c.Config.Logger.Debug("[REQUEST-BODY]:%v\n", req.rawBody)
+	c.Config.Logger.Debug("[REQUEST-HEADERS]:%+v\n", req.headers)
 
 	resp, err := c.reqSender.sendRequest(*req)
 	if err != nil {
 		return nil, fmt.Errorf("SubmitRequest: %v", err)
 	}
 	bodyAsString, _ := jsonhelper.ConvertToJSONString(resp.Data, true)
-	c.config.Logger.Debug("[RESPONSE-BODY]:%s\n", bodyAsString)
+	c.Config.Logger.Debug("[RESPONSE-BODY]:%s\n", bodyAsString)
 	return resp, nil
 }
 

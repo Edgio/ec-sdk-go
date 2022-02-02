@@ -8,19 +8,20 @@ package profiles_rl
 import (
 	"fmt"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // New creates a new profiles rl API client.
-func New(c client.Client) ClientService {
-	return &Client{Client: c}
+func New(c ecclient.APIClient, cc ecclient.ClientConfig) ClientService {
+	return &Client{c, cc}
 }
 
 /*
 Client for profiles rl API
 */
 type Client struct {
-	client.Client
+	client ecclient.APIClient
+	config ecclient.ClientConfig
 }
 
 // ClientService is the interface for Client methods
@@ -51,18 +52,24 @@ func (a *Client) ProfilesRateLimitingAddCustomerSetting(params *ProfilesRateLimi
 		return nil, err
 	}
 
-	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles"
-
-	request, err := a.Client.PrepareRequest("POST", url, results.Body, results.QueryParams, results.PathParams)
+	method, err := ecclient.ToHTTPMethod("POST")
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRateLimitingAddCustomerSetting: %v", err)
 	}
 
 	parsedResponse := &ProfilesRateLimitingAddCustomerSettingOK{}
 
-	_, err = a.Client.SendRequest(request, parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("ProfilesRateLimitingAddCustomerSetting: %v", err)
+	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         method,
+		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles",
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+		ParsedResponse: parsedResponse,
+	})
+
+	if respErr != nil {
+		return nil, fmt.Errorf("ProfilesRateLimitingAddCustomerSetting: %v", respErr)
 	}
 
 	return parsedResponse, nil
@@ -83,18 +90,24 @@ func (a *Client) ProfilesRateLimitingGetCustomerSettings(params *ProfilesRateLim
 		return nil, err
 	}
 
-	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles"
-
-	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
+	method, err := ecclient.ToHTTPMethod("GET")
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRateLimitingGetCustomerSettings: %v", err)
 	}
 
 	parsedResponse := &ProfilesRateLimitingGetCustomerSettingsOK{}
 
-	_, err = a.Client.SendRequest(request, parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("ProfilesRateLimitingGetCustomerSettings: %v", err)
+	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         method,
+		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles",
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+		ParsedResponse: parsedResponse,
+	})
+
+	if respErr != nil {
+		return nil, fmt.Errorf("ProfilesRateLimitingGetCustomerSettings: %v", respErr)
 	}
 
 	return parsedResponse, nil
@@ -115,18 +128,24 @@ func (a *Client) ProfilesRlDeleteCustomerSettingsByID(params *ProfilesRlDeleteCu
 		return nil, err
 	}
 
-	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}"
-
-	request, err := a.Client.PrepareRequest("DELETE", url, results.Body, results.QueryParams, results.PathParams)
+	method, err := ecclient.ToHTTPMethod("DELETE")
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRlDeleteCustomerSettingsByID: %v", err)
 	}
 
 	parsedResponse := &ProfilesRlDeleteCustomerSettingsByIDNoContent{}
 
-	_, err = a.Client.SendRequest(request, parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("ProfilesRlDeleteCustomerSettingsByID: %v", err)
+	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         method,
+		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}",
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+		ParsedResponse: parsedResponse,
+	})
+
+	if respErr != nil {
+		return nil, fmt.Errorf("ProfilesRlDeleteCustomerSettingsByID: %v", respErr)
 	}
 
 	return parsedResponse, nil
@@ -147,18 +166,24 @@ func (a *Client) ProfilesRlGetCustomerSettingsByID(params *ProfilesRlGetCustomer
 		return nil, err
 	}
 
-	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}"
-
-	request, err := a.Client.PrepareRequest("GET", url, results.Body, results.QueryParams, results.PathParams)
+	method, err := ecclient.ToHTTPMethod("GET")
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRlGetCustomerSettingsByID: %v", err)
 	}
 
 	parsedResponse := &ProfilesRlGetCustomerSettingsByIDOK{}
 
-	_, err = a.Client.SendRequest(request, parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("ProfilesRlGetCustomerSettingsByID: %v", err)
+	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         method,
+		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}",
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+		ParsedResponse: parsedResponse,
+	})
+
+	if respErr != nil {
+		return nil, fmt.Errorf("ProfilesRlGetCustomerSettingsByID: %v", respErr)
 	}
 
 	return parsedResponse, nil
@@ -179,18 +204,24 @@ func (a *Client) ProfilesRlUpdateCustomerSetting(params *ProfilesRlUpdateCustome
 		return nil, err
 	}
 
-	url := a.Config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}"
-
-	request, err := a.Client.PrepareRequest("PUT", url, results.Body, results.QueryParams, results.PathParams)
+	method, err := ecclient.ToHTTPMethod("PUT")
 	if err != nil {
 		return nil, fmt.Errorf("ProfilesRlUpdateCustomerSetting: %v", err)
 	}
 
 	parsedResponse := &ProfilesRlUpdateCustomerSettingOK{}
 
-	_, err = a.Client.SendRequest(request, parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("ProfilesRlUpdateCustomerSetting: %v", err)
+	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         method,
+		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}",
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+		ParsedResponse: parsedResponse,
+	})
+
+	if respErr != nil {
+		return nil, fmt.Errorf("ProfilesRlUpdateCustomerSetting: %v", respErr)
 	}
 
 	return parsedResponse, nil
