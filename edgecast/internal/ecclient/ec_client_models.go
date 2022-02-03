@@ -4,6 +4,7 @@
 package ecclient
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 
@@ -81,7 +82,7 @@ type clientAdapter interface {
 type ECClient struct {
 	reqBuilder requestBuilder
 	reqSender  requestSender
-	config     ClientConfig
+	Config     ClientConfig
 }
 
 // New creates a default instance of ECClient using the provided
@@ -98,7 +99,7 @@ func New(config ClientConfig) ECClient {
 	return ECClient{
 		reqBuilder: newECRequestBuilder(config),
 		reqSender:  newECRequestSender(config, clientAdapter),
-		config:     config,
+		Config:     config,
 	}
 }
 
@@ -165,6 +166,7 @@ const (
 	Post
 	Put
 	Trace
+	Unknown
 )
 
 func (m HTTPMethod) String() string {
@@ -189,6 +191,30 @@ func (m HTTPMethod) String() string {
 		return "TRACE"
 	}
 	return "UNKNOWN"
+}
+
+func ToHTTPMethod(m string) (HTTPMethod, error) {
+	switch m {
+	case "CONNECT":
+		return Connect, nil
+	case "DELETE":
+		return Delete, nil
+	case "GET":
+		return Get, nil
+	case "HEAD":
+		return Head, nil
+	case "OPTIONS":
+		return Options, nil
+	case "PATCH":
+		return Patch, nil
+	case "POST":
+		return Post, nil
+	case "PUT":
+		return Put, nil
+	case "TRACE":
+		return Trace, nil
+	}
+	return Unknown, fmt.Errorf("unknown string type")
 }
 
 func (m HTTPMethod) IsValid() bool {
