@@ -12,16 +12,16 @@ import (
 )
 
 // New creates a new profiles cdn API client.
-func New(c ecclient.APIClient, cc ecclient.ClientConfig) ClientService {
-	return &Client{c, cc}
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return &Client{c, baseAPIURL}
 }
 
 /*
 Client for profiles cdn API
 */
 type Client struct {
-	client ecclient.APIClient
-	config ecclient.ClientConfig
+	client     ecclient.APIClient
+	baseAPIURL string
 }
 
 // ClientService is the interface for Client methods
@@ -59,17 +59,17 @@ func (a *Client) ProfilesAddCustomerSetting(params *ProfilesAddCustomerSettingPa
 
 	parsedResponse := &ProfilesAddCustomerSettingOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/cdn/profiles",
+		Path:           a.baseAPIURL + "/v1.0/cdn/profiles",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesAddCustomerSetting: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesAddCustomerSetting: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -97,17 +97,17 @@ func (a *Client) ProfilesDeleteCustomerSettingsByID(params *ProfilesDeleteCustom
 
 	parsedResponse := &ProfilesDeleteCustomerSettingsByIDNoContent{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/cdn/profiles/{id}",
+		Path:           a.baseAPIURL + "/v1.0/cdn/profiles/{id}",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesDeleteCustomerSettingsByID: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesDeleteCustomerSettingsByID: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -135,17 +135,17 @@ func (a *Client) ProfilesGetCustomerSettings(params *ProfilesGetCustomerSettings
 
 	parsedResponse := &ProfilesGetCustomerSettingsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/cdn/profiles",
+		Path:           a.baseAPIURL + "/v1.0/cdn/profiles",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesGetCustomerSettings: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesGetCustomerSettings: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -173,17 +173,17 @@ func (a *Client) ProfilesGetCustomerSettingsByID(params *ProfilesGetCustomerSett
 
 	parsedResponse := &ProfilesGetCustomerSettingsByIDOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/cdn/profiles/{id}",
+		Path:           a.baseAPIURL + "/v1.0/cdn/profiles/{id}",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesGetCustomerSettingsByID: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesGetCustomerSettingsByID: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -211,17 +211,17 @@ func (a *Client) ProfilesUpdateCustomerSetting(params *ProfilesUpdateCustomerSet
 
 	parsedResponse := &ProfilesUpdateCustomerSettingOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/cdn/profiles/{id}",
+		Path:           a.baseAPIURL + "/v1.0/cdn/profiles/{id}",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesUpdateCustomerSetting: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesUpdateCustomerSetting: %v", err)
 	}
 
 	return parsedResponse, nil

@@ -15,8 +15,8 @@ import (
 )
 
 // New creates a new {{ humanize .Name }} API client.
-func New(c ecclient.APIClient, cc ecclient.ClientConfig) ClientService {
-  return &Client{c, cc}
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+  return &Client{c, baseAPIURL}
 }
 
 /*
@@ -26,7 +26,7 @@ Client {{ if .Summary }}{{ .Summary }}{{ if .Description }}
 */
 type Client struct {
   client ecclient.APIClient
-	config ecclient.ClientConfig
+	baseAPIURL string
 }
 
 
@@ -65,17 +65,17 @@ func (a *Client) {{ pascalize .Name }}(params *{{ pascalize .Name }}Params{{ if 
   {{ $length := len .SuccessResponses }}
   {{ if .SuccessResponse }}parsedResponse := &{{ pascalize .SuccessResponse.Name }}{}
   {{ end }}
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + {{ printf "%q" .Path }},
+		Path:           a.baseAPIURL + {{ printf "%q" .Path }},
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
     {{ $length := len .SuccessResponses }}{{ if .SuccessResponse }}ParsedResponse : parsedResponse,{{ end }}
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("{{ pascalize .Name }}: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("{{ pascalize .Name }}: %v", err)
 	}
   
  return {{if .SuccessResponse }}parsedResponse,{{ end }} nil

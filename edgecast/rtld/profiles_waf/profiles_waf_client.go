@@ -12,16 +12,16 @@ import (
 )
 
 // New creates a new profiles waf API client.
-func New(c ecclient.APIClient, cc ecclient.ClientConfig) ClientService {
-	return &Client{c, cc}
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return &Client{c, baseAPIURL}
 }
 
 /*
 Client for profiles waf API
 */
 type Client struct {
-	client ecclient.APIClient
-	config ecclient.ClientConfig
+	client     ecclient.APIClient
+	baseAPIURL string
 }
 
 // ClientService is the interface for Client methods
@@ -59,17 +59,17 @@ func (a *Client) ProfilesWafAddCustomerSetting(params *ProfilesWafAddCustomerSet
 
 	parsedResponse := &ProfilesWafAddCustomerSettingOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/waf/profiles",
+		Path:           a.baseAPIURL + "/v1.0/waf/profiles",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesWafAddCustomerSetting: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesWafAddCustomerSetting: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -97,17 +97,17 @@ func (a *Client) ProfilesWafDeleteCustomerSettingsByID(params *ProfilesWafDelete
 
 	parsedResponse := &ProfilesWafDeleteCustomerSettingsByIDNoContent{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/waf/profiles/{id}",
+		Path:           a.baseAPIURL + "/v1.0/waf/profiles/{id}",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesWafDeleteCustomerSettingsByID: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesWafDeleteCustomerSettingsByID: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -135,17 +135,17 @@ func (a *Client) ProfilesWafGetCustomerSettings(params *ProfilesWafGetCustomerSe
 
 	parsedResponse := &ProfilesWafGetCustomerSettingsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/waf/profiles",
+		Path:           a.baseAPIURL + "/v1.0/waf/profiles",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesWafGetCustomerSettings: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesWafGetCustomerSettings: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -173,17 +173,17 @@ func (a *Client) ProfilesWafGetCustomerSettingsByID(params *ProfilesWafGetCustom
 
 	parsedResponse := &ProfilesWafGetCustomerSettingsByIDOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/waf/profiles/{id}",
+		Path:           a.baseAPIURL + "/v1.0/waf/profiles/{id}",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesWafGetCustomerSettingsByID: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesWafGetCustomerSettingsByID: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -211,17 +211,17 @@ func (a *Client) ProfilesWafUpdateCustomerSetting(params *ProfilesWafUpdateCusto
 
 	parsedResponse := &ProfilesWafUpdateCustomerSettingOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/waf/profiles/{id}",
+		Path:           a.baseAPIURL + "/v1.0/waf/profiles/{id}",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesWafUpdateCustomerSetting: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesWafUpdateCustomerSetting: %v", err)
 	}
 
 	return parsedResponse, nil

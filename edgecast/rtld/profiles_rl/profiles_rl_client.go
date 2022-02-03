@@ -12,16 +12,16 @@ import (
 )
 
 // New creates a new profiles rl API client.
-func New(c ecclient.APIClient, cc ecclient.ClientConfig) ClientService {
-	return &Client{c, cc}
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return &Client{c, baseAPIURL}
 }
 
 /*
 Client for profiles rl API
 */
 type Client struct {
-	client ecclient.APIClient
-	config ecclient.ClientConfig
+	client     ecclient.APIClient
+	baseAPIURL string
 }
 
 // ClientService is the interface for Client methods
@@ -59,17 +59,17 @@ func (a *Client) ProfilesRateLimitingAddCustomerSetting(params *ProfilesRateLimi
 
 	parsedResponse := &ProfilesRateLimitingAddCustomerSettingOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles",
+		Path:           a.baseAPIURL + "/v1.0/rl/profiles",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesRateLimitingAddCustomerSetting: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesRateLimitingAddCustomerSetting: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -97,17 +97,17 @@ func (a *Client) ProfilesRateLimitingGetCustomerSettings(params *ProfilesRateLim
 
 	parsedResponse := &ProfilesRateLimitingGetCustomerSettingsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles",
+		Path:           a.baseAPIURL + "/v1.0/rl/profiles",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesRateLimitingGetCustomerSettings: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesRateLimitingGetCustomerSettings: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -135,17 +135,17 @@ func (a *Client) ProfilesRlDeleteCustomerSettingsByID(params *ProfilesRlDeleteCu
 
 	parsedResponse := &ProfilesRlDeleteCustomerSettingsByIDNoContent{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}",
+		Path:           a.baseAPIURL + "/v1.0/rl/profiles/{id}",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesRlDeleteCustomerSettingsByID: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesRlDeleteCustomerSettingsByID: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -173,17 +173,17 @@ func (a *Client) ProfilesRlGetCustomerSettingsByID(params *ProfilesRlGetCustomer
 
 	parsedResponse := &ProfilesRlGetCustomerSettingsByIDOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}",
+		Path:           a.baseAPIURL + "/v1.0/rl/profiles/{id}",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesRlGetCustomerSettingsByID: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesRlGetCustomerSettingsByID: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -211,17 +211,17 @@ func (a *Client) ProfilesRlUpdateCustomerSetting(params *ProfilesRlUpdateCustome
 
 	parsedResponse := &ProfilesRlUpdateCustomerSettingOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/profiles/{id}",
+		Path:           a.baseAPIURL + "/v1.0/rl/profiles/{id}",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("ProfilesRlUpdateCustomerSetting: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("ProfilesRlUpdateCustomerSetting: %v", err)
 	}
 
 	return parsedResponse, nil

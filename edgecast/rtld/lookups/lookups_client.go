@@ -12,16 +12,16 @@ import (
 )
 
 // New creates a new lookups API client.
-func New(c ecclient.APIClient, cc ecclient.ClientConfig) ClientService {
-	return &Client{c, cc}
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return &Client{c, baseAPIURL}
 }
 
 /*
 Client for lookups API
 */
 type Client struct {
-	client ecclient.APIClient
-	config ecclient.ClientConfig
+	client     ecclient.APIClient
+	baseAPIURL string
 }
 
 // ClientService is the interface for Client methods
@@ -73,17 +73,17 @@ func (a *Client) LookupsGetAwsRegions(params *LookupsGetAwsRegionsParams) (*Look
 
 	parsedResponse := &LookupsGetAwsRegionsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/aws-regions",
+		Path:           a.baseAPIURL + "/v1.0/aws-regions",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetAwsRegions: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetAwsRegions: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -111,17 +111,17 @@ func (a *Client) LookupsGetAzureAccessTypes(params *LookupsGetAzureAccessTypesPa
 
 	parsedResponse := &LookupsGetAzureAccessTypesOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/azure-access-types",
+		Path:           a.baseAPIURL + "/v1.0/azure-access-types",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetAzureAccessTypes: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetAzureAccessTypes: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -149,17 +149,17 @@ func (a *Client) LookupsGetCustomItems(params *LookupsGetCustomItemsParams) (*Lo
 
 	parsedResponse := &LookupsGetCustomItemsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/custom-items",
+		Path:           a.baseAPIURL + "/v1.0/custom-items",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetCustomItems: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetCustomItems: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -187,17 +187,17 @@ func (a *Client) LookupsGetDeliveryMethods(params *LookupsGetDeliveryMethodsPara
 
 	parsedResponse := &LookupsGetDeliveryMethodsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/delivery-methods",
+		Path:           a.baseAPIURL + "/v1.0/delivery-methods",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetDeliveryMethods: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetDeliveryMethods: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -225,17 +225,17 @@ func (a *Client) LookupsGetDownsamplingRates(params *LookupsGetDownsamplingRates
 
 	parsedResponse := &LookupsGetDownsamplingRatesOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/downsampling-rates",
+		Path:           a.baseAPIURL + "/v1.0/downsampling-rates",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetDownsamplingRates: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetDownsamplingRates: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -263,17 +263,17 @@ func (a *Client) LookupsGetFieldRl(params *LookupsGetFieldRlParams) (*LookupsGet
 
 	parsedResponse := &LookupsGetFieldRlOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/fields",
+		Path:           a.baseAPIURL + "/v1.0/rl/fields",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetFieldRl: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetFieldRl: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -301,17 +301,17 @@ func (a *Client) LookupsGetFieldsCdn(params *LookupsGetFieldsCdnParams) (*Lookup
 
 	parsedResponse := &LookupsGetFieldsCdnOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/cdn/fields",
+		Path:           a.baseAPIURL + "/v1.0/cdn/fields",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetFieldsCdn: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetFieldsCdn: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -339,17 +339,17 @@ func (a *Client) LookupsGetFieldsWaf(params *LookupsGetFieldsWafParams) (*Lookup
 
 	parsedResponse := &LookupsGetFieldsWafOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/waf/fields",
+		Path:           a.baseAPIURL + "/v1.0/waf/fields",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetFieldsWaf: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetFieldsWaf: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -377,17 +377,17 @@ func (a *Client) LookupsGetHTTPAuthenticationMethods(params *LookupsGetHTTPAuthe
 
 	parsedResponse := &LookupsGetHTTPAuthenticationMethodsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/http-authentication-methods",
+		Path:           a.baseAPIURL + "/v1.0/http-authentication-methods",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetHTTPAuthenticationMethods: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetHTTPAuthenticationMethods: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -415,17 +415,17 @@ func (a *Client) LookupsGetLogFormats(params *LookupsGetLogFormatsParams) (*Look
 
 	parsedResponse := &LookupsGetLogFormatsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/log-formats",
+		Path:           a.baseAPIURL + "/v1.0/log-formats",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetLogFormats: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetLogFormats: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -453,17 +453,17 @@ func (a *Client) LookupsGetPlatforms(params *LookupsGetPlatformsParams) (*Lookup
 
 	parsedResponse := &LookupsGetPlatformsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/platforms",
+		Path:           a.baseAPIURL + "/v1.0/platforms",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetPlatforms: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetPlatforms: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -491,17 +491,17 @@ func (a *Client) LookupsGetStatusCodes(params *LookupsGetStatusCodesParams) (*Lo
 
 	parsedResponse := &LookupsGetStatusCodesOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/status-codes",
+		Path:           a.baseAPIURL + "/v1.0/status-codes",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("LookupsGetStatusCodes: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("LookupsGetStatusCodes: %v", err)
 	}
 
 	return parsedResponse, nil

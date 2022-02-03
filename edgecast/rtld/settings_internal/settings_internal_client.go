@@ -12,16 +12,16 @@ import (
 )
 
 // New creates a new settings internal API client.
-func New(c ecclient.APIClient, cc ecclient.ClientConfig) ClientService {
-	return &Client{c, cc}
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return &Client{c, baseAPIURL}
 }
 
 /*
 Client for settings internal API
 */
 type Client struct {
-	client ecclient.APIClient
-	config ecclient.ClientConfig
+	client     ecclient.APIClient
+	baseAPIURL string
 }
 
 // ClientService is the interface for Client methods
@@ -55,17 +55,17 @@ func (a *Client) SettingsGetRlSettings(params *SettingsGetRlSettingsParams) (*Se
 
 	parsedResponse := &SettingsGetRlSettingsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/rl/settings",
+		Path:           a.baseAPIURL + "/v1.0/rl/settings",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("SettingsGetRlSettings: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("SettingsGetRlSettings: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -93,17 +93,17 @@ func (a *Client) SettingsGetSettingsByPlatform(params *SettingsGetSettingsByPlat
 
 	parsedResponse := &SettingsGetSettingsByPlatformOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/platforms/{platformId}/settings",
+		Path:           a.baseAPIURL + "/v1.0/platforms/{platformId}/settings",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("SettingsGetSettingsByPlatform: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("SettingsGetSettingsByPlatform: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -131,17 +131,17 @@ func (a *Client) SettingsGetWafSettings(params *SettingsGetWafSettingsParams) (*
 
 	parsedResponse := &SettingsGetWafSettingsOK{}
 
-	_, respErr := a.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:         method,
-		Path:           a.config.BaseAPIURL.String() + "/v1.0/waf/settings",
+		Path:           a.baseAPIURL + "/v1.0/waf/settings",
 		RawBody:        results.Body,
 		PathParams:     results.PathParams,
 		QueryParams:    results.QueryParams,
 		ParsedResponse: parsedResponse,
 	})
 
-	if respErr != nil {
-		return nil, fmt.Errorf("SettingsGetWafSettings: %v", respErr)
+	if err != nil {
+		return nil, fmt.Errorf("SettingsGetWafSettings: %v", err)
 	}
 
 	return parsedResponse, nil

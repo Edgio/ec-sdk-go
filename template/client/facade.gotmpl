@@ -62,7 +62,7 @@ func New(config edgecast.SDKConfig) (*{{ pascalize .Name }}, error) {
       client: c,
       Logger: config.Logger,
       {{- range .OperationGroups }}
-      {{ pascalize .Name }}: {{ .PackageAlias }}.New(c, c.Config),
+      {{ pascalize .Name }}: {{ .PackageAlias }}.New(c, c.Config.BaseAPIURL.String()),
       {{- end }}
     }, nil
 
@@ -79,7 +79,7 @@ func New(config edgecast.SDKConfig) (*{{ pascalize .Name }}, error) {
       client: c,
       Logger: config.Logger,
       {{- range .OperationGroups }}
-      {{ pascalize .Name }}: {{ .PackageAlias }}.New(c, c.Config),
+      {{ pascalize .Name }}: {{ .PackageAlias }}.New(c, c.Config.BaseAPIURL.String()),
       {{- end }}
     }, nil
   }

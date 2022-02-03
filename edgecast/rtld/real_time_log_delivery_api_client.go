@@ -60,11 +60,11 @@ func New(config edgecast.SDKConfig) (*RealTimeLogDeliveryAPI, error) {
 		return &RealTimeLogDeliveryAPI{
 			client:           c,
 			Logger:           config.Logger,
-			Lookups:          lookups.New(c, c.Config),
-			ProfilesCdn:      profiles_cdn.New(c, c.Config),
-			ProfilesRl:       profiles_rl.New(c, c.Config),
-			ProfilesWaf:      profiles_waf.New(c, c.Config),
-			SettingsInternal: settings_internal.New(c, c.Config),
+			Lookups:          lookups.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesCdn:      profiles_cdn.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesRl:       profiles_rl.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesWaf:      profiles_waf.New(c, c.Config.BaseAPIURL.String()),
+			SettingsInternal: settings_internal.New(c, c.Config.BaseAPIURL.String()),
 		}, nil
 
 	} else {
@@ -79,11 +79,11 @@ func New(config edgecast.SDKConfig) (*RealTimeLogDeliveryAPI, error) {
 		return &RealTimeLogDeliveryAPI{
 			client:           c,
 			Logger:           config.Logger,
-			Lookups:          lookups.New(c, c.Config),
-			ProfilesCdn:      profiles_cdn.New(c, c.Config),
-			ProfilesRl:       profiles_rl.New(c, c.Config),
-			ProfilesWaf:      profiles_waf.New(c, c.Config),
-			SettingsInternal: settings_internal.New(c, c.Config),
+			Lookups:          lookups.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesCdn:      profiles_cdn.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesRl:       profiles_rl.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesWaf:      profiles_waf.New(c, c.Config.BaseAPIURL.String()),
+			SettingsInternal: settings_internal.New(c, c.Config.BaseAPIURL.String()),
 		}, nil
 	}
 }
