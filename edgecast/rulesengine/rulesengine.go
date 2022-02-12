@@ -6,61 +6,16 @@ import (
 	"strconv"
 )
 
-const rulesEngineRelURLFormat = "rules-engine/v1.1/%s"
-
-// GetPolicy -
-func (svc *RulesEngineService) GetPolicy(
-	params GetPolicyParams,
-) (*PolicyResponse, error) {
-	relURL := formatRulesEngineRelURL("policies/%d", params.PolicyID)
-	request, err :=
-		svc.Client.BuildRequest("GET", relURL, nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetPolicy: %v", err)
-	}
-
-	err = addPortalsHeaders(
-		&request.Header,
-		params.AccountNumber,
-		params.CustomerUserID,
-		params.PortalTypeID)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetPolicy: %v", err)
-	}
-
-	parsedResponse := &PolicyResponse{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetPolicy: %v", err)
-	}
-
-	return parsedResponse, nil
-}
-
-// AddPolicy -
+// AddPolicy creates a draft or a locked policy.
 func (svc *RulesEngineService) AddPolicy(
 	params AddPolicyParams,
 ) (*PolicyResponse, error) {
-	var policy interface{}
-
-	// Maintain support for Terraform which treats a Policy as a string
-	if params.PolicyAsString != nil {
-		policy = *params.PolicyAsString
-		policy = policy.(string)
-	} else if params.Policy != nil {
-		policy = *params.Policy
-	} else {
-		return nil, fmt.Errorf("AddPolicy: PolicyAsString and Policy are nil")
-	}
-
 	request, err := svc.Client.BuildRequest(
 		"POST",
 		"rules-engine/v1.1/policies",
-		policy)
+		params.PolicyAsString,
+	)
+
 	if err != nil {
 		return nil, fmt.Errorf("AddPolicy: %v", err)
 	}
@@ -86,17 +41,54 @@ func (svc *RulesEngineService) AddPolicy(
 	return parsedResponse, nil
 }
 
-// SubmitDeployRequest -
+// GetPolicy returns a policy including all of its rules.
+func (svc *RulesEngineService) GetPolicy(
+	params GetPolicyParams,
+) (map[string]interface{}, error) {
+	request, err := svc.Client.BuildRequest(
+		"GET",
+		fmt.Sprintf("rules-engine/v1.1/policies/%d", params.PolicyID),
+		nil,
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetPolicy: %v", err)
+	}
+
+	err = addPortalsHeaders(
+		&request.Header,
+		params.AccountNumber,
+		params.CustomerUserID,
+		params.PortalTypeID)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetPolicy: %v", err)
+	}
+
+	parsedResponse := make(map[string]interface{})
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetPolicy: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
+// SubmitDeployRequest submits a deploy request. A deploy request applies a
+// policy to either your production or staging environment.
 func (svc *RulesEngineService) SubmitDeployRequest(
 	params SubmitDeployRequestParams,
 ) (*DeployRequestOK, error) {
 	request, err := svc.Client.BuildRequest(
 		"POST",
 		"rules-engine/v1.1/deploy-requests",
-		params.DeployRequest)
+		params.DeployRequest,
+	)
 
 	if err != nil {
-		return nil, fmt.Errorf("DeployPolicy: %v", err)
+		return nil, fmt.Errorf("SubmitDeployRequest: %v", err)
 	}
 
 	err = addPortalsHeaders(
@@ -106,7 +98,7 @@ func (svc *RulesEngineService) SubmitDeployRequest(
 		params.PortalTypeID)
 
 	if err != nil {
-		return nil, fmt.Errorf("DeployPolicy: %v", err)
+		return nil, fmt.Errorf("SubmitDeployRequest: %v", err)
 	}
 
 	parsedResponse := &DeployRequestOK{}
@@ -114,15 +106,10 @@ func (svc *RulesEngineService) SubmitDeployRequest(
 	_, err = svc.Client.SendRequest(request, &parsedResponse)
 
 	if err != nil {
-		return nil, fmt.Errorf("DeployPolicy: %v", err)
+		return nil, fmt.Errorf("SubmitDeployRequest: %v", err)
 	}
 
 	return parsedResponse, nil
-}
-
-func formatRulesEngineRelURL(subFormat string, params ...interface{}) string {
-	subPath := fmt.Sprintf(subFormat, params...)
-	return fmt.Sprintf(rulesEngineRelURLFormat, subPath)
 }
 
 func addPortalsHeaders(

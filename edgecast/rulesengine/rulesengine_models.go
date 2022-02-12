@@ -2,139 +2,197 @@ package rulesengine
 
 import "time"
 
-// // UpdateDeployPolicyStateResponse -
-// type UpdateDeployPolicyStateResponse struct {
-// 	ID    string `json:"id,omitempty"`
-// 	State string `json:"state,omitempty"`
-// }
-
+// Policy object represets the data required to create a policy. Please refer to
+// the REST API documentation for details on each of the fields that contructs
+// the Policy object.
+// https://developer.edgecast.com/cdn/api/#Media_Management/REv4/REv4.htm
 type Policy struct {
-	Type        string `json:"@type,omitempty"`
-	Name        string `json:"name,omitempty"`
+	// Type of policy. This should be set to "policy-create".
+	Type string `json:"@type,omitempty"`
+
+	// Determines the policy's name.
+	Name string `json:"name,omitempty"`
+
+	// Determines the policy's description. You may set a policy's description
+	// to a blank value.
 	Description string `json:"description,omitempty"`
-	State       string `json:"state,omitempty"`
-	Platform    string `json:"platform,omitempty"`
-	Rules       []Rule `json:"rules,omitempty"`
+
+	// Determines the state of the new policy.
+	// Valid values are:
+	//  draft: Policies in this state may be modified.
+	//  locked: Most of a locked policy's properties are read-only.
+	State string `json:"state,omitempty"`
+
+	// Assigns a delivery platform to the policy.
+	// Valid values are:
+	//  http_large
+	//  http_small
+	//  adn
+	Platform string `json:"platform,omitempty"`
+
+	// Defines one or more rules. Each object in this array represents a rule.
+	Rules []Rule `json:"rules,omitempty"`
 }
 
-// PolicyResponse -
+// PolicyResponse contains response body for a successful policy creation
+// request
 type PolicyResponse struct {
 	Policy
-	AtID       string    `json:"@id,omitempty"`
-	ID         string    `json:"id,omitempty"`
-	PolicyType string    `json:"policy_type,omitempty"`
-	CreatedAt  time.Time `json:"created_at,omitempty"`
-	UpdatedAt  time.Time `json:"updated_at,omitempty"`
-	History    []History `json:"history,omitempty"`
-}
 
-type History struct {
-	ID        int       `json:"id,omitempty"`
-	Type      string    `json:"type,omitempty"`
+	// Indicates the relative path to an endpoint through which you may retrieve
+	// the current policy.
+	AtID string `json:"@id,omitempty"`
+
+	// Identifies the policy by its system-defined ID.
+	ID string `json:"id,omitempty"`
+
+	// Type of policy created. Returns "customer".
+	PolicyType string `json:"policy_type,omitempty"`
+
+	// Indicates the date and time (UTC) at which the policy was created.
+	// Syntax: YYYY-MM-DDThh:mm:ssZ
 	CreatedAt time.Time `json:"created_at,omitempty"`
-	User      User      `json:"user,omitempty"`
+
+	// Indicates the date and time (UTC) at which the policy was last updated.
+	// Syntax: YYYY-MM-DDThh:mm:ssZ
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+
+	// Describes each state change for this policy.
+	History []History `json:"history,omitempty"`
 }
 
-// Rule -
+// The history object describes the policy's state changes using the below
+// parameters
+type History struct {
+	// Identifies this entry by its system-defined ID.
+	ID int `json:"id,omitempty"`
+
+	// Indicates the policy's new state.
+	// Valid values are: created | deleted | locked | updated
+	Type string `json:"type,omitempty"`
+
+	// Indicates the date and time (UTC) at which the policy entered the state
+	// identified by the state property.
+	// Syntax: YYYY-MM-DDThh:mm:ssZ
+	CreatedAt time.Time `json:"created_at,omitempty"`
+
+	// Describes the user that requested the change in state.
+	User User `json:"user,omitempty"`
+}
+
+// Rule represents a single rule to be used in a Policy
 type Rule struct {
-	ID          string  `json:"id,omitempty"`
-	Name        string  `json:"name,omitempty"`
-	Description string  `json:"description,omitempty"`
-	Matches     []Match `json:"matches,omitempty"`
+	// This parameter is reserved for future use.
+	Name string `json:"name,omitempty"`
+
+	// Determines the rule's description. You may set a rule's description to a
+	// blank value.
+	Description string `json:"description,omitempty"`
+
+	// Contains the match conditions that will be assigned to the rule. Each
+	// object in this array contains a match condition configuration. List match
+	// conditions in the order in which they should appear in the rule. The set
+	// of required properties varies by match condition.
+	Matches []map[string]interface{} `json:"matches,omitempty"`
 }
 
+// RuleResponse represents a Rule after it has been created
 type RuleResponse struct {
 	Rule
-	Ordinal   int       `json:"ordinal,omitempty"`
+
+	// Identifies the rule by its system-defined ID.
+	ID string `json:"id,omitempty"`
+
+	// Indicates the position of the rule within the policy.
+	Ordinal int `json:"ordinal,omitempty"`
+
+	// Indicates the date and time (UTC) at which the rule was created.
+	// Syntax: YYYY-MM-DDThh:mm:ssZ
 	CreatedAt time.Time `json:"created_at,omitempty"`
+
+	// Indicates the date and time (UTC) at which the rule was last updated.
+	// Syntax: YYYY-MM-DDThh:mm:ssZ
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
-// Match -
-type Match struct {
-	ID         int       `json:"id"`
-	Type       string    `json:"type"`
-	Ordinal    int       `json:"ordinal,omitempty"`
-	Value      string    `json:"value,omitempty"`
-	Codes      string    `json:"codes,omitempty"`
-	Compare    string    `json:"compare,omitempty"`
-	Encoded    bool      `json:"encoded,omitempty"`
-	Hostnames  string    `json:"hostnames,omitempty"`
-	IgnoreCase bool      `json:"ignore-case,omitempty"`
-	Name       string    `json:"name,omitempty"`
-	RelativeTo string    `json:"relative-to,omitempty"`
-	Result     string    `json:"result,omitempty"`
-	Matches    []Match   `json:"matches,omitempty"`
-	Features   []Feature `json:"features,omitempty"`
-}
-
-// Feature -
-type Feature struct {
-	Action          string   `json:"action,omitempty"`
-	Code            string   `json:"code,omitempty"`
-	Destination     string   `json:"destination,omitempty"`
-	Enabled         bool     `json:"enabled,omitempty"`
-	Expires         int      `json:"expires,omitempty"`
-	Extensions      string   `json:"extensions,omitempty"`
-	Format          string   `json:"format,omitempty"`
-	HeaderName      string   `json:"header-name,omitempty"`
-	HeaderValue     string   `json:"header-value,omitempty"`
-	Instance        string   `json:"instance,omitempty"`
-	KbytesPerSecond int      `json:"kbytes-per-second,omitempty"`
-	MediaTypes      []string `json:"mediaTypes,omitempty"`
-	Methods         string   `json:"methods,omitempty"`
-	Milliseconds    int      `json:"milliseconds,omitempty"`
-	Mode            string   `json:"mode,omitempty"`
-	Name            string   `json:"name,omitempty"`
-	Names           []string `json:"names,omitempty"`
-	Parameters      string   `json:"parameters,omitempty"`
-	PrebufSeconds   int      `json:"prebuf-seconds,omitempty"`
-	Requests        int      `json:"requests,omitempty"`
-	Seconds         int      `json:"seconds,omitempty"`
-	SeekEnd         string   `json:"seekEnd,omitempty"`
-	SeekStart       string   `json:"seekStart,omitempty"`
-	Site            string   `json:"site,omitempty"`
-	Source          string   `json:"source,omitempty"`
-	Status          string   `json:"status,omitempty"`
-	Type            string   `json:"type,omitempty"`
-	Tags            string   `json:"tags,omitempty"`
-	Treatment       string   `json:"treatment,omitempty"`
-	Units           string   `json:"units,omitempty"`
-	Value           string   `json:"value,omitempty"`
-}
-
-// SubmitDeployRequest -
+// SubmitDeployRequest submits a deploy request. A deploy request applies a
+// policy to either your production or staging environment.
 type SubmitDeployRequest struct {
-	PolicyID    int    `json:"policy_id"`
+	// Identifies the policy that will be deployed by its system-defined ID.
+	PolicyID int `json:"policy_id"`
+
+	// Determines the environment to which the deploy request will be applied.
+	// Valid values are: production | staging
 	Environment string `json:"environment,omitempty"`
-	Message     string `json:"message"`
+
+	// Defines a message that is meant to explain why the policy is being
+	// deployed to the specified environment.
+	Message string `json:"message"`
 }
 
-// DeployRequestOK -
+// DeployRequestOK represents the response after submitting a Deploy Request
 type DeployRequestOK struct {
-	ID          string                   `json:"id,omitempty"`
-	AtID        string                   `json:"@id,omitempty"`
-	Type        string                   `json:"@type,omitempty"`
-	Links       []map[string]interface{} `json:"@links,omitempty"`
-	State       string                   `json:"state,omitempty"`
-	Environment string                   `json:"environment,omitempty"`
-	CustomerID  string                   `json:"customer_id"`
-	CreatedAt   time.Time                `json:"created_at,omitempty"`
-	UpdatedAt   time.Time                `json:"updated_at,omitempty"`
-	IsVisible   bool                     `json:"is_visible,omitempty"`
-	Policies    PolicyResponse           `json:"policies,omitempty"`
-	History     []map[string]interface{} `json:"history,omitempty"`
-	User        User                     `json:"user,omitempty"`
+	// Identifies the deploy request by its system-defined ID.
+	ID string `json:"id,omitempty"`
+
+	// Indicates the relative path to the requested endpoint.
+	AtID string `json:"@id,omitempty"`
+
+	// Returns DeployRequest.
+	Type string `json:"@type,omitempty"`
+
+	//
+	Links []map[string]interface{} `json:"@links,omitempty"`
+
+	// Indicates the deploy request's state. Valid values are:
+	// submitted | approved | rejected | deployed | pending_review | escalated |
+	// canceled | verification_delayed | deployment_delayed
+	State string `json:"state,omitempty"`
+
+	// Indicates the environment to which the deploy request was applied.
+	// Valid values are: production | staging
+	Environment string `json:"environment,omitempty"`
+
+	// Indicates your customer account number.
+	CustomerID string `json:"customer_id"`
+
+	// Indicates the date and time (UTC) at which the deploy request was
+	// submitted. Syntax: YYYY-MM-DDThh:mm:ssZ
+	CreatedAt time.Time `json:"created_at,omitempty"`
+
+	// Indicates the date and time (UTC) at which the deploy request was last
+	// updated. Syntax: YYYY-MM-DDThh:mm:ssZ
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+
+	// Returns true.
+	IsVisible bool `json:"is_visible,omitempty"`
+
+	// Contains the policy associated with the deploy request.
+	Policies PolicyResponse `json:"policies,omitempty"`
+
+	// Describes each state change for this deploy request.
+	History []map[string]interface{} `json:"history,omitempty"`
+
+	// Describes the user that requested the change in state.
+	User User `json:"user,omitempty"`
 }
 
-// User -
+// User describes a user
 type User struct {
-	ID        string `json:"id,omitempty"`
+	// Identifies a user by its system-defined ID.
+	ID string `json:"id,omitempty"`
+
+	// Indicates a user's first name.
 	FirstName string `json:"first_name,omitempty"`
-	LastName  string `json:"last_name,omitempty"`
-	Email     string `json:"email,omitempty"`
+
+	// Indicates a user's last name.
+	LastName string `json:"last_name,omitempty"`
+
+	// Indicates a user's email address.
+	Email string `json:"email,omitempty"`
 }
 
+// Method Param Structs
 type GetPolicyParams struct {
 	AccountNumber  string
 	CustomerUserID string
@@ -150,8 +208,7 @@ type AddPolicyParams struct {
 	AccountNumber  string
 	CustomerUserID string
 	PortalTypeID   string
-	PolicyAsString *string
-	Policy         *Policy
+	PolicyAsString string
 }
 
 func NewAddPolicyParams() *AddPolicyParams {

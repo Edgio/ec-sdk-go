@@ -14,67 +14,42 @@ import (
 
 func main() {
 	// Setup
-
 	clientID := ""
 	clientSecret := ""
 	scope := "ec.rules"
 
-	// Policy string to mimic Terraform provider for testing
-	// policyString := `{
-	// 	"name": "Path Normalization 3",
-	// 	"description": "This is a test policy of PolicyCreate.",
-	// 	"platform": "http_large",
-	// 	"rules": [
-	// 		{
-	// 			"name": "Deny POST",
-	// 			"description": "Deny POST updated description",
-	// 			"matches": [
-	// 				{
-	// 					"type": "match.request.request-method.literal",
-	// 					"value" : "POST",
-	// 					"features": [
-	// 						{
-	// 							"type": "feature.access.deny-access",
-	// 							"enabled": true
-	// 						}
-	// 					]
-	// 				}
-	// 			]
-	// 		}
-	// 	]
-	// }`
-
-	// Build policy
-	features := []rulesengine.Feature{
-		{
-			Type:  "feature.comment",
-			Value: "My test comment",
-		},
-	}
-
-	matches := []rulesengine.Match{
-		{
-			Type:     "match.always",
-			Features: features,
-		},
-	}
-
-	rules := []rulesengine.Rule{
-		{
-			Name:        "SDK Test Rule 1",
-			Description: "Test Rule description",
-			Matches:     matches,
-		},
-	}
-
-	policyObj := rulesengine.Policy{
-		Type:        "policy-create",
-		Name:        "SDK Policy 1",
-		Description: "Test policy from SDK",
-		State:       "locked",
-		Platform:    "http_large",
-		Rules:       rules,
-	}
+	// A Policy should be constructed as a JSON object passed as a string.
+	// Currently implemented this way to support the Terraform Rules Engine
+	// implementation. This object is modeled after the Policy struct in
+	// rulesengine_models.go
+	// REST API reference documentation available at the below link explains the
+	// JSON structure further.
+	// https://developer.edgecast.com/cdn/api/#Media_Management/REv4/REv4.htm
+	policyString := `{
+		"@type": "policy-create",
+		"name": "Simple SDK policy 4",
+		"description": "This is a test of the policy-create process.",
+		"platform": "http_large",
+		"state": "locked",
+		"rules": [
+			{
+				"name": "Deny POST",
+				"description": "Allow all POST requests",
+				"matches": [
+					{
+						"type": "match.request.request-method.literal",
+						"value" : "POST",
+						"features": [
+							{
+								"type": "feature.access.deny-access",
+								"enabled": false
+							}
+						]
+					}
+				]
+			}
+		]
+	}`
 
 	// Initialize Rules Engine Service
 	idsCredentials := auth.OAuth2Credentials{
@@ -93,8 +68,7 @@ func main() {
 
 	// Add Policy
 	addParams := rulesengine.NewAddPolicyParams()
-	//addParams.PolicyAsString = &policyString // Testing Terraform
-	addParams.Policy = &policyObj
+	addParams.PolicyAsString = policyString
 
 	addPolicyResp, err := rulesengineService.AddPolicy(*addParams)
 
@@ -126,7 +100,7 @@ func main() {
 
 	// Deploy Policy
 	deployParams := rulesengine.NewSubmitDeployRequestParams()
-	policyID, err = strconv.Atoi(getPolicyObj.ID)
+	policyID, err = strconv.Atoi(getPolicyObj["id"].(string))
 	if err != nil {
 		fmt.Printf("error parsing Rules Engine Policy ID: %v\n", err)
 		return
@@ -144,5 +118,4 @@ func main() {
 	}
 
 	fmt.Printf("Policy resp: %v", resp)
-
 }
