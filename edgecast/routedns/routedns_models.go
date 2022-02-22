@@ -64,23 +64,18 @@ type MasterServer struct {
 	IPAddress string `json:"IPAddress,omitempty"`
 }
 
-// Zone This API operation Adds/Updates/DELETE a new Record or existing Record to a Zone
+// Zone API operations Add/Update/Delete a new Record or existing Record to a Zone
 type Zone struct {
 	// Indicates a zone's name.
 	DomainName string `json:"DomainName,omitempty"`
 
-	// Indicates a zone's status by its system-defined ID.
+	// Indicates a zone's status by its system-defined ID. Valid Values:
+	// 1: Active, 2: Inactive
 	Status int `json:"Status,omitempty"`
 
-	// Indicates a zone's status by its name.
-	StatusName string `json:"StatusName,omitempty"`
-
-	// Indicates a zone's type by its system-defined ID.
+	// Indicates that a primary zone will be created. Set this request
+	// parameter to "1".
 	ZoneType int `json:"ZoneType,omitempty"`
-
-	// This parameter is reserved for future use. The only supported value for
-	// this parameter is "true."
-	IsCustomerOwned bool `json:"IsCustomerOwned,omitempty"`
 
 	// Indicates the comment associated with a zone.
 	Comment string `json:"Comment,omitempty"`
@@ -97,6 +92,13 @@ type Zone struct {
 
 type ZoneGetOK struct {
 	Zone
+
+	// Indicates a zone's status by its name.
+	StatusName string `json:"StatusName,omitempty"`
+
+	// This parameter is reserved for future use. The only supported value for
+	// this parameter is "true."
+	IsCustomerOwned bool `json:"IsCustomerOwned,omitempty"`
 
 	// Identifies a zone by its system-defined ID.
 	FixedZoneID int `json:"FixedZoneId,omitempty"`
@@ -135,30 +137,38 @@ type DNSRecords struct {
 
 // DNSRecord -
 type DNSRecord struct {
-	RecordID       int    `json:"RecordId,omitempty"`
-	FixedRecordID  int    `json:"FixedRecordId,omitempty"`
-	FixedGroupID   int    `json:"FixedGroupId,omitempty"`
-	GroupID        int    `json:"GroupId,omitempty"`
-	IsDeleted      bool   `json:"IsDelete,omitempty"`
-	Name           string `json:"Name,omitempty"`
-	TTL            int    `json:"TTL,omitempty"`
-	Rdata          string `json:"Rdata,omitempty"`
-	VerifyID       int    `json:"VerifyId,omitempty"`
-	Weight         int    `json:"Weight,omitempty"`
-	RecordTypeID   int    `json:"RecordTypeID,omitempty"`
-	RecordTypeName string `json:"RecordTypeName,omitempty"`
+	RecordID      int  `json:"RecordId,omitempty"`
+	FixedRecordID int  `json:"FixedRecordId,omitempty"`
+	FixedGroupID  int  `json:"FixedGroupId,omitempty"`
+	GroupID       int  `json:"GroupId,omitempty"`
+	IsDeleted     bool `json:"IsDelete,omitempty"`
+
+	// Defines a record's name. Required.
+	Name string `json:"Name,omitempty"`
+
+	// Defines a record's TTL. Required.
+	TTL int `json:"TTL,omitempty"`
+
+	// Defines a record's value. Required
+	Rdata    string `json:"Rdata,omitempty"`
+	VerifyID int    `json:"VerifyId,omitempty"`
+	Weight   int    `json:"Weight,omitempty"`
+
+	// Defines the record type (e.g. A, AAAA, CNAME). Required
+	RecordTypeID   RecordType `json:"RecordTypeID,omitempty"`
+	RecordTypeName string     `json:"RecordTypeName,omitempty"`
 }
 
 type DnsRouteGroup struct {
-	ID                 string          `json:"Id,omitempty"`
-	GroupID            int             `json:"GroupId,omitempty"`
-	FixedGroupID       int             `json:"FixedGroupId,omitempty"`
-	Name               string          `json:"Name,omitempty"`
-	GroupTypeID        int             `json:"GroupTypeId,omitempty"`
-	ZoneId             int             `json:"ZoneId,omitempty"`
-	FixedZoneID        int             `json:"FixedZoneId,omitempty"`
-	GroupProductTypeID int             `json:"GroupProductTypeId,omitempty"`
-	GroupComposition   DNSGroupRecords `json:"GroupComposition,omitempty"`
+	ID               string           `json:"Id,omitempty"`
+	GroupID          int              `json:"GroupId,omitempty"`
+	FixedGroupID     int              `json:"FixedGroupId,omitempty"`
+	Name             string           `json:"Name,omitempty"`
+	GroupTypeID      int              `json:"GroupTypeId,omitempty"`
+	ZoneId           int              `json:"ZoneId,omitempty"`
+	FixedZoneID      int              `json:"FixedZoneId,omitempty"`
+	GroupProductType GroupProductType `json:"GroupProductTypeId,omitempty"`
+	GroupComposition DNSGroupRecords  `json:"GroupComposition,omitempty"`
 }
 
 // DNSGroupRecords -
@@ -302,6 +312,14 @@ type TSIGGetOK struct {
 //
 // Params MSG
 //
+func NewGetAllMasterServerGroupsParams() *GetAllMasterServerGroupsParams {
+	return &GetAllMasterServerGroupsParams{}
+}
+
+type GetAllMasterServerGroupsParams struct {
+	AccountNumber string
+}
+
 func NewGetMasterServerGroupParams() *GetMasterServerGroupParams {
 	return &GetMasterServerGroupParams{}
 }
@@ -326,7 +344,7 @@ func NewUpdateMasterServerGroupParams() *UpdateMasterServerGroupParams {
 
 type UpdateMasterServerGroupParams struct {
 	AccountNumber     string
-	MasterServerGroup MasterServerGroupAddGetOK
+	MasterServerGroup MasterServerGroupUpdateRequest
 }
 
 func NewDeleteMasterServerGroupParams() *DeleteMasterServerGroupParams {
@@ -379,7 +397,48 @@ type DeleteZoneParams struct {
 }
 
 //
-// Params Tsig
+// Params Groups
+//
+
+func NewGetGroupParams() *GetGroupParams {
+	return &GetGroupParams{}
+}
+
+type GetGroupParams struct {
+	AccountNumber    string
+	GroupID          int
+	GroupProductType GroupProductType
+}
+
+func NewAddGroupParams() *AddGroupParams {
+	return &AddGroupParams{}
+}
+
+type AddGroupParams struct {
+	AccountNumber string
+	Group         DnsRouteGroup
+}
+
+func NewUpdateGroupParams() *UpdateGroupParams {
+	return &UpdateGroupParams{}
+}
+
+type UpdateGroupParams struct {
+	AccountNumber string
+	Group         DnsRouteGroup
+}
+
+func NewDeleteGroupParams() *DeleteGroupParams {
+	return &DeleteGroupParams{}
+}
+
+type DeleteGroupParams struct {
+	AccountNumber string
+	Group         DnsRouteGroup
+}
+
+//
+// Params TSIG
 //
 
 func NewGetTSIGParams() *GetTSIGParams {
@@ -498,7 +557,7 @@ const (
 	CAA
 )
 
-// const for GroupProductTypeId
+// const for GroupProductType
 type GroupProductType int
 
 const (
@@ -506,6 +565,18 @@ const (
 	Failover
 	NoGroup
 )
+
+func (g GroupProductType) String() string {
+	switch g {
+	case LoadBalancing:
+		return "lb"
+	case Failover:
+		return "fo"
+	case NoGroup:
+		return ""
+	}
+	return "unknown"
+}
 
 // const for GroupTypeId
 type GroupType int

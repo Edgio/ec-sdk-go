@@ -9,10 +9,36 @@ import (
 	"strconv"
 )
 
+// TODO: Refactor this GetAll and singular Get methods into one
+// GetAllMasterServerGroups -
+func (svc *RouteDNSService) GetAllMasterServerGroups(
+	params GetAllMasterServerGroupsParams,
+) ([]*MasterServerGroupAddGetOK, error) {
+	apiURL := fmt.Sprintf(
+		"/v2/mcc/customers/%s/dns/mastergroups",
+		params.AccountNumber,
+	)
+
+	request, err := svc.Client.BuildRequest("GET", apiURL, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetMasterServerGroup: %v", err)
+	}
+
+	parsedResponse := []*MasterServerGroupAddGetOK{}
+
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+	if err != nil {
+		return nil, fmt.Errorf("GetMasterServerGroup: %v", err)
+	}
+
+	return parsedResponse, nil
+}
+
 // GetMasterServerGroup -
 func (svc *RouteDNSService) GetMasterServerGroup(
 	params GetMasterServerGroupParams,
-) ([]*MasterServerGroupAddGetOK, error) {
+) (*MasterServerGroupAddGetOK, error) {
 	apiURL := fmt.Sprintf(
 		"/v2/mcc/customers/%s/dns/mastergroups?id=%d",
 		params.AccountNumber,
@@ -32,13 +58,14 @@ func (svc *RouteDNSService) GetMasterServerGroup(
 		return nil, fmt.Errorf("GetMasterServerGroup: %v", err)
 	}
 
-	return parsedResponse, nil
+	// Single object get always returns an array of one
+	return parsedResponse[0], nil
 }
 
 // AddMasterServerGroup -
 func (svc *RouteDNSService) AddMasterServerGroup(
 	params AddMasterServerGroupParams,
-) ([]*MasterServerGroupAddGetOK, error) {
+) (*MasterServerGroupAddGetOK, error) {
 	apiURL := fmt.Sprintf(
 		"/v2/mcc/customers/%s/dns/mastergroup",
 		params.AccountNumber,
@@ -67,7 +94,8 @@ func (svc *RouteDNSService) AddMasterServerGroup(
 		)
 	}
 
-	return parsedResponse, nil
+	// Note that the Add operation always returns an array of one
+	return parsedResponse[0], nil
 }
 
 // UpdateMasterServerGroup -
@@ -234,85 +262,109 @@ func (svc *RouteDNSService) DeleteZone(params DeleteZoneParams) error {
 	return nil
 }
 
-// // GetGroup - Get Group information of the provided groupID.
-// // groupID is a groupID not FixedGroupID
-// func (c *DNSRouteAPIClient) GetGroup(groupID int, groupProductType string) (*DnsRouteGroup, error) {
+// GetGroup - Get Group information of the provided groupID.
+// groupID is a groupID not FixedGroupID
+func (svc *RouteDNSService) GetGroup(
+	params GetGroupParams,
+) (*DnsRouteGroup, error) {
 
-// 	apiURL := fmt.Sprintf("/v2/mcc/customers/%s/dns/group?id=%d&groupType=%s", c.Config.AccountNumber, groupID, groupProductType)
-// 	log.Printf("apiURL:%s", apiURL)
-// 	request, err := c.BaseAPIClient.BuildRequest("GET", apiURL, nil, false)
+	apiURL := fmt.Sprintf(
+		"/v2/mcc/customers/%s/dns/group?id=%d&groupType=%s",
+		params.AccountNumber,
+		params.GroupID,
+		params.GroupProductType.String(),
+	)
 
-// 	if err != nil {
-// 		return nil, fmt.Errorf("GetZone: %v", err)
-// 	}
+	log.Printf("apiURL:%s", apiURL)
+	request, err := svc.Client.BuildRequest("GET", apiURL, nil)
 
-// 	parsedResponse := DnsRouteGroup{}
+	if err != nil {
+		return nil, fmt.Errorf("GetGroup->Build Request Error: %v", err)
+	}
 
-// 	_, err = c.BaseAPIClient.SendRequest(request, &parsedResponse)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("GetGroup: %v", err)
-// 	}
-// 	log.Printf("dnsroute_client>>GetGroup>>parsedResponse:%v", parsedResponse)
+	parsedResponse := DnsRouteGroup{}
 
-// 	return &parsedResponse, nil
-// }
+	_, err = svc.Client.SendRequest(request, &parsedResponse)
+	if err != nil {
+		return nil, fmt.Errorf("GetGroup->API Response Error: %v", err)
+	}
+	log.Printf("GetGroup->parsedResponse:%v", parsedResponse)
 
-// // AddGroup -
-// func (c *DNSRouteAPIClient) AddGroup(group *DnsRouteGroup) (int, error) {
-// 	apiURL := fmt.Sprintf("/v2/mcc/customers/%s/dns/group", c.Config.AccountNumber)
-// 	request, err := c.BaseAPIClient.BuildRequest("POST", apiURL, *group, false)
-// 	if err != nil {
-// 		return -1, fmt.Errorf("api>>dnsroute_client>>AddGroup->BuildRequest: %v", err)
-// 	}
+	return &parsedResponse, nil
+}
 
-// 	resp, err := c.BaseAPIClient.SendRequestWithStringResponse(request)
+// AddGroup -
+func (svc *RouteDNSService) AddGroup(params AddGroupParams) (int, error) {
+	apiURL := fmt.Sprintf(
+		"/v2/mcc/customers/%s/dns/group",
+		params.AccountNumber,
+	)
 
-// 	if err != nil {
-// 		return -1, fmt.Errorf("api>>dnsroute_client>>AddGroup->SendRequestWithStringResponse: %v", err)
-// 	}
+	request, err := svc.Client.BuildRequest("POST", apiURL, params.Group)
+	if err != nil {
+		return -1, fmt.Errorf("AddGroup->Build Request Error: %v", err)
+	}
 
-// 	groupID, err := strconv.Atoi(*resp)
-// 	if err != nil {
-// 		return -1, fmt.Errorf("dnsroute_client>>AddGroup->API Response Error: %v", err)
-// 	}
-// 	return groupID, nil
-// }
+	resp, err := svc.Client.SendRequestWithStringResponse(request)
 
-// // UpdateGroup -
-// func (c *DNSRouteAPIClient) UpdateGroup(group *DnsRouteGroup) error {
-// 	apiURL := fmt.Sprintf("/v2/mcc/customers/%s/dns/group", c.Config.AccountNumber)
-// 	request, err := c.BaseAPIClient.BuildRequest("POST", apiURL, *group, false)
-// 	if err != nil {
-// 		return fmt.Errorf("api>>dnsroute_client>>UpdateGroup: %v", err)
-// 	}
-// 	_, err = c.BaseAPIClient.SendRequestWithStringResponse(request)
+	if err != nil {
+		return -1, fmt.Errorf("AddGroup->API Response Error: %v", err)
+	}
 
-// 	if err != nil {
-// 		return fmt.Errorf("api>>dnsroute_client>>UpdateGroup: %v", err)
-// 	}
+	groupID, err := strconv.Atoi(*resp)
+	if err != nil {
+		return -1, fmt.Errorf(
+			"AddGroup->String to int conversion failed: %v",
+			err,
+		)
+	}
+	return groupID, nil
+}
 
-// 	return nil
-// }
+// UpdateGroup -
+func (svc *RouteDNSService) UpdateGroup(params UpdateGroupParams) error {
+	apiURL := fmt.Sprintf(
+		"/v2/mcc/customers/%s/dns/group",
+		params.AccountNumber,
+	)
 
-// // DeleteGroup -
-// func (c *DNSRouteAPIClient) DeleteGroup(groupID int, groupType string) error {
-// 	// TODO: support custom ids for accounts
-// 	apiURL := fmt.Sprintf("v2/mcc/customers/%s/dns/group?id=%d&groupType=%s", c.Config.AccountNumber, groupID, groupType)
+	request, err := svc.Client.BuildRequest("POST", apiURL, params.Group)
+	if err != nil {
+		return fmt.Errorf("UpdateGroup->Build Request Error: %v", err)
+	}
+	_, err = svc.Client.SendRequestWithStringResponse(request)
 
-// 	request, err := c.BaseAPIClient.BuildRequest("DELETE", apiURL, nil, false)
+	if err != nil {
+		return fmt.Errorf("UpdateGroup->API Response Error: %v", err)
+	}
 
-// 	if err != nil {
-// 		return fmt.Errorf("DeleteGroup: %v", err)
-// 	}
+	return nil
+}
 
-// 	_, err = c.BaseAPIClient.SendRequest(request, nil)
+// DeleteGroup -
+func (svc *RouteDNSService) DeleteGroup(params DeleteGroupParams) error {
+	// TODO: support custom ids for accounts
+	apiURL := fmt.Sprintf(
+		"v2/mcc/customers/%s/dns/group?id=%d&groupType=%s",
+		params.AccountNumber,
+		params.Group.GroupID,
+		params.Group.GroupProductType.String(),
+	)
 
-// 	if err != nil {
-// 		return fmt.Errorf("DeleteGroup: %v", err)
-// 	}
+	request, err := svc.Client.BuildRequest("DELETE", apiURL, nil)
 
-// 	return nil
-// }
+	if err != nil {
+		return fmt.Errorf("DeleteGroup->Build Request Error: %v", err)
+	}
+
+	_, err = svc.Client.SendRequest(request, nil)
+
+	if err != nil {
+		return fmt.Errorf("DeleteGroup->API Response Error: %v", err)
+	}
+
+	return nil
+}
 
 // GetTsig -
 func (svc *RouteDNSService) GetTsig(
@@ -356,7 +408,10 @@ func (svc *RouteDNSService) AddTsig(params AddTSIGParams) (*int, error) {
 
 	tsigID, err := strconv.Atoi(*resp)
 	if err != nil {
-		return nil, fmt.Errorf("AddTsig->TSIG ID string to int Conversion Error: %v", err)
+		return nil, fmt.Errorf(
+			"AddTsig->TSIG ID string to int Conversion Error: %v",
+			err,
+		)
 	}
 	return &tsigID, nil
 }
@@ -473,7 +528,7 @@ func (svc *RouteDNSService) AddSecondaryZoneGroup(
 	return &parsedResponse, nil
 }
 
-// UpdateZone -
+// UpdateSecondaryZoneGroup -
 func (svc RouteDNSService) UpdateSecondaryZoneGroup(
 	params UpdateSecondaryZoneGroupParams,
 ) error {
@@ -506,7 +561,7 @@ func (svc RouteDNSService) UpdateSecondaryZoneGroup(
 	return nil
 }
 
-// DeleteZone -
+// DeleteSecondaryZoneGroup -
 func (svc RouteDNSService) DeleteSecondaryZoneGroup(
 	params DeleteSecondaryZoneGroupParams,
 ) error {
@@ -519,13 +574,19 @@ func (svc RouteDNSService) DeleteSecondaryZoneGroup(
 	request, err := svc.Client.BuildRequest("DELETE", apiURL, nil)
 
 	if err != nil {
-		return fmt.Errorf("DeleteSecondaryZoneGroup->Build Request Error: %v", err)
+		return fmt.Errorf(
+			"DeleteSecondaryZoneGroup->Build Request Error: %v",
+			err,
+		)
 	}
 
 	_, err = svc.Client.SendRequest(request, nil)
 
 	if err != nil {
-		return fmt.Errorf("DeleteSecondaryZoneGroup->API Response Error: %v", err)
+		return fmt.Errorf(
+			"DeleteSecondaryZoneGroup->API Response Error: %v",
+			err,
+		)
 	}
 
 	return nil
