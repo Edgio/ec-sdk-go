@@ -322,7 +322,7 @@ func (svc *RouteDNSService) AddGroup(params AddGroupParams) (int, error) {
 }
 
 // UpdateGroup -
-func (svc *RouteDNSService) UpdateGroup(params UpdateGroupParams) error {
+func (svc *RouteDNSService) UpdateGroup(params *UpdateGroupParams) error {
 	apiURL := fmt.Sprintf(
 		"/v2/mcc/customers/%s/dns/group",
 		params.AccountNumber,
@@ -332,11 +332,22 @@ func (svc *RouteDNSService) UpdateGroup(params UpdateGroupParams) error {
 	if err != nil {
 		return fmt.Errorf("UpdateGroup->Build Request Error: %v", err)
 	}
-	_, err = svc.Client.SendRequestWithStringResponse(request)
+	resp, err := svc.Client.SendRequestWithStringResponse(request)
 
 	if err != nil {
 		return fmt.Errorf("UpdateGroup->API Response Error: %v", err)
 	}
+
+	// Group ID changes when updating a group. Update Group object with latest
+	// ID
+	groupID, err := strconv.Atoi(*resp)
+	if err != nil {
+		return fmt.Errorf(
+			"UpdateGroup->String to int conversion failed: %v",
+			err,
+		)
+	}
+	params.Group.GroupID = groupID
 
 	return nil
 }

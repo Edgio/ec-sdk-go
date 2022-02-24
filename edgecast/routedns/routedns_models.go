@@ -152,7 +152,10 @@ type DNSRecord struct {
 	// Defines a record's value. Required
 	Rdata    string `json:"Rdata,omitempty"`
 	VerifyID int    `json:"VerifyId,omitempty"`
-	Weight   int    `json:"Weight,omitempty"`
+
+	// Defines a record's weight. Used to denote preference for a load balancing
+	// or failover group.
+	Weight int `json:"Weight,omitempty"`
 
 	// Defines the record type (e.g. A, AAAA, CNAME). Required
 	RecordTypeID   RecordType `json:"RecordTypeID,omitempty"`
@@ -160,15 +163,25 @@ type DNSRecord struct {
 }
 
 type DnsRouteGroup struct {
-	ID               string           `json:"Id,omitempty"`
-	GroupID          int              `json:"GroupId,omitempty"`
-	FixedGroupID     int              `json:"FixedGroupId,omitempty"`
-	Name             string           `json:"Name,omitempty"`
-	GroupTypeID      int              `json:"GroupTypeId,omitempty"`
-	ZoneId           int              `json:"ZoneId,omitempty"`
-	FixedZoneID      int              `json:"FixedZoneId,omitempty"`
+	ID           string `json:"Id,omitempty"`
+	GroupID      int    `json:"GroupId,omitempty"`
+	FixedGroupID int    `json:"FixedGroupId,omitempty"`
+
+	// Defines the name of the failover or load balancing group. Required
+	Name string `json:"Name,omitempty"`
+
+	// Defines the group type. Valid values are:
+	// 1: CNAME group, 2: Subdomain group, 3: Zone group
+	GroupTypeID GroupType `json:"GroupTypeId,omitempty"`
+	ZoneId      int       `json:"ZoneId,omitempty"`
+	FixedZoneID int       `json:"FixedZoneId,omitempty"`
+
+	// Defines the group type. Valid values are:
+	// LoadBalancing, Failover, NoGroup
 	GroupProductType GroupProductType `json:"GroupProductTypeId,omitempty"`
-	GroupComposition DNSGroupRecords  `json:"GroupComposition,omitempty"`
+
+	// Define the zone's failover or load balancing groups.
+	GroupComposition DNSGroupRecords `json:"GroupComposition,omitempty"`
 }
 
 // DNSGroupRecords -
@@ -195,10 +208,16 @@ type DNSGroupRecords struct {
 
 // DNSGroupRecord -
 type DnsRouteGroupRecord struct {
-	ID          string       `json:"Id,omitempty"`
-	Record      DNSRecord    `json:"Record,omitempty"`
+	ID     string    `json:"Id,omitempty"`
+	Record DNSRecord `json:"Record,omitempty"`
+
+	// Define a record's health check configuration within this request
+	// parameter.
 	HealthCheck *HealthCheck `json:"HealthCheck"`
-	Weight      int          `json:"Weight"`
+
+	// Defines whether the current record is the primary server/hostname to
+	// which traffic will be directed. Applies only to a Failover group.
+	IsPrimary bool `json:"IsPrimary,omitempty"`
 }
 
 // HealthCheck -
@@ -425,7 +444,7 @@ func NewUpdateGroupParams() *UpdateGroupParams {
 
 type UpdateGroupParams struct {
 	AccountNumber string
-	Group         DnsRouteGroup
+	Group         *DnsRouteGroup
 }
 
 func NewDeleteGroupParams() *DeleteGroupParams {
@@ -584,5 +603,5 @@ type GroupType int
 const (
 	CName GroupType = iota + 1
 	SubDomain
-	ZoneFG // "Zone" conflicts with Zone struct above
+	ZoneG // "Zone" conflicts with Zone struct above
 )
