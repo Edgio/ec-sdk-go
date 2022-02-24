@@ -377,8 +377,8 @@ func (svc *RouteDNSService) DeleteGroup(params DeleteGroupParams) error {
 	return nil
 }
 
-// GetTsig -
-func (svc *RouteDNSService) GetTsig(
+// GetTSIG -
+func (svc *RouteDNSService) GetTSIG(
 	params GetTSIGParams,
 ) (*TSIGGetOK, error) {
 	apiURL := fmt.Sprintf(
@@ -403,8 +403,8 @@ func (svc *RouteDNSService) GetTsig(
 	return parsedResponse, nil
 }
 
-// AddTsig -
-func (svc *RouteDNSService) AddTsig(params AddTSIGParams) (*int, error) {
+// AddTSIG -
+func (svc *RouteDNSService) AddTSIG(params AddTSIGParams) (*int, error) {
 	apiURL := fmt.Sprintf("/v2/mcc/customers/%s/dns/tsig", params.AccountNumber)
 	request, err := svc.Client.BuildRequest("POST", apiURL, params.TSIG)
 	if err != nil {
@@ -427,8 +427,8 @@ func (svc *RouteDNSService) AddTsig(params AddTSIGParams) (*int, error) {
 	return &tsigID, nil
 }
 
-// UpdateTsig -
-func (svc *RouteDNSService) UpdateTsig(params UpdateTSIGParams) error {
+// UpdateTSIG -
+func (svc *RouteDNSService) UpdateTSIG(params UpdateTSIGParams) error {
 	apiURL := fmt.Sprintf(
 		"/v2/mcc/customers/%s/dns/tsigs/%d",
 		params.AccountNumber,
@@ -449,8 +449,8 @@ func (svc *RouteDNSService) UpdateTsig(params UpdateTSIGParams) error {
 	return nil
 }
 
-// DeleteTsig -
-func (svc *RouteDNSService) DeleteTsig(params DeleteTSIGParams) error {
+// DeleteTSIG -
+func (svc *RouteDNSService) DeleteTSIG(params DeleteTSIGParams) error {
 	apiURL := fmt.Sprintf(
 		"v2/mcc/customers/%s/dns/tsigs/%d",
 		params.AccountNumber,

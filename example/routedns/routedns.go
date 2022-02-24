@@ -212,6 +212,66 @@ func main() {
 		return
 	}
 
+	//
+	// TSIG
+	//
+
+	// Add TSIG
+	tsig := routedns.TSIG{
+		Alias:       "Test SDK TSIG",
+		KeyName:     "TSIG1",
+		KeyValue:    "SAFJ34SJLFDSFL",
+		AlgorithmID: routedns.HMAC_SHA512,
+	}
+
+	addTSIGParams := routedns.NewAddTSIGParams()
+	addTSIGParams.AccountNumber = *accountNumber
+	addTSIGParams.TSIG = tsig
+
+	tsigID, err := routeDNSService.AddTSIG(*addTSIGParams)
+
+	if err != nil {
+		fmt.Printf("error creating TSIG: %v\n", err)
+		return
+	}
+
+	// Get TSIG
+	getTSIGParams := routedns.NewGetTSIGParams()
+	getTSIGParams.AccountNumber = *accountNumber
+	getTSIGParams.TSIGID = *tsigID
+
+	tsigObj, err := routeDNSService.GetTSIG(*getTSIGParams)
+
+	if err != nil {
+		fmt.Printf("error retreiving TSIG: %v\n", err)
+		return
+	}
+
+	// Update TSIG
+	tsigObj.Alias = "Test SDK TSIG Updated"
+
+	updateTSIGParams := routedns.NewUpdateTSIGParams()
+	updateTSIGParams.AccountNumber = *accountNumber
+	updateTSIGParams.TSIG = *tsigObj
+
+	err = routeDNSService.UpdateTSIG(*updateTSIGParams)
+
+	if err != nil {
+		fmt.Printf("error updating TSIG: %v\n", err)
+		return
+	}
+
+	// Delete TSIG
+	deleteTSIGParams := routedns.NewDeleteTSIGParams()
+	deleteTSIGParams.AccountNumber = *accountNumber
+	deleteTSIGParams.TSIG = *tsigObj
+
+	err = routeDNSService.DeleteTSIG(*deleteTSIGParams)
+
+	if err != nil {
+		fmt.Printf("error deleting TSIG: %v\n", err)
+		return
+	}
 }
 
 func buildMasterServerGroup() routedns.MasterServerGroupAddRequest {

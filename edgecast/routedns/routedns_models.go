@@ -316,16 +316,32 @@ type MasterServerTSIG struct {
 
 //TSIG -
 type TSIG struct {
-	Alias         string `json:"Alias,omitempty"`
-	KeyName       string `json:"KeyName,omitempty"`
-	KeyValue      string `json:"KeyValue,omitempty"`
-	AlgorithmID   int    `json:"AlgorithmId,omitempty"`
-	AlgorithmName string `json:"AlgorithmName,omitempty"`
+	// Indicates a brief description for the TSIG key.
+	Alias string `json:"Alias,omitempty"`
+
+	// Identifies the key on the master name server and our Route name servers.
+	// This name must be unique.
+	KeyName string `json:"KeyName,omitempty"`
+
+	// Identifies a hash value through which our name servers will be
+	// authenticated to a master name server.
+	KeyValue string `json:"KeyValue,omitempty"`
+
+	// Identifies a cryptographic hash function by its system-defined ID.
+	AlgorithmID TSIGAlgoirthmType `json:"AlgorithmId,omitempty"`
 }
 
 type TSIGGetOK struct {
 	TSIG
+
+	// Identifies a TSIG key by its system-defined ID.
 	ID int `json:"Id,omitempty"`
+
+	// Identifies the cryptographic hash function used to generate the key
+	// value. Valid values are:
+	// HMAC-MD5 | HMAC-SHA1 | HMAC-SHA256 | HMAC-SHA384 | HMAC-SHA224 |
+	// HMAC-SHA512
+	AlgorithmName string `json:"AlgorithmName,omitempty"`
 }
 
 //
