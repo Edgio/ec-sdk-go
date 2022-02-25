@@ -272,6 +272,65 @@ func main() {
 		fmt.Printf("error deleting TSIG: %v\n", err)
 		return
 	}
+
+	//
+	// Secondary Zone Group
+	//
+
+	// Add Secondary Zone Group
+	addSecondaryParams := routedns.NewAddSecondaryZoneGroupParams()
+	addSecondaryParams.AccountNumber = *accountNumber
+	addSecondaryParams.SecondaryZoneGroup = buildSecondaryZoneGroup()
+
+	secondaryZoneResponse, err := routeDNSService.AddSecondaryZoneGroup(
+		*addSecondaryParams,
+	)
+
+	if err != nil {
+		fmt.Printf("error adding secondary zone group: %v\n", err)
+		return
+	}
+
+	// Get Secondary Zone group
+	getSecondaryParams := routedns.NewGetSecondaryZoneGroupParams()
+	getSecondaryParams.AccountNumber = *accountNumber
+	getSecondaryParams.ID = secondaryZoneResponse.ID
+
+	secondaryZoneObj, err := routeDNSService.GetSecondaryZoneGroup(
+		*getSecondaryParams,
+	)
+
+	if err != nil {
+		fmt.Printf("error retrieving secondary zone group: %v\n", err)
+		return
+	}
+
+	// Update Secondary Zone Group
+	secondaryZoneObj.Name = "TestSDKSecondaryZoneGroupUpdated"
+
+	updateSecondaryParams := routedns.NewUpdateSecondaryZoneGroupParams()
+	updateSecondaryParams.AccountNumber = *accountNumber
+	updateSecondaryParams.SecondaryZoneGroup = *secondaryZoneObj
+
+	err = routeDNSService.UpdateSecondaryZoneGroup(*updateSecondaryParams)
+
+	if err != nil {
+		fmt.Printf("error updating secondary zone group: %v\n", err)
+		return
+	}
+
+	// Delete Secondary Zone Group
+	deleteSecondaryParams := routedns.NewDeleteSecondaryZoneGroupParams()
+	deleteSecondaryParams.AccountNumber = *accountNumber
+	deleteSecondaryParams.SecondaryZoneGroup = *secondaryZoneObj
+
+	err = routeDNSService.DeleteSecondaryZoneGroup(*deleteSecondaryParams)
+
+	if err != nil {
+		fmt.Printf("error deleting secondary zone group: %v\n", err)
+		return
+	}
+
 }
 
 func buildMasterServerGroup() routedns.MasterServerGroupAddRequest {
@@ -420,4 +479,42 @@ func buildFailoverGroup(
 	}
 
 	return failoverGroup
+}
+
+func buildSecondaryZoneGroup() routedns.SecondaryZoneGroup {
+	// These are static values associated with an account. You may use values
+	// obtained by Master Server Group or TSIG API calls above or hard code your
+	// own values.
+	masterGroupID := 964
+	masterServer := routedns.MasterServerID{ID: 2446}
+	tsigIDs := routedns.TSIGID{ID: 438}
+
+	masterServerTSIG := routedns.MasterServerTSIGData{
+		MasterServer: masterServer,
+		TSIG:         tsigIDs,
+	}
+
+	secondaryZoneRequest := routedns.SecondaryZoneRequest{
+		Comment:    "Test SDK Secondary Zone",
+		DomainName: "sdkseczone1.com",
+		Status:     1, // Enabled
+	}
+
+	zoneCompositionRequest := routedns.ZoneCompositionRequest{}
+	zoneCompositionRequest.MasterGroupID = masterGroupID
+	zoneCompositionRequest.MasterServerTSIGs = append(
+		zoneCompositionRequest.MasterServerTSIGs,
+		masterServerTSIG,
+	)
+	zoneCompositionRequest.Zones = append(
+		zoneCompositionRequest.Zones,
+		secondaryZoneRequest,
+	)
+
+	secondaryZoneGroup := routedns.SecondaryZoneGroup{
+		Name:            "TestSDKSecondaryZoneGroup",
+		ZoneComposition: zoneCompositionRequest,
+	}
+
+	return secondaryZoneGroup
 }

@@ -255,12 +255,12 @@ type SecondaryZoneGroup struct {
 //ZoneCompositionRequest -
 type ZoneCompositionRequest struct {
 	MasterGroupID     int                    `json:"MasterGroupId,omitempty"`
-	MasterServerTSIGs []MasterServerTSIGID   `json:"MasterServerTsigs,omitempty"`
+	MasterServerTSIGs []MasterServerTSIGData `json:"MasterServerTsigs,omitempty"`
 	Zones             []SecondaryZoneRequest `json:"Zones,omitempty"`
 }
 
-//MasterServerTSIGID -
-type MasterServerTSIGID struct {
+//MasterServerTSIGData -
+type MasterServerTSIGData struct {
 	MasterServer MasterServerID `json:"MasterServer,omitempty"`
 	TSIG         TSIGID         `json:"Tsig,omitempty"`
 }
