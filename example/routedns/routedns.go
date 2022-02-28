@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
@@ -11,23 +10,13 @@ import (
 
 func main() {
 	// Setup
-	apiToken := flag.String("api-token", "", "API Token provided to you")
-	accountNumber := flag.String(
-		"account-number",
-		"",
-		"Account number you wish to manage Route DNS records for",
-	)
-
-	flag.Parse()
-
-	// apiToken := ""
-	// accountNumber := ""
+	apiToken := ""
+	accountNumber := ""
 
 	// Route DNS management does not use IDS credentials
 	idsCredentials := auth.OAuth2Credentials{}
 
-	sdkConfig := edgecast.NewSDKConfig(*apiToken, idsCredentials)
-	sdkConfig.BaseAPIURLLegacy.Host = "qa-api.edgecast.com"
+	sdkConfig := edgecast.NewSDKConfig(apiToken, idsCredentials)
 	routeDNSService, err := routedns.New(sdkConfig)
 
 	if err != nil {
@@ -43,7 +32,7 @@ func main() {
 	masterServerGroup := buildMasterServerGroup()
 
 	addParams := routedns.NewAddMasterServerGroupParams()
-	addParams.AccountNumber = *accountNumber
+	addParams.AccountNumber = accountNumber
 	addParams.MasterServerGroup = masterServerGroup
 
 	masterServerGroupObj, err := routeDNSService.AddMasterServerGroup(
@@ -59,7 +48,7 @@ func main() {
 
 	// Get Master Server Group
 	getParams := routedns.NewGetMasterServerGroupParams()
-	getParams.AccountNumber = *accountNumber
+	getParams.AccountNumber = accountNumber
 	getParams.MasterServerGroupID = masterServerGroupObj.MasterGroupID
 
 	masterServerGroupObj, err = routeDNSService.GetMasterServerGroup(*getParams)
@@ -74,7 +63,7 @@ func main() {
 	// Update Master Server Group
 	masterServerGroupObj.Name = "SDK Test Group 1 Updated"
 	updateParams := routedns.NewUpdateMasterServerGroupParams()
-	updateParams.AccountNumber = *accountNumber
+	updateParams.AccountNumber = accountNumber
 	updateParams.MasterServerGroup.MasterGroupID =
 		masterServerGroupObj.MasterGroupID
 	updateParams.MasterServerGroup.MasterServerGroup =
@@ -89,7 +78,7 @@ func main() {
 
 	// Delete Master Server Group
 	deleteParams := routedns.NewDeleteMasterServerGroupParams()
-	deleteParams.AccountNumber = *accountNumber
+	deleteParams.AccountNumber = accountNumber
 	deleteParams.MasterServerGroup = *masterServerGroupObj
 
 	err = routeDNSService.DeleteMasterServerGroup(*deleteParams)
@@ -107,7 +96,7 @@ func main() {
 	zone := buildZone()
 
 	addZoneParams := routedns.NewAddZoneParams()
-	addZoneParams.AccountNumber = *accountNumber
+	addZoneParams.AccountNumber = accountNumber
 	addZoneParams.Zone = zone
 
 	zoneID, err := routeDNSService.AddZone(*addZoneParams)
@@ -119,7 +108,7 @@ func main() {
 
 	// Get Zone
 	getZoneParams := routedns.NewGetZoneParams()
-	getZoneParams.AccountNumber = *accountNumber
+	getZoneParams.AccountNumber = accountNumber
 	getZoneParams.ZoneID = *zoneID
 
 	zoneObj, err := routeDNSService.GetZone(*getZoneParams)
@@ -133,7 +122,7 @@ func main() {
 	zoneObj.Comment = "Test updated comment"
 
 	updateZoneParams := routedns.NewUpdateZoneParams()
-	updateZoneParams.AccountNumber = *accountNumber
+	updateZoneParams.AccountNumber = accountNumber
 	updateZoneParams.Zone = *zoneObj
 
 	err = routeDNSService.UpdateZone(*updateZoneParams)
@@ -145,7 +134,7 @@ func main() {
 
 	// Delete Zone
 	deleteZoneParams := routedns.NewDeleteZoneParams()
-	deleteZoneParams.AccountNumber = *accountNumber
+	deleteZoneParams.AccountNumber = accountNumber
 	deleteZoneParams.Zone = *zoneObj
 
 	err = routeDNSService.DeleteZone(*deleteZoneParams)
@@ -163,7 +152,7 @@ func main() {
 	group := buildLoadbalancedGroup(routedns.CName)
 
 	addGroupParams := routedns.NewAddGroupParams()
-	addGroupParams.AccountNumber = *accountNumber
+	addGroupParams.AccountNumber = accountNumber
 	addGroupParams.Group = group
 
 	groupID, err := routeDNSService.AddGroup(*addGroupParams)
@@ -175,7 +164,7 @@ func main() {
 
 	// Get Group
 	getGroupParams := routedns.NewGetGroupParams()
-	getGroupParams.AccountNumber = *accountNumber
+	getGroupParams.AccountNumber = accountNumber
 	getGroupParams.GroupID = *groupID
 	getGroupParams.GroupProductType = routedns.LoadBalancing
 
@@ -190,7 +179,7 @@ func main() {
 	groupObj.Name = "UpdatedSDKName"
 
 	updateGroupParams := routedns.NewUpdateGroupParams()
-	updateGroupParams.AccountNumber = *accountNumber
+	updateGroupParams.AccountNumber = accountNumber
 	updateGroupParams.Group = groupObj
 
 	err = routeDNSService.UpdateGroup(updateGroupParams)
@@ -202,7 +191,7 @@ func main() {
 
 	// Delete Group
 	deleteGroupParams := routedns.NewDeleteGroupParams()
-	deleteGroupParams.AccountNumber = *accountNumber
+	deleteGroupParams.AccountNumber = accountNumber
 	deleteGroupParams.Group = *groupObj
 
 	err = routeDNSService.DeleteGroup(*deleteGroupParams)
@@ -225,7 +214,7 @@ func main() {
 	}
 
 	addTSIGParams := routedns.NewAddTSIGParams()
-	addTSIGParams.AccountNumber = *accountNumber
+	addTSIGParams.AccountNumber = accountNumber
 	addTSIGParams.TSIG = tsig
 
 	tsigID, err := routeDNSService.AddTSIG(*addTSIGParams)
@@ -237,7 +226,7 @@ func main() {
 
 	// Get TSIG
 	getTSIGParams := routedns.NewGetTSIGParams()
-	getTSIGParams.AccountNumber = *accountNumber
+	getTSIGParams.AccountNumber = accountNumber
 	getTSIGParams.TSIGID = *tsigID
 
 	tsigObj, err := routeDNSService.GetTSIG(*getTSIGParams)
@@ -251,7 +240,7 @@ func main() {
 	tsigObj.Alias = "Test SDK TSIG Updated"
 
 	updateTSIGParams := routedns.NewUpdateTSIGParams()
-	updateTSIGParams.AccountNumber = *accountNumber
+	updateTSIGParams.AccountNumber = accountNumber
 	updateTSIGParams.TSIG = *tsigObj
 
 	err = routeDNSService.UpdateTSIG(*updateTSIGParams)
@@ -263,7 +252,7 @@ func main() {
 
 	// Delete TSIG
 	deleteTSIGParams := routedns.NewDeleteTSIGParams()
-	deleteTSIGParams.AccountNumber = *accountNumber
+	deleteTSIGParams.AccountNumber = accountNumber
 	deleteTSIGParams.TSIG = *tsigObj
 
 	err = routeDNSService.DeleteTSIG(*deleteTSIGParams)
@@ -279,7 +268,7 @@ func main() {
 
 	// Add Secondary Zone Group
 	addSecondaryParams := routedns.NewAddSecondaryZoneGroupParams()
-	addSecondaryParams.AccountNumber = *accountNumber
+	addSecondaryParams.AccountNumber = accountNumber
 	addSecondaryParams.SecondaryZoneGroup = buildSecondaryZoneGroup()
 
 	secondaryZoneResponse, err := routeDNSService.AddSecondaryZoneGroup(
@@ -293,7 +282,7 @@ func main() {
 
 	// Get Secondary Zone group
 	getSecondaryParams := routedns.NewGetSecondaryZoneGroupParams()
-	getSecondaryParams.AccountNumber = *accountNumber
+	getSecondaryParams.AccountNumber = accountNumber
 	getSecondaryParams.ID = secondaryZoneResponse.ID
 
 	secondaryZoneObj, err := routeDNSService.GetSecondaryZoneGroup(
@@ -309,7 +298,7 @@ func main() {
 	secondaryZoneObj.Name = "TestSDKSecondaryZoneGroupUpdated"
 
 	updateSecondaryParams := routedns.NewUpdateSecondaryZoneGroupParams()
-	updateSecondaryParams.AccountNumber = *accountNumber
+	updateSecondaryParams.AccountNumber = accountNumber
 	updateSecondaryParams.SecondaryZoneGroup = *secondaryZoneObj
 
 	err = routeDNSService.UpdateSecondaryZoneGroup(*updateSecondaryParams)
@@ -321,7 +310,7 @@ func main() {
 
 	// Delete Secondary Zone Group
 	deleteSecondaryParams := routedns.NewDeleteSecondaryZoneGroupParams()
-	deleteSecondaryParams.AccountNumber = *accountNumber
+	deleteSecondaryParams.AccountNumber = accountNumber
 	deleteSecondaryParams.SecondaryZoneGroup = *secondaryZoneObj
 
 	err = routeDNSService.DeleteSecondaryZoneGroup(*deleteSecondaryParams)
@@ -411,11 +400,11 @@ func buildLoadbalancedGroup(
 		Weight:       50,
 	}
 
-	lbGroupRecord1 := routedns.DnsRouteGroupRecord{
+	lbGroupRecord1 := routedns.DNSGroupRecord{
 		Record: cnameRecord1,
 	}
 
-	lbGroupRecord2 := routedns.DnsRouteGroupRecord{
+	lbGroupRecord2 := routedns.DNSGroupRecord{
 		Record: cnameRecord2,
 	}
 
@@ -456,11 +445,11 @@ func buildFailoverGroup(
 		Weight:       100,
 	}
 
-	failoverGroupRecord1 := routedns.DnsRouteGroupRecord{
+	failoverGroupRecord1 := routedns.DNSGroupRecord{
 		Record: aaaaRecord1,
 	}
 
-	failoverGroupRecord2 := routedns.DnsRouteGroupRecord{
+	failoverGroupRecord2 := routedns.DNSGroupRecord{
 		Record: aaaaRecord2,
 	}
 
@@ -489,18 +478,18 @@ func buildSecondaryZoneGroup() routedns.SecondaryZoneGroup {
 	masterServer := routedns.MasterServerID{ID: 2446}
 	tsigIDs := routedns.TSIGID{ID: 438}
 
-	masterServerTSIG := routedns.MasterServerTSIGData{
+	masterServerTSIG := routedns.MasterServerTSIGIDs{
 		MasterServer: masterServer,
 		TSIG:         tsigIDs,
 	}
 
-	secondaryZoneRequest := routedns.SecondaryZoneRequest{
+	secondaryZoneRequest := routedns.SecondaryZone{
 		Comment:    "Test SDK Secondary Zone",
 		DomainName: "sdkseczone1.com",
 		Status:     1, // Enabled
 	}
 
-	zoneCompositionRequest := routedns.ZoneCompositionRequest{}
+	zoneCompositionRequest := routedns.ZoneComposition{}
 	zoneCompositionRequest.MasterGroupID = masterGroupID
 	zoneCompositionRequest.MasterServerTSIGs = append(
 		zoneCompositionRequest.MasterServerTSIGs,

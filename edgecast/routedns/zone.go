@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-// GetZone - Get Zone information of the provided ZoneID which include all dns
+// GetZone retrieves information of the provided ZoneID which includes all dns
 // records, failover servers, and loadbalancing servers if any exists.
 func (svc *RouteDNSService) GetZone(params GetZoneParams,
 ) (*ZoneGetOK, error) {
@@ -36,7 +36,7 @@ func (svc *RouteDNSService) GetZone(params GetZoneParams,
 	return &parsedResponse, nil
 }
 
-// AddZone -
+// AddZone creates a primary zone.
 func (svc *RouteDNSService) AddZone(params AddZoneParams) (*int, error) {
 	apiURL := fmt.Sprintf("/v2/mcc/customers/%s/dns/zone", params.AccountNumber)
 	request, err := svc.Client.BuildRequest("POST", apiURL, params.Zone)
@@ -68,7 +68,7 @@ func (svc *RouteDNSService) AddZone(params AddZoneParams) (*int, error) {
 	return &zoneID, nil
 }
 
-// UpdateZone -
+// UpdateZone updates a primary zone
 func (svc *RouteDNSService) UpdateZone(params UpdateZoneParams) error {
 	apiURL := fmt.Sprintf("/v2/mcc/customers/%s/dns/zone", params.AccountNumber)
 	request, err := svc.Client.BuildRequest("POST", apiURL, params.Zone)
@@ -84,9 +84,8 @@ func (svc *RouteDNSService) UpdateZone(params UpdateZoneParams) error {
 	return nil
 }
 
-// DeleteZone -
+// DeleteZone deletes a primary zone
 func (svc *RouteDNSService) DeleteZone(params DeleteZoneParams) error {
-	// TODO: support custom ids for accounts
 	apiURL := fmt.Sprintf(
 		"v2/mcc/customers/%s/dns/routezone/%d",
 		params.AccountNumber,
