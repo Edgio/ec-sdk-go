@@ -176,7 +176,7 @@ func main() {
 	// Get Group
 	getGroupParams := routedns.NewGetGroupParams()
 	getGroupParams.AccountNumber = *accountNumber
-	getGroupParams.GroupID = groupID
+	getGroupParams.GroupID = *groupID
 	getGroupParams.GroupProductType = routedns.LoadBalancing
 
 	groupObj, err := routeDNSService.GetGroup(*getGroupParams)
@@ -375,8 +375,8 @@ func buildZone() routedns.Zone {
 	dnsRecords := routedns.DNSRecords{}
 	dnsRecords.A = append(dnsRecords.A, aRecord1, aRecord2)
 
-	lbGroup := buildLoadbalancedGroup(routedns.ZoneG)
-	failoverGroup := buildFailoverGroup(routedns.ZoneG)
+	lbGroup := buildLoadbalancedGroup(routedns.PrimaryZone)
+	failoverGroup := buildFailoverGroup(routedns.PrimaryZone)
 	groups := make([]routedns.DnsRouteGroup, 0)
 	groups = append(groups, lbGroup, failoverGroup)
 
