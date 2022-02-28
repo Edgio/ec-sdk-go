@@ -20,6 +20,8 @@ type DnsRouteGroup struct {
 	GroupComposition DNSGroupRecords `json:"GroupComposition,omitempty"`
 }
 
+// DnsRouteGroupOK defines the additional parameters returned when retrieving a
+// Group.
 type DnsRouteGroupOK struct {
 	DnsRouteGroup
 

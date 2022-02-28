@@ -3,7 +3,9 @@
 
 package routedns
 
-// Zone API operations Add/Update/Delete a new Record or existing Record to a Zone
+// Zone defines a primary zone. A zone can contain any of the following:
+// Records | Load balancing groups | Failover groups | Health check
+// configurations
 type Zone struct {
 	// Indicates a zone's name.
 	DomainName string `json:"DomainName,omitempty"`
@@ -19,16 +21,16 @@ type Zone struct {
 	// Indicates the comment associated with a zone.
 	Comment string `json:"Comment,omitempty"`
 
-	// Defines the set of records that will be associated with the zone. This
+	// Contains the set of records that will be associated with the zone. This
 	// section should only describe records that do not belong to a load
 	// balancing or failover group.
 	Records DNSRecords `json:"Records"`
 
-	// This is reserved for future use.
-	// TODO: Check with Chang on what this is. Failover groups? LB groups?
+	// Fail over or load balanced groups associated with this Zone
 	Groups []DnsRouteGroup `json:"groups"`
 }
 
+// ZoneGetOK defines the additional parameters returned when retrieving a Zone.
 type ZoneGetOK struct {
 	Zone
 
@@ -44,7 +46,6 @@ type ZoneGetOK struct {
 
 	// This is reserved for future use. FixedZoneID should be used as the
 	// system-defined ID.
-	// TODO: Check with Chang on what this identifier is vs FixedZoneID
 	ZoneID int `json:"ZoneId,omitempty"`
 
 	// Indicates a zone's version. This serial is incremented whenever a change
@@ -52,7 +53,7 @@ type ZoneGetOK struct {
 	Serial int `json:"Serial,omitempty"`
 }
 
-// DNSRecords -
+// DNSRecords defines the set of records that will be associated with the zone.
 type DNSRecords struct {
 	A          []DNSRecord `json:"A,omitempty"`
 	AAAA       []DNSRecord `json:"AAAA,omitempty"`
@@ -74,13 +75,23 @@ type DNSRecords struct {
 	CAA        []DNSRecord `json:"CAA,omitempty"`
 }
 
-// DNSRecord -
+// DNSRecord defines a record that will be associated with the zone.
 type DNSRecord struct {
-	RecordID      int  `json:"RecordId,omitempty"`
-	FixedRecordID int  `json:"FixedRecordId,omitempty"`
-	FixedGroupID  int  `json:"FixedGroupId,omitempty"`
-	GroupID       int  `json:"GroupId,omitempty"`
-	IsDeleted     bool `json:"IsDelete,omitempty"`
+	// Identifies a DNS Record by its system-defined ID.
+	RecordID int `json:"RecordId,omitempty"`
+
+	// Reserved for future use.
+	FixedRecordID int `json:"FixedRecordId,omitempty"`
+
+	// Reserved for future use.
+	FixedGroupID int `json:"FixedGroupId,omitempty"`
+
+	// Identifies the group this record is assoicated with by its system-defined
+	// ID.
+	GroupID int `json:"GroupId,omitempty"`
+
+	// Reserved for future use.
+	IsDeleted bool `json:"IsDelete,omitempty"`
 
 	// Defines a record's name. Required.
 	Name string `json:"Name,omitempty"`
@@ -89,23 +100,29 @@ type DNSRecord struct {
 	TTL int `json:"TTL,omitempty"`
 
 	// Defines a record's value. Required
-	Rdata    string `json:"Rdata,omitempty"`
-	VerifyID int    `json:"VerifyId,omitempty"`
+	Rdata string `json:"Rdata,omitempty"`
+
+	// Reserved for future use.
+	VerifyID int `json:"VerifyId,omitempty"`
 
 	// Defines a record's weight. Used to denote preference for a load balancing
 	// or failover group.
 	Weight int `json:"Weight,omitempty"`
 
-	// Defines the record type (e.g. A, AAAA, CNAME). Required
-	RecordTypeID   RecordType `json:"RecordTypeID,omitempty"`
-	RecordTypeName string     `json:"RecordTypeName,omitempty"`
+	// Indicates the system-defined ID assigned to the record type.
+	// (e.g. A, AAAA, CNAME). Required
+	RecordTypeID RecordType `json:"RecordTypeID,omitempty"`
+
+	// Indicates the name of the record type.
+	RecordTypeName string `json:"RecordTypeName,omitempty"`
 }
 
 //
 // Enums
 //
 
-// RecordTypeID
+// RecordTypeID identifies the available types of DNS records by their
+// system-defined IDs.
 type RecordType int
 
 const (
