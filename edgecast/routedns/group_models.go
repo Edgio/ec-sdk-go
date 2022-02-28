@@ -41,18 +41,18 @@ type DnsRouteGroupOK struct {
 // DNSGroupRecords -
 type DNSGroupRecords struct {
 	// Group of A records that map hostnames to IPv4 addresses.
-	A []DnsRouteGroupRecord `json:"A,omitempty"`
+	A []DNSGroupRecord `json:"A,omitempty"`
 
 	// Group of AAAA records that map hostnames to IPv6 addresses.
-	AAAA []DnsRouteGroupRecord `json:"AAAA,omitempty"`
+	AAAA []DNSGroupRecord `json:"AAAA,omitempty"`
 
 	// Group of Canonical Name records that map hostnames to another hostname
 	// or FQDN.
-	CNAME []DnsRouteGroupRecord `json:"CName,omitempty"`
+	CNAME []DNSGroupRecord `json:"CName,omitempty"`
 }
 
 // DNSGroupRecord -
-type DnsRouteGroupRecord struct {
+type DNSGroupRecord struct {
 	Record DNSRecord `json:"Record,omitempty"`
 
 	// Define a record's health check configuration within this request
