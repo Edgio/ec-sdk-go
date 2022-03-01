@@ -56,7 +56,14 @@ func (svc *RouteDNSService) GetMasterServerGroup(
 		return nil, fmt.Errorf("GetMasterServerGroup: %v", err)
 	}
 
-	// Single object get always returns an array of one
+	// Single object get should always return an array of one
+	length := len(parsedResponse)
+	if length != 1 {
+		return nil, fmt.Errorf(
+			`GetMasterServerGroup: Get response returned array of length %d 
+			instead of length 1`, length)
+	}
+
 	return parsedResponse[0], nil
 }
 
@@ -92,7 +99,14 @@ func (svc *RouteDNSService) AddMasterServerGroup(
 		)
 	}
 
-	// Add operation always returns an array of one
+	// Add operation should always return an array of one
+	length := len(parsedResponse)
+	if length != 1 {
+		return nil, fmt.Errorf(
+			`AddMasterServerGroup: Add response returned array of length %d 
+			instead of length 1`, length)
+	}
+
 	return parsedResponse[0], nil
 }
 

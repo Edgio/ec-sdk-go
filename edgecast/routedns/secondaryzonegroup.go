@@ -38,6 +38,14 @@ func (svc *RouteDNSService) GetSecondaryZoneGroup(
 		)
 	}
 
+	// Single object get should always return an array of one
+	length := len(parsedResponse)
+	if length != 1 {
+		return nil, fmt.Errorf(
+			`GetSecondaryZoneGroup: Get response returned array of length %d 
+			instead of length 1`, length)
+	}
+
 	return parsedResponse[0], nil
 }
 
