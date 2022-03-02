@@ -6,7 +6,7 @@ import (
 
 func TestSample(t *testing.T) {
 
-	got := 5
+	got := 10
 	want := 10
 
 	if got != want {
