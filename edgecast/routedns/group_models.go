@@ -32,7 +32,7 @@ type DnsRouteGroupOK struct {
 	FixedGroupID int `json:"FixedGroupId,omitempty"`
 
 	// Reserved for future use.
-	ZoneId int `json:"ZoneId,omitempty"`
+	ZoneID int `json:"ZoneId,omitempty"`
 
 	// Reserved for future use.
 	FixedZoneID int `json:"FixedZoneId,omitempty"`
@@ -121,7 +121,7 @@ type HealthCheck struct {
 	IPVersion int `json:"IPVersion,omitempty"`
 
 	// Defines the port to which TCP health checks will be directed.
-	PortNumber string `json:"PortNumber,omitempty"`
+	PortNumber int `json:"PortNumber,omitempty"`
 
 	// Defines the endpoint through which an unhealthy server/hostname will be
 	// integrated back into a group. Refer to the following URL for additional

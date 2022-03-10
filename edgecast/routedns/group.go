@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"time"
 )
 
 // GetGroup retrieves group information of the provided groupID.
@@ -64,6 +65,29 @@ func (svc *RouteDNSService) AddGroup(params AddGroupParams) (*int, error) {
 			err,
 		)
 	}
+
+	if groupID == -1 {
+		return nil, fmt.Errorf(
+			"AddGroup->Group creation failed. Group ID == -1. Please try again",
+		)
+	}
+
+	// Bug exists where adding group returns ID but group does not exist. This
+	// is a temporary workaround to identify the issue and return an error
+	// allowing the user to try again
+	time.Sleep(30 * time.Second) // avoid checking before group exists
+
+	getParams := NewGetGroupParams()
+	getParams.AccountNumber = params.AccountNumber
+	getParams.GroupID = groupID
+	getParams.GroupProductType = params.Group.GroupProductType
+
+	_, err = svc.GetGroup(*getParams)
+	if err != nil {
+		return nil, fmt.Errorf(`AddGroup->Group was not successfully created. 
+		Please try Again`)
+	}
+
 	return &groupID, nil
 }
 
