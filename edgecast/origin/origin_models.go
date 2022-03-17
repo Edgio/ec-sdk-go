@@ -172,8 +172,12 @@ type AddUpdateOriginOK struct {
 	CustomerOriginID int `json:"CustomerOriginId,omitempty"`
 }
 
+// CDNIPBlocksOK represents IPv4 and IPv6 blocks used by our CDN service.
 type CDNIPBlocksOK struct {
+	// Contains a list of IPv4 blocks used by our CDN service.
 	SuperBlockIPv4 []string `json:"SuperBlockIPv4,omitempty"`
+
+	// Contains a list of IPv6 blocks used by our CDN service.
 	SuperBlockIPv6 []string `json:"SuperBlockIPv6,omitempty"`
 }
 

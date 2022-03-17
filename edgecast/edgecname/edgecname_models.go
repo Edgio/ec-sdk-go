@@ -14,8 +14,8 @@ import (
 // service through a quick DNS update.
 //
 // For more information on Edge CNAME management, please visit the following URLa:
-// https://docs.whitecdn.com/cdn/index.html#Origin_Server_-_File_Storage/Creating_an_Alias_for_a_CDN_URL.htm
-// https://dev.whitecdn.com/cdn/api/index.html#Media_Management/Edge_CNAMEs.htm
+// https://docs.edgecast.com/cdn/index.html#Origin_Server_-_File_Storage/Creating_an_Alias_for_a_CDN_URL.htm
+// https://developer.edgecast.com/cdn/api/index.html#Media_Management/Edge_CNAMEs.htm
 type EdgeCname struct {
 	// Sets the name that will be assigned to the edge CNAME. It should only
 	// contain lower-case alphanumeric characters, dashes, and periods.
