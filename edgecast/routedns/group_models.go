@@ -12,7 +12,7 @@ type DnsRouteGroup struct {
 	// 1: CNAME group, 2: Subdomain group, 3: Zone group
 	GroupTypeID GroupType `json:"GroupTypeId,omitempty"`
 
-	// Defines the group type. Valid values are:
+	// Defines the group product type. Valid values are:
 	// LoadBalancing, Failover, NoGroup
 	GroupProductType GroupProductType `json:"GroupProductTypeId,omitempty"`
 
