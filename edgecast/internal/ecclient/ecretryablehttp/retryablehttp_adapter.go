@@ -1,4 +1,4 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
 package ecretryablehttp
@@ -19,19 +19,19 @@ import (
 
 // Adapts the client from the retryablehttp library
 type RetryableHTTPClientAdapter struct {
-	RetryableHttpClient retryablehttp.Client
+	RetryableHttpClient *retryablehttp.Client
 	HasCustomRetry      bool
 }
 
 func NewRetryableHTTPClientAdapter(
 	config RetryConfig,
-) RetryableHTTPClientAdapter {
+) *RetryableHTTPClientAdapter {
 	httpClient := retryablehttp.NewClient()
 	httpClient.ErrorHandler = retryablehttp.PassthroughErrorHandler
 	httpClient.Logger = config.Logger
 	httpClient.Backoff = exponentialJitterBackoff
 
-	adapter := RetryableHTTPClientAdapter{}
+	adapter := &RetryableHTTPClientAdapter{}
 
 	if config.CheckRetry != nil {
 		adapter.HasCustomRetry = true
@@ -54,11 +54,11 @@ func NewRetryableHTTPClientAdapter(
 		httpClient.RetryMax = DefaultRetryMax
 	}
 
-	adapter.RetryableHttpClient = *httpClient
+	adapter.RetryableHttpClient = httpClient
 	return adapter
 }
 
-func (c RetryableHTTPClientAdapter) Do(
+func (c *RetryableHTTPClientAdapter) Do(
 	method string,
 	url *url.URL,
 	headers map[string]string,

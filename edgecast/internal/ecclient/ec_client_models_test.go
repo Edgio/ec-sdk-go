@@ -108,7 +108,7 @@ func TestNewECClient(t *testing.T) {
 	if !testhelper.TypeEqual(jsonBodyParser{}, s.parser) {
 		t.Fatalf("Expected Type: jsonBodyParser but got %T", s.parser)
 	}
-	if !testhelper.TypeEqual(ecretryablehttp.RetryableHTTPClientAdapter{}, s.clientAdapter) {
+	if !testhelper.TypeEqual(&ecretryablehttp.RetryableHTTPClientAdapter{}, s.clientAdapter) {
 		t.Fatalf("Expected Type: ecretryablehttp.RetryableHTTPClientAdapter but got %T", s.clientAdapter)
 	}
 }
