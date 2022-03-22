@@ -82,3 +82,14 @@ func TypeEqual(actual interface{}, expected interface{}) bool {
 	expectedType := reflect.TypeOf(expected)
 	return actualType == expectedType
 }
+
+func JSONEqual(a string, b string) bool {
+	var j, j2 interface{}
+	if err := json.Unmarshal([]byte(a), &j); err != nil {
+		return false
+	}
+	if err := json.Unmarshal([]byte(b), &j2); err != nil {
+		return false
+	}
+	return reflect.DeepEqual(j, j2)
+}

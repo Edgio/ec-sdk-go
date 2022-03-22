@@ -34,6 +34,7 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 		queryParams: params.QueryParams,
 		pathParams:  params.PathParams,
 		userAgent:   c.Config.UserAgent,
+		headers:     params.Headers,
 	})
 
 	if err != nil {
@@ -107,6 +108,12 @@ func (eb ecRequestBuilder) buildRequest(
 		if err != nil {
 			return nil, fmt.Errorf(
 				"ecRequestBuilder.buildRequest: %v", err)
+		}
+	}
+
+	if len(params.headers) > 0 {
+		for k, v := range params.headers {
+			req.headers[k] = v
 		}
 	}
 
@@ -233,9 +240,7 @@ func (bp jsonBodyParser) parseBody(
 // sendRequest sends a Request and returns the Response.
 // If Request.ParsedResponse is non-nil, then the response body will be
 // unmarshaled to it.
-// Response.Data will always have the unmarshaled response body. Note that if
-// Request.ParsedResponse is nil, then Response.Data will be a map[string]string
-// as a result of unmarshaling JSON.
+// Response.Data will always have the unmarshaled response body as a string.
 func (es ecRequestSender) sendRequest(req request) (*Response, error) {
 	httpResp, err := es.clientAdapter.Do(
 		req.method,
@@ -266,10 +271,8 @@ func (es ecRequestSender) sendRequest(req request) (*Response, error) {
 			bodyAsString)
 	}
 
-	// If a string response is expected, do not use the parser
-	if _, ok := req.parsedResponse.(*string); ok {
-		req.parsedResponse = &bodyAsString
-	} else {
+	// If a schema was provided, use the parser.
+	if req.parsedResponse != nil {
 		err = es.parser.parseBody(body, &req.parsedResponse)
 		if err != nil {
 			return nil, fmt.Errorf("sendRequest: parseBody: %v", err)
@@ -277,7 +280,7 @@ func (es ecRequestSender) sendRequest(req request) (*Response, error) {
 	}
 
 	return &Response{
-		Data:         req.parsedResponse,
+		Data:         bodyAsString,
 		HTTPResponse: httpResp,
 	}, nil
 }

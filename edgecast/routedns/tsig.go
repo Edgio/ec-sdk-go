@@ -4,32 +4,30 @@
 package routedns
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"strconv"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // GetTSIG retrieves a TSIG.
 func (svc *RouteDNSService) GetTSIG(
 	params GetTSIGParams,
 ) (*TSIGGetOK, error) {
-	apiURL := fmt.Sprintf(
-		"/v2/mcc/customers/%s/dns/tsigs/%d",
-		params.AccountNumber,
-		params.TSIGID,
-	)
-	log.Printf("apiURL:%s", apiURL)
-	request, err := svc.Client.BuildRequest("GET", apiURL, nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetTsig->Build Request Error: %v", err)
-	}
-
 	parsedResponse := &TSIGGetOK{}
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "/v2/mcc/customers/{account_number}/dns/tsigs/{id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"id":             strconv.Itoa(params.TSIGID),
+		},
+		ParsedResponse: parsedResponse,
+	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetTsig->API Response Error: %v", err)
+		return nil, fmt.Errorf("GetTsig: %v", err)
 	}
 
 	return parsedResponse, nil
@@ -37,45 +35,48 @@ func (svc *RouteDNSService) GetTSIG(
 
 // AddTSIG creates a new TSIG.
 func (svc *RouteDNSService) AddTSIG(params AddTSIGParams) (*int, error) {
-	apiURL := fmt.Sprintf("/v2/mcc/customers/%s/dns/tsig", params.AccountNumber)
-	request, err := svc.Client.BuildRequest("POST", apiURL, params.TSIG)
+	resp, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Post,
+		Path:   "/v2/mcc/customers/{account_number}/dns/tsigs",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		RawBody: params.TSIG,
+	})
+
 	if err != nil {
-		return nil, fmt.Errorf("BuildRequest->Build Request Error: %v", err)
+		return nil, fmt.Errorf("GetTsig: %v", err)
 	}
 
-	resp, err := svc.Client.SendRequestWithStringResponse(request)
-
-	if err != nil {
-		return nil, fmt.Errorf("AddTsig->API Response Error: %v", err)
+	if len(resp.Data) == 0 {
+		return nil, errors.New("GetTsig: api returned no TSIG ID")
 	}
 
-	tsigID, err := strconv.Atoi(*resp)
+	tsigID, err := strconv.Atoi(resp.Data)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"AddTsig->TSIG ID string to int Conversion Error: %v",
 			err,
 		)
 	}
+
 	return &tsigID, nil
 }
 
 // UpdateTSIG updates an existing TSIG.
 func (svc *RouteDNSService) UpdateTSIG(params UpdateTSIGParams) error {
-	apiURL := fmt.Sprintf(
-		"/v2/mcc/customers/%s/dns/tsigs/%d",
-		params.AccountNumber,
-		params.TSIG.ID,
-	)
-
-	request, err := svc.Client.BuildRequest("PUT", apiURL, params.TSIG)
-	if err != nil {
-		return fmt.Errorf("UpdateTsig->Build Request Error: %v", err)
-	}
-
-	_, err = svc.Client.SendRequest(request, nil)
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Put,
+		Path:   "/v2/mcc/customers/{account_number}/dns/tsigs/{id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"id":             strconv.Itoa(params.TSIG.ID),
+		},
+		RawBody: params.TSIG,
+	})
 
 	if err != nil {
-		return fmt.Errorf("UpdateTsig->API Response Error: %v", err)
+		return fmt.Errorf("UpdateTSIG: %v", err)
 	}
 
 	return nil
@@ -83,22 +84,17 @@ func (svc *RouteDNSService) UpdateTSIG(params UpdateTSIGParams) error {
 
 // DeleteTSIG deletes an existing TSIG.
 func (svc *RouteDNSService) DeleteTSIG(params DeleteTSIGParams) error {
-	apiURL := fmt.Sprintf(
-		"v2/mcc/customers/%s/dns/tsigs/%d",
-		params.AccountNumber,
-		params.TSIG.ID,
-	)
-
-	request, err := svc.Client.BuildRequest("DELETE", apiURL, nil)
-
-	if err != nil {
-		return fmt.Errorf("DeleteTsig->Build Request Error: %v", err)
-	}
-
-	_, err = svc.Client.SendRequest(request, nil)
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
+		Path:   "/v2/mcc/customers/{account_number}/dns/tsigs/{id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"id":             strconv.Itoa(params.TSIG.ID),
+		},
+	})
 
 	if err != nil {
-		return fmt.Errorf("DeleteTsig->API Response Error: %v", err)
+		return fmt.Errorf("DeleteTSIG: %v", err)
 	}
 
 	return nil

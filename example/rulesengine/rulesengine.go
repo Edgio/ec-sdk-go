@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/rulesengine"
 )
 
@@ -52,13 +51,14 @@ func main() {
 	}`
 
 	// Initialize Rules Engine Service
-	idsCredentials := auth.OAuth2Credentials{
+	idsCredentials := edgecast.IDSCredentials{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		Scope:        scope,
 	}
 
-	sdkConfig := edgecast.NewSDKConfig("", idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.IDSCredentials = idsCredentials
 	rulesengineService, err := rulesengine.New(sdkConfig)
 
 	if err != nil {

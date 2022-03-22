@@ -4,60 +4,56 @@
 package routedns
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"strconv"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // GetZone retrieves information of the provided ZoneID which includes all dns
 // records, failover servers, and loadbalancing servers if any exists.
 func (svc *RouteDNSService) GetZone(params GetZoneParams,
 ) (*ZoneGetOK, error) {
-	apiURL := fmt.Sprintf(
-		"/v2/mcc/customers/%s/dns/zone/%d",
-		params.AccountNumber,
-		params.ZoneID,
-	)
-
-	log.Printf("apiURL:%s", apiURL)
-	request, err := svc.Client.BuildRequest("GET", apiURL, nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetZone->Build Request Error: %v", err)
-	}
-
-	parsedResponse := ZoneGetOK{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
+	parsedResponse := &ZoneGetOK{}
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "/v2/mcc/customers/{account_number}/dns/zone/{id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"id":             strconv.Itoa(params.ZoneID),
+		},
+		ParsedResponse: parsedResponse,
+	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetZone->API Response Error: %v", err)
+		return nil, fmt.Errorf("GetZone: %v", err)
 	}
-	return &parsedResponse, nil
+
+	return parsedResponse, nil
 }
 
 // AddZone creates a primary zone.
 func (svc *RouteDNSService) AddZone(params AddZoneParams) (*int, error) {
-	apiURL := fmt.Sprintf("/v2/mcc/customers/%s/dns/zone", params.AccountNumber)
-	request, err := svc.Client.BuildRequest("POST", apiURL, params.Zone)
+	resp, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Post,
+		Path:   "/v2/mcc/customers/{account_number}/dns/zone",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		RawBody: params.Zone,
+	})
+
 	if err != nil {
-		return nil, fmt.Errorf(
-			"AddZone->->Build Request Error: %v",
-			err,
-		)
+		return nil, fmt.Errorf("AddZone: %v", err)
 	}
 
-	resp, err := svc.Client.SendRequestWithStringResponse(request)
-
-	if err != nil {
-		return nil, fmt.Errorf(
-			"AddZone->->API Response Error: %v",
-			err,
-		)
+	if len(resp.Data) == 0 {
+		return nil, errors.New("AddZone: api returned no Zone ID")
 	}
 
 	// Success response body contains only the zone ID
-	zoneID, err := strconv.Atoi(*resp)
+	zoneID, err := strconv.Atoi(resp.Data)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"AddZone->Zone ID string to int Conversion Error: %v",
@@ -70,15 +66,17 @@ func (svc *RouteDNSService) AddZone(params AddZoneParams) (*int, error) {
 
 // UpdateZone updates a primary zone
 func (svc *RouteDNSService) UpdateZone(params UpdateZoneParams) error {
-	apiURL := fmt.Sprintf("/v2/mcc/customers/%s/dns/zone", params.AccountNumber)
-	request, err := svc.Client.BuildRequest("POST", apiURL, params.Zone)
-	if err != nil {
-		return fmt.Errorf("UpdateZone->Build Request Error: %v", err)
-	}
-	_, err = svc.Client.SendRequestWithStringResponse(request)
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Post,
+		Path:   "/v2/mcc/customers/{account_number}/dns/zone",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		RawBody: params.Zone,
+	})
 
 	if err != nil {
-		return fmt.Errorf("UpdateZone->API Response Error: %v", err)
+		return fmt.Errorf("UpdateZone: %v", err)
 	}
 
 	return nil
@@ -86,22 +84,17 @@ func (svc *RouteDNSService) UpdateZone(params UpdateZoneParams) error {
 
 // DeleteZone deletes a primary zone
 func (svc *RouteDNSService) DeleteZone(params DeleteZoneParams) error {
-	apiURL := fmt.Sprintf(
-		"v2/mcc/customers/%s/dns/routezone/%d",
-		params.AccountNumber,
-		params.Zone.FixedZoneID,
-	)
-
-	request, err := svc.Client.BuildRequest("DELETE", apiURL, nil)
-
-	if err != nil {
-		return fmt.Errorf("DeleteZone->Build Request Error: %v", err)
-	}
-
-	_, err = svc.Client.SendRequest(request, nil)
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
+		Path:   "/v2/mcc/customers/{account_number}/dns/zone/{id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"id":             strconv.Itoa(params.Zone.FixedZoneID),
+		},
+	})
 
 	if err != nil {
-		return fmt.Errorf("DeleteZone->API Response Error: %v", err)
+		return fmt.Errorf("DeleteZone: %v", err)
 	}
 
 	return nil

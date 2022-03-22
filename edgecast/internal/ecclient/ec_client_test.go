@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -14,6 +15,7 @@ import (
 	"testing"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/jsonhelper"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/testhelper"
 )
 
@@ -224,8 +226,10 @@ func (bp testBodyParser) parseBody(
 func TestSendRequest(t *testing.T) {
 	// Used for Happy Path below - has to be the same struct for the
 	// equality check to work
-	jsonBody := testhelper.ToIOReadCloser(`{"id":"1"}`)
-	stringBody := testhelper.ToIOReadCloser("hello world!")
+	jsonData := `{ID:"1"}`
+	literalStringData := "hello world!"
+	jsonBody := testhelper.ToIOReadCloser(jsonData)
+	stringBody := testhelper.ToIOReadCloser(literalStringData)
 
 	cases := []struct {
 		name          string
@@ -243,11 +247,14 @@ func TestSendRequest(t *testing.T) {
 					Body:       jsonBody,
 				},
 			},
+			request: request{
+				parsedResponse: testOKResponse{},
+			},
 			parser: testBodyParser{
 				bodyValue: &testOKResponse{ID: "1"},
 			},
 			expected: &Response{
-				Data: &testOKResponse{ID: "1"},
+				Data: jsonData,
 				HTTPResponse: &http.Response{
 					StatusCode: 200,
 					Body:       jsonBody,
@@ -262,11 +269,8 @@ func TestSendRequest(t *testing.T) {
 					Body:       stringBody,
 				},
 			},
-			request: request{
-				parsedResponse: testhelper.EmptyPointerString(),
-			},
 			expected: &Response{
-				Data: testhelper.WrapStringInPointer("hello world!"),
+				Data: literalStringData,
 				HTTPResponse: &http.Response{
 					StatusCode: 200,
 					Body:       stringBody,
@@ -308,6 +312,9 @@ func TestSendRequest(t *testing.T) {
 					Body:       testhelper.ToIOReadCloser(`{"id":"1"}`),
 				},
 			},
+			request: request{
+				parsedResponse: &sampleData{},
+			},
 			parser: testBodyParser{
 				errorToReturn: errors.New("error from body parser!"),
 			},
@@ -330,7 +337,7 @@ func TestSendRequest(t *testing.T) {
 				t.Fatalf("Case '%s': unexpected error: %v", c.name, err)
 			}
 			if !reflect.DeepEqual(c.expected, actual) {
-				t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected, actual)
+				t.Fatalf("%s: Expected %v but got %v", c.name, c.expected, actual)
 			}
 		}
 	}
@@ -397,16 +404,19 @@ func TestJSONParseBody(t *testing.T) {
 
 func TestECClientSubmitRequest(t *testing.T) {
 	cases := []struct {
-		name          string
-		input         SubmitRequestParams
-		reqBuilder    requestBuilder
-		reqSender     requestSender
-		expected      interface{}
-		expectedError bool
+		name           string
+		input          SubmitRequestParams
+		reqBuilder     requestBuilder
+		reqSender      requestSender
+		expected       interface{}
+		expectedString string
+		expectedError  bool
 	}{
 		{
-			name:  "Happy Path",
-			input: SubmitRequestParams{},
+			name: "Happy Path",
+			input: SubmitRequestParams{
+				ParsedResponse: &sampleData{},
+			},
 			reqBuilder: testReqBuilder{
 				method: "GET",
 				url:    "https://edgecast.com/test/1",
@@ -418,12 +428,13 @@ func TestECClientSubmitRequest(t *testing.T) {
 					Nested:     nestedData{ID: "abcd"},
 				},
 			},
-			expected: sampleData{
+			expected: &sampleData{
 				StringData: "some string",
 				IntData:    1,
 				Nested:     nestedData{ID: "abcd"},
 			},
-			expectedError: false,
+			expectedString: `{"StringData":"some string","IntData":1,"Nested":{"ID":"abcd"}}`,
+			expectedError:  false,
 		},
 		{
 			name: "Error Path - builder error",
@@ -460,10 +471,15 @@ func TestECClientSubmitRequest(t *testing.T) {
 				t.Fatalf("Case '%s': expected an error, but got none", c.name)
 			}
 		} else {
-			actual := resp.Data.(sampleData)
+			actual := c.input.ParsedResponse.(*sampleData)
 			if !reflect.DeepEqual(c.expected, actual) {
 				t.Fatalf("%s: Expected %+v but got %+v", c.name, c.expected, actual)
 			}
+			if len(c.expectedString) > 0 &&
+				!testhelper.JSONEqual(c.expectedString, resp.Data) {
+				t.Fatalf("%s: Expected '%s' but got '%s'", c.name, c.expectedString, resp.Data)
+			}
+
 		}
 	}
 }
@@ -684,10 +700,21 @@ func (rs testReqSender) sendRequest(
 	if rs.errorToReturn != nil {
 		return nil, rs.errorToReturn
 	}
-	var data interface{}
-	data = "some data"
+	data := "some data"
 	if rs.returnData != nil {
-		data = rs.returnData
+		// mock parser functionality - set pointer value with reflection
+		targetPtrVal := reflect.ValueOf(req.parsedResponse)
+		if targetPtrVal.Kind() != reflect.Ptr {
+			panic("targetPtrVal not a pointer")
+		}
+		targetPtrVal.Elem().Set(reflect.ValueOf(rs.returnData))
+
+		// return the json representation
+		json, err := jsonhelper.ConvertToJSONString(rs.returnData, false)
+		if err != nil {
+			panic(fmt.Errorf("error converting test data to json: %v", err))
+		}
+		data = json
 	}
 	return &Response{Data: data}, nil
 }

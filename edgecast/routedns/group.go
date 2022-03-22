@@ -4,63 +4,58 @@
 package routedns
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"strconv"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // GetGroup retrieves group information of the provided groupID.
 func (svc *RouteDNSService) GetGroup(
 	params GetGroupParams,
 ) (*DnsRouteGroupOK, error) {
-
-	apiURL := fmt.Sprintf(
-		"/v2/mcc/customers/%s/dns/group?id=%d&groupType=%s",
-		params.AccountNumber,
-		params.GroupID,
-		params.GroupProductType.String(),
-	)
-
-	log.Printf("apiURL:%s", apiURL)
-	request, err := svc.Client.BuildRequest("GET", apiURL, nil)
+	parsedResponse := &DnsRouteGroupOK{}
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "/v2/mcc/customers/{account_number}/dns/group?id={group_id}&groupType={group_type}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"group_id":       strconv.Itoa(params.GroupID),
+			"group_type":     params.GroupProductType.String(),
+		},
+		ParsedResponse: parsedResponse,
+	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetGroup->Build Request Error: %v", err)
+		return nil, fmt.Errorf("GetGroup: %v", err)
 	}
 
-	parsedResponse := DnsRouteGroupOK{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-	if err != nil {
-		return nil, fmt.Errorf("GetGroup->API Response Error: %v", err)
-	}
-	log.Printf("GetGroup->parsedResponse:%v", parsedResponse)
-
-	return &parsedResponse, nil
+	return parsedResponse, nil
 }
 
 // AddGroup creates a new load balanced or failover group.
 func (svc *RouteDNSService) AddGroup(params AddGroupParams) (*int, error) {
-	apiURL := fmt.Sprintf(
-		"/v2/mcc/customers/%s/dns/group",
-		params.AccountNumber,
-	)
-
-	request, err := svc.Client.BuildRequest("POST", apiURL, params.Group)
-	if err != nil {
-		return nil, fmt.Errorf("AddGroup->Build Request Error: %v", err)
-	}
-
-	resp, err := svc.Client.SendRequestWithStringResponse(request)
+	resp, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Post,
+		Path:   "/v2/mcc/customers/{account_number}/dns/group",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+	})
 
 	if err != nil {
-		return nil, fmt.Errorf("AddGroup->API Response Error: %v", err)
+		return nil, fmt.Errorf("AddGroup: %v", err)
 	}
 
-	groupID, err := strconv.Atoi(*resp)
+	if len(resp.Data) == 0 {
+		return nil, errors.New("AddGroup: api returned no Group ID")
+	}
+
+	groupID, err := strconv.Atoi(resp.Data)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"AddGroup->String to int conversion failed: %v",
+			"AddGroup: String to int conversion failed: %v",
 			err,
 		)
 	}
@@ -69,27 +64,29 @@ func (svc *RouteDNSService) AddGroup(params AddGroupParams) (*int, error) {
 
 // UpdateGroup updates the provided group.
 func (svc *RouteDNSService) UpdateGroup(params *UpdateGroupParams) error {
-	apiURL := fmt.Sprintf(
-		"/v2/mcc/customers/%s/dns/group",
-		params.AccountNumber,
-	)
+	resp, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Post,
+		Path:   "/v2/mcc/customers/{account_number}/dns/group",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		RawBody: params.Group,
+	})
 
-	request, err := svc.Client.BuildRequest("POST", apiURL, params.Group)
 	if err != nil {
-		return fmt.Errorf("UpdateGroup->Build Request Error: %v", err)
+		return fmt.Errorf("UpdateGroup: %v", err)
 	}
-	resp, err := svc.Client.SendRequestWithStringResponse(request)
 
-	if err != nil {
-		return fmt.Errorf("UpdateGroup->API Response Error: %v", err)
+	if len(resp.Data) == 0 {
+		return errors.New("UpdateGroup: api returned no Group ID")
 	}
 
 	// Group ID changes when updating a group. Update Group object with latest
 	// ID
-	groupID, err := strconv.Atoi(*resp)
+	groupID, err := strconv.Atoi(resp.Data)
 	if err != nil {
 		return fmt.Errorf(
-			"UpdateGroup->String to int conversion failed: %v",
+			"UpdateGroup: String to int conversion failed: %v",
 			err,
 		)
 	}
@@ -100,23 +97,19 @@ func (svc *RouteDNSService) UpdateGroup(params *UpdateGroupParams) error {
 
 // DeleteGroup deletes the provided group.
 func (svc *RouteDNSService) DeleteGroup(params DeleteGroupParams) error {
-	apiURL := fmt.Sprintf(
-		"v2/mcc/customers/%s/dns/group?id=%d&groupType=%s",
-		params.AccountNumber,
-		params.Group.GroupID,
-		params.Group.GroupProductType.String(),
-	)
-
-	request, err := svc.Client.BuildRequest("DELETE", apiURL, nil)
-
-	if err != nil {
-		return fmt.Errorf("DeleteGroup->Build Request Error: %v", err)
-	}
-
-	_, err = svc.Client.SendRequest(request, nil)
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
+		Path:   "/v2/mcc/customers/{account_number}/dns/group?id={group_id}&groupType={group_type}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"group_id":       strconv.Itoa(params.Group.GroupID),
+			"group_type":     params.Group.GroupProductType.String(),
+		},
+		RawBody: params.Group,
+	})
 
 	if err != nil {
-		return fmt.Errorf("DeleteGroup->API Response Error: %v", err)
+		return fmt.Errorf("DeleteGroup: %v", err)
 	}
 
 	return nil

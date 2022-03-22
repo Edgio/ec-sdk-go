@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/routedns"
 )
 
@@ -13,10 +12,8 @@ func main() {
 	apiToken := ""
 	accountNumber := ""
 
-	// Route DNS management does not use IDS credentials
-	idsCredentials := auth.OAuth2Credentials{}
-
-	sdkConfig := edgecast.NewSDKConfig(apiToken, idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = apiToken
 	routeDNSService, err := routedns.New(sdkConfig)
 
 	if err != nil {

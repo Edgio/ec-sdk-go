@@ -25,14 +25,15 @@ type SubmitRequestParams struct {
 	RawBody     interface{}
 	QueryParams map[string]string
 	PathParams  map[string]string
+	Headers     map[string]string
 	// ParsedResponse will be filled in using the API response
 	ParsedResponse interface{}
 }
 
-// response contains the parsed response from a request along with the raw
-// http.Response itself if present
+// response contains the response body as a string from a request along with the
+// raw http.Response itself if present
 type Response struct {
-	Data         interface{}
+	Data         string
 	HTTPResponse *http.Response
 }
 
@@ -54,6 +55,7 @@ type buildRequestParams struct {
 	rawBody     interface{}
 	queryParams map[string]string
 	pathParams  map[string]string
+	headers     map[string]string
 	userAgent   string
 }
 
