@@ -51,19 +51,18 @@ func TestNewRetryableHTTPClientAdapterDefaults(t *testing.T) {
 }
 
 func TestNewRetryableHTTPClientAdapter(t *testing.T) {
-	retryFunc := func(
-		ctx context.Context,
-		resp *http.Response,
-		err error,
-	) (bool, error) {
-		return true, nil
-	}
 
 	config := RetryConfig{
 		RetryWaitMin: testhelper.WrapDurationInPointer(99 * time.Second),
 		RetryWaitMax: testhelper.WrapDurationInPointer(899 * time.Second),
 		RetryMax:     testhelper.WrapIntInPointer(20),
-		CheckRetry:   &retryFunc,
+		CheckRetry: func(
+			ctx context.Context,
+			resp *http.Response,
+			err error,
+		) (bool, error) {
+			return true, nil
+		},
 	}
 
 	actual := NewRetryableHTTPClientAdapter(config)

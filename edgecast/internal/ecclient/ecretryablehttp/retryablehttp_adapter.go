@@ -35,7 +35,7 @@ func NewRetryableHTTPClientAdapter(
 
 	if config.CheckRetry != nil {
 		adapter.HasCustomRetry = true
-		httpClient.CheckRetry = retryablehttp.CheckRetry(*config.CheckRetry)
+		httpClient.CheckRetry = retryablehttp.CheckRetry(config.CheckRetry)
 	}
 
 	if config.RetryWaitMin != nil {

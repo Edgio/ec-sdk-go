@@ -35,7 +35,7 @@ type RetryConfig struct {
 	CheckRetry CheckRetry
 }
 
-type CheckRetry *func(
+type CheckRetry func(
 	ctx context.Context,
 	resp *http.Response,
 	err error,

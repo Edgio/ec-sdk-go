@@ -30,14 +30,12 @@ func New(config edgecast.SDKConfig) (*WAFService, error) {
 		return nil, fmt.Errorf("waf.New(): %v", err)
 	}
 
-	retryPolicy := checkRetryForWAFScopes
-
 	c := ecclient.New(ecclient.ClientConfig{
 		AuthProvider: authProvider,
 		BaseAPIURL:   config.BaseAPIURLLegacy,
 		UserAgent:    config.UserAgent,
 		Logger:       config.Logger,
-		CheckRetry:   &retryPolicy,
+		CheckRetry:   checkRetryForWAFScopes,
 	})
 
 	return &WAFService{
