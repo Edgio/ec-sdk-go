@@ -18,17 +18,19 @@ func (svc *RouteDNSService) GetGroup(
 	parsedResponse := &DnsRouteGroupOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
-		Path:   "/v2/mcc/customers/{account_number}/dns/group?id={group_id}&groupType={group_type}",
+		Path:   "/v2/mcc/customers/{account_number}/dns/group",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"group_id":       strconv.Itoa(params.GroupID),
-			"group_type":     params.GroupProductType.String(),
+		},
+		QueryParams: map[string]string{
+			"id":        strconv.Itoa(params.GroupID),
+			"groupType": params.GroupProductType.String(),
 		},
 		ParsedResponse: parsedResponse,
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetGroup: %v", err)
+		return nil, fmt.Errorf("GetGroup: %w", err)
 	}
 
 	return parsedResponse, nil
@@ -45,7 +47,7 @@ func (svc *RouteDNSService) AddGroup(params AddGroupParams) (*int, error) {
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("AddGroup: %v", err)
+		return nil, fmt.Errorf("AddGroup: %w", err)
 	}
 
 	if len(resp.Data) == 0 {
@@ -74,7 +76,7 @@ func (svc *RouteDNSService) UpdateGroup(params *UpdateGroupParams) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("UpdateGroup: %v", err)
+		return fmt.Errorf("UpdateGroup: %w", err)
 	}
 
 	if len(resp.Data) == 0 {
@@ -99,17 +101,19 @@ func (svc *RouteDNSService) UpdateGroup(params *UpdateGroupParams) error {
 func (svc *RouteDNSService) DeleteGroup(params DeleteGroupParams) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
-		Path:   "/v2/mcc/customers/{account_number}/dns/group?id={group_id}&groupType={group_type}",
+		Path:   "/v2/mcc/customers/{account_number}/dns/group",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"group_id":       strconv.Itoa(params.Group.GroupID),
-			"group_type":     params.Group.GroupProductType.String(),
+		},
+		QueryParams: map[string]string{
+			"id":        strconv.Itoa(params.Group.GroupID),
+			"groupType": params.Group.GroupProductType.String(),
 		},
 		RawBody: params.Group,
 	})
 
 	if err != nil {
-		return fmt.Errorf("DeleteGroup: %v", err)
+		return fmt.Errorf("DeleteGroup: %w", err)
 	}
 
 	return nil

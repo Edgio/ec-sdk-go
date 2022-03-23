@@ -38,7 +38,7 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("SubmitRequest: %v", err)
+		return nil, fmt.Errorf("SubmitRequest: %w", err)
 	}
 
 	// Provides an object to be filled in when unmarshaling the API response
@@ -53,7 +53,7 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 
 	resp, err := c.reqSender.sendRequest(*req)
 	if err != nil {
-		return nil, fmt.Errorf("SubmitRequest: %v", err)
+		return nil, fmt.Errorf("SubmitRequest: %w", err)
 	}
 	bodyAsString, _ := jsonhelper.ConvertToJSONString(resp.Data, true)
 	c.Config.Logger.Debug("[RESPONSE-BODY]:%s\n", bodyAsString)
@@ -69,7 +69,7 @@ func (eb ecRequestBuilder) buildRequest(
 	relativeURL, err := url.Parse(params.path)
 	if err != nil {
 		return nil,
-			fmt.Errorf("ecRequestBuilder.buildRequest: url.Parse: %v", err)
+			fmt.Errorf("ecRequestBuilder.buildRequest: url.Parse: %w", err)
 	}
 
 	if !params.method.IsValid() {
@@ -88,7 +88,7 @@ func (eb ecRequestBuilder) buildRequest(
 	err = req.setPathParams(params.pathParams)
 	if err != nil {
 		return nil,
-			fmt.Errorf("ecRequestBuilder.buildRequest: %v", err)
+			fmt.Errorf("ecRequestBuilder.buildRequest: %w", err)
 	}
 	req.setQueryParams(params.queryParams)
 
@@ -99,7 +99,7 @@ func (eb ecRequestBuilder) buildRequest(
 		err := req.setBody(params.rawBody)
 		if err != nil {
 			return nil, fmt.Errorf(
-				"ecRequestBuilder.buildRequest: %v", err)
+				"ecRequestBuilder.buildRequest: %w", err)
 		}
 	}
 
@@ -107,7 +107,7 @@ func (eb ecRequestBuilder) buildRequest(
 		err := req.setAuthorization(eb.authProvider)
 		if err != nil {
 			return nil, fmt.Errorf(
-				"ecRequestBuilder.buildRequest: %v", err)
+				"ecRequestBuilder.buildRequest: %w", err)
 		}
 	}
 
@@ -248,7 +248,7 @@ func (es ecRequestSender) sendRequest(req request) (*Response, error) {
 		req.headers,
 		req.rawBody)
 	if err != nil {
-		return nil, fmt.Errorf("sendRequest: %v", err)
+		return nil, fmt.Errorf("sendRequest: %w", err)
 	}
 
 	defer httpResp.Body.Close()
@@ -275,7 +275,7 @@ func (es ecRequestSender) sendRequest(req request) (*Response, error) {
 	if req.parsedResponse != nil {
 		err = es.parser.parseBody(body, &req.parsedResponse)
 		if err != nil {
-			return nil, fmt.Errorf("sendRequest: parseBody: %v", err)
+			return nil, fmt.Errorf("sendRequest: parseBody: %w", err)
 		}
 	}
 

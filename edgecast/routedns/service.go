@@ -16,7 +16,7 @@ import (
 // configurations
 type RouteDNSService struct {
 	client ecclient.APIClient
-	Logger eclog.Logger
+	logger eclog.Logger
 }
 
 // New creates a new Route DNS service
@@ -25,7 +25,7 @@ func New(config edgecast.SDKConfig) (*RouteDNSService, error) {
 	authProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
 
 	if err != nil {
-		return nil, fmt.Errorf("RouteDNS.New(): %v", err)
+		return nil, fmt.Errorf("RouteDNS.New(): %w", err)
 	}
 
 	c := ecclient.New(ecclient.ClientConfig{
@@ -37,6 +37,6 @@ func New(config edgecast.SDKConfig) (*RouteDNSService, error) {
 
 	return &RouteDNSService{
 		client: c,
-		Logger: config.Logger,
+		logger: config.Logger,
 	}, nil
 }

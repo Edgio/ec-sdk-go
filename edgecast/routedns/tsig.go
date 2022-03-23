@@ -27,7 +27,7 @@ func (svc *RouteDNSService) GetTSIG(
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetTsig: %v", err)
+		return nil, fmt.Errorf("GetTsig: %w", err)
 	}
 
 	return parsedResponse, nil
@@ -45,17 +45,17 @@ func (svc *RouteDNSService) AddTSIG(params AddTSIGParams) (*int, error) {
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetTsig: %v", err)
+		return nil, fmt.Errorf("AddTSIG: %w", err)
 	}
 
 	if len(resp.Data) == 0 {
-		return nil, errors.New("GetTsig: api returned no TSIG ID")
+		return nil, errors.New("AddTSIG: api returned no TSIG ID")
 	}
 
 	tsigID, err := strconv.Atoi(resp.Data)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"AddTsig->TSIG ID string to int Conversion Error: %v",
+			"AddTSIG->TSIG ID string to int Conversion Error: %v",
 			err,
 		)
 	}
@@ -76,7 +76,7 @@ func (svc *RouteDNSService) UpdateTSIG(params UpdateTSIGParams) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("UpdateTSIG: %v", err)
+		return fmt.Errorf("UpdateTSIG: %w", err)
 	}
 
 	return nil
@@ -94,7 +94,7 @@ func (svc *RouteDNSService) DeleteTSIG(params DeleteTSIGParams) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("DeleteTSIG: %v", err)
+		return fmt.Errorf("DeleteTSIG: %w", err)
 	}
 
 	return nil

@@ -26,7 +26,7 @@ func (svc *OriginService) GetAllOrigins(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllOrigins: %v", err)
+		return nil, fmt.Errorf("GetAllOrigins: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -45,7 +45,7 @@ func (svc *OriginService) AddOrigin(params AddOriginParams) (*int, error) {
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("AddOrigin: %v", err)
+		return nil, fmt.Errorf("AddOrigin: %w", err)
 	}
 	return &parsedResponse.CustomerOriginID, nil
 }
@@ -66,7 +66,7 @@ func (svc *OriginService) GetOrigin(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetOrigin: %v", err)
+		return nil, fmt.Errorf("GetOrigin: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -88,7 +88,7 @@ func (svc *OriginService) UpdateOrigin(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("UpdateOrigin: %v", err)
+		return nil, fmt.Errorf("UpdateOrigin: %w", err)
 	}
 	return &parsedResponse.CustomerOriginID, nil
 }
@@ -104,7 +104,7 @@ func (svc *OriginService) DeleteOrigin(params DeleteOriginParams) error {
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteOrigin: %v", err)
+		return fmt.Errorf("DeleteOrigin: %w", err)
 	}
 	return nil
 }
@@ -120,7 +120,7 @@ func (svc *OriginService) GetCDNIPBlocks() (*CDNIPBlocksOK, error) {
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetOrigin: %v", err)
+		return nil, fmt.Errorf("GetOrigin: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -142,7 +142,7 @@ func (svc *OriginService) GetOriginPropagationStatus(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetOriginPropagationStatus: %v", err)
+		return nil, fmt.Errorf("GetOriginPropagationStatus: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -167,7 +167,7 @@ func (svc *OriginService) GetOriginShieldPOPs(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetOriginShieldPOPs: %v", err)
+		return nil, fmt.Errorf("GetOriginShieldPOPs: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -188,7 +188,7 @@ func (svc *OriginService) ReselectADNGateways(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("ReselectADNGateways: %v", err)
+		return fmt.Errorf("ReselectADNGateways: %w", err)
 	}
 	return nil
 }

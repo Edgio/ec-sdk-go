@@ -27,7 +27,7 @@ func (svc *RouteDNSService) GetZone(params GetZoneParams,
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetZone: %v", err)
+		return nil, fmt.Errorf("GetZone: %w", err)
 	}
 
 	return parsedResponse, nil
@@ -45,7 +45,7 @@ func (svc *RouteDNSService) AddZone(params AddZoneParams) (*int, error) {
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("AddZone: %v", err)
+		return nil, fmt.Errorf("AddZone: %w", err)
 	}
 
 	if len(resp.Data) == 0 {
@@ -76,7 +76,7 @@ func (svc *RouteDNSService) UpdateZone(params UpdateZoneParams) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("UpdateZone: %v", err)
+		return fmt.Errorf("UpdateZone: %w", err)
 	}
 
 	return nil
@@ -94,7 +94,7 @@ func (svc *RouteDNSService) DeleteZone(params DeleteZoneParams) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("DeleteZone: %v", err)
+		return fmt.Errorf("DeleteZone: %w", err)
 	}
 
 	return nil

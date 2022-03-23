@@ -70,7 +70,7 @@ func (c *RetryableHTTPClientAdapter) Do(
 		rawBody,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("RetryableHTTPClientAdapter.Do:%v", err)
+		return nil, fmt.Errorf("RetryableHTTPClientAdapter.Do:%w", err)
 	}
 
 	setHeaders(retryablehttpReq, headers)

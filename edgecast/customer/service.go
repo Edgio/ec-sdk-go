@@ -15,7 +15,7 @@ import (
 // Customer service interacts with the EdgeCast API for Customer
 type CustomerService struct {
 	client ecclient.APIClient
-	Logger eclog.Logger
+	logger eclog.Logger
 }
 
 // New creates a new Customer service
@@ -35,6 +35,6 @@ func New(config edgecast.SDKConfig) (*CustomerService, error) {
 
 	return &CustomerService{
 		client: c,
-		Logger: config.Logger,
+		logger: config.Logger,
 	}, nil
 }

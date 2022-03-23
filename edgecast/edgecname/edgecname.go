@@ -26,7 +26,7 @@ func (svc *EdgeCnameService) GetAllEdgeCnames(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllEdgeCnames: %v", err)
+		return nil, fmt.Errorf("GetAllEdgeCnames: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -48,7 +48,7 @@ func (svc *EdgeCnameService) AddEdgeCname(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("AddEdgeCname: %v", err)
+		return nil, fmt.Errorf("AddEdgeCname: %w", err)
 	}
 	return &parsedResponse.CnameID, nil
 }
@@ -68,7 +68,7 @@ func (svc *EdgeCnameService) GetEdgeCname(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetEdgeCname: %v", err)
+		return nil, fmt.Errorf("GetEdgeCname: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -91,7 +91,7 @@ func (svc *EdgeCnameService) UpdateEdgeCname(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("UpdateEdgeCname: %v", err)
+		return nil, fmt.Errorf("UpdateEdgeCname: %w", err)
 	}
 	return &parsedResponse.CnameID, nil
 }
@@ -109,7 +109,7 @@ func (svc *EdgeCnameService) DeleteEdgeCname(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteEdgeCname: %v", err)
+		return fmt.Errorf("DeleteEdgeCname: %w", err)
 	}
 	return nil
 }
@@ -130,7 +130,7 @@ func (svc *EdgeCnameService) GetEdgeCnamePropagationStatus(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetEdgeCnamePropagationStatus: %v", err)
+		return nil, fmt.Errorf("GetEdgeCnamePropagationStatus: %w", err)
 	}
 	return parsedResponse, nil
 }

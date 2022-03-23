@@ -19,7 +19,7 @@ import (
 // WAFService interacts with the EdgeCast API for WAF
 type WAFService struct {
 	client ecclient.APIClient
-	Logger eclog.Logger
+	logger eclog.Logger
 }
 
 // New creates a new instance of WAFservice using the provided configuration
@@ -42,7 +42,7 @@ func New(config edgecast.SDKConfig) (*WAFService, error) {
 
 	return &WAFService{
 		client: c,
-		Logger: config.Logger,
+		logger: config.Logger,
 	}, nil
 }
 

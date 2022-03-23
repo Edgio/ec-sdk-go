@@ -8,13 +8,14 @@ import (
 	"strconv"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/rulesengine"
 )
 
 func main() {
 	// Setup
-	clientID := ""
-	clientSecret := ""
+	clientID := "f51552c3-23fe-4ed4-a49e-0f90c87b3afe"
+	clientSecret := "qz4IxjJfOr4roXjflfv2CspaeRYt8UfW"
 	scope := "ec.rules"
 
 	// A Policy should be constructed as a JSON object passed as a string.
@@ -26,7 +27,7 @@ func main() {
 	// https://developer.edgecast.com/cdn/api/#Media_Management/REv4/REv4.htm
 	policyString := `{
 		"@type": "policy-create",
-		"name": "Simple SDK policy 4",
+		"name": "Simple SDK policy 5",
 		"description": "This is a test of the policy-create process.",
 		"platform": "http_large",
 		"state": "locked",
@@ -59,6 +60,7 @@ func main() {
 
 	sdkConfig := edgecast.NewSDKConfig()
 	sdkConfig.IDSCredentials = idsCredentials
+	sdkConfig.Logger = eclog.NewStandardLogger()
 	rulesengineService, err := rulesengine.New(sdkConfig)
 
 	if err != nil {

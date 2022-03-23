@@ -18,16 +18,18 @@ func (svc *RouteDNSService) GetSecondaryZoneGroup(
 	parsedResponse := []SecondaryZoneGroupResponseOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
-		Path:   "/v2/mcc/customers/{account_number}/dns/secondarygroup?id={id}",
+		Path:   "/v2/mcc/customers/{account_number}/dns/secondarygroup",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             strconv.Itoa(params.ID),
+		},
+		QueryParams: map[string]string{
+			"id": strconv.Itoa(params.ID),
 		},
 		ParsedResponse: &parsedResponse,
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetSecondaryZoneGroup: %v", err)
+		return nil, fmt.Errorf("GetSecondaryZoneGroup: %w", err)
 	}
 
 	// Single object get should always return an array of one
@@ -58,7 +60,7 @@ func (svc *RouteDNSService) AddSecondaryZoneGroup(
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("AddSecondaryZoneGroup: %v", err)
+		return nil, fmt.Errorf("AddSecondaryZoneGroup: %w", err)
 	}
 
 	return &parsedResponse, nil
@@ -79,7 +81,7 @@ func (svc RouteDNSService) UpdateSecondaryZoneGroup(
 	})
 
 	if err != nil {
-		return fmt.Errorf("UpdateSecondaryZoneGroup: %v", err)
+		return fmt.Errorf("UpdateSecondaryZoneGroup: %w", err)
 	}
 
 	return nil
@@ -92,15 +94,17 @@ func (svc RouteDNSService) DeleteSecondaryZoneGroup(
 ) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
-		Path:   "/v2/mcc/customers/{account_number}/dns/secondarygroup?id={id}",
+		Path:   "/v2/mcc/customers/{account_number}/dns/secondarygroup",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             strconv.Itoa(params.SecondaryZoneGroup.ID),
+		},
+		QueryParams: map[string]string{
+			"id": strconv.Itoa(params.SecondaryZoneGroup.ID),
 		},
 	})
 
 	if err != nil {
-		return fmt.Errorf("DeleteSecondaryZoneGroup: %v", err)
+		return fmt.Errorf("DeleteSecondaryZoneGroup: %w", err)
 	}
 
 	return nil

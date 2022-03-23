@@ -26,7 +26,7 @@ func (svc *RouteDNSService) GetAllMasterServerGroups(
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetAllMasterServerGroups: %v", err)
+		return nil, fmt.Errorf("GetAllMasterServerGroups: %w", err)
 	}
 
 	return parsedResponse, nil
@@ -39,16 +39,18 @@ func (svc *RouteDNSService) GetMasterServerGroup(
 	parsedResponse := []MasterServerGroupAddGetOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
-		Path:   "/v2/mcc/customers/{account_number}/dns/mastergroups?id={id}",
+		Path:   "/v2/mcc/customers/{account_number}/dns/mastergroups",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"id":             strconv.Itoa(params.MasterServerGroupID),
+		},
+		QueryParams: map[string]string{
+			"id": strconv.Itoa(params.MasterServerGroupID),
 		},
 		ParsedResponse: &parsedResponse,
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("GetMasterServerGroup: %v", err)
+		return nil, fmt.Errorf("GetMasterServerGroup: %w", err)
 	}
 
 	// Single object get should always return an array of one
@@ -69,7 +71,7 @@ func (svc *RouteDNSService) AddMasterServerGroup(
 	parsedResponse := []MasterServerGroupAddGetOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Post,
-		Path:   "/v2/mcc/customers/{account_number}/dns/mastergroups",
+		Path:   "/v2/mcc/customers/{account_number}/dns/mastergroup",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
@@ -78,7 +80,7 @@ func (svc *RouteDNSService) AddMasterServerGroup(
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("AddMasterServerGroup: %v", err)
+		return nil, fmt.Errorf("AddMasterServerGroup: %w", err)
 	}
 
 	// Add operation should always return an array of one
@@ -98,7 +100,7 @@ func (svc *RouteDNSService) UpdateMasterServerGroup(
 ) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Put,
-		Path:   "/v2/mcc/customers/{account_number}/dns/mastergroups",
+		Path:   "/v2/mcc/customers/{account_number}/dns/mastergroup",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
@@ -106,7 +108,7 @@ func (svc *RouteDNSService) UpdateMasterServerGroup(
 	})
 
 	if err != nil {
-		return fmt.Errorf("UpdateMasterServerGroup: %v", err)
+		return fmt.Errorf("UpdateMasterServerGroup: %w", err)
 	}
 
 	return nil
@@ -118,15 +120,15 @@ func (svc *RouteDNSService) DeleteMasterServerGroup(
 ) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
-		Path:   "/v2/mcc/customers/{account_number}/dns/mastergroup/{id}",
+		Path:   "/v2/mcc/customers/{account_number}/dns/mastergroup/{msg_id}",
 		PathParams: map[string]string{
-			"id":             strconv.Itoa(params.MasterServerGroup.MasterGroupID),
+			"msg_id":         strconv.Itoa(params.MasterServerGroup.MasterGroupID),
 			"account_number": params.AccountNumber,
 		},
 	})
 
 	if err != nil {
-		return fmt.Errorf("DeleteMasterServerGroup: %v", err)
+		return fmt.Errorf("DeleteMasterServerGroup: %w", err)
 	}
 
 	return nil

@@ -33,7 +33,7 @@ func (svc *CustomerService) AddCustomerUser(
 		},
 	})
 	if err != nil {
-		return 0, fmt.Errorf("AddCustomerUser: %v", err)
+		return 0, fmt.Errorf("AddCustomerUser: %w", err)
 	}
 	return parsedResponse.CustomerUserID, nil
 }
@@ -58,7 +58,7 @@ func (svc *CustomerService) GetCustomerUser(
 		},
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomerUser: %v", err)
+		return nil, fmt.Errorf("GetCustomerUser: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -81,7 +81,7 @@ func (svc *CustomerService) UpdateCustomerUser(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("UpdateCustomerUser: %v", err)
+		return fmt.Errorf("UpdateCustomerUser: %w", err)
 	}
 	return nil
 }
@@ -104,7 +104,7 @@ func (svc *CustomerService) DeleteCustomerUser(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteCustomerUser: %v", err)
+		return fmt.Errorf("DeleteCustomerUser: %w", err)
 	}
 	return nil
 }

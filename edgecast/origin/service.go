@@ -15,7 +15,7 @@ import (
 // Origin service interacts with the EdgeCast API for managing Origins
 type OriginService struct {
 	client ecclient.APIClient
-	Logger eclog.Logger
+	logger eclog.Logger
 }
 
 // New creates a new Origin service
@@ -36,6 +36,6 @@ func New(config edgecast.SDKConfig) (*OriginService, error) {
 
 	return &OriginService{
 		client: c,
-		Logger: config.Logger,
+		logger: config.Logger,
 	}, nil
 }

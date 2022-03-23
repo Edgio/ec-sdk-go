@@ -15,7 +15,7 @@ import (
 // Edge Cname service interacts with the EdgeCast API for managing Edge Cnames
 type EdgeCnameService struct {
 	client ecclient.APIClient
-	Logger eclog.Logger
+	logger eclog.Logger
 }
 
 // New creates a new Edge Cname service
@@ -36,6 +36,6 @@ func New(config edgecast.SDKConfig) (*EdgeCnameService, error) {
 
 	return &EdgeCnameService{
 		client: c,
-		Logger: config.Logger,
+		logger: config.Logger,
 	}, nil
 }

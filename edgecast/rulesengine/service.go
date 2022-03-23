@@ -15,7 +15,7 @@ import (
 // Rules Engine service interacts with the EdgeCast API for managing Rules
 type RulesEngineService struct {
 	client ecclient.APIClient
-	Logger eclog.Logger
+	logger eclog.Logger
 }
 
 // New creates a new Rules Engine service
@@ -43,6 +43,6 @@ func New(config edgecast.SDKConfig) (*RulesEngineService, error) {
 
 	return &RulesEngineService{
 		client: c,
-		Logger: config.Logger,
+		logger: config.Logger,
 	}, nil
 }

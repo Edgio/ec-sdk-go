@@ -16,6 +16,7 @@ func (svc *RulesEngineService) AddPolicy(
 		Method:         ecclient.Post,
 		Path:           "rules-engine/v1.1/policies",
 		ParsedResponse: parsedResponse,
+		RawBody:        params.PolicyAsString,
 	}
 
 	headers, err := buildPortalsHeaders(
@@ -23,13 +24,13 @@ func (svc *RulesEngineService) AddPolicy(
 		params.CustomerUserID,
 		params.PortalTypeID)
 	if err != nil {
-		return nil, fmt.Errorf("AddPolicy: %v", err)
+		return nil, fmt.Errorf("AddPolicy: %w", err)
 	}
 
 	reqParams.Headers = headers
 	_, err = svc.client.SubmitRequest(reqParams)
 	if err != nil {
-		return nil, fmt.Errorf("AddPolicy: %v", err)
+		return nil, fmt.Errorf("AddPolicy: %w", err)
 	}
 
 	return parsedResponse, nil
@@ -54,13 +55,13 @@ func (svc *RulesEngineService) GetPolicy(
 		params.CustomerUserID,
 		params.PortalTypeID)
 	if err != nil {
-		return nil, fmt.Errorf("GetPolicy: %v", err)
+		return nil, fmt.Errorf("GetPolicy: %w", err)
 	}
 
 	reqParams.Headers = headers
 	_, err = svc.client.SubmitRequest(reqParams)
 	if err != nil {
-		return nil, fmt.Errorf("GetPolicy: %v", err)
+		return nil, fmt.Errorf("GetPolicy: %w", err)
 	}
 
 	return parsedResponse, nil
@@ -84,13 +85,13 @@ func (svc *RulesEngineService) SubmitDeployRequest(
 		params.CustomerUserID,
 		params.PortalTypeID)
 	if err != nil {
-		return nil, fmt.Errorf("SubmitDeployRequest: %v", err)
+		return nil, fmt.Errorf("SubmitDeployRequest: %w", err)
 	}
 
 	reqParams.Headers = headers
 	_, err = svc.client.SubmitRequest(reqParams)
 	if err != nil {
-		return nil, fmt.Errorf("SubmitDeployRequest: %v", err)
+		return nil, fmt.Errorf("SubmitDeployRequest: %w", err)
 	}
 
 	return parsedResponse, nil
@@ -107,7 +108,7 @@ func buildPortalsHeaders(
 		// account number hex string -> customer ID
 		customerID, err := strconv.ParseInt(accountNumber, 16, 64)
 		if err != nil {
-			return nil, fmt.Errorf("error parsing Hex account number: %v", err)
+			return nil, fmt.Errorf("error parsing Hex account number: %w", err)
 		}
 		m["Portals_CustomerId"] = strconv.FormatInt(customerID, 10)
 	}

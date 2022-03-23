@@ -34,7 +34,7 @@ func (svc WAFService) GetAllManagedRules(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllManagedRules: %v", err)
+		return nil, fmt.Errorf("GetAllManagedRules: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -55,7 +55,7 @@ func (svc WAFService) GetManagedRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetManagedRule: %v", err)
+		return nil, fmt.Errorf("GetManagedRule: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -76,7 +76,7 @@ func (svc WAFService) AddManagedRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return "", fmt.Errorf("AddManagedRule: %v", err)
+		return "", fmt.Errorf("AddManagedRule: %w", err)
 	}
 	return parsedResponse.ID, nil
 }
@@ -96,7 +96,7 @@ func (svc WAFService) UpdateManagedRule(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("UpdateManagedRule: %v", err)
+		return fmt.Errorf("UpdateManagedRule: %w", err)
 	}
 	return nil
 }
@@ -115,7 +115,7 @@ func (svc WAFService) DeleteManagedRule(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteManagedRule: %v", err)
+		return fmt.Errorf("DeleteManagedRule: %w", err)
 	}
 	return nil
 }

@@ -4,20 +4,22 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/routedns"
 )
 
 func main() {
 	// Setup
-	apiToken := ""
-	accountNumber := ""
+	apiToken := "ltd5n2U145YVRIopwgOEQx5D88ShPJuO"
+	accountNumber := "CEA78"
 
 	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.Logger = eclog.NewFileLogger("routedns")
 	sdkConfig.APIToken = apiToken
 	routeDNSService, err := routedns.New(sdkConfig)
 
 	if err != nil {
-		fmt.Printf("error creating Route DNS Service: %v\n", err)
+		fmt.Printf("error creating Route DNS Service: %+v\n", err)
 		return
 	}
 
@@ -37,11 +39,11 @@ func main() {
 	)
 
 	if err != nil {
-		fmt.Printf("error creating Master Server Group: %v\n", err)
+		fmt.Printf("error creating Master Server Group: %+v\n", err)
 		return
 	}
 
-	fmt.Printf("msg: %v", masterServerGroupObj)
+	fmt.Printf("Created MSG: %+v\n", masterServerGroupObj)
 
 	// Get Master Server Group
 	getParams := routedns.NewGetMasterServerGroupParams()
@@ -51,11 +53,11 @@ func main() {
 	masterServerGroupObj, err = routeDNSService.GetMasterServerGroup(*getParams)
 
 	if err != nil {
-		fmt.Printf("error retrieving Master Server Group: %v\n", err)
+		fmt.Printf("error retrieving Master Server Group: %+v\n", err)
 		return
 	}
 
-	fmt.Printf("msg: %v", masterServerGroupObj)
+	fmt.Printf("Retrievd MSG: %+v\n", masterServerGroupObj)
 
 	// Update Master Server Group
 	masterServerGroupObj.Name = "SDK Test Group 1 Updated"
@@ -69,9 +71,11 @@ func main() {
 	err = routeDNSService.UpdateMasterServerGroup(*updateParams)
 
 	if err != nil {
-		fmt.Printf("error updating Master Server Group: %v\n", err)
+		fmt.Printf("error updating Master Server Group: %+v\n", err)
 		return
 	}
+
+	fmt.Println("Updated MSG")
 
 	// Delete Master Server Group
 	deleteParams := routedns.NewDeleteMasterServerGroupParams()
@@ -81,9 +85,11 @@ func main() {
 	err = routeDNSService.DeleteMasterServerGroup(*deleteParams)
 
 	if err != nil {
-		fmt.Printf("error deleting Master Server Group: %v\n", err)
+		fmt.Printf("error deleting Master Server Group: %+v\n", err)
 		return
 	}
+
+	fmt.Println("Deleted MSG")
 
 	//
 	// Zone
@@ -99,7 +105,7 @@ func main() {
 	zoneID, err := routeDNSService.AddZone(*addZoneParams)
 
 	if err != nil || zoneID == nil {
-		fmt.Printf("error creating zone: %v\n", err)
+		fmt.Printf("error creating zone: %+v\n", err)
 		return
 	}
 
@@ -111,7 +117,7 @@ func main() {
 	zoneObj, err := routeDNSService.GetZone(*getZoneParams)
 
 	if err != nil {
-		fmt.Printf("error retrieving zone: %v\n", err)
+		fmt.Printf("error retrieving zone: %+v\n", err)
 		return
 	}
 
@@ -125,7 +131,7 @@ func main() {
 	err = routeDNSService.UpdateZone(*updateZoneParams)
 
 	if err != nil {
-		fmt.Printf("error updating zone: %v\n", err)
+		fmt.Printf("error updating zone: %+v\n", err)
 		return
 	}
 
@@ -137,7 +143,7 @@ func main() {
 	err = routeDNSService.DeleteZone(*deleteZoneParams)
 
 	if err != nil {
-		fmt.Printf("error deleting zone: %v\n", err)
+		fmt.Printf("error deleting zone: %+v\n", err)
 		return
 	}
 
@@ -155,7 +161,7 @@ func main() {
 	groupID, err := routeDNSService.AddGroup(*addGroupParams)
 
 	if err != nil {
-		fmt.Printf("error adding group: %v\n", err)
+		fmt.Printf("error adding group: %+v\n", err)
 		return
 	}
 
@@ -168,7 +174,7 @@ func main() {
 	groupObj, err := routeDNSService.GetGroup(*getGroupParams)
 
 	if err != nil {
-		fmt.Printf("error retrieving group: %v\n", err)
+		fmt.Printf("error retrieving group: %+v\n", err)
 		return
 	}
 
@@ -182,7 +188,7 @@ func main() {
 	err = routeDNSService.UpdateGroup(updateGroupParams)
 
 	if err != nil {
-		fmt.Printf("error updating group: %v\n", err)
+		fmt.Printf("error updating group: %+v\n", err)
 		return
 	}
 
@@ -194,7 +200,7 @@ func main() {
 	err = routeDNSService.DeleteGroup(*deleteGroupParams)
 
 	if err != nil {
-		fmt.Printf("error deleting group: %v\n", err)
+		fmt.Printf("error deleting group: %+v\n", err)
 		return
 	}
 
@@ -217,7 +223,7 @@ func main() {
 	tsigID, err := routeDNSService.AddTSIG(*addTSIGParams)
 
 	if err != nil {
-		fmt.Printf("error creating TSIG: %v\n", err)
+		fmt.Printf("error creating TSIG: %+v\n", err)
 		return
 	}
 
@@ -229,7 +235,7 @@ func main() {
 	tsigObj, err := routeDNSService.GetTSIG(*getTSIGParams)
 
 	if err != nil {
-		fmt.Printf("error retreiving TSIG: %v\n", err)
+		fmt.Printf("error retreiving TSIG: %+v\n", err)
 		return
 	}
 
@@ -243,7 +249,7 @@ func main() {
 	err = routeDNSService.UpdateTSIG(*updateTSIGParams)
 
 	if err != nil {
-		fmt.Printf("error updating TSIG: %v\n", err)
+		fmt.Printf("error updating TSIG: %+v\n", err)
 		return
 	}
 
@@ -255,7 +261,7 @@ func main() {
 	err = routeDNSService.DeleteTSIG(*deleteTSIGParams)
 
 	if err != nil {
-		fmt.Printf("error deleting TSIG: %v\n", err)
+		fmt.Printf("error deleting TSIG: %+v\n", err)
 		return
 	}
 
@@ -273,7 +279,7 @@ func main() {
 	)
 
 	if err != nil {
-		fmt.Printf("error adding secondary zone group: %v\n", err)
+		fmt.Printf("error adding secondary zone group: %+v\n", err)
 		return
 	}
 
@@ -287,7 +293,7 @@ func main() {
 	)
 
 	if err != nil {
-		fmt.Printf("error retrieving secondary zone group: %v\n", err)
+		fmt.Printf("error retrieving secondary zone group: %+v\n", err)
 		return
 	}
 
@@ -301,7 +307,7 @@ func main() {
 	err = routeDNSService.UpdateSecondaryZoneGroup(*updateSecondaryParams)
 
 	if err != nil {
-		fmt.Printf("error updating secondary zone group: %v\n", err)
+		fmt.Printf("error updating secondary zone group: %+v\n", err)
 		return
 	}
 
@@ -313,7 +319,7 @@ func main() {
 	err = routeDNSService.DeleteSecondaryZoneGroup(*deleteSecondaryParams)
 
 	if err != nil {
-		fmt.Printf("error deleting secondary zone group: %v\n", err)
+		fmt.Printf("error deleting secondary zone group: %+v\n", err)
 		return
 	}
 
