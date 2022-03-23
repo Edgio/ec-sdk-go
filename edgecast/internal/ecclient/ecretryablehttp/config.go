@@ -32,9 +32,11 @@ type RetryConfig struct {
 
 	// CheckRetry is a handler that allows users to define custom logic
 	// to determine whether the API Client should retry a failed API call
-	CheckRetry *func(
-		ctx context.Context,
-		resp *http.Response,
-		err error,
-	) (bool, error)
+	CheckRetry CheckRetry
 }
+
+type CheckRetry *func(
+	ctx context.Context,
+	resp *http.Response,
+	err error,
+) (bool, error)

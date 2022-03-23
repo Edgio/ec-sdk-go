@@ -96,7 +96,7 @@ func New(config ClientConfig) ECClient {
 			RetryWaitMin: config.RetryWaitMin,
 			RetryWaitMax: config.RetryWaitMax,
 			RetryMax:     config.RetryMax,
-			CheckRetry:   config.CheckRetry,
+			CheckRetry:   ecretryablehttp.CheckRetry(config.CheckRetry),
 		})
 	return ECClient{
 		reqBuilder: newECRequestBuilder(config),
