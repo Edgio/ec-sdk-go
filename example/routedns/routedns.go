@@ -419,7 +419,7 @@ func buildLoadbalancedGroup(
 	)
 
 	lbGroup := routedns.DnsRouteGroup{
-		Name:             "SDK Test LB Group 1",
+		Name:             "sdklbgroup01",
 		GroupTypeID:      groupTypeID,
 		GroupProductType: routedns.LoadBalancing,
 		GroupComposition: lbGroupRecords,
@@ -464,7 +464,7 @@ func buildFailoverGroup(
 	)
 
 	failoverGroup := routedns.DnsRouteGroup{
-		Name:             "SDK Test Failover Group 1",
+		Name:             "sdkfogroup01",
 		GroupTypeID:      groupTypeID,
 		GroupProductType: routedns.Failover,
 		GroupComposition: failoverGroupRecords,
@@ -477,9 +477,9 @@ func buildSecondaryZoneGroup() routedns.SecondaryZoneGroup {
 	// These are static values associated with an account. You may use values
 	// obtained by Master Server Group or TSIG API calls above or hard code your
 	// own values.
-	masterGroupID := 964
-	masterServer := routedns.MasterServerID{ID: 2446}
-	tsigIDs := routedns.TSIGID{ID: 438}
+	masterGroupID := 872
+	masterServer := routedns.MasterServerID{ID: 2256}
+	tsigIDs := routedns.TSIGID{ID: 400}
 
 	masterServerTSIG := routedns.MasterServerTSIGIDs{
 		MasterServer: masterServer,

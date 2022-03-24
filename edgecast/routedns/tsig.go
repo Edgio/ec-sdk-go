@@ -37,7 +37,7 @@ func (svc *RouteDNSService) GetTSIG(
 func (svc *RouteDNSService) AddTSIG(params AddTSIGParams) (*int, error) {
 	resp, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Post,
-		Path:   "/v2/mcc/customers/{account_number}/dns/tsigs",
+		Path:   "/v2/mcc/customers/{account_number}/dns/tsig",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
