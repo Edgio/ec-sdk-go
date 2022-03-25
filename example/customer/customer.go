@@ -1,28 +1,23 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/customer"
 )
 
 func main() {
-	// Setup
-	apiToken := flag.String("api-token", "", "API Token provided to you")
 
-	flag.Parse()
+	// Setup - fill in the below variables before running this code
+	apiToken := "MY_API_TOKEN"
 
-	// Customer management does not use IDS credentials
-	idsCredentials := auth.OAuth2Credentials{}
-
-	sdkConfig := edgecast.NewSDKConfig(*apiToken, idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = apiToken
 	customerService, err := customer.New(sdkConfig)
 
 	if err != nil {
-		fmt.Printf("error creating Customer Service: %v\n", err)
+		fmt.Printf("error creating WAF Service: %v\n", err)
 		return
 	}
 
@@ -69,7 +64,7 @@ func main() {
 
 	addParams := customer.NewAddCustomerParams()
 	addParams.Customer = newCustomer
-	accountNumber, err := customerService.AddCustomer(*addParams)
+	accountNumber, err := customerService.AddCustomer(addParams)
 
 	if err != nil {
 		fmt.Printf("error creating customer: %v\n", err)

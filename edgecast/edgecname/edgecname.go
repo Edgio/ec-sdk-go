@@ -5,7 +5,9 @@ package edgecname
 
 import (
 	"fmt"
+	"strconv"
 
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/ecmodels"
 )
 
@@ -13,27 +15,19 @@ import (
 func (svc *EdgeCnameService) GetAllEdgeCnames(
 	params GetAllEdgeCnameParams,
 ) (*[]EdgeCnameGetOK, error) {
-
-	request, err := svc.Client.BuildRequest(
-		"GET",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/cnames/%s",
-			params.AccountNumber,
-			params.Platform.String(),
-		),
-		nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetAllEdgeCnames: %v", err)
-	}
-
 	parsedResponse := &[]EdgeCnameGetOK{}
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "v2/mcc/customers/{account_number}/cnames/{platform_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"platform_id":    params.Platform.String(),
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllEdgeCnames: %v", err)
+		return nil, fmt.Errorf("GetAllEdgeCnames: %w", err)
 	}
-
 	return parsedResponse, nil
 }
 
@@ -41,26 +35,21 @@ func (svc *EdgeCnameService) GetAllEdgeCnames(
 func (svc *EdgeCnameService) AddEdgeCname(
 	params AddEdgeCnameParams,
 ) (*int, error) {
-	request, err := svc.Client.BuildRequest(
-		"POST",
-		fmt.Sprintf("v2/mcc/customers/%s/cnames", params.AccountNumber),
-		params.EdgeCname,
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf("AddEdgeCname: %v", err)
-	}
-
 	parsedResponse := &struct {
 		CnameID int `json:"CnameId"`
 	}{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:  ecclient.Post,
+		Path:    "v2/mcc/customers/{account_number}/cnames",
+		RawBody: params.EdgeCname,
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("AddEdgeCname: %v", err)
+		return nil, fmt.Errorf("AddEdgeCname: %w", err)
 	}
-
 	return &parsedResponse.CnameID, nil
 }
 
@@ -68,26 +57,19 @@ func (svc *EdgeCnameService) AddEdgeCname(
 func (svc *EdgeCnameService) GetEdgeCname(
 	params GetEdgeCnameParams,
 ) (*EdgeCnameGetOK, error) {
-	request, err := svc.Client.BuildRequest(
-		"GET",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/cnames/%d",
-			params.AccountNumber,
-			params.EdgeCnameID,
-		),
-		nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetEdgeCname: %v", err)
-	}
-
 	parsedResponse := &EdgeCnameGetOK{}
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "v2/mcc/customers/{account_number}/cnames/{edge_cname_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"edge_cname_id":  strconv.Itoa(params.EdgeCnameID),
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetEdgeCname: %v", err)
+		return nil, fmt.Errorf("GetEdgeCname: %w", err)
 	}
-
 	return parsedResponse, nil
 }
 
@@ -95,56 +77,41 @@ func (svc *EdgeCnameService) GetEdgeCname(
 func (svc *EdgeCnameService) UpdateEdgeCname(
 	params UpdateEdgeCnameParams,
 ) (*int, error) {
-	request, err := svc.Client.BuildRequest(
-		"PUT",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/cnames/%d",
-			params.AccountNumber,
-			params.EdgeCname.ID,
-		),
-		params.EdgeCname,
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf("UpdateEdgeCname: %v", err)
-	}
-
 	parsedResponse := &struct {
 		CnameID int `json:"CnameId"`
 	}{}
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Put,
+		Path:   "v2/mcc/customers/{account_number}/cnames/{edge_cname_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"edge_cname_id":  strconv.Itoa(params.EdgeCname.ID),
+		},
+		RawBody:        params.EdgeCname,
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("UpdateEdgeCname: %v", err)
+		return nil, fmt.Errorf("UpdateEdgeCname: %w", err)
 	}
-
 	return &parsedResponse.CnameID, nil
 }
 
 // DeleteEdgeCname deletes an edge CNAME.
-func (svc *EdgeCnameService) DeleteEdgeCname(params DeleteEdgeCnameParams) error {
-	request, err := svc.Client.BuildRequest(
-		"DELETE",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/cnames/%d",
-			params.AccountNumber,
-			params.EdgeCname.ID,
-		),
-		nil,
-	)
-
+func (svc *EdgeCnameService) DeleteEdgeCname(
+	params DeleteEdgeCnameParams,
+) error {
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
+		Path:   "v2/mcc/customers/{account_number}/cnames/{edge_cname_id}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"edge_cname_id":  strconv.Itoa(params.EdgeCname.ID),
+		},
+	})
 	if err != nil {
-		return fmt.Errorf("DeleteEdgeCname: %v", err)
+		return fmt.Errorf("DeleteEdgeCname: %w", err)
 	}
-
-	_, err = svc.Client.SendRequest(request, nil)
-
-	if err != nil {
-		return fmt.Errorf("DeleteEdgeCname: %v", err)
-	}
-
 	return nil
-
 }
 
 // GetEdgeCnamePropagationStatus retrieves the propagation status for an edge
@@ -152,25 +119,18 @@ func (svc *EdgeCnameService) DeleteEdgeCname(params DeleteEdgeCnameParams) error
 func (svc *EdgeCnameService) GetEdgeCnamePropagationStatus(
 	params GetEdgeCnamePropagationStatus,
 ) (*ecmodels.PropagationStatus, error) {
-	request, err := svc.Client.BuildRequest(
-		"GET",
-		fmt.Sprintf(
-			"v2/mcc/customers/%s/cnames/%d/status",
-			params.AccountNumber,
-			params.EdgeCnameID,
-		),
-		nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetEdgeCnamePropagationStatus: %v", err)
-	}
-
 	parsedResponse := &ecmodels.PropagationStatus{}
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "v2/mcc/customers/{account_number}/cnames/{edgecname_id}/status",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+			"edgecname_id":   strconv.Itoa(params.EdgeCnameID),
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetEdgeCnamePropagationStatus: %v", err)
+		return nil, fmt.Errorf("GetEdgeCnamePropagationStatus: %w", err)
 	}
-
 	return parsedResponse, nil
 }

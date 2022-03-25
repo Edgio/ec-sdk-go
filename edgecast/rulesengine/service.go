@@ -7,30 +7,34 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // Rules Engine service interacts with the EdgeCast API for managing Rules
 type RulesEngineService struct {
-	client.Client
-	Logger logging.Logger
+	client ecclient.APIClient
+	logger eclog.Logger
 }
 
 // New creates a new Rules Engine service
 func New(config edgecast.SDKConfig) (*RulesEngineService, error) {
 
-	authProvider, err := auth.NewIDSAuthorizationProvider(
+	authProvider, err := ecauth.NewIDSAuthorizationProvider(
 		config.BaseIDSURL,
-		config.IDSCredentials,
+		ecauth.OAuth2Credentials{
+			ClientID:     config.IDSCredentials.ClientID,
+			ClientSecret: config.IDSCredentials.ClientSecret,
+			Scope:        config.IDSCredentials.Scope,
+		},
 	)
 
 	if err != nil {
 		return nil, fmt.Errorf("rulesengine.New(): %v", err)
 	}
 
-	c := client.NewClient(client.ClientConfig{
+	c := ecclient.New(ecclient.ClientConfig{
 		AuthProvider: authProvider,
 		BaseAPIURL:   config.BaseAPIURLLegacy,
 		UserAgent:    config.UserAgent,
@@ -38,7 +42,7 @@ func New(config edgecast.SDKConfig) (*RulesEngineService, error) {
 	})
 
 	return &RulesEngineService{
-		Client: c,
-		Logger: config.Logger,
+		client: c,
+		logger: config.Logger,
 	}, nil
 }

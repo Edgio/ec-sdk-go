@@ -10,9 +10,9 @@ import (
 	"net/url"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/rtld/lookups"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/rtld/profiles_cdn"
@@ -41,35 +41,51 @@ func New(config edgecast.SDKConfig) (*RealTimeLogDeliveryAPI, error) {
 		return nil, fmt.Errorf("RealTimeLogDeliveryAPI.New(): %v", err)
 	}
 
-	c := client.NewClient(client.ClientConfig{
-		BaseAPIURL: *apiURL,
-		UserAgent:  config.UserAgent,
-		Logger:     config.Logger,
-	})
-
 	// OAuth2 authentication
-	authProvider, err := auth.NewIDSAuthorizationProvider(config.BaseIDSURL, config.IDSCredentials)
+	authProvider, err := ecauth.NewIDSAuthorizationProvider(config.BaseIDSURL, ecauth.OAuth2Credentials(config.IDSCredentials))
 	if err != nil {
 
 		//Token authentication
-		authTokenProvider, err := auth.NewTokenAuthorizationProvider(config.APIToken)
+		authTokenProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
 		if err != nil {
 			return nil, fmt.Errorf("RealTimeLogDeliveryAPI.New(): %v", err)
 		}
-		c.Config.AuthProvider = authTokenProvider
+		c := ecclient.New(ecclient.ClientConfig{
+			BaseAPIURL:   *apiURL,
+			UserAgent:    config.UserAgent,
+			Logger:       config.Logger,
+			AuthProvider: authTokenProvider,
+		})
+
+		return &RealTimeLogDeliveryAPI{
+			client:           c,
+			Logger:           config.Logger,
+			Lookups:          lookups.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesCdn:      profiles_cdn.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesRl:       profiles_rl.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesWaf:      profiles_waf.New(c, c.Config.BaseAPIURL.String()),
+			SettingsInternal: settings_internal.New(c, c.Config.BaseAPIURL.String()),
+		}, nil
+
+	} else {
+
+		c := ecclient.New(ecclient.ClientConfig{
+			BaseAPIURL:   *apiURL,
+			UserAgent:    config.UserAgent,
+			Logger:       config.Logger,
+			AuthProvider: authProvider,
+		})
+
+		return &RealTimeLogDeliveryAPI{
+			client:           c,
+			Logger:           config.Logger,
+			Lookups:          lookups.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesCdn:      profiles_cdn.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesRl:       profiles_rl.New(c, c.Config.BaseAPIURL.String()),
+			ProfilesWaf:      profiles_waf.New(c, c.Config.BaseAPIURL.String()),
+			SettingsInternal: settings_internal.New(c, c.Config.BaseAPIURL.String()),
+		}, nil
 	}
-	c.Config.AuthProvider = authProvider
-
-	return &RealTimeLogDeliveryAPI{
-		Client:           c,
-		Logger:           config.Logger,
-		Lookups:          lookups.New(c),
-		ProfilesCdn:      profiles_cdn.New(c),
-		ProfilesRl:       profiles_rl.New(c),
-		ProfilesWaf:      profiles_waf.New(c),
-		SettingsInternal: settings_internal.New(c),
-	}, nil
-
 }
 
 // RealTimeLogDeliveryAPI is a client for real time log delivery API
@@ -84,7 +100,9 @@ type RealTimeLogDeliveryAPI struct {
 
 	SettingsInternal settings_internal.ClientService
 
-	client.Client
+	client ecclient.APIClient
 
-	Logger logging.Logger
+	clientConfig ecclient.ClientConfig
+
+	Logger eclog.Logger
 }

@@ -4,30 +4,20 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/origin"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/enums"
 )
 
 func main() {
-	// Setup
-	apiToken := flag.String("api-token", "", "API Token provided to you")
-	accountNumber := flag.String(
-		"account-number",
-		"",
-		"Account number you wish to manage an Edge CNAME for",
-	)
+	// Setup - fill in the below variables before running this code
+	accountNumber := "MY_ACCOUNT_NUMBER"
+	apiToken := "MY_API_TOKEN"
 
-	flag.Parse()
-
-	// Origin does not use IDS credentials
-	idsCredentials := auth.OAuth2Credentials{}
-
-	sdkConfig := edgecast.NewSDKConfig(*apiToken, idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = apiToken
 	originService, err := origin.New(sdkConfig)
 
 	if err != nil {
@@ -63,7 +53,7 @@ func main() {
 
 	// Create a new Origin for ADN platform
 	newOrigin := origin.Origin{
-		DirectoryName:        "/myOrigin/directory",
+		DirectoryName:        "myOriginDirectory",
 		FollowRedirects:      true,
 		HostHeader:           "www.mysite.com:443",
 		HTTPHostnames:        httpHostnames,
@@ -75,7 +65,7 @@ func main() {
 	}
 
 	addParams := origin.NewAddOriginParams()
-	addParams.AccountNumber = *accountNumber
+	addParams.AccountNumber = accountNumber
 	addParams.MediaTypeID = enums.ADN
 	addParams.Origin = newOrigin
 
@@ -88,7 +78,7 @@ func main() {
 
 	// Get Origin
 	getParams := origin.NewGetOriginParams()
-	getParams.AccountNumber = *accountNumber
+	getParams.AccountNumber = accountNumber
 	getParams.CustomerOriginID = *originID
 	getParams.MediaTypeID = enums.ADN
 
@@ -103,7 +93,7 @@ func main() {
 	originObj.ValidationURL = "https://origin.sharedectest.com/newSample.gif"
 
 	updateParams := origin.NewUpdateOriginParams()
-	updateParams.AccountNumber = *accountNumber
+	updateParams.AccountNumber = accountNumber
 	updateParams.Origin = *originObj
 
 	_, err = originService.UpdateOrigin(*updateParams)
@@ -115,7 +105,7 @@ func main() {
 
 	// Get Origin propagation status
 	propStatParams := origin.NewGetOriginPropagationStatusParams()
-	propStatParams.AccountNumber = *accountNumber
+	propStatParams.AccountNumber = accountNumber
 	propStatParams.CustomerOriginID = originObj.ID
 
 	propStatus, err := originService.GetOriginPropagationStatus(*propStatParams)
@@ -129,7 +119,7 @@ func main() {
 
 	// Reselect ADN Gateway
 	reselectParams := origin.NewReselectADNGatewaysParams()
-	reselectParams.AccountNumber = *accountNumber
+	reselectParams.AccountNumber = accountNumber
 	reselectParams.CustomerOriginID = originObj.ID
 	reselectParams.MediaTypeID = enums.ADN
 
@@ -142,7 +132,7 @@ func main() {
 
 	// Get All ADN Origins
 	getAllParams := origin.NewGetAllOriginsParams()
-	getAllParams.AccountNumber = *accountNumber
+	getAllParams.AccountNumber = accountNumber
 	getAllParams.MediaTypeID = enums.ADN
 
 	originObjs, err := originService.GetAllOrigins(*getAllParams)
@@ -156,7 +146,7 @@ func main() {
 
 	// Delete Origin
 	deleteParams := origin.NewDeleteOriginParams()
-	deleteParams.AccountNumber = *accountNumber
+	deleteParams.AccountNumber = accountNumber
 	deleteParams.Origin = *originObj
 
 	err = originService.DeleteOrigin(*deleteParams)
@@ -177,7 +167,7 @@ func main() {
 
 	// Get Origin Shield POPs
 	shieldParams := origin.NewGetOriginShieldPOPsParams()
-	shieldParams.AccountNumber = *accountNumber
+	shieldParams.AccountNumber = accountNumber
 	shieldParams.MediaTypeID = enums.HttpLarge
 
 	pops, err := originService.GetOriginShieldPOPs(*shieldParams)

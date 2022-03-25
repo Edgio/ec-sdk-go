@@ -1,4 +1,6 @@
 .DS_Store
 .vscode/
+*.log
+*.out
 .idea
 dist

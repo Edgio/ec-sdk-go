@@ -1,45 +1,40 @@
-// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license . See LICENSE file in project root for terms.
+// Copyright Edgecast, Licensed under the terms of the Apache 2.0 license.
+// See LICENSE file in project root for terms.
 
 package customer
 
 import (
 	"fmt"
+	"strconv"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/urlutil"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // AddCustomerUser creates a Customer User under the provided (parent) Customer
 func (svc *CustomerService) AddCustomerUser(
 	params AddCustomerUserParams,
 ) (int, error) {
-	// TODO: support custom id types, not just Hex ID ANs
-	baseURL := fmt.Sprintf(
-		"v2/pcc/customers/users?idtype=an&id=%s",
-		params.Customer.HexID,
-	)
-
 	if params.Customer.PartnerID == 0 {
 		return 0, fmt.Errorf("PartnerID was not provided")
 	}
-
-	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
-
-	request, err := svc.Client.BuildRequest("POST", relURL, params.CustomerUser)
-
-	if err != nil {
-		return 0, fmt.Errorf("AddCustomerUser: %v", err)
-	}
-
 	parsedResponse := &struct {
 		CustomerUserID int `json:"CustomerUserId"`
 	}{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         ecclient.Post,
+		Path:           "/v2/pcc/customers/users",
+		RawBody:        params.CustomerUser,
+		ParsedResponse: parsedResponse,
+		QueryParams: map[string]string{
+			// TODO: support custom ids for accounts
+			"idtype":    "an",
+			"id":        params.Customer.HexID,
+			"partnerid": strconv.Itoa(params.Customer.PartnerID),
+		},
+	})
 	if err != nil {
-		return 0, fmt.Errorf("AddCustomerUser: %v", err)
+		return 0, fmt.Errorf("AddCustomerUser: %w", err)
 	}
-
 	return parsedResponse.CustomerUserID, nil
 }
 
@@ -47,29 +42,24 @@ func (svc *CustomerService) AddCustomerUser(
 func (svc *CustomerService) GetCustomerUser(
 	params GetCustomerUserParams,
 ) (*CustomerUserGetOK, error) {
-
-	// TODO: support custom id types, not just Hex ID ANs
-	baseURL := fmt.Sprintf(
-		"v2/pcc/customers/users/%d?idtype=an&id=%s",
-		params.CustomerUserID,
-		params.Customer.HexID,
-	)
-	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
-
-	request, err := svc.Client.BuildRequest("GET", relURL, nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetCustomerUser: %v", err)
-	}
-
 	parsedResponse := &CustomerUserGetOK{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         ecclient.Get,
+		Path:           "/v2/pcc/customers/users/{customer_user_id}",
+		ParsedResponse: parsedResponse,
+		PathParams: map[string]string{
+			"customer_user_id": strconv.Itoa(params.CustomerUserID),
+		},
+		QueryParams: map[string]string{
+			// TODO: support custom ids for accounts
+			"idtype":    "an",
+			"id":        params.Customer.HexID,
+			"partnerid": strconv.Itoa(params.Customer.PartnerID),
+		},
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomerUser: %v", err)
+		return nil, fmt.Errorf("GetCustomerUser: %w", err)
 	}
-
 	return parsedResponse, nil
 }
 
@@ -77,26 +67,22 @@ func (svc *CustomerService) GetCustomerUser(
 func (svc *CustomerService) UpdateCustomerUser(
 	params UpdateCustomerUserParams,
 ) error {
-	// TODO: support custom ids for accounts
-	baseURL := fmt.Sprintf(
-		"v2/pcc/customers/users/%d?idtype=an&id=%s",
-		params.CustomerUser.ID,
-		params.Customer.HexID,
-	)
-	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
-
-	request, err := svc.Client.BuildRequest("PUT", relURL, params.CustomerUser)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Put,
+		Path:   "/v2/pcc/customers/users/{customer_user_id}",
+		PathParams: map[string]string{
+			"customer_user_id": strconv.Itoa(params.CustomerUser.ID),
+		},
+		QueryParams: map[string]string{
+			// TODO: support custom ids for accounts
+			"idtype":    "an",
+			"id":        params.Customer.HexID,
+			"partnerid": strconv.Itoa(params.Customer.PartnerID),
+		},
+	})
 	if err != nil {
-		return fmt.Errorf("UpdateCustomerUser: %v", err)
+		return fmt.Errorf("UpdateCustomerUser: %w", err)
 	}
-
-	_, err = svc.Client.SendRequest(request, nil)
-
-	if err != nil {
-		return fmt.Errorf("UpdateCustomerUser: %v", err)
-	}
-
 	return nil
 }
 
@@ -104,25 +90,21 @@ func (svc *CustomerService) UpdateCustomerUser(
 func (svc *CustomerService) DeleteCustomerUser(
 	params DeleteCustomerUserParams,
 ) error {
-	// TODO: support custom ids for accounts
-	baseURL := fmt.Sprintf(
-		"v2/pcc/customers/users/%d?idtype=an&id=%s",
-		params.CustomerUser.ID,
-		params.Customer.HexID,
-	)
-	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
-
-	request, err := svc.Client.BuildRequest("DELETE", relURL, nil)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
+		Path:   "/v2/pcc/customers/users/{customer_user_id}",
+		PathParams: map[string]string{
+			"customer_user_id": strconv.Itoa(params.CustomerUser.ID),
+		},
+		QueryParams: map[string]string{
+			// TODO: support custom ids for accounts
+			"idtype":    "an",
+			"id":        params.Customer.HexID,
+			"partnerid": strconv.Itoa(params.Customer.PartnerID),
+		},
+	})
 	if err != nil {
-		return fmt.Errorf("DeleteCustomerUser: %v", err)
+		return fmt.Errorf("DeleteCustomerUser: %w", err)
 	}
-
-	_, err = svc.Client.SendRequest(request, nil)
-
-	if err != nil {
-		return fmt.Errorf("DeleteCustomerUser: %v", err)
-	}
-
 	return nil
 }

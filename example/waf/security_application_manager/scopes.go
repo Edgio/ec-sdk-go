@@ -1,5 +1,5 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0 license.
-// See LICENSE file in project root for terms.
+// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 
 package main
 
@@ -8,29 +8,34 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 
-// Demonstrates the usage of WAF Security Application Manager Configurations (Scopes)
+// Demonstrates the usage of WAF Security Application Manager
+// Configurations (Scopes)
 //
 // Usage:
 // go run scopes.go
+//
+// For detailed information about Security Application Manager Configurations,
+// please refer to: https://docs.edgecast.com/cdn/#Web-Security/SAM.htm
 func main() {
 
-	customerID := "MY_ACCOUNT_NUMBER"
+	// Setup 1: Fill in the below variables before running this code
+	accountNumber := "MY_ACCOUNT_NUMBER"
 	apiToken := "MY_API_TOKEN"
-	idsCredentials := auth.OAuth2Credentials{} // WAF does not use these credentials
 
-	// Create these rules before running this script
+	// Setup 2: Create these rules before running this script
+	// You may use the SDK or the MCC (https://my.edgecast.com)
 	// These must be fully processed by the CDN before usage in a Scope!
 	rateRuleID := "RATE_RULE_ID"
 	accessRuleID := "ACCESS_RULE_ID"
 	managedRuleID := "MANAGED_RULE_ID"
 	customRuleID := "CUSTOM_RULE_ID"
-	botRuleID := "BOT_RULE_ID"
+	// botRuleID := "BOT_RULE_ID" // not yet implemented
 
-	sdkConfig := edgecast.NewSDKConfig(apiToken, idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = apiToken
 	wafService, err := waf.New(sdkConfig)
 
 	if err != nil {
@@ -44,8 +49,8 @@ func main() {
 	trueVar := true
 	encodedMessage := base64.StdEncoding.EncodeToString([]byte("hello!"))
 	status404 := 404
-	status200 := 200
-	validForSec := 300
+	// status200 := 200 // used by bot rule
+	// validForSec := 300 // used by bot rule
 	redirectURL := "https://www.mysite.com/redirected"
 
 	scope := waf.Scope{
@@ -91,17 +96,20 @@ func main() {
 			Name:    "Custom Rule Action",
 			ENFType: "ALERT",
 		},
-		BotsProdID: &botRuleID,
-		BotsProdAction: &waf.ProdAction{
-			Name:        "Bot Rule Action",
-			ENFType:     "BROWSER_CHALLENGE",
-			Status:      &status200,
-			ValidForSec: &validForSec,
-		},
+		//
+		// Bot Rules not yet implemented
+		//
+		// BotsProdID: &botRuleID,
+		// BotsProdAction: &waf.ProdAction{
+		// 	Name:        "Bot Rule Action",
+		// 	ENFType:     "BROWSER_CHALLENGE",
+		// 	Status:      &status200,
+		// 	ValidForSec: &validForSec,
+		// },
 	}
 
 	scopes := waf.Scopes{
-		CustomerID: customerID,
+		CustomerID: accountNumber,
 		Scopes:     []waf.Scope{scope},
 	}
 
@@ -115,7 +123,7 @@ func main() {
 	fmt.Println("Successfully created security application manager configuration (scope)")
 
 	fmt.Println("**** GET ALL ****")
-	scopes2, err := wafService.GetAllScopes(customerID)
+	scopes2, err := wafService.GetAllScopes(accountNumber)
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve security application manager configurations (scopes): %+v\n", err)
@@ -140,7 +148,7 @@ func main() {
 	fmt.Println("Successfully updated security application manager configuration (scope)")
 
 	fmt.Println("**** GET ALL ****")
-	scopes3, err := wafService.GetAllScopes(customerID)
+	scopes3, err := wafService.GetAllScopes(accountNumber)
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve security application manager configurations (scopes): %+v\n", err)
@@ -165,7 +173,7 @@ func main() {
 	fmt.Println("Successfully deleted security application manager configuration (scope)")
 
 	fmt.Println("**** GET ALL ****")
-	scopes4, err := wafService.GetAllScopes(customerID)
+	scopes4, err := wafService.GetAllScopes(accountNumber)
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve security application manager configurations (scopes): %+v\n", err)

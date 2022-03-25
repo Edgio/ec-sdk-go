@@ -5,8 +5,9 @@ package customer
 
 import (
 	"fmt"
+	"strconv"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/urlutil"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // AddCustomer creates a new Customer under the Partner associated with the API
@@ -14,27 +15,24 @@ import (
 func (svc *CustomerService) AddCustomer(
 	params AddCustomerParams,
 ) (string, error) {
-	relURL := "v2/pcc/customers"
-	if params.Customer.PartnerUserID != 0 {
-		relURL = relURL + fmt.Sprintf("?partneruserid=%d", params.Customer.PartnerUserID)
-	}
-
-	request, err := svc.Client.BuildRequest("POST", relURL, params.Customer)
-
-	if err != nil {
-		return "", fmt.Errorf("AddCustomer: %v", err)
-	}
-
 	parsedResponse := &struct {
 		AccountNumber string `json:"AccountNumber"`
 	}{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
-	if err != nil {
-		return "", fmt.Errorf("AddCustomer: %v", err)
+	submitRequestParams := ecclient.SubmitRequestParams{
+		Method:         ecclient.Post,
+		Path:           "/v2/pcc/customers",
+		RawBody:        params.Customer,
+		ParsedResponse: parsedResponse,
 	}
-
+	if params.Customer.PartnerUserID != 0 {
+		submitRequestParams.QueryParams = map[string]string{
+			"partneruserid": strconv.Itoa(params.Customer.PartnerUserID),
+		}
+	}
+	_, err := svc.client.SubmitRequest(submitRequestParams)
+	if err != nil {
+		return "", fmt.Errorf("AddCustomer: %w", err)
+	}
 	return parsedResponse.AccountNumber, nil
 }
 
@@ -43,88 +41,72 @@ func (svc *CustomerService) AddCustomer(
 func (svc *CustomerService) GetCustomer(
 	params GetCustomerParams,
 ) (*CustomerGetOK, error) {
-	relURL := fmt.Sprintf("v2/pcc/customers/%s", params.AccountNumber)
-	request, err := svc.Client.BuildRequest("GET", relURL, nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetCustomer: %v", err)
-	}
-
 	parsedResponse := &CustomerGetOK{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "/v2/pcc/customers/{account_number}",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomer: %v", err)
+		return nil, fmt.Errorf("GetCustomer: %w", err)
 	}
-
 	return parsedResponse, nil
 }
 
 // UpdateCustomer updates a Customer's information
 func (svc *CustomerService) UpdateCustomer(params UpdateCustomerParams) error {
-	// TODO: support custom ids for accounts
-	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", params.Customer.HexID)
-	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
-
-	request, err := svc.Client.BuildRequest("PUT", relURL, params.Customer)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:  ecclient.Put,
+		Path:    "/v2/pcc/customers",
+		RawBody: params.Customer,
+		QueryParams: map[string]string{
+			// TODO: support custom ids for accounts
+			"idtype":    "an",
+			"id":        params.Customer.HexID,
+			"partnerid": strconv.Itoa(params.Customer.PartnerID),
+		},
+	})
 	if err != nil {
-		return fmt.Errorf("UpdateCustomer: %v", err)
+		return fmt.Errorf("UpdateCustomer: %w", err)
 	}
-
-	_, err = svc.Client.SendRequest(request, nil)
-
-	if err != nil {
-		return fmt.Errorf("UpdateCustomer: %v", err)
-	}
-
 	return nil
 }
 
 // DeleteCustomer deletes the provided Customer
 func (svc *CustomerService) DeleteCustomer(params DeleteCustomerParams) error {
-	// TODO: support custom ids for accounts
-	baseURL := fmt.Sprintf("v2/pcc/customers?idtype=an&id=%s", params.Customer.HexID)
-	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
-
-	request, err := svc.Client.BuildRequest("DELETE", relURL, nil)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
+		Path:   "/v2/pcc/customers",
+		QueryParams: map[string]string{
+			// TODO: support custom ids for accounts
+			"idtype":    "an",
+			"id":        params.Customer.HexID,
+			"partnerid": strconv.Itoa(params.Customer.PartnerID),
+		},
+	})
 	if err != nil {
-		return fmt.Errorf("DeleteCustomer: %v", err)
+		return fmt.Errorf("DeleteCustomer: %w", err)
 	}
-
-	_, err = svc.Client.SendRequest(request, nil)
-
-	if err != nil {
-		return fmt.Errorf("DeleteCustomer: %v", err)
-	}
-
 	return nil
 }
 
 // GetAvailableCustomerServices retrieves all services available for a partner
 // to enable on the customers they manage
 func (svc *CustomerService) GetAvailableCustomerServices() (*[]Service, error) {
-	request, err := svc.Client.BuildRequest(
-		"GET",
-		"v2/pcc/customers/services",
-		nil,
-	)
-
+	parsedResponse := &[]Service{}
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         ecclient.Get,
+		Path:           "/v2/pcc/customers/services",
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAvailableCustomerServices: %v", err)
+		return nil,
+			fmt.Errorf("GetAvailableCustomerServices: %w", err)
 	}
-
-	var services []Service
-
-	_, err = svc.Client.SendRequest(request, &services)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetAvailableCustomerServices: %v", err)
-	}
-
-	return &services, nil
+	return parsedResponse, nil
 }
 
 // GetCustomerServices gets the list of services available to the provided
@@ -132,22 +114,20 @@ func (svc *CustomerService) GetAvailableCustomerServices() (*[]Service, error) {
 func (svc *CustomerService) GetCustomerServices(
 	params GetCustomerServicesParams,
 ) (*[]Service, error) {
-	relURL := fmt.Sprintf("v2/pcc/customers/%s/services", params.Customer.HexID)
-	request, err := svc.Client.BuildRequest("GET", relURL, nil)
-
+	parsedResponse := &[]Service{}
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "/v2/pcc/customers/{account_number}/services",
+		PathParams: map[string]string{
+			"account_number": params.Customer.HexID,
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomerServices: %v", err)
+		return nil,
+			fmt.Errorf("GetCustomerServices: %w", err)
 	}
-
-	var services []Service
-
-	_, err = svc.Client.SendRequest(request, &services)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetCustomerServices: %v", err)
-	}
-
-	return &services, nil
+	return parsedResponse, nil
 }
 
 // UpdateCustomerServices enables or disables the provided services based on the
@@ -156,39 +136,31 @@ func (svc *CustomerService) UpdateCustomerServices(
 	params UpdateCustomerServicesParams,
 ) error {
 	for _, serviceID := range params.ServiceIDs {
-		relUrl := fmt.Sprintf("v2/pcc/customers/%s/services/%v",
-			params.Customer.HexID, serviceID)
-
 		body := &struct {
 			Status int `json:"Status"`
 		}{
 			Status: params.Status,
 		}
-
-		request, err := svc.Client.BuildRequest("PUT", relUrl, body)
-
-		if err != nil {
-			return fmt.Errorf(
-				"UpdateCustomerServices build request failed. Error: %v\n Body: %v",
-				err, body,
-			)
-		}
-
-		resp, err := svc.Client.SendRequest(request, nil)
-
-		if err == nil && resp.StatusCode != 200 {
+		resp, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+			Method:  ecclient.Put,
+			Path:    "/v2/pcc/customers/{account_number}/services/{id}",
+			RawBody: body,
+			PathParams: map[string]string{
+				"account_number": params.Customer.HexID,
+				"id":             strconv.Itoa(serviceID),
+			},
+		})
+		if err == nil && resp.HTTPResponse.StatusCode != 200 {
 			return fmt.Errorf(
 				"failed to set customer services, please contact an administrator",
 			)
 		}
-
 		if err != nil {
 			return fmt.Errorf(
-				"UpdateCustomerServices send request failed. Error: %v\n Body: %v",
+				"UpdateCustomerServices send request failed. Error: %v\n RawBody: %v",
 				err, body)
 		}
 	}
-
 	return nil
 }
 
@@ -197,25 +169,19 @@ func (svc *CustomerService) UpdateCustomerServices(
 func (svc *CustomerService) GetCustomerDeliveryRegion(
 	params GetCustomerDeliveryRegionParams,
 ) (*DeliveryRegion, error) {
-	relURL := fmt.Sprintf(
-		"v2/pcc/customers/%s/deliveryregions",
-		params.Customer.HexID,
-	)
-
-	request, err := svc.Client.BuildRequest("GET", relURL, nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetCustomerDeliveryRegion: %v", err)
-	}
-
 	parsedResponse := &DeliveryRegion{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "/v2/pcc/customers/{account_number}/deliveryregions",
+		PathParams: map[string]string{
+			"account_number": params.Customer.HexID,
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomerDeliveryRegion: %v", err)
+		return nil,
+			fmt.Errorf("GetCustomerDeliveryRegion: %w", err)
 	}
-
 	return parsedResponse, nil
 }
 
@@ -224,84 +190,73 @@ func (svc *CustomerService) GetCustomerDeliveryRegion(
 func (svc *CustomerService) UpdateCustomerDeliveryRegion(
 	params UpdateCustomerDeliveryRegionParams,
 ) error {
-	// TODO: support custom ids for accounts
-	baseURL := fmt.Sprintf(
-		"v2/pcc/customers/deliveryregions?idtype=an&id=%s",
-		params.Customer.HexID,
-	)
-	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
-
 	body := &struct {
 		ID int `json:"Id"`
 	}{
 		ID: params.DeliveryRegionID,
 	}
-
-	request, err := svc.Client.BuildRequest("PUT", relURL, body)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:  ecclient.Put,
+		Path:    "/v2/pcc/customers/deliveryregions",
+		RawBody: body,
+		QueryParams: map[string]string{
+			// TODO: support custom ids for accounts
+			"idtype":    "an",
+			"id":        params.Customer.HexID,
+			"partnerid": strconv.Itoa(params.Customer.PartnerID),
+		},
+	})
 	if err != nil {
-		return fmt.Errorf("UpdateCustomerDeliveryRegion: %v", err)
+		return fmt.Errorf(
+			"UpdateCustomerDeliveryRegion: %v",
+			err)
 	}
-
-	_, err = svc.Client.SendRequest(request, nil)
-
-	if err != nil {
-		return fmt.Errorf("UpdateCustomerDeliveryRegion: %v", err)
-	}
-
 	return nil
 }
 
 // GetCustomerDomainTypes retrieves all available domain types
-func (svc *CustomerService) GetCustomerDomainTypes() ([]DomainType, error) {
-	relURL := "v2/pcc/customers/domaintypes"
-	request, err := svc.Client.BuildRequest("GET", relURL, nil)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetCustomerDomainTypes: %v", err)
-	}
-
+func (svc *CustomerService) GetCustomerDomainTypes() (*[]DomainType, error) {
 	parsedResponse := &[]DomainType{}
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         ecclient.Get,
+		Path:           "/v2/pcc/customers/domaintypes",
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomerDomainTypes: %v", err)
+		return nil,
+			fmt.Errorf("GetCustomerDomainTypes: %w", err)
 	}
-
-	return *parsedResponse, nil
+	return parsedResponse, nil
 }
 
-// UpdateCustomerDomainURL changes the domain associated with the customer CDN URLs
+// UpdateCustomerDomainURL changes the domain associated with the customer CDN
+// URLs
 func (svc *CustomerService) UpdateCustomerDomainURL(
 	params UpdateCustomerDomainURLParams,
 ) error {
-	// TODO: support custom ids for accounts
-	baseURL := fmt.Sprintf(
-		"v2/pcc/customers/domains/%d/url?idtype=an&id=%s",
-		params.DomainType,
-		params.Customer.HexID,
-	)
-
-	relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
-
-	body := &struct {
-		URL string `json:"Url"`
-	}{
-		URL: params.Url,
-	}
-
-	request, err := svc.Client.BuildRequest("PUT", relURL, body)
-
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Put,
+		Path:   "/v2/pcc/customers/domains/{domain_type}/url",
+		RawBody: &struct {
+			URL string `json:"Url"`
+		}{
+			URL: params.Url,
+		},
+		PathParams: map[string]string{
+			"domain_type": strconv.Itoa(params.DomainType),
+		},
+		QueryParams: map[string]string{
+			// TODO: support custom ids for accounts
+			"idtype":    "an",
+			"id":        params.Customer.HexID,
+			"partnerid": strconv.Itoa(params.Customer.PartnerID),
+		},
+	})
 	if err != nil {
-		return fmt.Errorf("UpdateCustomerDomainURL: %v", err)
+		return fmt.Errorf(
+			"UpdateCustomerDomainURL: %v",
+			err)
 	}
-
-	_, err = svc.Client.SendRequest(request, nil)
-
-	if err != nil {
-		return fmt.Errorf("UpdateCustomerDomainURL: %v", err)
-	}
-
 	return nil
 }
 
@@ -310,25 +265,20 @@ func (svc *CustomerService) UpdateCustomerDomainURL(
 func (svc *CustomerService) GetCustomerAccessModules(
 	params GetCustomerAccessModulesParams,
 ) (*[]AccessModule, error) {
-	relURL := fmt.Sprintf(
-		"v2/pcc/customers/%s/accessmodules",
-		params.Customer.HexID,
-	)
-	request, err := svc.Client.BuildRequest("GET", relURL, nil)
-
+	parsedResponse := &[]AccessModule{}
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "/v2/pcc/customers/{account_number}/accessmodules",
+		PathParams: map[string]string{
+			"account_number": params.Customer.HexID,
+		},
+		ParsedResponse: parsedResponse,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomerAccessModules: %v", err)
+		return nil,
+			fmt.Errorf("GetCustomerAccessModules: %w", err)
 	}
-
-	var accessModules []AccessModule
-
-	_, err = svc.Client.SendRequest(request, &accessModules)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetCustomerAccessModules: %v", err)
-	}
-
-	return &accessModules, nil
+	return parsedResponse, nil
 }
 
 // UpdateCustomerAccessModule enables or disables the provided
@@ -338,26 +288,28 @@ func (svc *CustomerService) UpdateCustomerAccessModule(
 ) error {
 	// TODO: support custom ids for accounts
 	for _, accessModuleID := range params.AccessModuleIDs {
-		baseURL := fmt.Sprintf(
-			"v2/pcc/customers/accessmodules/%d/status?idtype=an&id=%s",
-			accessModuleID, params.Customer.HexID)
-		relURL := urlutil.FormatURLAddPartnerID(baseURL, params.Customer.PartnerID)
-
-		body := &struct {
-			Status int8 `json:"Status"`
-		}{
-			Status: int8(params.Status)}
-
-		request, err := svc.Client.BuildRequest("PUT", relURL, body)
-
+		_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+			Method: ecclient.Put,
+			Path:   "/v2/pcc/customers/accessmodules/{access_module_id}/status",
+			RawBody: &struct {
+				Status int8 `json:"Status"`
+			}{
+				Status: int8(params.Status),
+			},
+			PathParams: map[string]string{
+				"access_module_id": strconv.Itoa(accessModuleID),
+			},
+			QueryParams: map[string]string{
+				// TODO: support custom ids for accounts
+				"idtype":    "an",
+				"id":        params.Customer.HexID,
+				"partnerid": strconv.Itoa(params.Customer.PartnerID),
+			},
+		})
 		if err != nil {
-			return fmt.Errorf("UpdateCustomerAccessModule: %v", err)
-		}
-
-		_, err = svc.Client.SendRequest(request, nil)
-
-		if err != nil {
-			return fmt.Errorf("UpdateCustomerAccessModule: %v", err)
+			return fmt.Errorf(
+				"UpdateCustomerAccessModule: %v",
+				err)
 		}
 	}
 	return nil

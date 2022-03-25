@@ -5,7 +5,9 @@ package routedns
 
 import (
 	"fmt"
-	"log"
+	"strconv"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // GetSecondaryZoneGroup retrieves a secondary zone group along with its
@@ -13,40 +15,32 @@ import (
 func (svc *RouteDNSService) GetSecondaryZoneGroup(
 	params GetSecondaryZoneGroupParams,
 ) (*SecondaryZoneGroupResponseOK, error) {
-	apiURL := fmt.Sprintf(
-		"/v2/mcc/customers/%s/dns/secondarygroup?id=%d",
-		params.AccountNumber,
-		params.ID,
-	)
-
-	request, err := svc.Client.BuildRequest("GET", apiURL, nil)
+	parsedResponse := []SecondaryZoneGroupResponseOK{}
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "/v2/mcc/customers/{account_number}/dns/secondarygroup",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		QueryParams: map[string]string{
+			"id": strconv.Itoa(params.ID),
+		},
+		ParsedResponse: &parsedResponse,
+	})
 
 	if err != nil {
-		return nil, fmt.Errorf(
-			"GetSecondaryZoneGroup->Build Request Error: %v",
-			err,
-		)
-	}
-
-	parsedResponse := []*SecondaryZoneGroupResponseOK{}
-	resp, err := svc.Client.SendRequest(request, &parsedResponse)
-	log.Printf("GetSecondaryZoneGroup:%v", resp)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"GetSecondaryZoneGroup->API Response Error: %v",
-			err,
-		)
+		return nil, fmt.Errorf("GetSecondaryZoneGroup: %w", err)
 	}
 
 	// Single object get should always return an array of one
 	length := len(parsedResponse)
 	if length != 1 {
 		return nil, fmt.Errorf(
-			`GetSecondaryZoneGroup: Get response returned array of length %d 
+			`GetSecondaryZoneGroup: Get response returned array of length %d
 			instead of length 1`, length)
 	}
 
-	return parsedResponse[0], nil
+	return &parsedResponse[0], nil
 }
 
 // AddSecondaryZoneGroup creates a secondary zone group along with its
@@ -54,32 +48,19 @@ func (svc *RouteDNSService) GetSecondaryZoneGroup(
 func (svc *RouteDNSService) AddSecondaryZoneGroup(
 	params AddSecondaryZoneGroupParams,
 ) (*SecondaryZoneGroupResponseOK, error) {
-	apiURL := fmt.Sprintf(
-		"/v2/mcc/customers/%s/dns/secondarygroup",
-		params.AccountNumber,
-	)
-
-	request, err := svc.Client.BuildRequest(
-		"POST",
-		apiURL,
-		params.SecondaryZoneGroup,
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf(
-			"AddSecondaryZone->->Build Request Error: %v",
-			err,
-		)
-	}
-
 	parsedResponse := SecondaryZoneGroupResponseOK{}
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Post,
+		Path:   "/v2/mcc/customers/{account_number}/dns/secondarygroup",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		ParsedResponse: &parsedResponse,
+		RawBody:        params.SecondaryZoneGroup,
+	})
 
 	if err != nil {
-		return nil, fmt.Errorf(
-			"AddSecondaryZoneGroup->API Response Error: %v",
-			err,
-		)
+		return nil, fmt.Errorf("AddSecondaryZoneGroup: %w", err)
 	}
 
 	return &parsedResponse, nil
@@ -90,30 +71,17 @@ func (svc *RouteDNSService) AddSecondaryZoneGroup(
 func (svc RouteDNSService) UpdateSecondaryZoneGroup(
 	params UpdateSecondaryZoneGroupParams,
 ) error {
-	apiURL := fmt.Sprintf(
-		"/v2/mcc/customers/%s/dns/secondarygroup",
-		params.AccountNumber,
-	)
-
-	request, err := svc.Client.BuildRequest(
-		"PUT",
-		apiURL,
-		params.SecondaryZoneGroup,
-	)
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Put,
+		Path:   "/v2/mcc/customers/{account_number}/dns/secondarygroup",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		RawBody: params.SecondaryZoneGroup,
+	})
 
 	if err != nil {
-		return fmt.Errorf(
-			"UpdateSecondaryZoneGroup->Build Request Error: %v",
-			err,
-		)
-	}
-	_, err = svc.Client.SendRequestWithStringResponse(request)
-
-	if err != nil {
-		return fmt.Errorf(
-			"UpdateSecondaryZoneGroup->API Response Error: %v",
-			err,
-		)
+		return fmt.Errorf("UpdateSecondaryZoneGroup: %w", err)
 	}
 
 	return nil
@@ -124,28 +92,19 @@ func (svc RouteDNSService) UpdateSecondaryZoneGroup(
 func (svc RouteDNSService) DeleteSecondaryZoneGroup(
 	params DeleteSecondaryZoneGroupParams,
 ) error {
-	apiURL := fmt.Sprintf(
-		"v2/mcc/customers/%s/dns/secondarygroup?id=%d",
-		params.AccountNumber,
-		params.SecondaryZoneGroup.ID,
-	)
-
-	request, err := svc.Client.BuildRequest("DELETE", apiURL, nil)
-
-	if err != nil {
-		return fmt.Errorf(
-			"DeleteSecondaryZoneGroup->Build Request Error: %v",
-			err,
-		)
-	}
-
-	_, err = svc.Client.SendRequest(request, nil)
+	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method: ecclient.Delete,
+		Path:   "/v2/mcc/customers/{account_number}/dns/secondarygroup",
+		PathParams: map[string]string{
+			"account_number": params.AccountNumber,
+		},
+		QueryParams: map[string]string{
+			"id": strconv.Itoa(params.SecondaryZoneGroup.ID),
+		},
+	})
 
 	if err != nil {
-		return fmt.Errorf(
-			"DeleteSecondaryZoneGroup->API Response Error: %v",
-			err,
-		)
+		return fmt.Errorf("DeleteSecondaryZoneGroup: %w", err)
 	}
 
 	return nil
