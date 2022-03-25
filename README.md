@@ -348,13 +348,11 @@ We welcome issues, questions, and pull requests.
 
 ### Maintainers
 
-```
-Changgyu Oh: changgyu.oh@edgecast.com
-Frank Contreras: frank.contreras@edgecast.com
-Hector Gray: hector.gray@edgecast.com
-Steven Paz: steven.paz@edgecast.com
-Shikha Saluja: shikha.saluja@edgecast.com
-```
+- Changgyu Oh: changgyu.oh@edgecast.com
+- Frank Contreras: frank.contreras@edgecast.com
+- Hector Gray: hector.gray@edgecast.com
+- Steven Paz: steven.paz@edgecast.com
+- Shikha Saluja: shikha.saluja@edgecast.com
 
 ### Testing
 
