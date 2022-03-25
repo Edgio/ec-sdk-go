@@ -86,7 +86,7 @@ func (svc *RouteDNSService) UpdateZone(params UpdateZoneParams) error {
 func (svc *RouteDNSService) DeleteZone(params DeleteZoneParams) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
-		Path:   "/v2/mcc/customers/{account_number}/dns/zone/{id}",
+		Path:   "/v2/mcc/customers/{account_number}/dns/routezone/{id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 			"id":             strconv.Itoa(params.Zone.FixedZoneID),

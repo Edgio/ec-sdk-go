@@ -44,6 +44,7 @@ func (svc *RouteDNSService) AddGroup(params AddGroupParams) (*int, error) {
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
+		RawBody: params.Group,
 	})
 
 	if err != nil {
