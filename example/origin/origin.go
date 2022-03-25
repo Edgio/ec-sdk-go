@@ -53,7 +53,7 @@ func main() {
 
 	// Create a new Origin for ADN platform
 	newOrigin := origin.Origin{
-		DirectoryName:        "/myOrigin/directory",
+		DirectoryName:        "myOriginDirectory",
 		FollowRedirects:      true,
 		HostHeader:           "www.mysite.com:443",
 		HTTPHostnames:        httpHostnames,

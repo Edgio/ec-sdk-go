@@ -14,8 +14,8 @@ import (
 
 func main() {
 	// Setup
-	clientID := "f51552c3-23fe-4ed4-a49e-0f90c87b3afe"
-	clientSecret := "qz4IxjJfOr4roXjflfv2CspaeRYt8UfW"
+	clientID := ""
+	clientSecret := ""
 	scope := "ec.rules"
 
 	// A Policy should be constructed as a JSON object passed as a string.

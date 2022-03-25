@@ -40,7 +40,8 @@ func main() {
 	fmt.Println("")
 	fmt.Printf("Creating Rate Rule: %+v\n", rule)
 	ruleID, err := wafService.AddRateRule(waf.AddRateRuleParams{
-		RateRule: rule,
+		AccountNumber: accountNumber,
+		RateRule:      rule,
 	})
 
 	if err != nil {

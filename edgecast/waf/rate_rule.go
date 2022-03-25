@@ -30,7 +30,7 @@ func (svc WAFService) AddRateRule(
 	parsedResponse := &RateRuleAddOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Post,
-		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/limit",
+		Path:    "/v2/mcc/customers/{account_number}/waf/v1.0/limit",
 		RawBody: params.RateRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -51,7 +51,7 @@ func (svc WAFService) GetRateRule(
 	parsedResponse := &RateRuleGetOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
+		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 			"rule_id":        params.RateRuleID,
@@ -71,7 +71,7 @@ func (svc WAFService) UpdateRateRule(
 ) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,
-		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
+		Path:    "/v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		RawBody: params.RateRule,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
@@ -91,7 +91,7 @@ func (svc WAFService) DeleteRateRule(
 ) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
+		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 			"rule_id":        params.RateRuleID,
@@ -111,7 +111,7 @@ func (svc WAFService) GetAllRateRules(
 	parsedResponse := &[]RateRuleGetAllOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/limit",
+		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},

@@ -10,8 +10,8 @@ import (
 
 func main() {
 	// Setup
-	apiToken := "ltd5n2U145YVRIopwgOEQx5D88ShPJuO"
-	accountNumber := "CEA78"
+	accountNumber := "MY_ACCOUNT_NUMBER"
+	apiToken := "MY_API_TOKEN"
 
 	sdkConfig := edgecast.NewSDKConfig()
 	sdkConfig.Logger = eclog.NewFileLogger("routedns")

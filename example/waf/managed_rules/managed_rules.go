@@ -40,7 +40,8 @@ func main() {
 	fmt.Println("")
 	fmt.Printf("Creating Managed Rule: %+v\n", rule)
 	ruleID, err := wafService.AddManagedRule(waf.AddManagedRuleParams{
-		ManagedRule: rule,
+		AccountNumber: accountNumber,
+		ManagedRule:   rule,
 	})
 
 	if err != nil {

@@ -180,7 +180,7 @@ func (svc *OriginService) ReselectADNGateways(
 ) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Put,
-		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
+		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}/reselect",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 			"platform_id":    params.MediaTypeID.String(),
