@@ -281,6 +281,8 @@ import (
 ```
 
 ### Structure
+
+```
 .
 ├── edgecast
 	package containing the main functionality for sdk.
@@ -336,6 +338,7 @@ import (
 ├── Makefile
         This Makefile should contain all testing and building operations.
 
+```
 
 ### Contributing
 
