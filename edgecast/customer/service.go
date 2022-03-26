@@ -7,27 +7,26 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // Customer service interacts with the EdgeCast API for Customer
 type CustomerService struct {
-	client.Client
-	Logger logging.Logger
+	client ecclient.APIClient
+	logger eclog.Logger
 }
 
 // New creates a new Customer service
 func New(config edgecast.SDKConfig) (*CustomerService, error) {
-
-	authProvider, err := auth.NewTokenAuthorizationProvider(config.APIToken)
+	authProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
 
 	if err != nil {
 		return nil, fmt.Errorf("customer.New(): %v", err)
 	}
 
-	c := client.NewClient(client.ClientConfig{
+	c := ecclient.New(ecclient.ClientConfig{
 		AuthProvider: authProvider,
 		BaseAPIURL:   config.BaseAPIURLLegacy,
 		UserAgent:    config.UserAgent,
@@ -35,7 +34,7 @@ func New(config edgecast.SDKConfig) (*CustomerService, error) {
 	})
 
 	return &CustomerService{
-		Client: c,
-		Logger: config.Logger,
+		client: c,
+		logger: config.Logger,
 	}, nil
 }

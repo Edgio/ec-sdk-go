@@ -7,28 +7,28 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/client"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/logging"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // RouteDNS service interacts with the EdgeCast API to manage Route DNS
 // configurations
 type RouteDNSService struct {
-	client.Client
-	Logger logging.Logger
+	client ecclient.APIClient
+	logger eclog.Logger
 }
 
 // New creates a new Route DNS service
 func New(config edgecast.SDKConfig) (*RouteDNSService, error) {
 
-	authProvider, err := auth.NewTokenAuthorizationProvider(config.APIToken)
+	authProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
 
 	if err != nil {
-		return nil, fmt.Errorf("RouteDNS.New(): %v", err)
+		return nil, fmt.Errorf("RouteDNS.New(): %w", err)
 	}
 
-	c := client.NewClient(client.ClientConfig{
+	c := ecclient.New(ecclient.ClientConfig{
 		AuthProvider: authProvider,
 		BaseAPIURL:   config.BaseAPIURLLegacy,
 		UserAgent:    config.UserAgent,
@@ -36,7 +36,7 @@ func New(config edgecast.SDKConfig) (*RouteDNSService, error) {
 	})
 
 	return &RouteDNSService{
-		Client: c,
-		Logger: config.Logger,
+		client: c,
+		logger: config.Logger,
 	}, nil
 }

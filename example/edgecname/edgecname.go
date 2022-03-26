@@ -1,30 +1,20 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/edgecname"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/enums"
 )
 
 func main() {
-	// Setup
-	apiToken := flag.String("api-token", "", "API Token provided to you")
-	accountNumber := flag.String(
-		"account-number",
-		"",
-		"Account number you wish to manage an Edge CNAME for",
-	)
+	// Setup - fill in the below variables before running this code
+	accountNumber := "MY_ACCOUNT_NUMBER"
+	apiToken := "MY_API_TOKEN"
 
-	flag.Parse()
-
-	// Edge CNAME management does not use IDS credentials
-	idsCredentials := auth.OAuth2Credentials{}
-
-	sdkConfig := edgecast.NewSDKConfig(*apiToken, idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = apiToken
 	edgecnameService, err := edgecname.New(sdkConfig)
 
 	if err != nil {
@@ -42,7 +32,7 @@ func main() {
 	}
 
 	addParams := edgecname.NewAddEdgeCnameParams()
-	addParams.AccountNumber = *accountNumber
+	addParams.AccountNumber = accountNumber
 	addParams.EdgeCname = cname
 
 	edgeCnameID, err := edgecnameService.AddEdgeCname(*addParams)
@@ -54,7 +44,7 @@ func main() {
 
 	// Get all Edge CNAMEs by Platform
 	getAllParms := edgecname.NewGetAllEdgeCnameParams()
-	getAllParms.AccountNumber = *accountNumber
+	getAllParms.AccountNumber = accountNumber
 	getAllParms.Platform = enums.HttpLarge
 
 	edgeCnames, err := edgecnameService.GetAllEdgeCnames(*getAllParms)
@@ -68,7 +58,7 @@ func main() {
 
 	// Get a single Edge CNAME
 	getParams := edgecname.NewGetEdgeCnameParams()
-	getParams.AccountNumber = *accountNumber
+	getParams.AccountNumber = accountNumber
 	getParams.EdgeCnameID = *edgeCnameID
 
 	edgeCnameObj, err := edgecnameService.GetEdgeCname(*getParams)
@@ -80,7 +70,7 @@ func main() {
 
 	// Get Edge CNAME propgation status
 	getStatusParams := edgecname.NewGetEdgeCnamePropagationStatusParams()
-	getStatusParams.AccountNumber = *accountNumber
+	getStatusParams.AccountNumber = accountNumber
 	getStatusParams.EdgeCnameID = *edgeCnameID
 
 	propagationStatus, err := edgecnameService.GetEdgeCnamePropagationStatus(
@@ -97,7 +87,7 @@ func main() {
 	// Update Edge CNAME
 	edgeCnameObj.EnableCustomReports = 0
 	updateParams := edgecname.NewUpdateEdgeCnameParams()
-	updateParams.AccountNumber = *accountNumber
+	updateParams.AccountNumber = accountNumber
 	updateParams.EdgeCname = *edgeCnameObj
 
 	_, err = edgecnameService.UpdateEdgeCname(*updateParams)
@@ -109,7 +99,7 @@ func main() {
 
 	// Delete Edge CNAME
 	deleteParams := edgecname.NewDeleteEdgeCnameParams()
-	deleteParams.AccountNumber = *accountNumber
+	deleteParams.AccountNumber = accountNumber
 	deleteParams.EdgeCname = *edgeCnameObj
 
 	err = edgecnameService.DeleteEdgeCname(*deleteParams)

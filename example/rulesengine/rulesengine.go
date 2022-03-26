@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/rulesengine"
 )
 
@@ -27,7 +27,7 @@ func main() {
 	// https://developer.edgecast.com/cdn/api/#Media_Management/REv4/REv4.htm
 	policyString := `{
 		"@type": "policy-create",
-		"name": "Simple SDK policy 4",
+		"name": "Simple SDK policy 5",
 		"description": "This is a test of the policy-create process.",
 		"platform": "http_large",
 		"state": "locked",
@@ -52,13 +52,15 @@ func main() {
 	}`
 
 	// Initialize Rules Engine Service
-	idsCredentials := auth.OAuth2Credentials{
+	idsCredentials := edgecast.IDSCredentials{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		Scope:        scope,
 	}
 
-	sdkConfig := edgecast.NewSDKConfig("", idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.IDSCredentials = idsCredentials
+	sdkConfig.Logger = eclog.NewStandardLogger()
 	rulesengineService, err := rulesengine.New(sdkConfig)
 
 	if err != nil {

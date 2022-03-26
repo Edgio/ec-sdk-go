@@ -8,15 +8,15 @@ package {{ .Name }}
 import (
   "fmt"
 
-  "github.com/EdgeCast/ec-sdk-go/edgecast/client"
+  "github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 
   {{ imports .DefaultImports }}
   {{ imports .Imports }}
 )
 
 // New creates a new {{ humanize .Name }} API client.
-func New(c client.Client) ClientService {
-  return &Client{Client: c}
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+  return &Client{c, baseAPIURL}
 }
 
 /*
@@ -25,7 +25,8 @@ Client {{ if .Summary }}{{ .Summary }}{{ if .Description }}
 {{ blockcomment .Description }}{{ end }}{{ else if .Description}}{{ blockcomment .Description }}{{ else }}for {{ humanize .Name }} API{{ end }}
 */
 type Client struct {
-  client.Client
+  client ecclient.APIClient
+	baseAPIURL string
 }
 
 
@@ -56,22 +57,27 @@ func (a *Client) {{ pascalize .Name }}(params *{{ pascalize .Name }}Params{{ if 
 		return {{ if .SuccessResponse }}nil,{{ end }} err
 	}
 
-  url := a.Config.BaseAPIURL.String() + {{ printf "%q" .Path }}
+  method, err := ecclient.ToHTTPMethod({{ printf "%q" .Method }})
+	if err != nil {
+		return nil, fmt.Errorf("{{ pascalize .Name }}: %v", err)
+	}
 
-  request, err := a.Client.PrepareRequest({{ printf "%q" .Method }}, url, results.Body, results.QueryParams, results.PathParams)
-  if err != nil {
-    return {{ if .SuccessResponse }}nil,{{ end }} fmt.Errorf("{{ pascalize .Name }}: %v", err)
-  }
-	
   {{ $length := len .SuccessResponses }}
   {{ if .SuccessResponse }}parsedResponse := &{{ pascalize .SuccessResponse.Name }}{}
   {{ end }}
+	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
+		Method:         method,
+		Path:           a.baseAPIURL + {{ printf "%q" .Path }},
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+    {{ $length := len .SuccessResponses }}{{ if .SuccessResponse }}ParsedResponse : parsedResponse,{{ end }}
+	})
 
-  _, err = a.Client.SendRequest(request, {{ if .SuccessResponse }}parsedResponse{{else}}nil{{end}})
-  if err != nil {
-    return {{ if .SuccessResponse }}nil,{{ end }} fmt.Errorf("{{ pascalize .Name }}: %v", err)
-  }
-
+	if err != nil {
+		return nil, fmt.Errorf("{{ pascalize .Name }}: %v", err)
+	}
+  
  return {{if .SuccessResponse }}parsedResponse,{{ end }} nil
 }
 {{- end }}

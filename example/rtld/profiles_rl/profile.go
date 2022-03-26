@@ -7,7 +7,6 @@ import (
 	"fmt"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/auth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/rtld"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/rtld/profiles_rl"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/rtldmodels"
@@ -23,13 +22,15 @@ func main() {
 	// Setup
 	apiToken := "MY_API_TOKEN"
 
-	idsCredentials := auth.OAuth2Credentials{
+	idsCredentials := edgecast.IDSCredentials{
 		ClientID:     "CLIENT_ID",
 		ClientSecret: "CLIENT_SECRET",
 		Scope:        "SCOPE",
 	}
 
-	sdkConfig := edgecast.NewSDKConfig(apiToken, idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = apiToken
+	sdkConfig.IDSCredentials = idsCredentials
 
 	rtldService, err := rtld.New(sdkConfig)
 

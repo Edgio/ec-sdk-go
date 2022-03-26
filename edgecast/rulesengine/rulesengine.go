@@ -2,40 +2,35 @@ package rulesengine
 
 import (
 	"fmt"
-	"net/http"
 	"strconv"
+
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
 // AddPolicy creates a draft or a locked policy.
 func (svc *RulesEngineService) AddPolicy(
 	params AddPolicyParams,
 ) (*PolicyResponse, error) {
-	request, err := svc.Client.BuildRequest(
-		"POST",
-		"rules-engine/v1.1/policies",
-		params.PolicyAsString,
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf("AddPolicy: %v", err)
+	parsedResponse := &PolicyResponse{}
+	reqParams := ecclient.SubmitRequestParams{
+		Method:         ecclient.Post,
+		Path:           "rules-engine/v1.1/policies",
+		ParsedResponse: parsedResponse,
+		RawBody:        params.PolicyAsString,
 	}
 
-	err = addPortalsHeaders(
-		&request.Header,
+	headers, err := buildPortalsHeaders(
 		params.AccountNumber,
 		params.CustomerUserID,
 		params.PortalTypeID)
-
 	if err != nil {
-		return nil, fmt.Errorf("AddPolicy: %v", err)
+		return nil, fmt.Errorf("AddPolicy: %w", err)
 	}
 
-	parsedResponse := &PolicyResponse{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	reqParams.Headers = headers
+	_, err = svc.client.SubmitRequest(reqParams)
 	if err != nil {
-		return nil, fmt.Errorf("AddPolicy: %v", err)
+		return nil, fmt.Errorf("AddPolicy: %w", err)
 	}
 
 	return parsedResponse, nil
@@ -45,32 +40,28 @@ func (svc *RulesEngineService) AddPolicy(
 func (svc *RulesEngineService) GetPolicy(
 	params GetPolicyParams,
 ) (map[string]interface{}, error) {
-	request, err := svc.Client.BuildRequest(
-		"GET",
-		fmt.Sprintf("rules-engine/v1.1/policies/%d", params.PolicyID),
-		nil,
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetPolicy: %v", err)
+	parsedResponse := make(map[string]interface{})
+	reqParams := ecclient.SubmitRequestParams{
+		Method: ecclient.Get,
+		Path:   "rules-engine/v1.1/policies/{id}",
+		PathParams: map[string]string{
+			"id": strconv.Itoa(params.PolicyID),
+		},
+		ParsedResponse: &parsedResponse,
 	}
 
-	err = addPortalsHeaders(
-		&request.Header,
+	headers, err := buildPortalsHeaders(
 		params.AccountNumber,
 		params.CustomerUserID,
 		params.PortalTypeID)
-
 	if err != nil {
-		return nil, fmt.Errorf("GetPolicy: %v", err)
+		return nil, fmt.Errorf("GetPolicy: %w", err)
 	}
 
-	parsedResponse := make(map[string]interface{})
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	reqParams.Headers = headers
+	_, err = svc.client.SubmitRequest(reqParams)
 	if err != nil {
-		return nil, fmt.Errorf("GetPolicy: %v", err)
+		return nil, fmt.Errorf("GetPolicy: %w", err)
 	}
 
 	return parsedResponse, nil
@@ -81,56 +72,54 @@ func (svc *RulesEngineService) GetPolicy(
 func (svc *RulesEngineService) SubmitDeployRequest(
 	params SubmitDeployRequestParams,
 ) (*DeployRequestOK, error) {
-	request, err := svc.Client.BuildRequest(
-		"POST",
-		"rules-engine/v1.1/deploy-requests",
-		params.DeployRequest,
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf("SubmitDeployRequest: %v", err)
+	parsedResponse := &DeployRequestOK{}
+	reqParams := ecclient.SubmitRequestParams{
+		Method:         ecclient.Post,
+		Path:           "rules-engine/v1.1/deploy-requests",
+		ParsedResponse: parsedResponse,
+		RawBody:        params.DeployRequest,
 	}
 
-	err = addPortalsHeaders(
-		&request.Header,
+	headers, err := buildPortalsHeaders(
 		params.AccountNumber,
 		params.CustomerUserID,
 		params.PortalTypeID)
-
 	if err != nil {
-		return nil, fmt.Errorf("SubmitDeployRequest: %v", err)
+		return nil, fmt.Errorf("SubmitDeployRequest: %w", err)
 	}
 
-	parsedResponse := &DeployRequestOK{}
-
-	_, err = svc.Client.SendRequest(request, &parsedResponse)
-
+	reqParams.Headers = headers
+	_, err = svc.client.SubmitRequest(reqParams)
 	if err != nil {
-		return nil, fmt.Errorf("SubmitDeployRequest: %v", err)
+		return nil, fmt.Errorf("SubmitDeployRequest: %w", err)
 	}
 
 	return parsedResponse, nil
 }
 
-func addPortalsHeaders(
-	header *http.Header,
+func buildPortalsHeaders(
 	accountNumber string,
 	customerUserID string,
 	portalTypeID string,
-) error {
+) (map[string]string, error) {
+	m := make(map[string]string)
+
 	if len(accountNumber) > 0 {
 		// account number hex string -> customer ID
 		customerID, err := strconv.ParseInt(accountNumber, 16, 64)
 		if err != nil {
-			return fmt.Errorf("error parsing Hex account number: %v", err)
+			return nil, fmt.Errorf("error parsing Hex account number: %w", err)
 		}
-		header.Set("Portals_CustomerId", strconv.FormatInt(customerID, 10))
+		m["Portals_CustomerId"] = strconv.FormatInt(customerID, 10)
 	}
+
 	if len(customerUserID) > 0 {
-		header.Set("Portals_UserId", customerUserID)
+		m["Portals_UserId"] = customerUserID
 	}
+
 	if len(portalTypeID) > 0 {
-		header.Set("Portals_PortalTypeId", portalTypeID)
+		m["Portals_PortalTypeId"] = portalTypeID
 	}
-	return nil
+
+	return m, nil
 }
