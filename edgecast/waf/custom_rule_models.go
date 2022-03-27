@@ -306,6 +306,10 @@ type CustomRuleSetGetAllOK struct {
 	// TODO: Convert LastModifiedDate to time.Time
 }
 
+func NewGetCustomRuleSetParams() *GetCustomRuleSetParams {
+	return &GetCustomRuleSetParams{}
+}
+
 // GetCustomRuleSetParams -
 type GetCustomRuleSetParams struct {
 	AccountNumber   string
@@ -332,6 +336,10 @@ type CustomRuleSetGetOK struct {
 	// TODO: Convert LastModifiedDate to time.Time
 }
 
+func NewAddCustomRuleSetParams() *AddCustomRuleSetParams {
+	return &AddCustomRuleSetParams{}
+}
+
 // AddCustomRuleSetParams -
 type AddCustomRuleSetParams struct {
 	CustomRuleSet CustomRuleSet
@@ -343,10 +351,18 @@ type CustomRuleSetAddOK struct {
 	AddRuleResponse
 }
 
+func NewDeleteCustomRuleSetParams() *DeleteCustomRuleSetParams {
+	return &DeleteCustomRuleSetParams{}
+}
+
 // DeleteCustomRuleSetParams -
 type DeleteCustomRuleSetParams struct {
 	AccountNumber   string
 	CustomRuleSetID string
+}
+
+func NewUpdateCustomRuleSetParams() *UpdateCustomRuleSetParams {
+	return &UpdateCustomRuleSetParams{}
 }
 
 // UpdateCustomRuleSetParams -
