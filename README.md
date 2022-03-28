@@ -41,7 +41,8 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/customer"
 )
 // ...
-	sdkConfig := edgecast.NewSDKConfig("MY API TOKEN", idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = "MY API TOKEN"
 	customerService, err := customer.New(sdkConfig)
 	newCustomer := customer.Customer{
 		// ...
@@ -64,15 +65,16 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/customer"
 )
 // ...
-	sdkConfig := edgecast.NewSDKConfig("MY API TOKEN", idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = "MY API TOKEN"
 	customerService, err := customer.New(sdkConfig)
 	customerUser := customer.CustomerUser{
 		// ...
 	}
-	addCustomerUserParams := customer.NewAddCustomerUserParams()
-	addCustomerUserParams.CustomerUser = customerUser
+	addParams := customer.NewAddCustomerUserParams()
+	addParams.CustomerUser = customerUser
 	// ...
-	resp, err := customerService.AddCustomerUser(*addCustomerUserParams)
+	resp, err := customerService.AddCustomerUser(*addParams)
 	// ...
 }
 ```
@@ -93,8 +95,9 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/edgecname"
 )
 // ...
-	sdkConfig := edgecast.NewSDKConfig("MY API TOKEN", idsCredentials))
-	cnameService, err := waf.New(sdkConfig)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = "MY API TOKEN"
+	edgecnameService, err := edgecname.New(sdkConfig)
 	cname := edgecname.EdgeCname{
 		// ...
 	}
@@ -127,7 +130,8 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/edgecname"
 )
 // ...
-	sdkConfig := edgecast.NewSDKConfig("MY API TOKEN", idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = "MY API TOKEN"
 	originService, err := origin.New(sdkConfig)
 	newOrigin := origin.Origin{
 		// ...
@@ -174,7 +178,8 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/routedns"
 )
 // ...
-	sdkConfig := edgecast.NewSDKConfig("MY API TOKEN", idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = "MY API TOKEN"
 	routeDNSService, err := routedns.New(sdkConfig)
 	masterServerGroup := buildMasterServerGroup()
 	addParams := routedns.NewAddMasterServerGroupParams()
@@ -205,7 +210,8 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 // ...
-	sdkConfig := edgecast.NewSDKConfig("", idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.IDSCredentials = "IDS CREDENTIALS"
 	rtldService, err := rtld.New(sdkConfig)
 	addParams := profiles_rl.NewProfilesRateLimitingAddCustomerSettingParams()
 	addParams.SettingDto = &rtldmodels.RateLimitingProfileDto{
@@ -240,7 +246,8 @@ import (
 	policyString := `{
 		// ...
 	}`
-	sdkConfig := edgecast.NewSDKConfig("", idsCredentials)
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.IDSCredentials = "IDS CREDENTIALS"
 	rulesengineService, err := rulesengine.New(sdkConfig)
 	addParams := rulesengine.NewAddPolicyParams()
 	addParams.PolicyAsString = policyString
@@ -270,7 +277,8 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 // ...
-	sdkConfig := edgecast.NewSDKConfig("MY API TOKEN", idsCredentials))
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = "MY API TOKEN"
 	wafService, err := waf.New(sdkConfig)
 	rule := waf.AccessRule{
 		// ... 
@@ -287,12 +295,23 @@ import (
 ├── edgecast
 	package containing the main functionality for sdk.
 	Please add new client and model folders for new services here.
-│   ├── auth
-		authentication layer for oauth 2.0 and token based authentication
-│   ├── client
-		package client provides a base client implementation for interacting 
-		with edgecast cdn apis.
-		configuration and authentication types are also provided.
+│   ├── eclog
+		defines the the implementation and helper methods for logging
+│   ├──	internal
+		package containing helper methods and shared functionality used in sdk
+		please add new helper methods here
+│   │	├── collectionhelper
+			helper methods for working with aggregate/collection types
+│   │	├── jsonhelper		
+			helper methods for working with json
+│   │	├── testhelper
+			helper methods used in testing
+│   │	├── ecauth
+			authentication layer for oauth 2.0 and token based authentication
+│   │	├── ecclient
+			package client provides a base client implementation for interacting 
+			with edgecast cdn apis.
+			configuration and authentication types are also provided.
 │   ├── customer
 		client files for interacting with customer api
 		model files for customer
@@ -315,13 +334,6 @@ import (
 │   ├── waf
 		client files for interacting with waf api
 		model files for waf
-│   ├──	internal
-		helper methods for working with aggregate/collection types
-		helper methods for working with json
-		helper methods for working with urls
-		Please add new helper methods here.
-│   ├── logging
-		defines the the implementation and helper methods for logging
 │   ├── shared
 		shared models and enums
 │   ├── config
@@ -348,7 +360,6 @@ We welcome issues, questions, and pull requests.
 
 ### Maintainers
 
-- Changgyu Oh: changgyu.oh@edgecast.com
 - Frank Contreras: frank.contreras@edgecast.com
 - Hector Gray: hector.gray@edgecast.com
 - Steven Paz: steven.paz@edgecast.com
