@@ -316,7 +316,7 @@ import (
 			helper methods used in testing
 │   │	├── ecauth
 			authentication layer for oauth 2.0 and token based authentication
-│   │	├── ecclient
+│   │	└── ecclient
 			package client provides a base client implementation for interacting 
 			with edgecast cdn apis.
 			configuration and authentication types are also provided.
@@ -348,14 +348,14 @@ import (
 		defines the configuration of sdk services
 │   ├── doc
 		please add new docs here as needed
-│   ├── version
+│   └── version
 		lists the latest version of sdk		
 ├── example
 	example files to get started using the services
 ├── template
 	template files used to generate client files and models using swagger api 
 	documentation
-├── Makefile
+└── Makefile
         This Makefile should contain all testing and building operations.
 
 ```
