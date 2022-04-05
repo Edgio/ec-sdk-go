@@ -79,8 +79,8 @@ type AccessControls struct {
 	Whitelist []interface{} `json:"whitelist"`
 }
 
-func NewAddAccessRuleParams() *AddAccessRuleParams {
-	return &AddAccessRuleParams{}
+func NewAddAccessRuleParams() AddAccessRuleParams {
+	return AddAccessRuleParams{}
 }
 
 // AddAccessRuleParams -
@@ -113,8 +113,8 @@ type AccessRuleGetAllOK struct {
 	LastModifiedDate string `json:"last_modified_date"`
 }
 
-func NewGetAccessRuleParams() *GetAccessRuleParams {
-	return &GetAccessRuleParams{}
+func NewGetAccessRuleParams() GetAccessRuleParams {
+	return GetAccessRuleParams{}
 }
 
 type GetAccessRuleParams struct {
@@ -155,8 +155,8 @@ type AccessRuleGetOK struct {
 	// TODO: Convert LastModifiedDate to time.Time
 }
 
-func NewUpdateAccessRuleParams() *UpdateAccessRuleParams {
-	return &UpdateAccessRuleParams{}
+func NewUpdateAccessRuleParams() UpdateAccessRuleParams {
+	return UpdateAccessRuleParams{}
 }
 
 // UpdateAccessRuleParams -
@@ -166,8 +166,8 @@ type UpdateAccessRuleParams struct {
 	AccessRule    AccessRule
 }
 
-func NewDeleteAccessRuleParams() *DeleteAccessRuleParams {
-	return &DeleteAccessRuleParams{}
+func NewDeleteAccessRuleParams() DeleteAccessRuleParams {
+	return DeleteAccessRuleParams{}
 }
 
 // DeleteAccessRuleParams -

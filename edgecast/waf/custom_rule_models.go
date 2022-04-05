@@ -306,8 +306,8 @@ type CustomRuleSetGetAllOK struct {
 	// TODO: Convert LastModifiedDate to time.Time
 }
 
-func NewGetCustomRuleSetParams() *GetCustomRuleSetParams {
-	return &GetCustomRuleSetParams{}
+func NewGetCustomRuleSetParams() GetCustomRuleSetParams {
+	return GetCustomRuleSetParams{}
 }
 
 // GetCustomRuleSetParams -
@@ -336,8 +336,8 @@ type CustomRuleSetGetOK struct {
 	// TODO: Convert LastModifiedDate to time.Time
 }
 
-func NewAddCustomRuleSetParams() *AddCustomRuleSetParams {
-	return &AddCustomRuleSetParams{}
+func NewAddCustomRuleSetParams() AddCustomRuleSetParams {
+	return AddCustomRuleSetParams{}
 }
 
 // AddCustomRuleSetParams -
@@ -351,8 +351,8 @@ type CustomRuleSetAddOK struct {
 	AddRuleResponse
 }
 
-func NewDeleteCustomRuleSetParams() *DeleteCustomRuleSetParams {
-	return &DeleteCustomRuleSetParams{}
+func NewDeleteCustomRuleSetParams() DeleteCustomRuleSetParams {
+	return DeleteCustomRuleSetParams{}
 }
 
 // DeleteCustomRuleSetParams -
@@ -361,8 +361,8 @@ type DeleteCustomRuleSetParams struct {
 	CustomRuleSetID string
 }
 
-func NewUpdateCustomRuleSetParams() *UpdateCustomRuleSetParams {
-	return &UpdateCustomRuleSetParams{}
+func NewUpdateCustomRuleSetParams() UpdateCustomRuleSetParams {
+	return UpdateCustomRuleSetParams{}
 }
 
 // UpdateCustomRuleSetParams -
