@@ -7,8 +7,10 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/mathhelper"
 )
 
 // GetGroup retrieves group information of the provided groupID.
@@ -62,7 +64,47 @@ func (svc *RouteDNSService) AddGroup(params AddGroupParams) (*int, error) {
 			err,
 		)
 	}
-	return &groupID, nil
+
+	if groupID == -1 {
+		return nil, fmt.Errorf(
+			"AddGroup->Group creation failed. Group ID == -1. Please try again",
+		)
+	}
+
+	// Bug exists where adding group returns ID but group does not exist. This
+	// is a temporary workaround to identify the issue and return an error
+	// allowing the user to try again. Checking for a group too soon will also
+	// result in an error, necessitating this retry logic.
+	maxRetries := 5
+	minSleep := 1 * time.Second
+	maxSleep := 10 * time.Second
+
+	getParams := NewGetGroupParams()
+	getParams.AccountNumber = params.AccountNumber
+	getParams.GroupID = groupID
+	getParams.GroupProductType = params.Group.GroupProductType
+
+	for i := 0; i < maxRetries; i++ {
+		group, err := svc.GetGroup(*getParams)
+
+		// GetGroup will return an error if the group is not found or groupID
+		// will be 0 or -1 in the error condition.
+		if err == nil && group.GroupID > 0 {
+			return &groupID, nil
+		}
+
+		sleepInterval := mathhelper.CalculateSleepWithJitter(
+			minSleep, maxSleep, i)
+
+		svc.logger.Warn(
+			`AddGroup->GetGroup Error retrieving group after group creation. 
+			Sleeping %s seconds and retrying`, sleepInterval.String())
+
+		time.Sleep(sleepInterval)
+	}
+
+	return nil, fmt.Errorf(`AddGroup->Group was not successfully created. 
+		Please try Again`)
 }
 
 // UpdateGroup updates the provided group.

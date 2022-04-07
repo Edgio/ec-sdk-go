@@ -38,7 +38,14 @@ func TestExponentialJitterBackoff(t *testing.T) {
 			},
 			expected: 10 * time.Second, // 10 seconds
 		},
-		// TODO Figure out a method of testing randomness...
+		{
+			name:       "Testing with Random/Jitter Path",
+			resp:       nil,
+			min:        20 * time.Second, // Min more than max to force max
+			max:        1 * time.Second,
+			attemptNum: 3,
+			expected:   1000000000,
+		},
 	}
 
 	for _, c := range cases {

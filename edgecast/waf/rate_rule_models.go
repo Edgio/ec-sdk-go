@@ -221,6 +221,10 @@ type GetAllRateRulesParams struct {
 	AccountNumber string
 }
 
+func NewGetRateRuleParams() GetRateRuleParams {
+	return GetRateRuleParams{}
+}
+
 // GetRateRuleParams -
 type GetRateRuleParams struct {
 	AccountNumber string
@@ -257,6 +261,10 @@ type RateRuleGetOK struct {
 	// TODO: Convert LastModifiedDate to time.Time
 }
 
+func NewAddRateRuleParams() AddRateRuleParams {
+	return AddRateRuleParams{}
+}
+
 // AddRateRuleParams -
 type AddRateRuleParams struct {
 	AccountNumber string
@@ -268,11 +276,19 @@ type RateRuleAddOK struct {
 	AddRuleResponse
 }
 
+func NewUpdateRateRuleParams() UpdateRateRuleParams {
+	return UpdateRateRuleParams{}
+}
+
 // UpdateRateRuleParams -
 type UpdateRateRuleParams struct {
 	AccountNumber string
 	RateRuleID    string
 	RateRule      RateRule
+}
+
+func NewDeleteRateRuleParams() DeleteRateRuleParams {
+	return DeleteRateRuleParams{}
 }
 
 // DeleteRateRuleParams

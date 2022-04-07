@@ -261,6 +261,10 @@ type GetAllManagedRulesParams struct {
 	AccountNumber string
 }
 
+func NewGetManagedRuleParams() GetManagedRuleParams {
+	return GetManagedRuleParams{}
+}
+
 // GetManagedRuleParams -
 type GetManagedRuleParams struct {
 	AccountNumber string
@@ -304,6 +308,10 @@ type ManagedRuleGetOK struct {
 	// TODO: Convert LastModifiedDate and CreatedDate to time.Time
 }
 
+func NewAddManagedRuleParams() AddManagedRuleParams {
+	return AddManagedRuleParams{}
+}
+
 // AddManagedRuleParams -
 type AddManagedRuleParams struct {
 	AccountNumber string
@@ -315,11 +323,19 @@ type AddManagedRuleOK struct {
 	AddRuleResponse
 }
 
+func NewUpdateManagedRuleParams() UpdateManagedRuleParams {
+	return UpdateManagedRuleParams{}
+}
+
 // UpdateManagedRuleParams -
 type UpdateManagedRuleParams struct {
 	AccountNumber string
 	ManagedRuleID string
 	ManagedRule   ManagedRule
+}
+
+func NewDeleteManagedRuleParams() DeleteManagedRuleParams {
+	return DeleteManagedRuleParams{}
 }
 
 // DeleteManagedRuleParams -

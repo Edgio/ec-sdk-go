@@ -12,7 +12,7 @@ type DnsRouteGroup struct {
 	// 1: CNAME group, 2: Subdomain group, 3: Zone group
 	GroupTypeID GroupType `json:"GroupTypeId,omitempty"`
 
-	// Defines the group type. Valid values are:
+	// Defines the group product type. Valid values are:
 	// LoadBalancing, Failover, NoGroup
 	GroupProductType GroupProductType `json:"GroupProductTypeId,omitempty"`
 
@@ -32,7 +32,7 @@ type DnsRouteGroupOK struct {
 	FixedGroupID int `json:"FixedGroupId,omitempty"`
 
 	// Reserved for future use.
-	ZoneId int `json:"ZoneId,omitempty"`
+	ZoneID int `json:"ZoneId,omitempty"`
 
 	// Reserved for future use.
 	FixedZoneID int `json:"FixedZoneId,omitempty"`
@@ -121,7 +121,7 @@ type HealthCheck struct {
 	IPVersion int `json:"IPVersion,omitempty"`
 
 	// Defines the port to which TCP health checks will be directed.
-	PortNumber string `json:"PortNumber,omitempty"`
+	PortNumber int `json:"PortNumber,omitempty"`
 
 	// Defines the endpoint through which an unhealthy server/hostname will be
 	// integrated back into a group. Refer to the following URL for additional

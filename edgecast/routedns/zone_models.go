@@ -34,6 +34,9 @@ type Zone struct {
 type ZoneGetOK struct {
 	Zone
 
+	// Fail over or load balanced groups associated with this Zone
+	Groups []DnsRouteGroupOK `json:"groups"`
+
 	// Indicates a zone's status by its name.
 	StatusName string `json:"StatusName,omitempty"`
 
