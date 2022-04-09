@@ -10,7 +10,7 @@ import (
 func main() {
 
 	// Setup - fill in the below variables before running this code
-	apiToken := "MY_API_TOKEN"
+	apiToken := "MY_PARTNER_API_TOKEN"
 
 	sdkConfig := edgecast.NewSDKConfig()
 	sdkConfig.APIToken = apiToken
