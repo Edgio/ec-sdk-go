@@ -79,6 +79,7 @@ func (svc *CustomerService) UpdateCustomerUser(
 			"id":        params.Customer.HexID,
 			"partnerid": strconv.Itoa(params.Customer.PartnerID),
 		},
+		RawBody: params.CustomerUser,
 	})
 	if err != nil {
 		return fmt.Errorf("UpdateCustomerUser: %w", err)
