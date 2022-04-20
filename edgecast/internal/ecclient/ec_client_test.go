@@ -738,3 +738,34 @@ func (rc badReadCloser) Read(p []byte) (n int, err error) {
 func (rc badReadCloser) Close() error {
 	return nil
 }
+
+// MockAPIClient is a generic mock struct for unit testing feature services
+type MockAPIClient struct {
+	// MockAPIClient will always return this data on SubmitRequest
+	ResponseData interface{}
+
+	// MockAPIClient will always return this err on SubmitRequest
+	Err error
+}
+
+func (m MockAPIClient) SubmitRequest(
+	params SubmitRequestParams,
+) (*Response, error) {
+	// Use reflection to set the parsed response data
+	pv := reflect.ValueOf(params.ParsedResponse)
+	if pv.Kind() != reflect.Ptr {
+		panic("ParsedResponse not a pointer")
+	}
+	pv.Elem().Set(reflect.ValueOf(m.ResponseData))
+
+	dataAsString, err := jsonhelper.ConvertToJSONString(m.ResponseData, true)
+
+	if err != nil {
+		panic("could not convert mock response data as json")
+	}
+
+	return &Response{
+		Data:         dataAsString,
+		HTTPResponse: &http.Response{StatusCode: 200},
+	}, m.Err
+}

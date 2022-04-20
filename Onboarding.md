@@ -56,7 +56,7 @@ the appropriate URL fields in the `SDKConfig` struct returned by
 `edgecast.NewSDKConfig()`. 
 
 For example:
-```
+```go
 config := edgecast.NewSDKConfig()
 apiURL, _ := url.Parse("https://api.vdms.io")
 config.BaseAPIURL = *apiURL
@@ -64,11 +64,29 @@ config.BaseAPIURL = *apiURL
 
 ### Testing
 #### Unit Testing
-Ensure that all unit tests pass before submitting a pull request. Additionally, 
-ensure that you have added unit tests for your changes where appropriate.
+Ensure that all unit tests pass before submitting a pull request. 
 
 1. Open a terminal at the root of the repository.
 2. Run `go test ./…` from the repository root. 
+
+Please create or modify unit tests when modifying or adding to any of the code 
+in `edgecast/internal`. When unit testing feature Services e.g. 
+`waf.WAFService`, use the `ecclient.MockAPIClient` mock struct to mock the API
+functionality. Below is an example:
+
+```go
+func TestAddOrigin(t *testing.T) {
+	config := edgecast.NewSDKConfig()
+	originService, _ := New(config)
+
+	originService.client = ecclient.MockAPIClient{
+		// Mock data for the mock API client to return
+		ResponseData: AddUpdateOriginOK{CustomerOriginID: 1},
+	}
+
+	// Add tests...
+}
+```
 
 #### Regression Testing
 Consider the scope of changes in your PR and whether it is necessary to run some 
