@@ -1,8 +1,8 @@
 # Onboarding: ec-go-sdk
 
 ## Purpose
-This document is a collection of all onboarding related information, tips & 
-tricks, etc. for first-time SDK contributers.
+This document is a collection of all onboarding-related information, tips & 
+tricks, etc. for first-time SDK contributors.
 
 ## Learning Resources
 The internet contains a plethora of learning resources for the Go language. 
@@ -24,7 +24,7 @@ Below are sources that we find useful:
     - Best practices and code style our team adheres to.
 
 ## Local Environment Setup
-If you have a Pluralsight license, we recommend you watch the Getting Started 
+If you have a Pluralsight license, we recommend watching the Getting Started 
 With Go course listed above in the Learning Resources.
 
 Below is a breakdown of the setup:
@@ -51,8 +51,8 @@ Create a branch off of main and begin coding!
 Please note that the SDK is configured to point to the EdgeCast production 
 environment. This is fine if you own a test account. Developers employed at 
 EdgeCast may wish to point to a different environment. You can do so globally by 
-modifying the URLs in [config.go](edgecast/config.go) or at runtime by setting 
-the appropriate URL fields in the `SDKConfig` struct returned by 
+modifying the URLs in [config.go](edgecast/config.go) or during runtime by 
+setting the appropriate URL fields in the `SDKConfig` struct returned by 
 `edgecast.NewSDKConfig()`. 
 
 For example:
