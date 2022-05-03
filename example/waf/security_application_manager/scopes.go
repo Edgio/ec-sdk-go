@@ -1,4 +1,4 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
 package main
@@ -32,7 +32,7 @@ func main() {
 	accessRuleID := "ACCESS_RULE_ID"
 	managedRuleID := "MANAGED_RULE_ID"
 	customRuleID := "CUSTOM_RULE_ID"
-	// botRuleID := "BOT_RULE_ID" // not yet implemented
+	botRuleID := "BOT_RULE_ID"
 
 	sdkConfig := edgecast.NewSDKConfig()
 	sdkConfig.APIToken = apiToken
@@ -49,8 +49,8 @@ func main() {
 	trueVar := true
 	encodedMessage := base64.StdEncoding.EncodeToString([]byte("hello!"))
 	status404 := 404
-	// status200 := 200 // used by bot rule
-	// validForSec := 300 // used by bot rule
+	status200 := 200   // used by bot rule
+	validForSec := 300 // used by bot rule
 	redirectURL := "https://www.mysite.com/redirected"
 
 	scope := waf.Scope{
@@ -96,16 +96,14 @@ func main() {
 			Name:    "Custom Rule Action",
 			ENFType: "ALERT",
 		},
-		//
-		// Bot Rules not yet implemented
-		//
-		// BotsProdID: &botRuleID,
-		// BotsProdAction: &waf.ProdAction{
-		// 	Name:        "Bot Rule Action",
-		// 	ENFType:     "BROWSER_CHALLENGE",
-		// 	Status:      &status200,
-		// 	ValidForSec: &validForSec,
-		// },
+
+		BotsProdID: &botRuleID,
+		BotsProdAction: &waf.ProdAction{
+			Name:        "Bot Rule Action",
+			ENFType:     "BROWSER_CHALLENGE",
+			Status:      &status200,
+			ValidForSec: &validForSec,
+		},
 	}
 
 	scopes := waf.Scopes{
