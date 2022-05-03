@@ -34,7 +34,7 @@ To use this Customer Management service, use the API Token provided to you.
 
 Customer Account Management Operations allows management of customer accounts
 
-```
+```go
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/customer"
@@ -58,7 +58,7 @@ import (
 Customer User Account Management Operations allows you to manage user accounts 
 under a (parent) customer.
 
-```
+```go
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/customer"
@@ -88,7 +88,7 @@ For more information, please read the [official documentation for Edge CNAME](ht
 
 To use the edge CNAME service, use the API Token provided to you.
 
-```
+```go
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/edgecname"
@@ -123,7 +123,7 @@ For more information, please read the [official documentation for Customer Origi
 
 To use the Customer Origins service, use the API Token provided to you.
 
-```
+```go
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/edgecname"
@@ -170,7 +170,7 @@ while a secondary zone group defines the secondary zones that will be imported
 from servers defined in a master server group and any TSIG keys that should be 
 used for the zone transfer.
 
-```
+```go
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/routedns"
@@ -202,7 +202,7 @@ To use the Rules Engine service, use OAuth 2.0 Credentials.
 Delivers log data that describes requests for which Web Application Firewall (WAF) 
 enforced a rate limit as defined through a rate rule.
 
-```
+```go
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
@@ -240,7 +240,7 @@ For more information, please read the [official documentation for Custom Request
 To use the Rules Engine service, use OAuth 2.0 Credentials.
 A Policy should be constructed as a JSON object passed as a string.
 
-```
+```go
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
@@ -279,7 +279,38 @@ To use the WAF service, use the API Token provided to you.
 An access rule identifies legitimate traffic and threats by ASN, Cookie, Country, 
 IP Address, Referrer, URL, User agent, HTTP method, Media type, File extension, 
 and Request headers.
-```
+
+For detailed information about Access Rules in WAF, please read the [official documentation](https://docs.edgecast.com/cdn/#Web-Security/Access-Rules.htm).
+
+#### Bot Rules
+Text TBD
+
+#### Custom Rule Sets
+Use custom rules to tailor how WAF identifies malicious traffic. This provides
+added flexibility for threat identification that allows you to target malicious
+traffic with minimal impact to legitimate traffic. Custom threat identification
+combined with rapid testing and deployment enables you to quickly address 
+long-term and zero-day vulnerabilities.
+
+For detailed information about Custom Rules in WAF, please read the [official documentation](https://docs.edgecast.com/cdn/#Web-Security/Custom-Rules.htm).
+
+#### Managed Rules
+Managed Rules identify malicious traffic via predefined rules. A collection of 
+policies and rules is known as a rule set.
+
+For detailed information about Managed Rules in WAF, please read the [official documentation](https://docs.edgecast.com/cdn/#Web-Security/Managed-Rules.htm).
+
+#### Rate Rules
+Rate Rules restricts the flow of site traffic with the intention of:
+- Diverting malicious or inadvertent DDoS traffic.
+- Preventing a customer origin server from being overloaded.
+- Requests that exceed the rate limit may be dropped, redirected to another
+URL, or sent a custom response.
+
+For detailed information about Rate Rules in WAF, please read the [official documentation](https://docs.edgecast.com/cdn/#Web-Security/Rate-Rules.htm).
+
+#### WAF Sample Usage
+```go
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
@@ -288,11 +319,79 @@ import (
 	sdkConfig := edgecast.NewSDKConfig()
 	sdkConfig.APIToken = "MY API TOKEN"
 	wafService, err := waf.New(sdkConfig)
-	rule := waf.AccessRule{
-		// ... 
+	accountNumber := "ACCOUNT_NUMBER"
+
+	accessRuleID, err := wafService.AddAccessRule(waf.AddAccessRuleParams{
+		AccountNumber: accountNumber,
+		AccessRule:    waf.AccessRule{
+			// ...
+		},
+	})
+
+	botRuleID, err = wafService.AddBotRule(waf.AddBotRuleParams{
+		AccountNumber: accountNumber,
+		BotRule:       waf.BotRule{
+			// ...
+		},
+	})
+
+	customRuleID, err = wafService.AddCustomRuleSet(waf.AddCustomRuleSetParams{
+		AccountNumber: accountNumber,
+		CustomRuleSet:  waf.CustomRuleSet{
+			// ...
+		},
+	})
+
+	managedRuleID, err = wafService.AddManagedRule(waf.AddManagedRuleParams{
+		AccountNumber: accountNumber,
+		ManagedRule:   waf.ManagedRule{
+			// ...
+		},
+	})
+
+	rateRuleID, err = wafService.AddRateRule(waf.AddRateRuleParams{
+		AccountNumber: accountNumber,
+		RateRule:      waf.RateRule{
+			// ...
+		},
+	})
+
+	scope := waf.Scope{
+		Host: waf.MatchCondition{
+			// ...
+		},
+		Limits: &[]waf.Limit{
+			{
+				ID: rateRuleID,
+				Action: waf.LimitAction{
+					// ...
+				},
+			},
+		},
+		ACLProdID:  &accessRuleID,
+		ACLProdAction: &waf.ProdAction{
+			// ...
+		},
+		ProfileProdID:  &managedRuleID,
+		ProfileProdAction: &waf.ProdAction{
+			// ...
+		},
+		RuleProdID:  &customRuleID,
+		RuleProdAction: &waf.ProdAction{
+			// ...
+		},
+		BotsProdID: &botRuleID,
+		BotsProdAction: &waf.ProdAction{
+			// ...
+		},
 	}
-	resp, err := wafService.AddAccessRule(rule)
-// ...
+
+	scopes := waf.Scopes{
+		CustomerID: accountNumber,
+		Scopes:     []waf.Scope{scope},
+	}
+
+	modifyResp, err := wafService.ModifyAllScopes(scopes)
 }
 ```
 
