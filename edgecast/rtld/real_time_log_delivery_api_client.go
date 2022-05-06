@@ -34,11 +34,11 @@ const (
 var DefaultSchemes = []string{"http", "https"}
 
 //New creates a new real time log delivery API client
-func New(config edgecast.SDKConfig) (*RealTimeLogDeliveryAPI, error) {
+func New(config edgecast.SDKConfig) (*RTLDService, error) {
 
 	apiURL, err := url.Parse(config.BaseAPIURL.String() + DefaultBasePath)
 	if err != nil {
-		return nil, fmt.Errorf("RealTimeLogDeliveryAPI.New(): %v", err)
+		return nil, fmt.Errorf("RTLDService.New(): %v", err)
 	}
 
 	// OAuth2 authentication
@@ -48,7 +48,7 @@ func New(config edgecast.SDKConfig) (*RealTimeLogDeliveryAPI, error) {
 		//Token authentication
 		authTokenProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
 		if err != nil {
-			return nil, fmt.Errorf("RealTimeLogDeliveryAPI.New(): %v", err)
+			return nil, fmt.Errorf("RTLDService.New(): %v", err)
 		}
 		c := ecclient.New(ecclient.ClientConfig{
 			BaseAPIURL:   *apiURL,
@@ -57,7 +57,7 @@ func New(config edgecast.SDKConfig) (*RealTimeLogDeliveryAPI, error) {
 			AuthProvider: authTokenProvider,
 		})
 
-		return &RealTimeLogDeliveryAPI{
+		return &RTLDService{
 			client:           c,
 			Logger:           config.Logger,
 			Lookups:          lookups.New(c, c.Config.BaseAPIURL.String()),
@@ -76,7 +76,7 @@ func New(config edgecast.SDKConfig) (*RealTimeLogDeliveryAPI, error) {
 			AuthProvider: authProvider,
 		})
 
-		return &RealTimeLogDeliveryAPI{
+		return &RTLDService{
 			client:           c,
 			Logger:           config.Logger,
 			Lookups:          lookups.New(c, c.Config.BaseAPIURL.String()),
@@ -88,8 +88,8 @@ func New(config edgecast.SDKConfig) (*RealTimeLogDeliveryAPI, error) {
 	}
 }
 
-// RealTimeLogDeliveryAPI is a client for real time log delivery API
-type RealTimeLogDeliveryAPI struct {
+// RTLDService is a client for real time log delivery API
+type RTLDService struct {
 	Lookups lookups.ClientService
 
 	ProfilesCdn profiles_cdn.ClientService
