@@ -10,36 +10,36 @@ import (
 )
 
 /*
-	This file contains operations and types specific to WAF Bot Rules.
+	This file contains operations and types specific to WAF Bot Rule Sets.
 */
 
-// AddBotRule creates a Bot Rule for the provided account number and returns the
-// new rule's system-generated ID
-func (svc WAFService) AddBotRule(
-	params AddBotRuleParams,
+// AddBotRuleSet creates a Bot Rule Set for the provided account number and
+// returns the new rule set's system-generated ID
+func (svc WAFService) AddBotRuleSet(
+	params AddBotRuleSetParams,
 ) (string, error) {
-	parsedResponse := &BotRuleAddOK{}
+	parsedResponse := &BotRuleSetAddOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Post,
 		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/bots",
-		RawBody: params.BotRule,
+		RawBody: params.BotRuleSet,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return "", fmt.Errorf("AddBotRule: %w", err)
+		return "", fmt.Errorf("AddBotRuleSet: %w", err)
 	}
 	return parsedResponse.ID, nil
 }
 
-// GetAllBotRules retrieves the list of Bot Rules for the provided account
-// number.
-func (svc WAFService) GetAllBotRules(
-	params GetAllBotRulesParams,
-) (*[]BotRuleGetAllOK, error) {
-	parsedResponse := &[]BotRuleGetAllOK{}
+// GetAllBotRuleSets retrieves the list of Bot Rule Sets for the provided
+// account number.
+func (svc WAFService) GetAllBotRuleSets(
+	params GetAllBotRuleSetsParams,
+) (*[]BotRuleSetGetAllOK, error) {
+	parsedResponse := &[]BotRuleSetGetAllOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules",
@@ -49,67 +49,67 @@ func (svc WAFService) GetAllBotRules(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllBotRules: %w", err)
+		return nil, fmt.Errorf("GetAllBotRuleSets: %w", err)
 	}
 	return parsedResponse, nil
 }
 
-// DeleteBotRule deletes a Bot Rule for the provided account number with the
-// provided Bot Rule ID.
-func (svc WAFService) DeleteBotRule(
-	params DeleteBotRuleParams,
+// DeleteBotRuleSet deletes a Bot Rule Set for the provided account number with
+// the provided Bot Rule Set ID.
+func (svc WAFService) DeleteBotRuleSet(
+	params DeleteBotRuleSetParams,
 ) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/bots/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"rule_id":        params.BotRuleID,
+			"rule_id":        params.BotRuleSetID,
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteBotRule: %w", err)
+		return fmt.Errorf("DeleteBotRuleSet: %w", err)
 	}
 	return nil
 }
 
-// GetBotRule retrieves a Bot Rule for the provided account number
-// with the provided Bot Rule ID.
-func (svc WAFService) GetBotRule(
-	params GetBotRuleParams,
-) (*BotRuleGetOK, error) {
-	parsedResponse := &BotRuleGetOK{}
+// GetBotRuleSet retrieves a Bot Rule Set for the provided account number
+// with the provided Bot Rule Set ID.
+func (svc WAFService) GetBotRuleSet(
+	params GetBotRuleSetParams,
+) (*BotRuleSetGetOK, error) {
+	parsedResponse := &BotRuleSetGetOK{}
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/bots/{rule_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"rule_id":        params.BotRuleID,
+			"rule_id":        params.BotRuleSetID,
 		},
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetBotRule: %w", err)
+		return nil, fmt.Errorf("GetBotRuleSet: %w", err)
 	}
 	return parsedResponse, nil
 }
 
-// UpdateBotRule updates a Bot Rule for the provided account number
-// using the provided Bot Rule ID and Bot Rule properties.
-func (svc WAFService) UpdateBotRule(
-	params UpdateBotRuleParams,
+// UpdateBotRuleSet updates a Bot Rule Set for the provided account number
+// using the provided Bot Rule Set ID and Bot Rule Set properties.
+func (svc WAFService) UpdateBotRuleSet(
+	params UpdateBotRuleSetParams,
 ) error {
 	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,
 		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/bots/{rule_id}",
-		RawBody: params.BotRule,
+		RawBody: params.BotRuleSet,
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"rule_id":        params.BotRuleID,
+			"rule_id":        params.BotRuleSetID,
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("UpdateBotRule: %w", err)
+		return fmt.Errorf("UpdateBotRuleSet: %w", err)
 	}
 	return nil
 }
