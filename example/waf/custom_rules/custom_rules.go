@@ -128,17 +128,17 @@ func setupCustomRuleSet() waf.CustomRuleSet {
 					Action: waf.Action{
 						ID:              "66000000",
 						Message:         "Invalid user agent.",
-						Transformations: []string{"NONE"},
+						Transformations: []waf.Transformation{waf.TransformNone},
 					},
 					Operator: waf.Operator{
 						IsNegated: false,
-						Type:      "CONTAINS",
+						Type:      waf.OpContains,
 						Value:     "bot",
 					},
 					Variables: []waf.Variable{
 						{
 							IsCount: false,
-							Type:    "REQUEST_HEADERS",
+							Type:    waf.VarRequestHeaders,
 							Matches: []waf.Match{
 								{
 									IsNegated: false,

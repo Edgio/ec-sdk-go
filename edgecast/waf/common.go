@@ -125,7 +125,7 @@ type Action struct {
 	// Note: A criterion is satisfied if the source value or any of the
 	// modified string values meet the conditions defined by the operator
 	// object.
-	Transformations []string `json:"t,omitempty"`
+	Transformations []Transformation `json:"t,omitempty"`
 }
 
 // ChainedRule describes an additional set of criteria that must be satisfied in
@@ -165,7 +165,7 @@ type Variable struct {
 	// then you may identify a key via a match object.
 	// If is_count has been disabled, then you may identify a specific
 	// value via the operator object.
-	Type string `json:"type"`
+	Type VariableType `json:"type"`
 
 	// Contains comparison settings for the request element identified by the
 	// type property.
@@ -225,7 +225,7 @@ type Operator struct {
 	// 		by an IP block or be an exact match to an IP address defined in
 	// 		the values property. Only use IPMATCH with the
 	// 		REMOTE_ADDR variable.
-	Type string `json:"type"`
+	Type OperatorType `json:"type"`
 
 	// Indicates a value that will be compared against the string or number
 	// value derived from the request element defined within a variable object.
@@ -273,4 +273,97 @@ type Match struct {
 	// If the value property is omitted, then this match condition applies
 	// to all request headers.
 	Value string `json:"value,omitempty"`
+}
+
+type OperatorType int
+
+const (
+	OpRegexMatch OperatorType = iota
+	OpStringEquality
+	OpContains
+	OpBeginsWith
+	OpEndsWith
+	OpNumberEquality
+	OpIPMatch
+)
+
+func (ot OperatorType) String() string {
+	switch ot {
+	case OpRegexMatch:
+		return "RX"
+	case OpStringEquality:
+		return "STREQ"
+	case OpContains:
+		return "CONTAINS"
+	case OpBeginsWith:
+		return "BEGINSWITH"
+	case OpEndsWith:
+		return "ENDSWITH"
+	case OpNumberEquality:
+		return "EQ"
+	case OpIPMatch:
+		return "IPMATCH"
+	}
+	return "unknown"
+}
+
+type VariableType int
+
+const (
+	VarArgsPost VariableType = iota
+	VarGeo
+	VarQueryString
+	VarRemoteAddress
+	VarRequestBody
+	VarRequestCookies
+	VarRequestHeaders
+	VarRequestMethod
+	VarRequestURI
+)
+
+func (vt VariableType) String() string {
+	switch vt {
+	case VarArgsPost:
+		return "ARGS_POST"
+	case VarGeo:
+		return "GEO"
+	case VarQueryString:
+		return "QUERY_STRING"
+	case VarRemoteAddress:
+		return "REMOTE_ADDR"
+	case VarRequestBody:
+		return "REQUEST_BODY"
+	case VarRequestCookies:
+		return "REQUEST_COOKIES"
+	case VarRequestHeaders:
+		return "REQUEST_HEADERS"
+	case VarRequestMethod:
+		return "REQUEST_METHOD"
+	case VarRequestURI:
+		return "REQUEST_URI"
+	}
+	return "unknown"
+}
+
+type Transformation int
+
+const (
+	TransformNone Transformation = iota
+	TransformLowerCase
+	TransformURLDecode
+	TransformRemoveNulls
+)
+
+func (at Transformation) String() string {
+	switch at {
+	case TransformNone:
+		return "NONE"
+	case TransformLowerCase:
+		return "LOWERCASE"
+	case TransformURLDecode:
+		return "URLDECODE"
+	case TransformRemoveNulls:
+		return "REMOVENULLS"
+	}
+	return "unknown"
 }

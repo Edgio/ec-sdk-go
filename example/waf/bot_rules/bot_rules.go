@@ -128,17 +128,17 @@ func setupBotRuleSet() waf.BotRuleSet {
 					Name: "new bot rule",
 					Action: waf.Action{
 						ID:              "77375686",
-						Transformations: []string{"NONE"},
+						Transformations: []waf.Transformation{waf.TransformNone},
 					},
 					Operator: waf.Operator{
 						IsNegated: true,
-						Type:      "EQ",
+						Type:      waf.OpStringEquality,
 						Value:     "mycookie",
 					},
 					Variables: []waf.Variable{
 						{
 							IsCount: true,
-							Type:    "REQUEST_COOKIES",
+							Type:    waf.VarRequestCookies,
 							Matches: []waf.Match{
 								{
 									IsNegated: false,
