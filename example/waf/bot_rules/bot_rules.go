@@ -10,13 +10,13 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
 )
 
-// Demonstrates the usage of WAF Bot Rules
+// Demonstrates the usage of WAF Bot Rule Sets
 //
 // Usage:
 // go run bot_rules.go
 //
-// For detailed information about Bot Rules in WAF, please refer to:
-// TODO [URL TBD]
+// For detailed information about Bot Rule Sets in WAF, please refer to:
+// https://docs.edgecast.com/cdn/#Web-Security/Bot-Rules.htm
 func main() {
 
 	// Setup - fill in the below variables before running this code
@@ -33,55 +33,55 @@ func main() {
 	}
 
 	// First, we'll set up a new rule to use in this example
-	rule := setupBotRule()
+	rule := setupBotRuleSet()
 
 	fmt.Println("")
 	fmt.Println("**** CREATE ****")
 	fmt.Println("")
 
-	fmt.Printf("Creating Bot Rule: %+v\n", rule)
-	ruleID, err := wafService.AddBotRule(waf.AddBotRuleParams{
+	fmt.Printf("Creating Bot Rule Set: %+v\n", rule)
+	ruleID, err := wafService.AddBotRuleSet(waf.AddBotRuleSetParams{
 		AccountNumber: accountNumber,
-		BotRule:       rule,
+		BotRuleSet:    rule,
 	})
 
 	if err != nil {
-		fmt.Printf("failed to create Bot Rule: %+v\n", err)
+		fmt.Printf("failed to create Bot Rule Set: %+v\n", err)
 		return
 	} else {
-		fmt.Printf("successfully created Bot Rule: %+v\n", ruleID)
+		fmt.Printf("successfully created Bot Rule Set: %+v\n", ruleID)
 	}
 
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.GetBotRule(waf.GetBotRuleParams{
+	getResponse, err := wafService.GetBotRuleSet(waf.GetBotRuleSetParams{
 		AccountNumber: accountNumber,
-		BotRuleID:     ruleID,
+		BotRuleSetID:  ruleID,
 	})
 
 	if err != nil {
-		fmt.Printf("Failed to retrieve Bot Rule: %+v\n", err)
+		fmt.Printf("Failed to retrieve Bot Rule Set: %+v\n", err)
 		return
 	} else {
-		fmt.Printf("Successfully retrieved Bot Rule: %+v\n", getResponse)
+		fmt.Printf("Successfully retrieved Bot Rule Set: %+v\n", getResponse)
 	}
 
 	fmt.Println("")
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
 
-	getAllResponse, err := wafService.GetAllBotRules(
-		waf.GetAllBotRulesParams{
+	getAllResponse, err := wafService.GetAllBotRuleSets(
+		waf.GetAllBotRuleSetsParams{
 			AccountNumber: accountNumber,
 		})
 
 	if err != nil {
-		fmt.Printf("Failed to retrieve all Bot Rules: %+v\n", err)
+		fmt.Printf("Failed to retrieve all Bot Rule Sets: %+v\n", err)
 		return
 	} else {
 		fmt.Printf(
-			"Successfully retrieved all Bot Rules: %+v\n",
+			"Successfully retrieved all Bot Rule Sets: %+v\n",
 			getAllResponse)
 	}
 
@@ -90,39 +90,39 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.UpdateBotRule(
-		waf.UpdateBotRuleParams{
+	err = wafService.UpdateBotRuleSet(
+		waf.UpdateBotRuleSetParams{
 			AccountNumber: accountNumber,
-			BotRuleID:     ruleID,
-			BotRule:       rule,
+			BotRuleSetID:  ruleID,
+			BotRuleSet:    rule,
 		})
 
 	if err != nil {
-		fmt.Printf("Failed to update Bot Rule: %+v\n", err)
+		fmt.Printf("Failed to update Bot Rule Set: %+v\n", err)
 		return
 	} else {
-		fmt.Println("Successfully updated Bot Rule")
+		fmt.Println("Successfully updated Bot Rule Set")
 	}
 
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.DeleteBotRule(
-		waf.DeleteBotRuleParams{
+	err = wafService.DeleteBotRuleSet(
+		waf.DeleteBotRuleSetParams{
 			AccountNumber: accountNumber,
-			BotRuleID:     ruleID,
+			BotRuleSetID:  ruleID,
 		})
 	if err != nil {
-		fmt.Printf("Failed to delete Bot Rule: %+v\n", err)
+		fmt.Printf("Failed to delete Bot Rule Set: %+v\n", err)
 	} else {
-		fmt.Println("Successfully deleted Bot Rule")
+		fmt.Println("Successfully deleted Bot Rule Set")
 	}
 }
 
-func setupBotRule() waf.BotRule {
-	return waf.BotRule{
+func setupBotRuleSet() waf.BotRuleSet {
+	return waf.BotRuleSet{
 		Name: "test rule",
-		Directives: []waf.Directive{
+		Directives: []waf.BotRuleDirective{
 			{
 				SecRule: waf.SecRule{
 					Name: "new bot rule",

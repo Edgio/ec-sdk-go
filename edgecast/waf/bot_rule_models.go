@@ -3,109 +3,122 @@
 
 package waf
 
-// BotRule is a detailed representation of a Bot Manager Rule
-type BotRule struct {
-	/*
-		Contains rules. Each directive object defines a rule via
-		the sec_rule object.
-	*/
-	Directives []Directive `json:"directive"`
+// BotRuleSet is a detailed representation of a Bot Rule Set.
+type BotRuleSet struct {
+	// Contains rules. Each directive object defines a rule via
+	// the sec_rule object or via the use of Include property.
+	Directives []BotRuleDirective `json:"directive"`
 
-	/*
-		Indicates the name of the rule.
-	*/
+	// Indicates the name of the rule.
 	Name string `json:"name,omitempty"`
 }
 
-// GetAllBotRulesParams -
-type GetAllBotRulesParams struct {
+// BotRuleDirective contains rules used by Bot Rule Sets. Each directive
+// object defines a rule via the SecRule object or the Include property.
+type BotRuleDirective struct {
+
+	// Identifies a bot rule that uses custom match conditions. This type of
+	// rule is satisfied when a match is found for each of its conditions. A
+	// condition determines request identification by defining what will be
+	// matched (i.e., variable), how it will be matched (i.e., operator), and a
+	// match value.
+	SecRule SecRule `json:"sec_rule"`
+
+	// Identifies a bot rule that uses our reputation database. This type of
+	// rule is satisfied when the client's IP address matches an IP address
+	// defined within our reputation database. Our reputation database
+	// contains a list of IP addresses known to be used by bots.
+	Include string `json:"include,omitempty"`
+}
+
+// GetAllBotRuleSetsParams represents the parameters for retrieving all Bot Rule
+// Sets for an account.
+type GetAllBotRuleSetsParams struct {
 	AccountNumber string
 }
 
-// BotRuleGetAllOK is a lightweight representation of a Bot Rule.
-type BotRuleGetAllOK struct {
-	/*
-		Indicates the system-defined ID for the Bot Rule.
-	*/
+// BotRuleSetGetAllOK is a lightweight representation of a Bot Rule Set.
+type BotRuleSetGetAllOK struct {
+
+	// Indicates the system-defined ID for the Bot Rule Set.
 	ID string `json:"id"`
 
-	/*
-		Indicates the date and time at which the rule was last modified.
-		Syntax:
-		 	MM/DD/YYYYhh:mm:ss [AM|PM]
-	*/
+	// Indicates the date and time at which the rule was last modified.
+	// 	Syntax: MM/DD/YYYYhh:mm:ss [AM|PM]
 	LastModifiedDate string `json:"last_modified_date"`
 
-	/*
-		Indicates the name of the Bot Rule.
-	*/
+	// Indicates the name of the Bot Rule Set.
+
 	Name string `json:"name"`
 
 	// TODO: Convert LastModifiedDate to time.Time
 }
 
-func NewGetBotRuleParams() GetBotRuleParams {
-	return GetBotRuleParams{}
+// NewGetBotRuleSetParams creates a default instance of GetBotRuleSetParams.
+func NewGetBotRuleSetParams() GetBotRuleSetParams {
+	return GetBotRuleSetParams{}
 }
 
-// GetBotRuleParams -
-type GetBotRuleParams struct {
+// GetBotRuleSetParams represents the parameters for retrieving a specific Bot
+// Rule Set.
+type GetBotRuleSetParams struct {
 	AccountNumber string
-	BotRuleID     string
+	BotRuleSetID  string
 }
 
-// BotRuleGetOK -
-type BotRuleGetOK struct {
+// BotRuleSetGetOK represents the successful retrieval of a Bot Rule Set.
+type BotRuleSetGetOK struct {
 
-	/*
-		Indicates the generated ID for the Bot Rule
-	*/
+	// Indicates the generated ID for the Bot Rule Set
 	ID string
 
-	BotRule
+	BotRuleSet
 
-	/*
-		Indicates the date and time at which the rule was last modified.
-		Syntax:
-		 	MM/DD/YYYYhh:mm:ss [AM|PM]
-	*/
+	// Indicates the date and time at which the rule was last modified.
+	// 	Syntax: MM/DD/YYYYhh:mm:ss [AM|PM]
 	LastModifiedDate string `json:"last_modified_date"`
 
 	// TODO: Convert LastModifiedDate to time.Time
 }
 
-func NewAddBotRuleParams() AddBotRuleParams {
-	return AddBotRuleParams{}
+// NewAddBotRuleSetParams creates a default instance of AddBotRuleSetParams.
+func NewAddBotRuleSetParams() AddBotRuleSetParams {
+	return AddBotRuleSetParams{}
 }
 
-// AddBotRuleParams -
-type AddBotRuleParams struct {
-	BotRule       BotRule
+// AddBotRuleSetParams represents the parameters for creating a new Bot Rule
+// Set.
+type AddBotRuleSetParams struct {
+	BotRuleSet    BotRuleSet
 	AccountNumber string
 }
 
-// BotRuleAddOK -
-type BotRuleAddOK struct {
+// BotRuleSetAddOK represents the successful creation of a Bot Rule Set.
+type BotRuleSetAddOK struct {
 	AddRuleResponse
 }
 
-func NewDeleteBotRuleParams() DeleteBotRuleParams {
-	return DeleteBotRuleParams{}
+// NewDeleteBotRuleSetParams creates a defaut instance of
+// DeleteBotRuleSetParams.
+func NewDeleteBotRuleSetParams() DeleteBotRuleSetParams {
+	return DeleteBotRuleSetParams{}
 }
 
-// DeleteBotRuleParams -
-type DeleteBotRuleParams struct {
+// DeleteBotRuleSetParams represents the parameters for deleting a Bot Rule Set.
+type DeleteBotRuleSetParams struct {
 	AccountNumber string
-	BotRuleID     string
+	BotRuleSetID  string
 }
 
-func NewUpdateBotRuleParams() UpdateBotRuleParams {
-	return UpdateBotRuleParams{}
+// NewUpdateBotRuleSetParams creates a default instance of
+// UpdateBotRuleSetParams.
+func NewUpdateBotRuleSetParams() UpdateBotRuleSetParams {
+	return UpdateBotRuleSetParams{}
 }
 
-// UpdateBotRuleParams -
-type UpdateBotRuleParams struct {
+// UpdateBotRuleSetParams represents the parameters for updating a Bot Rule Set.
+type UpdateBotRuleSetParams struct {
 	AccountNumber string
-	BotRuleID     string
-	BotRule       BotRule
+	BotRuleSetID  string
+	BotRuleSet    BotRuleSet
 }

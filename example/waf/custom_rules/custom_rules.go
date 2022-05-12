@@ -122,7 +122,7 @@ func main() {
 func setupCustomRuleSet() waf.CustomRuleSet {
 	return waf.CustomRuleSet{
 		Name: "Deny bots",
-		Directives: []waf.Directive{
+		Directives: []waf.CustomRuleDirective{
 			{
 				SecRule: waf.SecRule{
 					Action: waf.Action{
