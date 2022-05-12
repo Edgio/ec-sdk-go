@@ -222,7 +222,7 @@ import (
 	}
 	addResp, err :=
 		rtldService.ProfilesRl.ProfilesRateLimitingAddCustomerSetting(addParams)
-// ...
+	// ...
 }
 ```
 
@@ -282,8 +282,15 @@ and Request headers.
 
 For detailed information about Access Rules in WAF, please read the [official documentation](https://docs.edgecast.com/cdn/#Web-Security/Access-Rules.htm).
 
-#### Bot Rules
-Text TBD
+#### Bot Rule Sets
+Use bot rules to require a client (e.g., a web browser) to solve a challenge 
+before resolving the request. WAF blocks traffic when the client cannot solve 
+this challenge within a few seconds. Basic bots typically cannot solve this type
+of challenge and therefore their traffic is blocked. This prevents them from 
+scraping your site, carding, spamming your forms, launching DDoS attacks, and 
+committing ad fraud.
+
+For detailed information about Bot Rules in WAF, please read the [official documentation](https://docs.edgecast.com/cdn/#Web-Security/Bot-Rules.htm).
 
 #### Custom Rule Sets
 Use custom rules to tailor how WAF identifies malicious traffic. This provides
@@ -328,16 +335,17 @@ import (
 		},
 	})
 
-	botRuleID, err = wafService.AddBotRule(waf.AddBotRuleParams{
+	botRuleSetID, err = wafService.AddBotRuleSet(waf.AddBotRuleParams{
 		AccountNumber: accountNumber,
-		BotRule:       waf.BotRule{
+		BotRuleSet:       waf.BotRuleSet{
 			// ...
 		},
 	})
 
-	customRuleID, err = wafService.AddCustomRuleSet(waf.AddCustomRuleSetParams{
-		AccountNumber: accountNumber,
-		CustomRuleSet:  waf.CustomRuleSet{
+	customRuleSetID, err = wafService.AddCustomRuleSet(
+		waf.AddCustomRuleSetParams{
+			AccountNumber: accountNumber,
+			CustomRuleSet:  waf.CustomRuleSet{
 			// ...
 		},
 	})
@@ -376,11 +384,11 @@ import (
 		ProfileProdAction: &waf.ProdAction{
 			// ...
 		},
-		RuleProdID:  &customRuleID,
+		RuleProdID:  &customRuleSetID,
 		RuleProdAction: &waf.ProdAction{
 			// ...
 		},
-		BotsProdID: &botRuleID,
+		BotsProdID: &botRuleSetID,
 		BotsProdAction: &waf.ProdAction{
 			// ...
 		},
