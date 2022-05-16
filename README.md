@@ -286,7 +286,7 @@ For detailed information about Access Rules in WAF, please read the [official do
 Use bot rules to require a client (e.g., a web browser) to solve a challenge 
 before resolving the request. WAF blocks traffic when the client cannot solve 
 this challenge within a few seconds. Basic bots typically cannot solve this type
-of challenge and therefore their traffic is blocked. This prevents them from 
+of challenge, and therefore their traffic is blocked. This prevents them from 
 scraping your site, carding, spamming your forms, launching DDoS attacks, and 
 committing ad fraud.
 
@@ -295,7 +295,7 @@ For detailed information about Bot Rules in WAF, please read the [official docum
 #### Custom Rule Sets
 Use custom rules to tailor how WAF identifies malicious traffic. This provides
 added flexibility for threat identification that allows you to target malicious
-traffic with minimal impact to legitimate traffic. Custom threat identification
+traffic with minimal impact on legitimate traffic. Custom threat identification
 combined with rapid testing and deployment enables you to quickly address 
 long-term and zero-day vulnerabilities.
 
