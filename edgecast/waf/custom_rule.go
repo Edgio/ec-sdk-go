@@ -38,7 +38,7 @@ func (svc WAFService) AddCustomRuleSet(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return "", fmt.Errorf("AddCustomRuleSet: %v", err)
+		return "", fmt.Errorf("AddCustomRuleSet: %w", err)
 	}
 	return parsedResponse.ID, nil
 }
@@ -58,7 +58,7 @@ func (svc WAFService) GetAllCustomRuleSets(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllCustomRuleSets: %v", err)
+		return nil, fmt.Errorf("GetAllCustomRuleSets: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -77,7 +77,7 @@ func (svc WAFService) DeleteCustomRuleSet(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteCustomRuleSet: %v", err)
+		return fmt.Errorf("DeleteCustomRuleSet: %w", err)
 	}
 	return nil
 }
@@ -98,7 +98,7 @@ func (svc WAFService) GetCustomRuleSet(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomRuleSet: %v", err)
+		return nil, fmt.Errorf("GetCustomRuleSet: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -118,7 +118,7 @@ func (svc WAFService) UpdateCustomRuleSet(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("UpdateCustomRuleSet: %v", err)
+		return fmt.Errorf("UpdateCustomRuleSet: %w", err)
 	}
 	return nil
 }
