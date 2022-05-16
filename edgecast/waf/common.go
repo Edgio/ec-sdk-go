@@ -3,6 +3,8 @@
 
 package waf
 
+import "strings"
+
 // This file contains common types that are used for multiple WAF operations
 
 // WAF response contains the response from the WAF API
@@ -278,7 +280,8 @@ type Match struct {
 type OperatorType int
 
 const (
-	OpRegexMatch OperatorType = iota
+	OpUnknown OperatorType = iota
+	OpRegexMatch
 	OpStringEquality
 	OpContains
 	OpBeginsWith
@@ -286,6 +289,27 @@ const (
 	OpNumberEquality
 	OpIPMatch
 )
+
+func ConvertToOperatorType(s string) OperatorType {
+	switch strings.ToUpper(s) {
+	case "RX":
+		return OpRegexMatch
+	case "STREQ":
+		return OpStringEquality
+	case "CONTAINS":
+		return OpContains
+	case "BEGINSWITH":
+		return OpBeginsWith
+	case "ENDSWITH":
+		return OpEndsWith
+	case "EQ":
+		return OpNumberEquality
+	case "IPMATCH":
+		return OpIPMatch
+	}
+
+	return OpUnknown
+}
 
 func (ot OperatorType) String() string {
 	switch ot {
@@ -304,13 +328,15 @@ func (ot OperatorType) String() string {
 	case OpIPMatch:
 		return "IPMATCH"
 	}
-	return "unknown"
+
+	return "Unknown OperatorType"
 }
 
 type VariableType int
 
 const (
-	VarArgsPost VariableType = iota
+	VarUnknown VariableType = iota
+	VarArgsPost
 	VarGeo
 	VarQueryString
 	VarRemoteAddress
@@ -342,13 +368,40 @@ func (vt VariableType) String() string {
 	case VarRequestURI:
 		return "REQUEST_URI"
 	}
-	return "unknown"
+
+	return "Unknown VariableType"
+}
+
+func ConvertToVariableType(s string) VariableType {
+	switch strings.ToUpper(s) {
+	case "ARGS_POST":
+		return VarArgsPost
+	case "GEO":
+		return VarGeo
+	case "QUERY_STRING":
+		return VarQueryString
+	case "REMOTE_ADDR":
+		return VarRemoteAddress
+	case "REQUEST_BODY":
+		return VarRequestBody
+	case "REQUEST_COOKIES":
+		return VarRequestCookies
+	case "REQUEST_HEADERS":
+		return VarRequestHeaders
+	case "REQUEST_METHOD":
+		return VarRequestMethod
+	case "REQUEST_URI":
+		return VarRequestURI
+	}
+
+	return VarUnknown
 }
 
 type Transformation int
 
 const (
-	TransformNone Transformation = iota
+	TransformUnknown Transformation = iota
+	TransformNone
 	TransformLowerCase
 	TransformURLDecode
 	TransformRemoveNulls
@@ -365,5 +418,21 @@ func (at Transformation) String() string {
 	case TransformRemoveNulls:
 		return "REMOVENULLS"
 	}
-	return "unknown"
+
+	return "Unknown Transformation"
+}
+
+func ConvertToTransformation(s string) Transformation {
+	switch strings.ToUpper(s) {
+	case "NONE":
+		return TransformNone
+	case "LOWERCASE":
+		return TransformLowerCase
+	case "URLDECODE":
+		return TransformURLDecode
+	case "REMOVENULLS":
+		return TransformRemoveNulls
+	}
+
+	return TransformUnknown
 }
