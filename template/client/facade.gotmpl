@@ -12,11 +12,11 @@ import (
   "fmt"
   "net/url"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
-	
+  "github.com/EdgeCast/ec-sdk-go/edgecast"
+  "github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
+  "github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
+  "github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
+  
   {{ imports .DefaultImports }}
   {{ imports .Imports }}
 
@@ -35,30 +35,30 @@ const (
 var DefaultSchemes = {{ printf "%#v" .Schemes }}
 
 //New creates a new {{ humanize .Name }} client
-func New(config edgecast.SDKConfig) (*{{ pascalize .Name }}, error) {
+func New(config edgecast.SDKConfig) (*{{ pascalize .Package }}Service, error) {
   
   apiURL, err := url.Parse(config.BaseAPIURL.String() + DefaultBasePath)
-	if err != nil {
-		return nil, fmt.Errorf("{{ pascalize .Name }}.New(): %v", err)
-	}
+  if err != nil {
+    return nil, fmt.Errorf("{{ pascalize .Package }}Service.New(): %v", err)
+  }
 
   // OAuth2 authentication
-	authProvider, err := ecauth.NewIDSAuthorizationProvider(config.BaseIDSURL, ecauth.OAuth2Credentials(config.IDSCredentials))
-	if err != nil {
+  authProvider, err := ecauth.NewIDSAuthorizationProvider(config.BaseIDSURL, ecauth.OAuth2Credentials(config.IDSCredentials))
+  if err != nil {
 
-		//Token authentication
-		authTokenProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
-		if err != nil {
-			return nil, fmt.Errorf("{{ pascalize .Name }}.New(): %v", err)
-		}
-		c := ecclient.New(ecclient.ClientConfig{
-			BaseAPIURL:   *apiURL,
-			UserAgent:    config.UserAgent,
-			Logger:       config.Logger,
-			AuthProvider: authTokenProvider,
-		})
+    //Token authentication
+    authTokenProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
+    if err != nil {
+      return nil, fmt.Errorf("{{ pascalize .Package }}Service.New(): %v", err)
+    }
+    c := ecclient.New(ecclient.ClientConfig{
+      BaseAPIURL:   *apiURL,
+      UserAgent:    config.UserAgent,
+      Logger:       config.Logger,
+      AuthProvider: authTokenProvider,
+    })
 
-    return &{{ pascalize .Name }}{
+    return &{{ pascalize .Package }}Service{
       client: c,
       Logger: config.Logger,
       {{- range .OperationGroups }}
@@ -66,16 +66,16 @@ func New(config edgecast.SDKConfig) (*{{ pascalize .Name }}, error) {
       {{- end }}
     }, nil
 
-	} else {
+  } else {
     
     c := ecclient.New(ecclient.ClientConfig{
-			BaseAPIURL:   *apiURL,
-			UserAgent:    config.UserAgent,
-			Logger:       config.Logger,
-			AuthProvider: authProvider,
-		})
+      BaseAPIURL:   *apiURL,
+      UserAgent:    config.UserAgent,
+      Logger:       config.Logger,
+      AuthProvider: authProvider,
+    })
 
-    return &{{ pascalize .Name }}{
+    return &{{ pascalize .Package }}Service{
       client: c,
       Logger: config.Logger,
       {{- range .OperationGroups }}
@@ -85,15 +85,15 @@ func New(config edgecast.SDKConfig) (*{{ pascalize .Name }}, error) {
   }
 }
 
-// {{ pascalize .Name }} is a client for {{ humanize .Name }}
-type {{ pascalize .Name }} struct {
+// {{ pascalize .Package }}Service is a client for {{ humanize .Name }}
+type {{ pascalize .Package }}Service struct {
   {{ range .OperationGroups }}
     {{ pascalize .Name }} {{ .PackageAlias }}.ClientService
   {{ end }}
   
   client ecclient.APIClient
 
-	clientConfig ecclient.ClientConfig
+  clientConfig ecclient.ClientConfig
 
-	Logger eclog.Logger
+  Logger eclog.Logger
 }
