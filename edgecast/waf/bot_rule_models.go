@@ -22,7 +22,7 @@ type BotRuleDirective struct {
 	// condition determines request identification by defining what will be
 	// matched (i.e., variable), how it will be matched (i.e., operator), and a
 	// match value.
-	SecRule SecRule `json:"sec_rule"`
+	SecRule *SecRule `json:"sec_rule,omitempty"`
 
 	// Identifies a bot rule that uses our reputation database. This type of
 	// rule is satisfied when the client's IP address matches an IP address
