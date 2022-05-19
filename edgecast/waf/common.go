@@ -3,7 +3,10 @@
 
 package waf
 
-import "strings"
+import (
+	"encoding/json"
+	"strings"
+)
 
 // This file contains common types that are used for multiple WAF operations
 
@@ -332,6 +335,22 @@ func (ot OperatorType) String() string {
 	return "Unknown OperatorType"
 }
 
+// MarshalJSON marshals OperatorType as JSON
+func (ot OperatorType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ot.String())
+}
+
+// UnmarshalJSON unmarshals a json string to the OperatorType enum value
+func (ot *OperatorType) UnmarshalJSON(b []byte) error {
+	var s string
+	err := json.Unmarshal(b, &s)
+	if err != nil {
+		return err
+	}
+	*ot = ConvertToOperatorType(s)
+	return nil
+}
+
 type VariableType int
 
 const (
@@ -397,6 +416,22 @@ func ConvertToVariableType(s string) VariableType {
 	return VarUnknown
 }
 
+// MarshalJSON marshals VariableType as JSON
+func (vt VariableType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(vt.String())
+}
+
+// UnmarshalJSON unmarshals a json string to the VariableType enum value
+func (vt *VariableType) UnmarshalJSON(b []byte) error {
+	var s string
+	err := json.Unmarshal(b, &s)
+	if err != nil {
+		return err
+	}
+	*vt = ConvertToVariableType(s)
+	return nil
+}
+
 type Transformation int
 
 const (
@@ -435,4 +470,20 @@ func ConvertToTransformation(s string) Transformation {
 	}
 
 	return TransformUnknown
+}
+
+// MarshalJSON marshals Transformation as JSON
+func (t Transformation) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.String())
+}
+
+// UnmarshalJSON unmarshals a json string to the Transformation enum value
+func (t *Transformation) UnmarshalJSON(b []byte) error {
+	var s string
+	err := json.Unmarshal(b, &s)
+	if err != nil {
+		return err
+	}
+	*t = ConvertToTransformation(s)
+	return nil
 }

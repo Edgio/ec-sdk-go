@@ -124,7 +124,7 @@ func setupBotRuleSet() waf.BotRuleSet {
 		Name: "test rule",
 		Directives: []waf.BotRuleDirective{
 			{
-				SecRule: waf.SecRule{
+				SecRule: &waf.SecRule{
 					Name: "new bot rule",
 					Action: waf.Action{
 						ID:              "77375686",
