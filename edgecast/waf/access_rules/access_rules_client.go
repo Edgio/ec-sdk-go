@@ -1,7 +1,7 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package waf
+package access_rules
 
 /*
 	This file contains operations and types specific to WAF Access Rules.
@@ -19,13 +19,40 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
+// Client is the Access Rules client.
+type Client struct {
+	client     ecclient.APIClient
+	baseAPIURL string
+}
+
+// ClientService is the interface for Client methods.
+type ClientService interface {
+	AddAccessRule(params *AddAccessRuleParams) (string, error)
+
+	GetAllAccessRules(
+		params *GetAllAccessRulesParams,
+	) (*[]AccessRuleGetAllOK, error)
+
+	GetAccessRule(
+		params *GetAccessRuleParams,
+	) (*AccessRuleGetOK, error)
+
+	UpdateAccessRule(
+		params *UpdateAccessRuleParams,
+	) error
+
+	DeleteAccessRule(
+		params *DeleteAccessRuleParams,
+	) error
+}
+
 // AddAccessRule creates a new Access Rule for the provided account number
 // and returns the new rule's system-generated ID
-func (svc WAFService) AddAccessRule(
-	params AddAccessRuleParams,
+func (c Client) AddAccessRule(
+	params *AddAccessRuleParams,
 ) (string, error) {
 	parsedResponse := &AccessRuleAddOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Post,
 		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/acl",
 		RawBody: params.AccessRule,
@@ -42,11 +69,11 @@ func (svc WAFService) AddAccessRule(
 
 // GetAllAccessRules retrieves all of the Access Rules for the provided
 // account number.
-func (svc WAFService) GetAllAccessRules(
-	params GetAllAccessRulesParams,
+func (c Client) GetAllAccessRules(
+	params *GetAllAccessRulesParams,
 ) (*[]AccessRuleGetAllOK, error) {
 	parsedResponse := &[]AccessRuleGetAllOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl",
 		PathParams: map[string]string{
@@ -62,11 +89,11 @@ func (svc WAFService) GetAllAccessRules(
 
 // GetAccessRule retrieves an Access Rule for the provided account number
 // with the provided Access Rule ID.
-func (svc WAFService) GetAccessRule(
-	params GetAccessRuleParams,
+func (c Client) GetAccessRule(
+	params *GetAccessRuleParams,
 ) (*AccessRuleGetOK, error) {
 	parsedResponse := &AccessRuleGetOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl/{rule_id}",
 		PathParams: map[string]string{
@@ -83,10 +110,10 @@ func (svc WAFService) GetAccessRule(
 
 // UpdateAccessRule updates an Access Rule for the given account number using
 // the provided Access Rule ID and Access Rule properties.
-func (svc WAFService) UpdateAccessRule(
-	params UpdateAccessRuleParams,
+func (c Client) UpdateAccessRule(
+	params *UpdateAccessRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,
 		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/acl/{rule_id}",
 		RawBody: params.AccessRule,
@@ -95,18 +122,20 @@ func (svc WAFService) UpdateAccessRule(
 			"rule_id":        params.AccessRuleID,
 		},
 	})
+
 	if err != nil {
 		return fmt.Errorf("UpdateAccessRule: %v", err)
 	}
+
 	return nil
 }
 
 // DeleteAccessRule deletes an Access Rule for the given account number using
 // the provided Access Rule ID.
-func (svc WAFService) DeleteAccessRule(
-	params DeleteAccessRuleParams,
+func (c Client) DeleteAccessRule(
+	params *DeleteAccessRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/acl/{rule_id}",
 		PathParams: map[string]string{
@@ -114,8 +143,10 @@ func (svc WAFService) DeleteAccessRule(
 			"rule_id":        params.AccessRuleID,
 		},
 	})
+
 	if err != nil {
 		return fmt.Errorf("DeleteAccessRule: %v", err)
 	}
+
 	return nil
 }

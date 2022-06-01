@@ -1,7 +1,7 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package waf
+package rate_rules
 
 /*
 	This file contains operations and types specific to WAF Rate Rules.
@@ -22,13 +22,42 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
+// Client is the Rate Rules client.
+type Client struct {
+	client     ecclient.APIClient
+	baseAPIURL string
+}
+
+// ClientService is the interface for Client methods.
+type ClientService interface {
+	AddRateRule(
+		params *AddRateRuleParams,
+	) (string, error)
+
+	GetRateRule(
+		params *GetRateRuleParams,
+	) (*RateRuleGetOK, error)
+
+	UpdateRateRule(
+		params *UpdateRateRuleParams,
+	) error
+
+	DeleteRateRule(
+		params *DeleteRateRuleParams,
+	) error
+
+	GetAllRateRules(
+		params *GetAllRateRulesParams,
+	) (*[]RateRuleGetAllOK, error)
+}
+
 // AddRateRule creates a rate rule for the provided account number
 // and returns the new rule's system-generated ID
-func (svc WAFService) AddRateRule(
-	params AddRateRuleParams,
+func (c Client) AddRateRule(
+	params *AddRateRuleParams,
 ) (string, error) {
 	parsedResponse := &RateRuleAddOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Post,
 		Path:    "/v2/mcc/customers/{account_number}/waf/v1.0/limit",
 		RawBody: params.RateRule,
@@ -45,11 +74,11 @@ func (svc WAFService) AddRateRule(
 
 // GetRateRule retrieves a rate rule for the provided account number and
 // Rate Rule ID
-func (svc WAFService) GetRateRule(
-	params GetRateRuleParams,
+func (c Client) GetRateRule(
+	params *GetRateRuleParams,
 ) (*RateRuleGetOK, error) {
 	parsedResponse := &RateRuleGetOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		PathParams: map[string]string{
@@ -66,10 +95,10 @@ func (svc WAFService) GetRateRule(
 
 // UpdateRateRule updates a rate rule for the provided account number using the
 // provided Rate Rule ID and Rate Rule properties.
-func (svc WAFService) UpdateRateRule(
-	params UpdateRateRuleParams,
+func (c Client) UpdateRateRule(
+	params *UpdateRateRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,
 		Path:    "/v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		RawBody: params.RateRule,
@@ -86,10 +115,10 @@ func (svc WAFService) UpdateRateRule(
 
 // DeleteRateRuleByID deletes a rate rule for the provided account numnber and
 // Rate Rule ID
-func (svc WAFService) DeleteRateRule(
-	params DeleteRateRuleParams,
+func (c Client) DeleteRateRule(
+	params *DeleteRateRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
 		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit/{rule_id}",
 		PathParams: map[string]string{
@@ -105,11 +134,11 @@ func (svc WAFService) DeleteRateRule(
 
 // GetAllRateRules retrives all of the Rate Rules for the provided account
 // number.
-func (svc WAFService) GetAllRateRules(
-	params GetAllRateRulesParams,
+func (c Client) GetAllRateRules(
+	params *GetAllRateRulesParams,
 ) (*[]RateRuleGetAllOK, error) {
 	parsedResponse := &[]RateRuleGetAllOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "/v2/mcc/customers/{account_number}/waf/v1.0/limit",
 		PathParams: map[string]string{

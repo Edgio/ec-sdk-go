@@ -1,4 +1,4 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
 package main
@@ -8,6 +8,7 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rate_rules"
 )
 
 // Demonstrates the usage of WAF Rate Rules
@@ -39,10 +40,11 @@ func main() {
 	fmt.Println("**** CREATE ****")
 	fmt.Println("")
 	fmt.Printf("Creating Rate Rule: %+v\n", rule)
-	ruleID, err := wafService.AddRateRule(waf.AddRateRuleParams{
-		AccountNumber: accountNumber,
-		RateRule:      rule,
-	})
+	ruleID, err := wafService.RateRules.AddRateRule(
+		&rate_rules.AddRateRuleParams{
+			AccountNumber: accountNumber,
+			RateRule:      rule,
+		})
 
 	if err != nil {
 		fmt.Printf("failed to create Rate Rule: %+v\n", err)
@@ -54,10 +56,11 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.GetRateRule(waf.GetRateRuleParams{
-		AccountNumber: accountNumber,
-		RateRuleID:    ruleID,
-	})
+	getResponse, err := wafService.RateRules.GetRateRule(
+		&rate_rules.GetRateRuleParams{
+			AccountNumber: accountNumber,
+			RateRuleID:    ruleID,
+		})
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve Rate Rule: %+v\n", err)
@@ -69,9 +72,10 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
-	getAllResponse, err := wafService.GetAllRateRules(waf.GetAllRateRulesParams{
-		AccountNumber: accountNumber,
-	})
+	getAllResponse, err := wafService.RateRules.GetAllRateRules(
+		&rate_rules.GetAllRateRulesParams{
+			AccountNumber: accountNumber,
+		})
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve all Rate Rules: %+v\n", err)
@@ -87,11 +91,12 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.UpdateRateRule(waf.UpdateRateRuleParams{
-		AccountNumber: accountNumber,
-		RateRule:      rule,
-		RateRuleID:    ruleID,
-	})
+	err = wafService.RateRules.UpdateRateRule(
+		&rate_rules.UpdateRateRuleParams{
+			AccountNumber: accountNumber,
+			RateRule:      rule,
+			RateRuleID:    ruleID,
+		})
 
 	if err != nil {
 		fmt.Printf("Failed to update Rate Rule: %+v\n", err)
@@ -103,10 +108,11 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.DeleteRateRule(waf.DeleteRateRuleParams{
-		AccountNumber: accountNumber,
-		RateRuleID:    ruleID,
-	})
+	err = wafService.RateRules.DeleteRateRule(
+		&rate_rules.DeleteRateRuleParams{
+			AccountNumber: accountNumber,
+			RateRuleID:    ruleID,
+		})
 	if err != nil {
 		fmt.Printf("Failed to delete Rate Rule: %+v\n", err)
 	} else {
@@ -114,31 +120,31 @@ func main() {
 	}
 }
 
-func setupRateRule(accountNumber string) waf.RateRule {
-	return waf.RateRule{
+func setupRateRule(accountNumber string) rate_rules.RateRule {
+	return rate_rules.RateRule{
 		Name:        "Rate Rule 1",
 		Keys:        []string{"IP", "USER_AGENT"},
 		DurationSec: 5,
 		Num:         10,
 		CustomerID:  accountNumber,
-		ConditionGroups: []waf.ConditionGroup{
+		ConditionGroups: []rate_rules.ConditionGroup{
 			{
 				Name: "Group 1",
-				Conditions: []waf.Condition{
+				Conditions: []rate_rules.Condition{
 					{
-						Target: waf.Target{
+						Target: rate_rules.Target{
 							Type: "REQUEST_METHOD",
 						},
-						OP: waf.OP{
+						OP: rate_rules.OP{
 							Type:   "EM",
 							Values: []string{"POST", "GET"},
 						},
 					},
 					{
-						Target: waf.Target{
+						Target: rate_rules.Target{
 							Type: "REMOTE_ADDR",
 						},
-						OP: waf.OP{
+						OP: rate_rules.OP{
 							Type:   "IPMATCH",
 							Values: []string{"10.10.2.3", "10.10.2.4"},
 						},
@@ -147,23 +153,23 @@ func setupRateRule(accountNumber string) waf.RateRule {
 			},
 			{
 				Name: "Group 2",
-				Conditions: []waf.Condition{
+				Conditions: []rate_rules.Condition{
 					{
-						Target: waf.Target{
+						Target: rate_rules.Target{
 							Type:  "REQUEST_HEADERS",
 							Value: "User-Agent",
 						},
-						OP: waf.OP{
+						OP: rate_rules.OP{
 							Type: "EM",
 							Values: []string{
 								"Mozilla/5.0", "Chrome/91.0.4472.114"},
 						},
 					},
 					{
-						Target: waf.Target{
+						Target: rate_rules.Target{
 							Type: "FILE_EXT",
 						},
-						OP: waf.OP{
+						OP: rate_rules.OP{
 							Type:  "RX",
 							Value: "(.*?)\\.(jpg|gif|doc|pdf)$",
 						},

@@ -71,7 +71,7 @@ Ensure that all unit tests pass before submitting a pull request.
 
 Please create or modify unit tests when modifying or adding to any of the code 
 in `edgecast/internal`. When unit testing feature Services e.g. 
-`waf.WAFService`, use the `ecclient.MockAPIClient` mock struct to mock the API
+`waf.WafService`, use the `ecclient.MockAPIClient` mock struct to mock the API
 functionality. Below is an example:
 
 ```go

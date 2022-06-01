@@ -1,4 +1,4 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
 package main
@@ -8,6 +8,7 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/managed_rules"
 )
 
 // Demonstrates the usage of WAF Managed Rules
@@ -39,10 +40,11 @@ func main() {
 	fmt.Println("**** CREATE ****")
 	fmt.Println("")
 	fmt.Printf("Creating Managed Rule: %+v\n", rule)
-	ruleID, err := wafService.AddManagedRule(waf.AddManagedRuleParams{
-		AccountNumber: accountNumber,
-		ManagedRule:   rule,
-	})
+	ruleID, err := wafService.ManagedRules.AddManagedRule(
+		&managed_rules.AddManagedRuleParams{
+			AccountNumber: accountNumber,
+			ManagedRule:   rule,
+		})
 
 	if err != nil {
 		fmt.Printf("failed to create Managed Rule: %+v\n", err)
@@ -54,10 +56,11 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.GetManagedRule(waf.GetManagedRuleParams{
-		AccountNumber: accountNumber,
-		ManagedRuleID: ruleID,
-	})
+	getResponse, err := wafService.ManagedRules.GetManagedRule(
+		&managed_rules.GetManagedRuleParams{
+			AccountNumber: accountNumber,
+			ManagedRuleID: ruleID,
+		})
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve Managed Rule: %+v\n", err)
@@ -69,8 +72,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
-	getAllResponse, err := wafService.GetAllManagedRules(
-		waf.GetAllManagedRulesParams{
+	getAllResponse, err := wafService.ManagedRules.GetAllManagedRules(
+		&managed_rules.GetAllManagedRulesParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -88,8 +91,8 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.UpdateManagedRule(
-		waf.UpdateManagedRuleParams{
+	err = wafService.ManagedRules.UpdateManagedRule(
+		&managed_rules.UpdateManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRuleID: ruleID,
 			ManagedRule:   rule,
@@ -105,8 +108,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.DeleteManagedRule(
-		waf.DeleteManagedRuleParams{
+	err = wafService.ManagedRules.DeleteManagedRule(
+		&managed_rules.DeleteManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRuleID: ruleID,
 		})
@@ -117,13 +120,13 @@ func main() {
 	}
 }
 
-func setupManagedRule() waf.ManagedRule {
-	return waf.ManagedRule{
+func setupManagedRule() managed_rules.ManagedRule {
+	return managed_rules.ManagedRule{
 		Name:           "Test Profile 1",
 		RulesetID:      "ECRS",
 		RulesetVersion: "2020-05-01",
-		DisabledRules:  make([]waf.DisabledRule, 0),
-		GeneralSettings: waf.GeneralSettings{
+		DisabledRules:  make([]managed_rules.DisabledRule, 0),
+		GeneralSettings: managed_rules.GeneralSettings{
 			AnomalyThreshold:     10,
 			ArgLength:            8001,
 			ArgNameLength:        1024,

@@ -1,7 +1,7 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package waf
+package managed_rules
 
 /*
 	This file contains operations and types specific to WAF Managed Rules.
@@ -19,13 +19,42 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
+// Client is the Managed Rules client.
+type Client struct {
+	client     ecclient.APIClient
+	baseAPIURL string
+}
+
+// ClientService is the interface for Client methods.
+type ClientService interface {
+	GetAllManagedRules(
+		params *GetAllManagedRulesParams,
+	) (*[]ManagedRuleLight, error)
+
+	GetManagedRule(
+		params *GetManagedRuleParams,
+	) (*ManagedRuleGetOK, error)
+
+	AddManagedRule(
+		params *AddManagedRuleParams,
+	) (string, error)
+
+	UpdateManagedRule(
+		params *UpdateManagedRuleParams,
+	) error
+
+	DeleteManagedRule(
+		params *DeleteManagedRuleParams,
+	) error
+}
+
 // GetAllManagedRules retrieves all of the Managed Rules for the provided
 // account number
-func (svc WAFService) GetAllManagedRules(
-	params GetAllManagedRulesParams,
+func (c Client) GetAllManagedRules(
+	params *GetAllManagedRulesParams,
 ) (*[]ManagedRuleLight, error) {
 	parsedResponse := &[]ManagedRuleLight{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile",
 		PathParams: map[string]string{
@@ -41,11 +70,11 @@ func (svc WAFService) GetAllManagedRules(
 
 // GetManagedRule retrieves a single Managed Rule for the provided account
 // number using the provided Managed Rule ID.
-func (svc WAFService) GetManagedRule(
-	params GetManagedRuleParams,
+func (c Client) GetManagedRule(
+	params *GetManagedRuleParams,
 ) (*ManagedRuleGetOK, error) {
 	parsedResponse := &ManagedRuleGetOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
 		PathParams: map[string]string{
@@ -62,11 +91,11 @@ func (svc WAFService) GetManagedRule(
 
 // AddManagedRule creates a Managed Rule for the provided account number
 // and returns the new rule's system-generated ID
-func (svc WAFService) AddManagedRule(
-	params AddManagedRuleParams,
+func (c Client) AddManagedRule(
+	params *AddManagedRuleParams,
 ) (string, error) {
 	parsedResponse := &AddManagedRuleOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Post,
 		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/profile",
 		RawBody: params.ManagedRule,
@@ -83,10 +112,10 @@ func (svc WAFService) AddManagedRule(
 
 // UpdateManagedRule updates a Managed Rule for the provided account number
 // using the provided Managed Rule ID and Managed Rule properties.
-func (svc WAFService) UpdateManagedRule(
-	params UpdateManagedRuleParams,
+func (c Client) UpdateManagedRule(
+	params *UpdateManagedRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,
 		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
 		RawBody: params.ManagedRule,
@@ -103,10 +132,10 @@ func (svc WAFService) UpdateManagedRule(
 
 // DeleteManagedRule deletes a Managed Rule for the provided account number
 // using the provided Managed Rule ID.
-func (svc WAFService) DeleteManagedRule(
-	params DeleteManagedRuleParams,
+func (c Client) DeleteManagedRule(
+	params *DeleteManagedRuleParams,
 ) error {
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/profile/{rule_id}",
 		PathParams: map[string]string{

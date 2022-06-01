@@ -1,7 +1,9 @@
 // Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package waf
+package bot_rule_sets
+
+import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/shared"
 
 // BotRuleSet is a detailed representation of a Bot Rule Set.
 type BotRuleSet struct {
@@ -22,7 +24,7 @@ type BotRuleDirective struct {
 	// condition determines request identification by defining what will be
 	// matched (i.e., variable), how it will be matched (i.e., operator), and a
 	// match value.
-	SecRule *SecRule `json:"sec_rule,omitempty"`
+	SecRule *shared.SecRule `json:"sec_rule,omitempty"`
 
 	// Identifies a bot rule that uses our reputation database. This type of
 	// rule is satisfied when the client's IP address matches an IP address
@@ -95,7 +97,7 @@ type AddBotRuleSetParams struct {
 
 // BotRuleSetAddOK represents the successful creation of a Bot Rule Set.
 type BotRuleSetAddOK struct {
-	AddRuleResponse
+	shared.AddRuleResponse
 }
 
 // NewDeleteBotRuleSetParams creates a defaut instance of

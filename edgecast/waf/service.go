@@ -1,4 +1,4 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
 package waf
@@ -13,17 +13,30 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/access_rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/bot_rule_sets"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/custom_rule_sets"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/managed_rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rate_rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/scopes"
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-// WAFService interacts with the EdgeCast API for WAF
-type WAFService struct {
+// WafService interacts with the EdgeCast API for WAF
+type WafService struct {
 	client ecclient.APIClient
 	logger eclog.Logger
+
+	AccessRules    access_rules.Client
+	BotRuleSets    bot_rule_sets.Client
+	CustomRuleSets custom_rule_sets.Client
+	ManagedRules   managed_rules.Client
+	RateRules      rate_rules.Client
+	Scopes         scopes.Client
 }
 
 // New creates a new instance of WAFservice using the provided configuration
-func New(config edgecast.SDKConfig) (*WAFService, error) {
+func New(config edgecast.SDKConfig) (*WafService, error) {
 	authProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
 
 	if err != nil {
@@ -38,7 +51,7 @@ func New(config edgecast.SDKConfig) (*WAFService, error) {
 		CheckRetry:   checkRetryForWAFScopes,
 	})
 
-	return &WAFService{
+	return &WafService{
 		client: c,
 		logger: config.Logger,
 	}, nil

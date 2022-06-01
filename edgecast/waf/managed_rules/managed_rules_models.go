@@ -1,7 +1,9 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package waf
+package managed_rules
+
+import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/shared"
 
 // ManagedRuleLight is a lightweight representation of a Managed Rule. Used
 // specifically for the GetAllManagedRules action
@@ -320,7 +322,7 @@ type AddManagedRuleParams struct {
 
 // AddManagedRuleOK -
 type AddManagedRuleOK struct {
-	AddRuleResponse
+	shared.AddRuleResponse
 }
 
 func NewUpdateManagedRuleParams() UpdateManagedRuleParams {

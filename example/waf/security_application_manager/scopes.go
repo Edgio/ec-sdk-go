@@ -9,6 +9,7 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/scopes"
 )
 
 // Demonstrates the usage of WAF Security Application Manager
@@ -53,21 +54,21 @@ func main() {
 	validForSec := 300 // used by bot rule
 	redirectURL := "https://www.mysite.com/redirected"
 
-	scope := waf.Scope{
+	scope := scopes.Scope{
 		Name: "Sample Scope",
-		Host: waf.MatchCondition{
+		Host: scopes.MatchCondition{
 			Type:              "EM",
 			IsCaseInsensitive: &trueVar,
 			Values:            &[]string{"mysite.com", "mysite2.com"},
 		},
-		Path: waf.MatchCondition{
+		Path: scopes.MatchCondition{
 			Type:   "EM",
 			Values: &[]string{"/account", "/admin"},
 		},
-		Limits: &[]waf.Limit{
+		Limits: &[]scopes.Limit{
 			{
 				ID: rateRuleID,
-				Action: waf.LimitAction{
+				Action: scopes.LimitAction{
 					Name:               "Custom action",
 					DurationSec:        10,
 					ENFType:            "CUSTOM_RESPONSE",
@@ -79,26 +80,26 @@ func main() {
 		},
 		ACLAuditID: &accessRuleID,
 		ACLProdID:  &accessRuleID,
-		ACLProdAction: &waf.ProdAction{
+		ACLProdAction: &scopes.ProdAction{
 			Name:    "Access Rule Action",
 			ENFType: "REDIRECT_302",
 			URL:     &redirectURL,
 		},
 		ProfileAuditID: &managedRuleID,
 		ProfileProdID:  &managedRuleID,
-		ProfileProdAction: &waf.ProdAction{
+		ProfileProdAction: &scopes.ProdAction{
 			Name:    "Managed Rule Action",
 			ENFType: "BLOCK_REQUEST",
 		},
 		RuleAuditID: &customRuleID,
 		RuleProdID:  &customRuleID,
-		RuleProdAction: &waf.ProdAction{
+		RuleProdAction: &scopes.ProdAction{
 			Name:    "Custom Rule Action",
 			ENFType: "ALERT",
 		},
 
 		BotsProdID: &botRuleID,
-		BotsProdAction: &waf.ProdAction{
+		BotsProdAction: &scopes.ProdAction{
 			Name:        "Bot Rule Action",
 			ENFType:     "BROWSER_CHALLENGE",
 			Status:      &status200,
@@ -106,12 +107,11 @@ func main() {
 		},
 	}
 
-	scopes := waf.Scopes{
-		CustomerID: accountNumber,
-		Scopes:     []waf.Scope{scope},
-	}
-
-	modifyResp, err := wafService.ModifyAllScopes(scopes)
+	modifyResp, err := wafService.Scopes.ModifyAllScopes(
+		&scopes.Scopes{
+			CustomerID: accountNumber,
+			Scopes:     []scopes.Scope{scope},
+		})
 
 	if err != nil || !modifyResp.Success {
 		fmt.Printf("Failed to create security application manager configurations (scopes): %+v\n", err)
@@ -121,7 +121,10 @@ func main() {
 	fmt.Println("Successfully created security application manager configuration (scope)")
 
 	fmt.Println("**** GET ALL ****")
-	scopes2, err := wafService.GetAllScopes(accountNumber)
+	scopes2, err := wafService.Scopes.GetAllScopes(
+		&scopes.GetAllScopesParams{
+			AccountNumber: accountNumber,
+		})
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve security application manager configurations (scopes): %+v\n", err)
@@ -136,7 +139,7 @@ func main() {
 	// We'll just add a duplicate...
 	scopes2.Scopes = append(scopes2.Scopes, scope)
 
-	modifyResp2, err := wafService.ModifyAllScopes(*scopes2)
+	modifyResp2, err := wafService.Scopes.ModifyAllScopes(scopes2)
 
 	if err != nil || !modifyResp2.Success {
 		fmt.Printf("Failed to update security application manager configurations (scopes): %+v\n", err)
@@ -146,7 +149,10 @@ func main() {
 	fmt.Println("Successfully updated security application manager configuration (scope)")
 
 	fmt.Println("**** GET ALL ****")
-	scopes3, err := wafService.GetAllScopes(accountNumber)
+	scopes3, err := wafService.Scopes.GetAllScopes(
+		&scopes.GetAllScopesParams{
+			AccountNumber: accountNumber,
+		})
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve security application manager configurations (scopes): %+v\n", err)
@@ -159,9 +165,9 @@ func main() {
 	fmt.Println("**** DELETE - removing all scopes ****")
 
 	// Now we'll clear everything out
-	scopes3.Scopes = make([]waf.Scope, 0)
+	scopes3.Scopes = make([]scopes.Scope, 0)
 
-	modifyResp3, err := wafService.ModifyAllScopes(*scopes3)
+	modifyResp3, err := wafService.Scopes.ModifyAllScopes(scopes3)
 
 	if err != nil || !modifyResp3.Success {
 		fmt.Printf("Failed to delete security application manager configurations (scopes): %+v\n", err)
@@ -171,7 +177,10 @@ func main() {
 	fmt.Println("Successfully deleted security application manager configuration (scope)")
 
 	fmt.Println("**** GET ALL ****")
-	scopes4, err := wafService.GetAllScopes(accountNumber)
+	scopes4, err := wafService.Scopes.GetAllScopes(
+		&scopes.GetAllScopesParams{
+			AccountNumber: accountNumber,
+		})
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve security application manager configurations (scopes): %+v\n", err)
@@ -182,7 +191,7 @@ func main() {
 	PrintScopes(*scopes4)
 }
 
-func PrintScopes(scopes waf.Scopes) {
+func PrintScopes(scopes scopes.Scopes) {
 	fmt.Printf("\nCustomerID: %s\n", scopes.CustomerID)
 	fmt.Printf("ID: %s\n", scopes.ID)
 	fmt.Printf("LastModifiedBy: %s\n", scopes.LastModifiedBy)
@@ -197,7 +206,7 @@ func PrintScopes(scopes waf.Scopes) {
 	}
 }
 
-func PrintScope(scope waf.Scope) {
+func PrintScope(scope scopes.Scope) {
 	fmt.Printf("\tID:%s\n", scope.ID)
 	fmt.Printf("\tName:%s\n", scope.Name)
 
@@ -276,7 +285,7 @@ func PrintScope(scope waf.Scope) {
 	}
 }
 
-func PrintMatchCondition(mc waf.MatchCondition) {
+func PrintMatchCondition(mc scopes.MatchCondition) {
 	fmt.Printf("\t\tType:%s\n", mc.Type)
 
 	if mc.IsCaseInsensitive != nil {
@@ -296,7 +305,7 @@ func PrintMatchCondition(mc waf.MatchCondition) {
 	}
 }
 
-func PrintLimits(limits []waf.Limit) {
+func PrintLimits(limits []scopes.Limit) {
 	for _, l := range limits {
 		fmt.Printf("\t\tID: %s\n", l.ID)
 
@@ -323,13 +332,13 @@ func PrintLimits(limits []waf.Limit) {
 	}
 }
 
-func PrintAuditAction(a waf.AuditAction) {
+func PrintAuditAction(a scopes.AuditAction) {
 	fmt.Printf("\t\tID: %s\n", a.ID)
 	fmt.Printf("\t\tName: %s\n", a.Name)
 	fmt.Printf("\t\tType: %s\n", a.Type)
 }
 
-func PrintProdAction(a waf.ProdAction) {
+func PrintProdAction(a scopes.ProdAction) {
 	fmt.Printf("\t\tID: %s\n", a.ID)
 	fmt.Printf("\t\tName: %s\n", a.Name)
 	fmt.Printf("\t\tENFType: %s\n", a.ENFType)
