@@ -1,7 +1,7 @@
 // Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package custom_rule_sets
+package custom
 
 /*
 	This file contains operations and types specific to WAF Custom Rule Sets.

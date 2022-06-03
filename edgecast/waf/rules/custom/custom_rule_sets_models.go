@@ -1,9 +1,9 @@
 // Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package custom_rule_sets
+package custom
 
-import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/shared"
+import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
 
 // CustomRuleSet is a detailed representation of a Custom Rule Set.
 type CustomRuleSet struct {
@@ -18,7 +18,7 @@ type CustomRuleSet struct {
 // CustomRuleDirective contains rules used by Custom Rule Sets. Each directive
 // object defines a rule via the sec_rule object.
 type CustomRuleDirective struct {
-	SecRule shared.SecRule `json:"sec_rule"`
+	SecRule rules.SecRule `json:"sec_rule"`
 }
 
 // GetAllCustomRuleSetsParams represents the parameters for retrieving all
@@ -86,7 +86,7 @@ type AddCustomRuleSetParams struct {
 
 // CustomRuleSetAddOK represents the successful creation of a Custom Rule Set.
 type CustomRuleSetAddOK struct {
-	shared.AddRuleResponse
+	rules.AddRuleResponse
 }
 
 // NewDeleteCustomRuleSetParams creates a defaut instance of

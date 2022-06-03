@@ -1,12 +1,12 @@
 // Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package rate_rules
+package rate
 
 import (
 	"encoding/json"
 
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/shared"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
 )
 
 // RateRuleGetAllOK is a lightweight representation of a Rate Rule used
@@ -31,7 +31,7 @@ type RateRuleGetAllOK struct {
 	Name string `json:"name,omitempty"`
 }
 
-// RateRule contains the shared properties for the Create, Get, Update models
+// RateRule contains the rules properties for the Create, Get, Update models
 // for a single Rate Rule
 type RateRule struct {
 	/*
@@ -277,7 +277,7 @@ type AddRateRuleParams struct {
 
 // RateRuleAddOK -
 type RateRuleAddOK struct {
-	shared.AddRuleResponse
+	rules.AddRuleResponse
 }
 
 func NewUpdateRateRuleParams() UpdateRateRuleParams {

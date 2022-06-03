@@ -8,13 +8,13 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/managed_rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/managed"
 )
 
 // Demonstrates the usage of WAF Managed Rules
 //
 // Usage:
-// go run managed_rules.go
+// go run managed.go
 //
 // For detailed information about Managed Rules in WAF, please refer to:
 // https://docs.edgecast.com/cdn/#Web-Security/Managed-Rules.htm
@@ -41,7 +41,7 @@ func main() {
 	fmt.Println("")
 	fmt.Printf("Creating Managed Rule: %+v\n", rule)
 	ruleID, err := wafService.ManagedRules.AddManagedRule(
-		&managed_rules.AddManagedRuleParams{
+		&managed.AddManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRule:   rule,
 		})
@@ -57,7 +57,7 @@ func main() {
 	fmt.Println("**** GET ****")
 	fmt.Println("")
 	getResponse, err := wafService.ManagedRules.GetManagedRule(
-		&managed_rules.GetManagedRuleParams{
+		&managed.GetManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRuleID: ruleID,
 		})
@@ -73,7 +73,7 @@ func main() {
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
 	getAllResponse, err := wafService.ManagedRules.GetAllManagedRules(
-		&managed_rules.GetAllManagedRulesParams{
+		&managed.GetAllManagedRulesParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -92,7 +92,7 @@ func main() {
 	rule.Name = "Updated rule from example"
 
 	err = wafService.ManagedRules.UpdateManagedRule(
-		&managed_rules.UpdateManagedRuleParams{
+		&managed.UpdateManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRuleID: ruleID,
 			ManagedRule:   rule,
@@ -109,7 +109,7 @@ func main() {
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
 	err = wafService.ManagedRules.DeleteManagedRule(
-		&managed_rules.DeleteManagedRuleParams{
+		&managed.DeleteManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRuleID: ruleID,
 		})
@@ -120,13 +120,13 @@ func main() {
 	}
 }
 
-func setupManagedRule() managed_rules.ManagedRule {
-	return managed_rules.ManagedRule{
+func setupManagedRule() managed.ManagedRule {
+	return managed.ManagedRule{
 		Name:           "Test Profile 1",
 		RulesetID:      "ECRS",
 		RulesetVersion: "2020-05-01",
-		DisabledRules:  make([]managed_rules.DisabledRule, 0),
-		GeneralSettings: managed_rules.GeneralSettings{
+		DisabledRules:  make([]managed.DisabledRule, 0),
+		GeneralSettings: managed.GeneralSettings{
 			AnomalyThreshold:     10,
 			ArgLength:            8001,
 			ArgNameLength:        1024,

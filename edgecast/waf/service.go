@@ -13,11 +13,11 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/access_rules"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/bot_rule_sets"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/custom_rule_sets"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/managed_rules"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rate_rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/access"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/bot"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/custom"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/managed"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/rate"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/scopes"
 	"github.com/hashicorp/go-retryablehttp"
 )
@@ -27,11 +27,11 @@ type WafService struct {
 	client ecclient.APIClient
 	logger eclog.Logger
 
-	AccessRules    access_rules.Client
-	BotRuleSets    bot_rule_sets.Client
-	CustomRuleSets custom_rule_sets.Client
-	ManagedRules   managed_rules.Client
-	RateRules      rate_rules.Client
+	AccessRules    access.Client
+	BotRuleSets    bot.Client
+	CustomRuleSets custom.Client
+	ManagedRules   managed.Client
+	RateRules      rate.Client
 	Scopes         scopes.Client
 }
 

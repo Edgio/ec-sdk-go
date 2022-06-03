@@ -1,9 +1,9 @@
 // Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package access_rules
+package access
 
-import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/shared"
+import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
 
 // AccessRule contains the shared properties for the Create, Get, Update models
 // for a single Access Rule
@@ -93,7 +93,7 @@ type AddAccessRuleParams struct {
 
 // AccessRuleAddOK -
 type AccessRuleAddOK struct {
-	shared.AddRuleResponse
+	rules.AddRuleResponse
 }
 
 // GetAllAccessRulesParams -

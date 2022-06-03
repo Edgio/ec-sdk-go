@@ -3,7 +3,7 @@
 
 package scopes
 
-import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/shared"
+import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
 
 // GetAllScopesParams represents the input to GetAllScopes
 type GetAllScopesParams struct {
@@ -14,7 +14,7 @@ type GetAllScopesParams struct {
 type ModifyAllScopesOK struct {
 	// The ID of the Scopes Configuration
 	ID string
-	shared.WAFResponse
+	rules.WAFResponse
 }
 
 /*

@@ -8,8 +8,8 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/custom_rule_sets"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/shared"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/custom"
 )
 
 // Demonstrates the usage of WAF Custom Rule Sets
@@ -43,7 +43,7 @@ func main() {
 
 	fmt.Printf("Creating Custom Rule Set: %+v\n", rule)
 	ruleID, err := wafService.CustomRuleSets.AddCustomRuleSet(
-		&custom_rule_sets.AddCustomRuleSetParams{
+		&custom.AddCustomRuleSetParams{
 			AccountNumber: accountNumber,
 			CustomRuleSet: rule,
 		})
@@ -59,7 +59,7 @@ func main() {
 	fmt.Println("**** GET ****")
 	fmt.Println("")
 	getResponse, err := wafService.CustomRuleSets.GetCustomRuleSet(
-		&custom_rule_sets.GetCustomRuleSetParams{
+		&custom.GetCustomRuleSetParams{
 			AccountNumber:   accountNumber,
 			CustomRuleSetID: ruleID,
 		})
@@ -76,7 +76,7 @@ func main() {
 	fmt.Println("")
 
 	getAllResponse, err := wafService.CustomRuleSets.GetAllCustomRuleSets(
-		&custom_rule_sets.GetAllCustomRuleSetsParams{
+		&custom.GetAllCustomRuleSetsParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -95,7 +95,7 @@ func main() {
 	rule.Name = "Updated rule from example"
 
 	err = wafService.CustomRuleSets.UpdateCustomRuleSet(
-		&custom_rule_sets.UpdateCustomRuleSetParams{
+		&custom.UpdateCustomRuleSetParams{
 			AccountNumber:   accountNumber,
 			CustomRuleSetID: ruleID,
 			CustomRuleSet:   rule,
@@ -112,7 +112,7 @@ func main() {
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
 	err = wafService.CustomRuleSets.DeleteCustomRuleSet(
-		&custom_rule_sets.DeleteCustomRuleSetParams{
+		&custom.DeleteCustomRuleSetParams{
 			AccountNumber:   accountNumber,
 			CustomRuleSetID: ruleID,
 		})
@@ -123,27 +123,27 @@ func main() {
 	}
 }
 
-func setupCustomRuleSet() custom_rule_sets.CustomRuleSet {
-	return custom_rule_sets.CustomRuleSet{
+func setupCustomRuleSet() custom.CustomRuleSet {
+	return custom.CustomRuleSet{
 		Name: "Deny bots",
-		Directives: []custom_rule_sets.CustomRuleDirective{
+		Directives: []custom.CustomRuleDirective{
 			{
-				SecRule: shared.SecRule{
-					Action: shared.Action{
+				SecRule: rules.SecRule{
+					Action: rules.Action{
 						ID:              "66000000",
 						Message:         "Invalid user agent.",
-						Transformations: []shared.Transformation{shared.TransformNone},
+						Transformations: []rules.Transformation{rules.TransformNone},
 					},
-					Operator: shared.Operator{
+					Operator: rules.Operator{
 						IsNegated: false,
-						Type:      shared.OpContains,
+						Type:      rules.OpContains,
 						Value:     "bot",
 					},
-					Variables: []shared.Variable{
+					Variables: []rules.Variable{
 						{
 							IsCount: false,
-							Type:    shared.VarRequestHeaders,
-							Matches: []shared.Match{
+							Type:    rules.VarRequestHeaders,
+							Matches: []rules.Match{
 								{
 									IsNegated: false,
 									IsRegex:   false,

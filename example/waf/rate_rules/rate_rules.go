@@ -8,13 +8,13 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rate_rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/rate"
 )
 
 // Demonstrates the usage of WAF Rate Rules
 //
 // Usage:
-// go run rate_rules.go
+// go run rate.go
 //
 // For detailed information about Rate Rules in WAF, please refer to:
 // https://docs.edgecast.com/cdn/#Web-Security/Rate-Rules.htm
@@ -41,7 +41,7 @@ func main() {
 	fmt.Println("")
 	fmt.Printf("Creating Rate Rule: %+v\n", rule)
 	ruleID, err := wafService.RateRules.AddRateRule(
-		&rate_rules.AddRateRuleParams{
+		&rate.AddRateRuleParams{
 			AccountNumber: accountNumber,
 			RateRule:      rule,
 		})
@@ -57,7 +57,7 @@ func main() {
 	fmt.Println("**** GET ****")
 	fmt.Println("")
 	getResponse, err := wafService.RateRules.GetRateRule(
-		&rate_rules.GetRateRuleParams{
+		&rate.GetRateRuleParams{
 			AccountNumber: accountNumber,
 			RateRuleID:    ruleID,
 		})
@@ -73,7 +73,7 @@ func main() {
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
 	getAllResponse, err := wafService.RateRules.GetAllRateRules(
-		&rate_rules.GetAllRateRulesParams{
+		&rate.GetAllRateRulesParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -92,7 +92,7 @@ func main() {
 	rule.Name = "Updated rule from example"
 
 	err = wafService.RateRules.UpdateRateRule(
-		&rate_rules.UpdateRateRuleParams{
+		&rate.UpdateRateRuleParams{
 			AccountNumber: accountNumber,
 			RateRule:      rule,
 			RateRuleID:    ruleID,
@@ -109,7 +109,7 @@ func main() {
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
 	err = wafService.RateRules.DeleteRateRule(
-		&rate_rules.DeleteRateRuleParams{
+		&rate.DeleteRateRuleParams{
 			AccountNumber: accountNumber,
 			RateRuleID:    ruleID,
 		})
@@ -120,31 +120,31 @@ func main() {
 	}
 }
 
-func setupRateRule(accountNumber string) rate_rules.RateRule {
-	return rate_rules.RateRule{
+func setupRateRule(accountNumber string) rate.RateRule {
+	return rate.RateRule{
 		Name:        "Rate Rule 1",
 		Keys:        []string{"IP", "USER_AGENT"},
 		DurationSec: 5,
 		Num:         10,
 		CustomerID:  accountNumber,
-		ConditionGroups: []rate_rules.ConditionGroup{
+		ConditionGroups: []rate.ConditionGroup{
 			{
 				Name: "Group 1",
-				Conditions: []rate_rules.Condition{
+				Conditions: []rate.Condition{
 					{
-						Target: rate_rules.Target{
+						Target: rate.Target{
 							Type: "REQUEST_METHOD",
 						},
-						OP: rate_rules.OP{
+						OP: rate.OP{
 							Type:   "EM",
 							Values: []string{"POST", "GET"},
 						},
 					},
 					{
-						Target: rate_rules.Target{
+						Target: rate.Target{
 							Type: "REMOTE_ADDR",
 						},
-						OP: rate_rules.OP{
+						OP: rate.OP{
 							Type:   "IPMATCH",
 							Values: []string{"10.10.2.3", "10.10.2.4"},
 						},
@@ -153,23 +153,23 @@ func setupRateRule(accountNumber string) rate_rules.RateRule {
 			},
 			{
 				Name: "Group 2",
-				Conditions: []rate_rules.Condition{
+				Conditions: []rate.Condition{
 					{
-						Target: rate_rules.Target{
+						Target: rate.Target{
 							Type:  "REQUEST_HEADERS",
 							Value: "User-Agent",
 						},
-						OP: rate_rules.OP{
+						OP: rate.OP{
 							Type: "EM",
 							Values: []string{
 								"Mozilla/5.0", "Chrome/91.0.4472.114"},
 						},
 					},
 					{
-						Target: rate_rules.Target{
+						Target: rate.Target{
 							Type: "FILE_EXT",
 						},
-						OP: rate_rules.OP{
+						OP: rate.OP{
 							Type:  "RX",
 							Value: "(.*?)\\.(jpg|gif|doc|pdf)$",
 						},

@@ -321,11 +321,11 @@ For detailed information about Rate Rules in WAF, please read the [official docu
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/access_rules"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/bot_rule_sets"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/custom_rule_sets"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/managed_rules"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rate_rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/access"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/bot"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/custom"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/managed"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/rate"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/scopes"
 )
 // ...
@@ -335,41 +335,41 @@ import (
 	accountNumber := "ACCOUNT_NUMBER"
 
 	accessRuleID, err := wafService.AccessRules.AddAccessRule(
-		&access_rules.AddAccessRuleParams{
+		&access.AddAccessRuleParams{
 			AccountNumber: accountNumber,
-			AccessRule:    waf.AccessRule{
+			AccessRule:    access.AccessRule{
 				// ...
 			}
 		})
 
 	botRuleSetID, err = wafService.BotRuleSets.AddBotRuleSet(
-		&bot_rule_sets.AddBotRuleParams{
+		&bot.AddBotRuleParams{
 			AccountNumber: accountNumber,
-			BotRuleSet:       waf.BotRuleSet{
+			BotRuleSet:       bot.BotRuleSet{
 				// ...
 			},
 		})
 
 	customRuleSetID, err = wafService.CustomRuleSets.AddCustomRuleSet(
-		&custom_rule_sets.AddCustomRuleSetParams{
+		&custom.AddCustomRuleSetParams{
 			AccountNumber: accountNumber,
-			CustomRuleSet:  waf.CustomRuleSet{
+			CustomRuleSet:  custom.CustomRuleSet{
 			// ...
 			},
 		})
 
 	managedRuleID, err = wafService.ManagedRules.AddManagedRule(
-		&managed_rules.AddManagedRuleParams{
+		&,managed.AddManagedRuleParams{
 			AccountNumber: accountNumber,
-			ManagedRule:   waf.ManagedRule{
+			ManagedRule:   managed.ManagedRule{
 				// ...
 			},
 		})
 
 	rateRuleID, err = wafService.RateRules.AddRateRule(
-		&rate_rules.AddRateRuleParams{
+		&rate.AddRateRuleParams{
 			AccountNumber: accountNumber,
-			RateRule:      waf.RateRule{
+			RateRule:      rate.RateRule{
 				// ...
 			},
 		})

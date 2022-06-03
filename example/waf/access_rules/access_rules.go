@@ -8,13 +8,13 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/access_rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/access"
 )
 
 // Demonstrates the usage of WAF Access Rules
 //
 // Usage:
-// go run access_rules.go
+// go run access.go
 //
 // For detailed information about Access Rules in WAF, please refer to:
 // https://docs.edgecast.com/cdn/#Web-Security/Access-Rules.htm
@@ -41,7 +41,7 @@ func main() {
 	fmt.Println("")
 	fmt.Printf("Creating Access Rule: %+v\n", rule)
 	ruleID, err := wafService.AccessRules.AddAccessRule(
-		&access_rules.AddAccessRuleParams{
+		&access.AddAccessRuleParams{
 			AccountNumber: accountNumber,
 			AccessRule:    rule,
 		})
@@ -57,7 +57,7 @@ func main() {
 	fmt.Println("**** GET ****")
 	fmt.Println("")
 	getResponse, err := wafService.AccessRules.GetAccessRule(
-		&access_rules.GetAccessRuleParams{
+		&access.GetAccessRuleParams{
 			AccountNumber: accountNumber,
 			AccessRuleID:  ruleID,
 		})
@@ -73,7 +73,7 @@ func main() {
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
 	getAllResponse, err := wafService.AccessRules.GetAllAccessRules(
-		&access_rules.GetAllAccessRulesParams{
+		&access.GetAllAccessRulesParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -92,7 +92,7 @@ func main() {
 	rule.Name = "Updated rule from example"
 
 	err = wafService.AccessRules.UpdateAccessRule(
-		&access_rules.UpdateAccessRuleParams{
+		&access.UpdateAccessRuleParams{
 			AccountNumber: accountNumber,
 			AccessRuleID:  ruleID,
 			AccessRule:    rule,
@@ -109,7 +109,7 @@ func main() {
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
 	err = wafService.AccessRules.DeleteAccessRule(
-		&access_rules.DeleteAccessRuleParams{
+		&access.DeleteAccessRuleParams{
 			AccountNumber: accountNumber,
 			AccessRuleID:  ruleID,
 		})
@@ -120,8 +120,8 @@ func main() {
 	}
 }
 
-func setupAccessRule(accountNumber string) access_rules.AccessRule {
-	return access_rules.AccessRule{
+func setupAccessRule(accountNumber string) access.AccessRule {
+	return access.AccessRule{
 		Name:                       "SDK Access Rule #1",
 		AllowedHTTPMethods:         []string{"GET", "POST"},
 		AllowedRequestContentTypes: []string{"application/json", "text/html"},
@@ -179,27 +179,27 @@ func setupAccessRule(accountNumber string) access_rules.AccessRule {
 			".xsd",
 			".xsx/",
 		},
-		ASNAccessControls: &access_rules.AccessControls{
+		ASNAccessControls: &access.AccessControls{
 			Accesslist: []interface{}{12, 200, 465},
 			Blacklist:  []interface{}{13, 201, 466},
 			Whitelist:  []interface{}{14, 202, 467},
 		},
-		CookieAccessControls: &access_rules.AccessControls{
+		CookieAccessControls: &access.AccessControls{
 			Accesslist: []interface{}{"maybe-trusted-cookie"},
 			Blacklist:  []interface{}{"bot-cookie"},
 			Whitelist:  []interface{}{"trusted-cookie"},
 		},
-		CountryAccessControls: &access_rules.AccessControls{
+		CountryAccessControls: &access.AccessControls{
 			Accesslist: []interface{}{"AU, NZ"},
 			Blacklist:  []interface{}{"GB, EE"},
 			Whitelist:  []interface{}{"US, CAN"},
 		},
-		IPAccessControls: &access_rules.AccessControls{
+		IPAccessControls: &access.AccessControls{
 			Accesslist: []interface{}{"10.10.10.114", "10.10.10.115"},
 			Blacklist:  []interface{}{"10:0:1::0:3", "10:0:1::0:4"},
 			Whitelist:  []interface{}{"10.10.10.200", "10.10.10.201"},
 		},
-		RefererAccessControls: &access_rules.AccessControls{
+		RefererAccessControls: &access.AccessControls{
 			Accesslist: []interface{}{
 				"https://maybetrusted.com",
 				"http://maybestrusted2.com",
@@ -213,12 +213,12 @@ func setupAccessRule(accountNumber string) access_rules.AccessRule {
 				"https://trusted2.com",
 			},
 		},
-		URLAccessControls: &access_rules.AccessControls{
+		URLAccessControls: &access.AccessControls{
 			Accesslist: []interface{}{"/maybe-trusted", "/maybe-trusted-2"},
 			Blacklist:  []interface{}{"/untrusted", "/untrusted/.*"},
 			Whitelist:  []interface{}{"/trusted-path", "/trusted-path/.*"},
 		},
-		UserAgentAccessControls: &access_rules.AccessControls{
+		UserAgentAccessControls: &access.AccessControls{
 			Accesslist: []interface{}{"Mozilla\\s.*", "Opera\\s.*"},
 			Blacklist:  []interface{}{"curl.*", "PostmanRuntime.*"},
 			Whitelist:  []interface{}{"internal-tool/v1", "internal-tool/v2"},

@@ -8,8 +8,8 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/bot_rule_sets"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/shared"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/bot"
 )
 
 // Demonstrates the usage of WAF Bot Rule Sets
@@ -43,7 +43,7 @@ func main() {
 
 	fmt.Printf("Creating Bot Rule Set: %+v\n", rule)
 	ruleID, err := wafService.BotRuleSets.AddBotRuleSet(
-		&bot_rule_sets.AddBotRuleSetParams{
+		&bot.AddBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSet:    rule,
 		})
@@ -59,7 +59,7 @@ func main() {
 	fmt.Println("**** GET ****")
 	fmt.Println("")
 	getResponse, err := wafService.BotRuleSets.GetBotRuleSet(
-		&bot_rule_sets.GetBotRuleSetParams{
+		&bot.GetBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSetID:  ruleID,
 		})
@@ -76,7 +76,7 @@ func main() {
 	fmt.Println("")
 
 	getAllResponse, err := wafService.BotRuleSets.GetAllBotRuleSets(
-		&bot_rule_sets.GetAllBotRuleSetsParams{
+		&bot.GetAllBotRuleSetsParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -95,7 +95,7 @@ func main() {
 	rule.Name = "Updated rule from example"
 
 	err = wafService.BotRuleSets.UpdateBotRuleSet(
-		&bot_rule_sets.UpdateBotRuleSetParams{
+		&bot.UpdateBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSetID:  ruleID,
 			BotRuleSet:    rule,
@@ -112,7 +112,7 @@ func main() {
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
 	err = wafService.BotRuleSets.DeleteBotRuleSet(
-		&bot_rule_sets.DeleteBotRuleSetParams{
+		&bot.DeleteBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSetID:  ruleID,
 		})
@@ -123,27 +123,27 @@ func main() {
 	}
 }
 
-func setupBotRuleSet() bot_rule_sets.BotRuleSet {
-	return bot_rule_sets.BotRuleSet{
+func setupBotRuleSet() bot.BotRuleSet {
+	return bot.BotRuleSet{
 		Name: "test rule",
-		Directives: []bot_rule_sets.BotRuleDirective{
+		Directives: []bot.BotRuleDirective{
 			{
-				SecRule: &shared.SecRule{
+				SecRule: &rules.SecRule{
 					Name: "new bot rule",
-					Action: shared.Action{
+					Action: rules.Action{
 						ID:              "77375686",
-						Transformations: []shared.Transformation{shared.TransformNone},
+						Transformations: []rules.Transformation{rules.TransformNone},
 					},
-					Operator: shared.Operator{
+					Operator: rules.Operator{
 						IsNegated: true,
-						Type:      shared.OpStringEquality,
+						Type:      rules.OpStringEquality,
 						Value:     "mycookie",
 					},
-					Variables: []shared.Variable{
+					Variables: []rules.Variable{
 						{
 							IsCount: true,
-							Type:    shared.VarRequestCookies,
-							Matches: []shared.Match{
+							Type:    rules.VarRequestCookies,
+							Matches: []rules.Match{
 								{
 									IsNegated: false,
 									IsRegex:   false,
