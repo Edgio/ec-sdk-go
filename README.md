@@ -335,7 +335,7 @@ import (
 	accountNumber := "ACCOUNT_NUMBER"
 
 	accessRuleID, err := wafService.AccessRules.AddAccessRule(
-		&access.AddAccessRuleParams{
+		access.AddAccessRuleParams{
 			AccountNumber: accountNumber,
 			AccessRule:    access.AccessRule{
 				// ...
@@ -343,7 +343,7 @@ import (
 		})
 
 	botRuleSetID, err = wafService.BotRuleSets.AddBotRuleSet(
-		&bot.AddBotRuleParams{
+		bot.AddBotRuleParams{
 			AccountNumber: accountNumber,
 			BotRuleSet:       bot.BotRuleSet{
 				// ...
@@ -351,7 +351,7 @@ import (
 		})
 
 	customRuleSetID, err = wafService.CustomRuleSets.AddCustomRuleSet(
-		&custom.AddCustomRuleSetParams{
+		custom.AddCustomRuleSetParams{
 			AccountNumber: accountNumber,
 			CustomRuleSet:  custom.CustomRuleSet{
 			// ...
@@ -359,7 +359,7 @@ import (
 		})
 
 	managedRuleID, err = wafService.ManagedRules.AddManagedRule(
-		&,managed.AddManagedRuleParams{
+		managed.AddManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRule:   managed.ManagedRule{
 				// ...
@@ -367,7 +367,7 @@ import (
 		})
 
 	rateRuleID, err = wafService.RateRules.AddRateRule(
-		&rate.AddRateRuleParams{
+		rate.AddRateRuleParams{
 			AccountNumber: accountNumber,
 			RateRule:      rate.RateRule{
 				// ...
