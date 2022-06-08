@@ -42,6 +42,11 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
+// New creates a new instance of the Scopes Client Service
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return &Client{c, baseAPIURL}
+}
+
 // Client is the Scopes client.
 type Client struct {
 	client     ecclient.APIClient
@@ -51,18 +56,18 @@ type Client struct {
 // ClientService is the interface for Client methods.
 type ClientService interface {
 	GetAllScopes(
-		params *GetAllScopesParams,
+		params GetAllScopesParams,
 	) (*Scopes, error)
 
 	ModifyAllScopes(
-		scopes *Scopes,
+		scopes Scopes,
 	) (*ModifyAllScopesOK, error)
 }
 
 // Retrieves the set of Security Application Manager configurations (Scopes)
 // and their properties for a customer
 func (c Client) GetAllScopes(
-	params *GetAllScopesParams,
+	params GetAllScopesParams,
 ) (*Scopes, error) {
 	if len(params.AccountNumber) == 0 {
 		return nil, errors.New("params.AccountNumber is required")
@@ -99,7 +104,7 @@ func (c Client) GetAllScopes(
 // You may receive an error stating that a rule has not been processed.
 // If this occurs, try again.
 func (c Client) ModifyAllScopes(
-	scopes *Scopes,
+	scopes Scopes,
 ) (*ModifyAllScopesOK, error) {
 	if len(scopes.CustomerID) == 0 {
 		return nil, errors.New("scopes.CustomerID is required")

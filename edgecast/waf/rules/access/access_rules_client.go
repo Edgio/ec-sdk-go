@@ -19,6 +19,11 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
+// New creates a new instance of the Access Rules Client Service
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return Client{c, baseAPIURL}
+}
+
 // Client is the Access Rules client.
 type Client struct {
 	client     ecclient.APIClient
@@ -27,29 +32,29 @@ type Client struct {
 
 // ClientService is the interface for Client methods.
 type ClientService interface {
-	AddAccessRule(params *AddAccessRuleParams) (string, error)
+	AddAccessRule(params AddAccessRuleParams) (string, error)
 
 	GetAllAccessRules(
-		params *GetAllAccessRulesParams,
+		params GetAllAccessRulesParams,
 	) (*[]AccessRuleGetAllOK, error)
 
 	GetAccessRule(
-		params *GetAccessRuleParams,
+		params GetAccessRuleParams,
 	) (*AccessRuleGetOK, error)
 
 	UpdateAccessRule(
-		params *UpdateAccessRuleParams,
+		params UpdateAccessRuleParams,
 	) error
 
 	DeleteAccessRule(
-		params *DeleteAccessRuleParams,
+		params DeleteAccessRuleParams,
 	) error
 }
 
 // AddAccessRule creates a new Access Rule for the provided account number
 // and returns the new rule's system-generated ID
 func (c Client) AddAccessRule(
-	params *AddAccessRuleParams,
+	params AddAccessRuleParams,
 ) (string, error) {
 	parsedResponse := &AccessRuleAddOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -59,7 +64,7 @@ func (c Client) AddAccessRule(
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},
-		ParsedResponse: parsedResponse,
+		ParsedResponse: &parsedResponse,
 	})
 	if err != nil {
 		return "", fmt.Errorf("AddAccessRule: %v", err)
@@ -70,7 +75,7 @@ func (c Client) AddAccessRule(
 // GetAllAccessRules retrieves all of the Access Rules for the provided
 // account number.
 func (c Client) GetAllAccessRules(
-	params *GetAllAccessRulesParams,
+	params GetAllAccessRulesParams,
 ) (*[]AccessRuleGetAllOK, error) {
 	parsedResponse := &[]AccessRuleGetAllOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -90,7 +95,7 @@ func (c Client) GetAllAccessRules(
 // GetAccessRule retrieves an Access Rule for the provided account number
 // with the provided Access Rule ID.
 func (c Client) GetAccessRule(
-	params *GetAccessRuleParams,
+	params GetAccessRuleParams,
 ) (*AccessRuleGetOK, error) {
 	parsedResponse := &AccessRuleGetOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -111,7 +116,7 @@ func (c Client) GetAccessRule(
 // UpdateAccessRule updates an Access Rule for the given account number using
 // the provided Access Rule ID and Access Rule properties.
 func (c Client) UpdateAccessRule(
-	params *UpdateAccessRuleParams,
+	params UpdateAccessRuleParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,
@@ -133,7 +138,7 @@ func (c Client) UpdateAccessRule(
 // DeleteAccessRule deletes an Access Rule for the given account number using
 // the provided Access Rule ID.
 func (c Client) DeleteAccessRule(
-	params *DeleteAccessRuleParams,
+	params DeleteAccessRuleParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,

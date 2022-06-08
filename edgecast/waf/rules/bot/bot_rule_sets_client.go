@@ -23,6 +23,11 @@ import (
 	https://docs.edgecast.com/cdn/#Web-Security/Bot-Rules.htm
 */
 
+// New creates a new instance of the BotRuleSets Client Service
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return Client{c, baseAPIURL}
+}
+
 // Client is the Bot Rule Sets client.
 type Client struct {
 	client     ecclient.APIClient
@@ -32,30 +37,30 @@ type Client struct {
 // ClientService is the interface for Client methods.
 type ClientService interface {
 	AddBotRuleSet(
-		params *AddBotRuleSetParams,
+		params AddBotRuleSetParams,
 	) (string, error)
 
 	GetAllBotRuleSets(
-		params *GetAllBotRuleSetsParams,
+		params GetAllBotRuleSetsParams,
 	) (*[]BotRuleSetGetAllOK, error)
 
 	DeleteBotRuleSet(
-		params *DeleteBotRuleSetParams,
+		params DeleteBotRuleSetParams,
 	) error
 
 	GetBotRuleSet(
-		params *GetBotRuleSetParams,
+		params GetBotRuleSetParams,
 	) (*BotRuleSetGetOK, error)
 
 	UpdateBotRuleSet(
-		params *UpdateBotRuleSetParams,
+		params UpdateBotRuleSetParams,
 	) error
 }
 
 // AddBotRuleSet creates a Bot Rule Set for the provided account number and
 // returns the new rule set's system-generated ID
 func (c Client) AddBotRuleSet(
-	params *AddBotRuleSetParams,
+	params AddBotRuleSetParams,
 ) (string, error) {
 	parsedResponse := &BotRuleSetAddOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -76,7 +81,7 @@ func (c Client) AddBotRuleSet(
 // GetAllBotRuleSets retrieves the list of Bot Rule Sets for the provided
 // account number.
 func (c Client) GetAllBotRuleSets(
-	params *GetAllBotRuleSetsParams,
+	params GetAllBotRuleSetsParams,
 ) (*[]BotRuleSetGetAllOK, error) {
 	parsedResponse := &[]BotRuleSetGetAllOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -96,7 +101,7 @@ func (c Client) GetAllBotRuleSets(
 // DeleteBotRuleSet deletes a Bot Rule Set for the provided account number with
 // the provided Bot Rule Set ID.
 func (c Client) DeleteBotRuleSet(
-	params *DeleteBotRuleSetParams,
+	params DeleteBotRuleSetParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
@@ -115,7 +120,7 @@ func (c Client) DeleteBotRuleSet(
 // GetBotRuleSet retrieves a Bot Rule Set for the provided account number
 // with the provided Bot Rule Set ID.
 func (c Client) GetBotRuleSet(
-	params *GetBotRuleSetParams,
+	params GetBotRuleSetParams,
 ) (*BotRuleSetGetOK, error) {
 	parsedResponse := &BotRuleSetGetOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -136,7 +141,7 @@ func (c Client) GetBotRuleSet(
 // UpdateBotRuleSet updates a Bot Rule Set for the provided account number
 // using the provided Bot Rule Set ID and Bot Rule Set properties.
 func (c Client) UpdateBotRuleSet(
-	params *UpdateBotRuleSetParams,
+	params UpdateBotRuleSetParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,

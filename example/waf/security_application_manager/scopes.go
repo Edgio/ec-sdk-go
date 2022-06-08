@@ -108,7 +108,7 @@ func main() {
 	}
 
 	modifyResp, err := wafService.Scopes.ModifyAllScopes(
-		&scopes.Scopes{
+		scopes.Scopes{
 			CustomerID: accountNumber,
 			Scopes:     []scopes.Scope{scope},
 		})
@@ -122,7 +122,7 @@ func main() {
 
 	fmt.Println("**** GET ALL ****")
 	scopes2, err := wafService.Scopes.GetAllScopes(
-		&scopes.GetAllScopesParams{
+		scopes.GetAllScopesParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -139,7 +139,7 @@ func main() {
 	// We'll just add a duplicate...
 	scopes2.Scopes = append(scopes2.Scopes, scope)
 
-	modifyResp2, err := wafService.Scopes.ModifyAllScopes(scopes2)
+	modifyResp2, err := wafService.Scopes.ModifyAllScopes(*scopes2)
 
 	if err != nil || !modifyResp2.Success {
 		fmt.Printf("Failed to update security application manager configurations (scopes): %+v\n", err)
@@ -150,7 +150,7 @@ func main() {
 
 	fmt.Println("**** GET ALL ****")
 	scopes3, err := wafService.Scopes.GetAllScopes(
-		&scopes.GetAllScopesParams{
+		scopes.GetAllScopesParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -167,7 +167,7 @@ func main() {
 	// Now we'll clear everything out
 	scopes3.Scopes = make([]scopes.Scope, 0)
 
-	modifyResp3, err := wafService.Scopes.ModifyAllScopes(scopes3)
+	modifyResp3, err := wafService.Scopes.ModifyAllScopes(*scopes3)
 
 	if err != nil || !modifyResp3.Success {
 		fmt.Printf("Failed to delete security application manager configurations (scopes): %+v\n", err)
@@ -178,7 +178,7 @@ func main() {
 
 	fmt.Println("**** GET ALL ****")
 	scopes4, err := wafService.Scopes.GetAllScopes(
-		&scopes.GetAllScopesParams{
+		scopes.GetAllScopesParams{
 			AccountNumber: accountNumber,
 		})
 

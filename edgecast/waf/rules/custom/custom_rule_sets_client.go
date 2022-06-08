@@ -22,6 +22,11 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
+// New creates a new instance of the Custom Rule Sets Client Service
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return Client{c, baseAPIURL}
+}
+
 // Client is the Custom Rule Sets client.
 type Client struct {
 	client     ecclient.APIClient
@@ -31,30 +36,30 @@ type Client struct {
 // ClientService is the interface for Client methods.
 type ClientService interface {
 	AddCustomRuleSet(
-		params *AddCustomRuleSetParams,
+		params AddCustomRuleSetParams,
 	) (string, error)
 
 	GetAllCustomRuleSets(
-		params *GetAllCustomRuleSetsParams,
+		params GetAllCustomRuleSetsParams,
 	) (*[]CustomRuleSetGetAllOK, error)
 
 	DeleteCustomRuleSet(
-		params *DeleteCustomRuleSetParams,
+		params DeleteCustomRuleSetParams,
 	) error
 
 	GetCustomRuleSet(
-		params *GetCustomRuleSetParams,
+		params GetCustomRuleSetParams,
 	) (*CustomRuleSetGetOK, error)
 
 	UpdateCustomRuleSet(
-		params *UpdateCustomRuleSetParams,
+		params UpdateCustomRuleSetParams,
 	) error
 }
 
 // AddCustomRuleSet creates a Custom Rule Set for the provided account number
 // and returns the new rule's system-generated ID
 func (c Client) AddCustomRuleSet(
-	params *AddCustomRuleSetParams,
+	params AddCustomRuleSetParams,
 ) (string, error) {
 	parsedResponse := &CustomRuleSetAddOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -75,7 +80,7 @@ func (c Client) AddCustomRuleSet(
 // GetAllCustomRuleSets retrieves the list of Custom Rule Sets for the provided
 // account number.
 func (c Client) GetAllCustomRuleSets(
-	params *GetAllCustomRuleSetsParams,
+	params GetAllCustomRuleSetsParams,
 ) (*[]CustomRuleSetGetAllOK, error) {
 	parsedResponse := &[]CustomRuleSetGetAllOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -95,7 +100,7 @@ func (c Client) GetAllCustomRuleSets(
 // DeleteCustomRuleSet deletes a Custom Rule Set for the provided account number
 // with the provided Custom Rule Set ID.
 func (c Client) DeleteCustomRuleSet(
-	params *DeleteCustomRuleSetParams,
+	params DeleteCustomRuleSetParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
@@ -114,7 +119,7 @@ func (c Client) DeleteCustomRuleSet(
 // GetCustomRuleSet retrieves a Custom Rule Set for the provided account number
 // with the provided Custom Rule Set ID.
 func (c Client) GetCustomRuleSet(
-	params *GetCustomRuleSetParams,
+	params GetCustomRuleSetParams,
 ) (*CustomRuleSetGetOK, error) {
 	parsedResponse := &CustomRuleSetGetOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -135,7 +140,7 @@ func (c Client) GetCustomRuleSet(
 // UpdateCustomRuleSet updates a Custom Rule Set for the provided account number
 // using the provided Custom Rule Set ID and Custom Rule Set properties.
 func (c Client) UpdateCustomRuleSet(
-	params *UpdateCustomRuleSetParams,
+	params UpdateCustomRuleSetParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,

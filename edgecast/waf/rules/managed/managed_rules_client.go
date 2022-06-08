@@ -19,6 +19,11 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
+// New creates a new instance of the Managed Rule Client Service
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return Client{c, baseAPIURL}
+}
+
 // Client is the Managed Rules client.
 type Client struct {
 	client     ecclient.APIClient
@@ -28,30 +33,30 @@ type Client struct {
 // ClientService is the interface for Client methods.
 type ClientService interface {
 	GetAllManagedRules(
-		params *GetAllManagedRulesParams,
+		params GetAllManagedRulesParams,
 	) (*[]ManagedRuleLight, error)
 
 	GetManagedRule(
-		params *GetManagedRuleParams,
+		params GetManagedRuleParams,
 	) (*ManagedRuleGetOK, error)
 
 	AddManagedRule(
-		params *AddManagedRuleParams,
+		params AddManagedRuleParams,
 	) (string, error)
 
 	UpdateManagedRule(
-		params *UpdateManagedRuleParams,
+		params UpdateManagedRuleParams,
 	) error
 
 	DeleteManagedRule(
-		params *DeleteManagedRuleParams,
+		params DeleteManagedRuleParams,
 	) error
 }
 
 // GetAllManagedRules retrieves all of the Managed Rules for the provided
 // account number
 func (c Client) GetAllManagedRules(
-	params *GetAllManagedRulesParams,
+	params GetAllManagedRulesParams,
 ) (*[]ManagedRuleLight, error) {
 	parsedResponse := &[]ManagedRuleLight{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -71,7 +76,7 @@ func (c Client) GetAllManagedRules(
 // GetManagedRule retrieves a single Managed Rule for the provided account
 // number using the provided Managed Rule ID.
 func (c Client) GetManagedRule(
-	params *GetManagedRuleParams,
+	params GetManagedRuleParams,
 ) (*ManagedRuleGetOK, error) {
 	parsedResponse := &ManagedRuleGetOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -92,7 +97,7 @@ func (c Client) GetManagedRule(
 // AddManagedRule creates a Managed Rule for the provided account number
 // and returns the new rule's system-generated ID
 func (c Client) AddManagedRule(
-	params *AddManagedRuleParams,
+	params AddManagedRuleParams,
 ) (string, error) {
 	parsedResponse := &AddManagedRuleOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -113,7 +118,7 @@ func (c Client) AddManagedRule(
 // UpdateManagedRule updates a Managed Rule for the provided account number
 // using the provided Managed Rule ID and Managed Rule properties.
 func (c Client) UpdateManagedRule(
-	params *UpdateManagedRuleParams,
+	params UpdateManagedRuleParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,
@@ -133,7 +138,7 @@ func (c Client) UpdateManagedRule(
 // DeleteManagedRule deletes a Managed Rule for the provided account number
 // using the provided Managed Rule ID.
 func (c Client) DeleteManagedRule(
-	params *DeleteManagedRuleParams,
+	params DeleteManagedRuleParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,

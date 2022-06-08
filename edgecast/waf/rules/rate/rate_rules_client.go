@@ -22,6 +22,11 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
+// New creates a new instance of the Rate Rule Client Service
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return Client{c, baseAPIURL}
+}
+
 // Client is the Rate Rules client.
 type Client struct {
 	client     ecclient.APIClient
@@ -31,30 +36,30 @@ type Client struct {
 // ClientService is the interface for Client methods.
 type ClientService interface {
 	AddRateRule(
-		params *AddRateRuleParams,
+		params AddRateRuleParams,
 	) (string, error)
 
 	GetRateRule(
-		params *GetRateRuleParams,
+		params GetRateRuleParams,
 	) (*RateRuleGetOK, error)
 
 	UpdateRateRule(
-		params *UpdateRateRuleParams,
+		params UpdateRateRuleParams,
 	) error
 
 	DeleteRateRule(
-		params *DeleteRateRuleParams,
+		params DeleteRateRuleParams,
 	) error
 
 	GetAllRateRules(
-		params *GetAllRateRulesParams,
+		params GetAllRateRulesParams,
 	) (*[]RateRuleGetAllOK, error)
 }
 
 // AddRateRule creates a rate rule for the provided account number
 // and returns the new rule's system-generated ID
 func (c Client) AddRateRule(
-	params *AddRateRuleParams,
+	params AddRateRuleParams,
 ) (string, error) {
 	parsedResponse := &RateRuleAddOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -75,7 +80,7 @@ func (c Client) AddRateRule(
 // GetRateRule retrieves a rate rule for the provided account number and
 // Rate Rule ID
 func (c Client) GetRateRule(
-	params *GetRateRuleParams,
+	params GetRateRuleParams,
 ) (*RateRuleGetOK, error) {
 	parsedResponse := &RateRuleGetOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
@@ -96,7 +101,7 @@ func (c Client) GetRateRule(
 // UpdateRateRule updates a rate rule for the provided account number using the
 // provided Rate Rule ID and Rate Rule properties.
 func (c Client) UpdateRateRule(
-	params *UpdateRateRuleParams,
+	params UpdateRateRuleParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,
@@ -116,7 +121,7 @@ func (c Client) UpdateRateRule(
 // DeleteRateRuleByID deletes a rate rule for the provided account numnber and
 // Rate Rule ID
 func (c Client) DeleteRateRule(
-	params *DeleteRateRuleParams,
+	params DeleteRateRuleParams,
 ) error {
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
@@ -135,7 +140,7 @@ func (c Client) DeleteRateRule(
 // GetAllRateRules retrives all of the Rate Rules for the provided account
 // number.
 func (c Client) GetAllRateRules(
-	params *GetAllRateRulesParams,
+	params GetAllRateRulesParams,
 ) (*[]RateRuleGetAllOK, error) {
 	parsedResponse := &[]RateRuleGetAllOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{

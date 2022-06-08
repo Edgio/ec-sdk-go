@@ -40,8 +40,8 @@ func main() {
 	fmt.Println("**** CREATE ****")
 	fmt.Println("")
 	fmt.Printf("Creating Managed Rule: %+v\n", rule)
-	ruleID, err := wafService.ManagedRules.AddManagedRule(
-		&managed.AddManagedRuleParams{
+	ruleID, err := wafService.Managed.AddManagedRule(
+		managed.AddManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRule:   rule,
 		})
@@ -56,8 +56,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.ManagedRules.GetManagedRule(
-		&managed.GetManagedRuleParams{
+	getResponse, err := wafService.Managed.GetManagedRule(
+		managed.GetManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRuleID: ruleID,
 		})
@@ -72,8 +72,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
-	getAllResponse, err := wafService.ManagedRules.GetAllManagedRules(
-		&managed.GetAllManagedRulesParams{
+	getAllResponse, err := wafService.Managed.GetAllManagedRules(
+		managed.GetAllManagedRulesParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -91,8 +91,8 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.ManagedRules.UpdateManagedRule(
-		&managed.UpdateManagedRuleParams{
+	err = wafService.Managed.UpdateManagedRule(
+		managed.UpdateManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRuleID: ruleID,
 			ManagedRule:   rule,
@@ -108,8 +108,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.ManagedRules.DeleteManagedRule(
-		&managed.DeleteManagedRuleParams{
+	err = wafService.Managed.DeleteManagedRule(
+		managed.DeleteManagedRuleParams{
 			AccountNumber: accountNumber,
 			ManagedRuleID: ruleID,
 		})

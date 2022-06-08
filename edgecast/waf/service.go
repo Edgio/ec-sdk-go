@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/access"
@@ -24,18 +23,15 @@ import (
 
 // WafService interacts with the EdgeCast API for WAF
 type WafService struct {
-	client ecclient.APIClient
-	logger eclog.Logger
-
-	AccessRules    access.Client
-	BotRuleSets    bot.Client
-	CustomRuleSets custom.Client
-	ManagedRules   managed.Client
-	RateRules      rate.Client
-	Scopes         scopes.Client
+	Access  access.ClientService
+	Bot     bot.ClientService
+	Custom  custom.ClientService
+	Managed managed.ClientService
+	Rate    rate.ClientService
+	Scopes  scopes.ClientService
 }
 
-// New creates a new instance of WAFservice using the provided configuration
+// New creates a new instance of WafService using the provided configuration
 func New(config edgecast.SDKConfig) (*WafService, error) {
 	authProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
 
@@ -52,8 +48,12 @@ func New(config edgecast.SDKConfig) (*WafService, error) {
 	})
 
 	return &WafService{
-		client: c,
-		logger: config.Logger,
+		Access:  access.New(c, c.Config.BaseAPIURL.String()),
+		Bot:     bot.New(c, c.Config.BaseAPIURL.String()),
+		Custom:  custom.New(c, c.Config.BaseAPIURL.String()),
+		Managed: managed.New(c, c.Config.BaseAPIURL.String()),
+		Rate:    rate.New(c, c.Config.BaseAPIURL.String()),
+		Scopes:  scopes.New(c, c.Config.BaseAPIURL.String()),
 	}, nil
 }
 

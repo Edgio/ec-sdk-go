@@ -42,8 +42,8 @@ func main() {
 	fmt.Println("")
 
 	fmt.Printf("Creating Bot Rule Set: %+v\n", rule)
-	ruleID, err := wafService.BotRuleSets.AddBotRuleSet(
-		&bot.AddBotRuleSetParams{
+	ruleID, err := wafService.Bot.AddBotRuleSet(
+		bot.AddBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSet:    rule,
 		})
@@ -58,8 +58,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.BotRuleSets.GetBotRuleSet(
-		&bot.GetBotRuleSetParams{
+	getResponse, err := wafService.Bot.GetBotRuleSet(
+		bot.GetBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSetID:  ruleID,
 		})
@@ -75,8 +75,8 @@ func main() {
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
 
-	getAllResponse, err := wafService.BotRuleSets.GetAllBotRuleSets(
-		&bot.GetAllBotRuleSetsParams{
+	getAllResponse, err := wafService.Bot.GetAllBotRuleSets(
+		bot.GetAllBotRuleSetsParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -94,8 +94,8 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.BotRuleSets.UpdateBotRuleSet(
-		&bot.UpdateBotRuleSetParams{
+	err = wafService.Bot.UpdateBotRuleSet(
+		bot.UpdateBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSetID:  ruleID,
 			BotRuleSet:    rule,
@@ -111,8 +111,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.BotRuleSets.DeleteBotRuleSet(
-		&bot.DeleteBotRuleSetParams{
+	err = wafService.Bot.DeleteBotRuleSet(
+		bot.DeleteBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSetID:  ruleID,
 		})

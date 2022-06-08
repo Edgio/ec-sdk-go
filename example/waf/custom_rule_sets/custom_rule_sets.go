@@ -42,8 +42,8 @@ func main() {
 	fmt.Println("")
 
 	fmt.Printf("Creating Custom Rule Set: %+v\n", rule)
-	ruleID, err := wafService.CustomRuleSets.AddCustomRuleSet(
-		&custom.AddCustomRuleSetParams{
+	ruleID, err := wafService.Custom.AddCustomRuleSet(
+		custom.AddCustomRuleSetParams{
 			AccountNumber: accountNumber,
 			CustomRuleSet: rule,
 		})
@@ -58,8 +58,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.CustomRuleSets.GetCustomRuleSet(
-		&custom.GetCustomRuleSetParams{
+	getResponse, err := wafService.Custom.GetCustomRuleSet(
+		custom.GetCustomRuleSetParams{
 			AccountNumber:   accountNumber,
 			CustomRuleSetID: ruleID,
 		})
@@ -75,8 +75,8 @@ func main() {
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
 
-	getAllResponse, err := wafService.CustomRuleSets.GetAllCustomRuleSets(
-		&custom.GetAllCustomRuleSetsParams{
+	getAllResponse, err := wafService.Custom.GetAllCustomRuleSets(
+		custom.GetAllCustomRuleSetsParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -94,8 +94,8 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.CustomRuleSets.UpdateCustomRuleSet(
-		&custom.UpdateCustomRuleSetParams{
+	err = wafService.Custom.UpdateCustomRuleSet(
+		custom.UpdateCustomRuleSetParams{
 			AccountNumber:   accountNumber,
 			CustomRuleSetID: ruleID,
 			CustomRuleSet:   rule,
@@ -111,8 +111,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.CustomRuleSets.DeleteCustomRuleSet(
-		&custom.DeleteCustomRuleSetParams{
+	err = wafService.Custom.DeleteCustomRuleSet(
+		custom.DeleteCustomRuleSetParams{
 			AccountNumber:   accountNumber,
 			CustomRuleSetID: ruleID,
 		})

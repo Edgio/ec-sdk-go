@@ -40,8 +40,8 @@ func main() {
 	fmt.Println("**** CREATE ****")
 	fmt.Println("")
 	fmt.Printf("Creating Access Rule: %+v\n", rule)
-	ruleID, err := wafService.AccessRules.AddAccessRule(
-		&access.AddAccessRuleParams{
+	ruleID, err := wafService.Access.AddAccessRule(
+		access.AddAccessRuleParams{
 			AccountNumber: accountNumber,
 			AccessRule:    rule,
 		})
@@ -56,8 +56,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.AccessRules.GetAccessRule(
-		&access.GetAccessRuleParams{
+	getResponse, err := wafService.Access.GetAccessRule(
+		access.GetAccessRuleParams{
 			AccountNumber: accountNumber,
 			AccessRuleID:  ruleID,
 		})
@@ -72,8 +72,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
-	getAllResponse, err := wafService.AccessRules.GetAllAccessRules(
-		&access.GetAllAccessRulesParams{
+	getAllResponse, err := wafService.Access.GetAllAccessRules(
+		access.GetAllAccessRulesParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -91,8 +91,8 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.AccessRules.UpdateAccessRule(
-		&access.UpdateAccessRuleParams{
+	err = wafService.Access.UpdateAccessRule(
+		access.UpdateAccessRuleParams{
 			AccountNumber: accountNumber,
 			AccessRuleID:  ruleID,
 			AccessRule:    rule,
@@ -108,8 +108,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.AccessRules.DeleteAccessRule(
-		&access.DeleteAccessRuleParams{
+	err = wafService.Access.DeleteAccessRule(
+		access.DeleteAccessRuleParams{
 			AccountNumber: accountNumber,
 			AccessRuleID:  ruleID,
 		})

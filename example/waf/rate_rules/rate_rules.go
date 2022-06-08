@@ -40,8 +40,8 @@ func main() {
 	fmt.Println("**** CREATE ****")
 	fmt.Println("")
 	fmt.Printf("Creating Rate Rule: %+v\n", rule)
-	ruleID, err := wafService.RateRules.AddRateRule(
-		&rate.AddRateRuleParams{
+	ruleID, err := wafService.Rate.AddRateRule(
+		rate.AddRateRuleParams{
 			AccountNumber: accountNumber,
 			RateRule:      rule,
 		})
@@ -56,8 +56,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.RateRules.GetRateRule(
-		&rate.GetRateRuleParams{
+	getResponse, err := wafService.Rate.GetRateRule(
+		rate.GetRateRuleParams{
 			AccountNumber: accountNumber,
 			RateRuleID:    ruleID,
 		})
@@ -72,8 +72,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
-	getAllResponse, err := wafService.RateRules.GetAllRateRules(
-		&rate.GetAllRateRulesParams{
+	getAllResponse, err := wafService.Rate.GetAllRateRules(
+		rate.GetAllRateRulesParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -91,8 +91,8 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.RateRules.UpdateRateRule(
-		&rate.UpdateRateRuleParams{
+	err = wafService.Rate.UpdateRateRule(
+		rate.UpdateRateRuleParams{
 			AccountNumber: accountNumber,
 			RateRule:      rule,
 			RateRuleID:    ruleID,
@@ -108,8 +108,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.RateRules.DeleteRateRule(
-		&rate.DeleteRateRuleParams{
+	err = wafService.Rate.DeleteRateRule(
+		rate.DeleteRateRuleParams{
 			AccountNumber: accountNumber,
 			RateRuleID:    ruleID,
 		})
