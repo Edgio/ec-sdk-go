@@ -47,7 +47,7 @@ func (a *Client) DcvCheckDcvTokens(params DcvCheckDcvTokensParams) error {
 
 	method, err := ecclient.ToHTTPMethod("PUT")
 	if err != nil {
-		return nil, fmt.Errorf("DcvCheckDcvTokens: %v", err)
+		return fmt.Errorf("DcvCheckDcvTokens: %v", err)
 	}
 
 	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
