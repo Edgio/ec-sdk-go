@@ -1,7 +1,7 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package waf
+package custom
 
 /*
 	This file contains operations and types specific to WAF Custom Rule Sets.
@@ -22,13 +22,47 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
+// New creates a new instance of the Custom Rule Sets Client Service
+func New(c ecclient.APIClient, baseAPIURL string) ClientService {
+	return Client{c, baseAPIURL}
+}
+
+// Client is the Custom Rule Sets client.
+type Client struct {
+	client     ecclient.APIClient
+	baseAPIURL string
+}
+
+// ClientService is the interface for Client methods.
+type ClientService interface {
+	AddCustomRuleSet(
+		params AddCustomRuleSetParams,
+	) (string, error)
+
+	GetAllCustomRuleSets(
+		params GetAllCustomRuleSetsParams,
+	) (*[]CustomRuleSetGetAllOK, error)
+
+	DeleteCustomRuleSet(
+		params DeleteCustomRuleSetParams,
+	) error
+
+	GetCustomRuleSet(
+		params GetCustomRuleSetParams,
+	) (*CustomRuleSetGetOK, error)
+
+	UpdateCustomRuleSet(
+		params UpdateCustomRuleSetParams,
+	) error
+}
+
 // AddCustomRuleSet creates a Custom Rule Set for the provided account number
 // and returns the new rule's system-generated ID
-func (svc WAFService) AddCustomRuleSet(
+func (c Client) AddCustomRuleSet(
 	params AddCustomRuleSetParams,
 ) (string, error) {
 	parsedResponse := &CustomRuleSetAddOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Post,
 		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/rules",
 		RawBody: params.CustomRuleSet,
@@ -45,11 +79,11 @@ func (svc WAFService) AddCustomRuleSet(
 
 // GetAllCustomRuleSets retrieves the list of Custom Rule Sets for the provided
 // account number.
-func (svc WAFService) GetAllCustomRuleSets(
+func (c Client) GetAllCustomRuleSets(
 	params GetAllCustomRuleSetsParams,
 ) (*[]CustomRuleSetGetAllOK, error) {
 	parsedResponse := &[]CustomRuleSetGetAllOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules",
 		PathParams: map[string]string{
@@ -65,10 +99,10 @@ func (svc WAFService) GetAllCustomRuleSets(
 
 // DeleteCustomRuleSet deletes a Custom Rule Set for the provided account number
 // with the provided Custom Rule Set ID.
-func (svc WAFService) DeleteCustomRuleSet(
+func (c Client) DeleteCustomRuleSet(
 	params DeleteCustomRuleSetParams,
 ) error {
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Delete,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		PathParams: map[string]string{
@@ -84,11 +118,11 @@ func (svc WAFService) DeleteCustomRuleSet(
 
 // GetCustomRuleSet retrieves a Custom Rule Set for the provided account number
 // with the provided Custom Rule Set ID.
-func (svc WAFService) GetCustomRuleSet(
+func (c Client) GetCustomRuleSet(
 	params GetCustomRuleSetParams,
 ) (*CustomRuleSetGetOK, error) {
 	parsedResponse := &CustomRuleSetGetOK{}
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
 		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		PathParams: map[string]string{
@@ -105,10 +139,10 @@ func (svc WAFService) GetCustomRuleSet(
 
 // UpdateCustomRuleSet updates a Custom Rule Set for the provided account number
 // using the provided Custom Rule Set ID and Custom Rule Set properties.
-func (svc WAFService) UpdateCustomRuleSet(
+func (c Client) UpdateCustomRuleSet(
 	params UpdateCustomRuleSetParams,
 ) error {
-	_, err := svc.client.SubmitRequest(ecclient.SubmitRequestParams{
+	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method:  ecclient.Put,
 		Path:    "v2/mcc/customers/{account_number}/waf/v1.0/rules/{rule_id}",
 		RawBody: params.CustomRuleSet,

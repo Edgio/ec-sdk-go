@@ -8,6 +8,8 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/bot"
 )
 
 // Demonstrates the usage of WAF Bot Rule Sets
@@ -40,10 +42,11 @@ func main() {
 	fmt.Println("")
 
 	fmt.Printf("Creating Bot Rule Set: %+v\n", rule)
-	ruleID, err := wafService.AddBotRuleSet(waf.AddBotRuleSetParams{
-		AccountNumber: accountNumber,
-		BotRuleSet:    rule,
-	})
+	ruleID, err := wafService.Bot.AddBotRuleSet(
+		bot.AddBotRuleSetParams{
+			AccountNumber: accountNumber,
+			BotRuleSet:    rule,
+		})
 
 	if err != nil {
 		fmt.Printf("failed to create Bot Rule Set: %+v\n", err)
@@ -55,10 +58,11 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.GetBotRuleSet(waf.GetBotRuleSetParams{
-		AccountNumber: accountNumber,
-		BotRuleSetID:  ruleID,
-	})
+	getResponse, err := wafService.Bot.GetBotRuleSet(
+		bot.GetBotRuleSetParams{
+			AccountNumber: accountNumber,
+			BotRuleSetID:  ruleID,
+		})
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve Bot Rule Set: %+v\n", err)
@@ -71,8 +75,8 @@ func main() {
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
 
-	getAllResponse, err := wafService.GetAllBotRuleSets(
-		waf.GetAllBotRuleSetsParams{
+	getAllResponse, err := wafService.Bot.GetAllBotRuleSets(
+		bot.GetAllBotRuleSetsParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -90,8 +94,8 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.UpdateBotRuleSet(
-		waf.UpdateBotRuleSetParams{
+	err = wafService.Bot.UpdateBotRuleSet(
+		bot.UpdateBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSetID:  ruleID,
 			BotRuleSet:    rule,
@@ -107,8 +111,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.DeleteBotRuleSet(
-		waf.DeleteBotRuleSetParams{
+	err = wafService.Bot.DeleteBotRuleSet(
+		bot.DeleteBotRuleSetParams{
 			AccountNumber: accountNumber,
 			BotRuleSetID:  ruleID,
 		})
@@ -119,27 +123,27 @@ func main() {
 	}
 }
 
-func setupBotRuleSet() waf.BotRuleSet {
-	return waf.BotRuleSet{
+func setupBotRuleSet() bot.BotRuleSet {
+	return bot.BotRuleSet{
 		Name: "test rule",
-		Directives: []waf.BotRuleDirective{
+		Directives: []bot.BotRuleDirective{
 			{
-				SecRule: &waf.SecRule{
+				SecRule: &rules.SecRule{
 					Name: "new bot rule",
-					Action: waf.Action{
+					Action: rules.Action{
 						ID:              "77375686",
-						Transformations: []waf.Transformation{waf.TransformNone},
+						Transformations: []rules.Transformation{rules.TransformNone},
 					},
-					Operator: waf.Operator{
+					Operator: rules.Operator{
 						IsNegated: true,
-						Type:      waf.OpStringEquality,
+						Type:      rules.OpStringEquality,
 						Value:     "mycookie",
 					},
-					Variables: []waf.Variable{
+					Variables: []rules.Variable{
 						{
 							IsCount: true,
-							Type:    waf.VarRequestCookies,
-							Matches: []waf.Match{
+							Type:    rules.VarRequestCookies,
+							Matches: []rules.Match{
 								{
 									IsNegated: false,
 									IsRegex:   false,

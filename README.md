@@ -7,12 +7,12 @@ The official Go SDK for interacting with EdgeCast APIs.
 ## Installing
 ### $GOPATH
 To install the SDK into your $GOPATH:
-```
+```shell
 go get -u github.com/EdgeCast/ec-sdk-go
 ```
 
 ### Go Modules
-```
+```shell
 go get github.com/EdgeCast/ec-sdk-go
 ```
 
@@ -321,6 +321,12 @@ For detailed information about Rate Rules in WAF, please read the [official docu
 import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/access"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/bot"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/custom"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/managed"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/rate"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/scopes"
 )
 // ...
 	sdkConfig := edgecast.NewSDKConfig()
@@ -328,79 +334,81 @@ import (
 	wafService, err := waf.New(sdkConfig)
 	accountNumber := "ACCOUNT_NUMBER"
 
-	accessRuleID, err := wafService.AddAccessRule(waf.AddAccessRuleParams{
-		AccountNumber: accountNumber,
-		AccessRule:    waf.AccessRule{
-			// ...
-		},
-	})
-
-	botRuleSetID, err = wafService.AddBotRuleSet(waf.AddBotRuleParams{
-		AccountNumber: accountNumber,
-		BotRuleSet:       waf.BotRuleSet{
-			// ...
-		},
-	})
-
-	customRuleSetID, err = wafService.AddCustomRuleSet(
-		waf.AddCustomRuleSetParams{
+	accessRuleID, err := wafService.AccessRules.AddAccessRule(
+		access.AddAccessRuleParams{
 			AccountNumber: accountNumber,
-			CustomRuleSet:  waf.CustomRuleSet{
-			// ...
-		},
-	})
+			AccessRule:    access.AccessRule{
+				// ...
+			}
+		})
 
-	managedRuleID, err = wafService.AddManagedRule(waf.AddManagedRuleParams{
-		AccountNumber: accountNumber,
-		ManagedRule:   waf.ManagedRule{
-			// ...
-		},
-	})
+	botRuleSetID, err = wafService.BotRuleSets.AddBotRuleSet(
+		bot.AddBotRuleParams{
+			AccountNumber: accountNumber,
+			BotRuleSet:       bot.BotRuleSet{
+				// ...
+			},
+		})
 
-	rateRuleID, err = wafService.AddRateRule(waf.AddRateRuleParams{
-		AccountNumber: accountNumber,
-		RateRule:      waf.RateRule{
+	customRuleSetID, err = wafService.CustomRuleSets.AddCustomRuleSet(
+		custom.AddCustomRuleSetParams{
+			AccountNumber: accountNumber,
+			CustomRuleSet:  custom.CustomRuleSet{
 			// ...
-		},
-	})
+			},
+		})
 
-	scope := waf.Scope{
-		Host: waf.MatchCondition{
+	managedRuleID, err = wafService.ManagedRules.AddManagedRule(
+		managed.AddManagedRuleParams{
+			AccountNumber: accountNumber,
+			ManagedRule:   managed.ManagedRule{
+				// ...
+			},
+		})
+
+	rateRuleID, err = wafService.RateRules.AddRateRule(
+		rate.AddRateRuleParams{
+			AccountNumber: accountNumber,
+			RateRule:      rate.RateRule{
+				// ...
+			},
+		})
+
+	scope := scopes.Scope{
+		Host: scopes.MatchCondition{
 			// ...
 		},
-		Limits: &[]waf.Limit{
+		Limits: &[]scopes.Limit{
 			{
 				ID: rateRuleID,
-				Action: waf.LimitAction{
+				Action: scopes.LimitAction{
 					// ...
 				},
 			},
 		},
 		ACLProdID:  &accessRuleID,
-		ACLProdAction: &waf.ProdAction{
+		ACLProdAction: &scopes.ProdAction{
 			// ...
 		},
 		ProfileProdID:  &managedRuleID,
-		ProfileProdAction: &waf.ProdAction{
+		ProfileProdAction: &scopes.ProdAction{
 			// ...
 		},
 		RuleProdID:  &customRuleSetID,
-		RuleProdAction: &waf.ProdAction{
+		RuleProdAction: &scopes.ProdAction{
 			// ...
 		},
 		BotsProdID: &botRuleSetID,
-		BotsProdAction: &waf.ProdAction{
+		BotsProdAction: &scopes.ProdAction{
 			// ...
 		},
 	}
 
-	scopes := waf.Scopes{
-		CustomerID: accountNumber,
-		Scopes:     []waf.Scope{scope},
-	}
-
-	modifyResp, err := wafService.ModifyAllScopes(scopes)
-}
+	modifyAllScopesResp, err := wafService.Scopes.ModifyAllScopes(
+		&scopes.Scopes{
+			CustomerID: accountNumber,
+			Scopes:     []scopes.Scope{scope},
+		})
 ```
 
 ### Structure

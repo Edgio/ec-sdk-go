@@ -1,4 +1,4 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
 package waf
@@ -10,20 +10,29 @@ import (
 	"strings"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/access"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/bot"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/custom"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/managed"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/rate"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/scopes"
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-// WAFService interacts with the EdgeCast API for WAF
-type WAFService struct {
-	client ecclient.APIClient
-	logger eclog.Logger
+// WafService interacts with the EdgeCast API for WAF
+type WafService struct {
+	Access  access.ClientService
+	Bot     bot.ClientService
+	Custom  custom.ClientService
+	Managed managed.ClientService
+	Rate    rate.ClientService
+	Scopes  scopes.ClientService
 }
 
-// New creates a new instance of WAFservice using the provided configuration
-func New(config edgecast.SDKConfig) (*WAFService, error) {
+// New creates a new instance of WafService using the provided configuration
+func New(config edgecast.SDKConfig) (*WafService, error) {
 	authProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
 
 	if err != nil {
@@ -38,9 +47,13 @@ func New(config edgecast.SDKConfig) (*WAFService, error) {
 		CheckRetry:   checkRetryForWAFScopes,
 	})
 
-	return &WAFService{
-		client: c,
-		logger: config.Logger,
+	return &WafService{
+		Access:  access.New(c, c.Config.BaseAPIURL.String()),
+		Bot:     bot.New(c, c.Config.BaseAPIURL.String()),
+		Custom:  custom.New(c, c.Config.BaseAPIURL.String()),
+		Managed: managed.New(c, c.Config.BaseAPIURL.String()),
+		Rate:    rate.New(c, c.Config.BaseAPIURL.String()),
+		Scopes:  scopes.New(c, c.Config.BaseAPIURL.String()),
 	}, nil
 }
 

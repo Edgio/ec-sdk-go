@@ -1,13 +1,20 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package waf
+package scopes
+
+import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
+
+// GetAllScopesParams represents the input to GetAllScopes
+type GetAllScopesParams struct {
+	AccountNumber string
+}
 
 // ModifyAllScopesOK -
 type ModifyAllScopesOK struct {
 	// The ID of the Scopes Configuration
 	ID string
-	WAFResponse
+	rules.WAFResponse
 }
 
 /*
@@ -109,7 +116,7 @@ type Scope struct {
 		Indicates the system-defined ID for the access rule that will audit
 		production traffic for this Security Application Manager configuration.
 
-		Note: Use WAFService.GetAllAccessRules to retrieve a list of access
+		Note: Use WafService.GetAllAccessRules to retrieve a list of access
 		rules and their IDs.
 	*/
 	ACLAuditID *string `json:"acl_audit_id,omitempty"`
@@ -125,7 +132,7 @@ type Scope struct {
 		to production traffic for this Security Application Manager
 		configuration.
 
-		Note: Use WAFService.GetAllAccessRules to retrieve a list of access
+		Note: Use WafService.GetAllAccessRules to retrieve a list of access
 		rules and their IDs.
 	*/
 	ACLProdID *string `json:"acl_prod_id,omitempty"`
@@ -153,7 +160,7 @@ type Scope struct {
 		Indicates the system-defined ID for the managed rule that will audit
 		production traffic for this Security Application Manager configuration.
 
-		Note: Use WAFService.GetAllManagedRules to retrieve a list of managed
+		Note: Use WafService.GetAllManagedRules to retrieve a list of managed
 		rules and their IDs.
 	*/
 	ProfileAuditID *string `json:"profile_audit_id,omitempty"`
@@ -169,7 +176,7 @@ type Scope struct {
 		applied to production traffic for this Security Application Manager
 		configuration.
 
-		Note: Use WAFService.GetAllManagedRules to retrieve a list of access rules and their IDs.
+		Note: Use WafService.GetAllManagedRules to retrieve a list of access rules and their IDs.
 	*/
 	ProfileProdID *string `json:"profile_prod_id,omitempty"`
 
@@ -183,7 +190,7 @@ type Scope struct {
 		Indicates the system-defined ID for the custom rule set that will audit
 		production traffic for this Security Application Manager configuration.
 
-		Note: Use WAFService.GetAllCustomRuleSets to retrieve a list of custom
+		Note: Use WafService.GetAllCustomRuleSets to retrieve a list of custom
 		rule sets and their IDs.
 	*/
 	RuleAuditID *string `json:"rules_audit_id,omitempty"`
@@ -199,7 +206,7 @@ type Scope struct {
 		applied to production traffic for this Security Application Manager
 		configuration.
 
-		Note: Use WAFService.GetAllCustomRuleSets to retrieve a list of custom
+		Note: Use WafService.GetAllCustomRuleSets to retrieve a list of custom
 		rule sets and their IDs.
 	*/
 	RuleProdID *string `json:"rules_prod_id,omitempty"`

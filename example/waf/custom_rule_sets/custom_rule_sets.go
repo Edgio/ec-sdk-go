@@ -1,4 +1,4 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
 package main
@@ -8,6 +8,8 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/waf"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules/custom"
 )
 
 // Demonstrates the usage of WAF Custom Rule Sets
@@ -40,10 +42,11 @@ func main() {
 	fmt.Println("")
 
 	fmt.Printf("Creating Custom Rule Set: %+v\n", rule)
-	ruleID, err := wafService.AddCustomRuleSet(waf.AddCustomRuleSetParams{
-		AccountNumber: accountNumber,
-		CustomRuleSet: rule,
-	})
+	ruleID, err := wafService.Custom.AddCustomRuleSet(
+		custom.AddCustomRuleSetParams{
+			AccountNumber: accountNumber,
+			CustomRuleSet: rule,
+		})
 
 	if err != nil {
 		fmt.Printf("failed to create Custom Rule Set: %+v\n", err)
@@ -55,10 +58,11 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** GET ****")
 	fmt.Println("")
-	getResponse, err := wafService.GetCustomRuleSet(waf.GetCustomRuleSetParams{
-		AccountNumber:   accountNumber,
-		CustomRuleSetID: ruleID,
-	})
+	getResponse, err := wafService.Custom.GetCustomRuleSet(
+		custom.GetCustomRuleSetParams{
+			AccountNumber:   accountNumber,
+			CustomRuleSetID: ruleID,
+		})
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve Custom Rule Set: %+v\n", err)
@@ -71,8 +75,8 @@ func main() {
 	fmt.Println("**** GET ALL ****")
 	fmt.Println("")
 
-	getAllResponse, err := wafService.GetAllCustomRuleSets(
-		waf.GetAllCustomRuleSetsParams{
+	getAllResponse, err := wafService.Custom.GetAllCustomRuleSets(
+		custom.GetAllCustomRuleSetsParams{
 			AccountNumber: accountNumber,
 		})
 
@@ -90,8 +94,8 @@ func main() {
 	fmt.Println("")
 	rule.Name = "Updated rule from example"
 
-	err = wafService.UpdateCustomRuleSet(
-		waf.UpdateCustomRuleSetParams{
+	err = wafService.Custom.UpdateCustomRuleSet(
+		custom.UpdateCustomRuleSetParams{
 			AccountNumber:   accountNumber,
 			CustomRuleSetID: ruleID,
 			CustomRuleSet:   rule,
@@ -107,8 +111,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("**** DELETE ****")
 	fmt.Println("")
-	err = wafService.DeleteCustomRuleSet(
-		waf.DeleteCustomRuleSetParams{
+	err = wafService.Custom.DeleteCustomRuleSet(
+		custom.DeleteCustomRuleSetParams{
 			AccountNumber:   accountNumber,
 			CustomRuleSetID: ruleID,
 		})
@@ -119,27 +123,27 @@ func main() {
 	}
 }
 
-func setupCustomRuleSet() waf.CustomRuleSet {
-	return waf.CustomRuleSet{
+func setupCustomRuleSet() custom.CustomRuleSet {
+	return custom.CustomRuleSet{
 		Name: "Deny bots",
-		Directives: []waf.CustomRuleDirective{
+		Directives: []custom.CustomRuleDirective{
 			{
-				SecRule: waf.SecRule{
-					Action: waf.Action{
+				SecRule: rules.SecRule{
+					Action: rules.Action{
 						ID:              "66000000",
 						Message:         "Invalid user agent.",
-						Transformations: []waf.Transformation{waf.TransformNone},
+						Transformations: []rules.Transformation{rules.TransformNone},
 					},
-					Operator: waf.Operator{
+					Operator: rules.Operator{
 						IsNegated: false,
-						Type:      waf.OpContains,
+						Type:      rules.OpContains,
 						Value:     "bot",
 					},
-					Variables: []waf.Variable{
+					Variables: []rules.Variable{
 						{
 							IsCount: false,
-							Type:    waf.VarRequestHeaders,
-							Matches: []waf.Match{
+							Type:    rules.VarRequestHeaders,
+							Matches: []rules.Match{
 								{
 									IsNegated: false,
 									IsRegex:   false,

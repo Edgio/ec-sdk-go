@@ -1,7 +1,9 @@
-// Copyright 2021 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
 // license. See LICENSE file in project root for terms.
 
-package waf
+package managed
+
+import "github.com/EdgeCast/ec-sdk-go/edgecast/waf/rules"
 
 // ManagedRuleLight is a lightweight representation of a Managed Rule. Used
 // specifically for the GetAllManagedRules action
@@ -39,7 +41,7 @@ type ManagedRuleLight struct {
 	// TODO: Convert LastModifiedDate and CreatedDate to time.Time
 }
 
-// ManagedRule contains the shared properties for the Create, Get, Update models
+// ManagedRule contains the rules properties for the Create, Get, Update models
 // for a single Managed Rule
 type ManagedRule struct {
 	/*
@@ -320,7 +322,7 @@ type AddManagedRuleParams struct {
 
 // AddManagedRuleOK -
 type AddManagedRuleOK struct {
-	AddRuleResponse
+	rules.AddRuleResponse
 }
 
 func NewUpdateManagedRuleParams() UpdateManagedRuleParams {
