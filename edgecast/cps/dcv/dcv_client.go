@@ -59,7 +59,7 @@ func (a *Client) DcvCheckDcvTokens(params DcvCheckDcvTokensParams) error {
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("DcvCheckDcvTokens: %v", err)
+		return fmt.Errorf("DcvCheckDcvTokens: %v", err)
 	}
 
 	return nil
