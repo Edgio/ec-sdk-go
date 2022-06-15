@@ -60,7 +60,6 @@ func (o *DcvCheckDcvTokensParams) SetDefaults() {
 
 // WriteToRequest extracts parameters and sets for the request to be consumed
 func WriteToRequestDcvCheckDcvTokensParams(o DcvCheckDcvTokensParams) (RequestParameters, error) {
-
 	var res []error
 
 	params := NewRequestParameters()
