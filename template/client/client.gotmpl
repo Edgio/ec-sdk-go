@@ -46,12 +46,12 @@ func (a *Client) {{ pascalize .Name }}(params {{ pascalize .Name }}Params{{ if .
   // Set parameters
 	results, err := WriteToRequest{{ pascalize .Name }}Params(params)
 	if err != nil {
-		return {{ if .SuccessResponse }}nil,{{ end }} err
+		return {{ if .SuccessResponse }}nil, {{ end }}err
 	}
 
   method, err := ecclient.ToHTTPMethod({{ printf "%q" .Method }})
 	if err != nil {
-		return nil, fmt.Errorf("{{ pascalize .Name }}: %v", err)
+        return {{if .SuccessResponse }}nil, {{ end }}fmt.Errorf("{{ pascalize .Name }}: %v", err)
 	}
 
   {{ $length := len .SuccessResponses }}
@@ -67,7 +67,7 @@ func (a *Client) {{ pascalize .Name }}(params {{ pascalize .Name }}Params{{ if .
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("{{ pascalize .Name }}: %v", err)
+        return {{if .SuccessResponse }}nil, {{ end }}fmt.Errorf("{{ pascalize .Name }}: %v", err)
 	}
   
  return {{if .SuccessResponse }}parsedResponse,{{ end }} nil
