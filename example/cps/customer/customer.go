@@ -2,18 +2,21 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/cps"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/cps/customer"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/cps/models"
+	"github.com/kr/pretty"
 )
 
 func main() {
 
-	// Setup - fill in the below variables before running this code
+	// Setup
 	idsCredentials := edgecast.IDSCredentials{
-		ClientID:     "",
-		ClientSecret: "",
-		Scope:        "sec.cps.certificates",
+		ClientID:     "CLIENT_ID",
+		ClientSecret: "CLIENT_SECRET",
+		Scope:        "SCOPE",
 	}
 
 	sdkConfig := edgecast.NewSDKConfig()
@@ -26,12 +29,57 @@ func main() {
 		return
 	}
 
-	getCustomerNotificationsParams := customer.NewCustomerGetCustomerNotificationsParams()
-	response, err := cpsService.Customer.CustomerGetCustomerNotifications(getCustomerNotificationsParams)
+	fmt.Println("")
+	fmt.Println("**** GET CUSTOMER COMMITS ****")
+	fmt.Println("")
+
+	getCommitsParams := customer.NewCustomerGetCustomerCommitsParams()
+	getCommitsResp, err :=
+		cpsService.Customer.CustomerGetCustomerCommits(getCommitsParams)
+	if err != nil {
+		fmt.Printf("error fetching customer commits: %v\n", err)
+		return
+	}
+
+	fmt.Printf("%# v", pretty.Formatter(getCommitsResp))
+
+	fmt.Println("")
+	fmt.Println("**** UPDATE CUSTOMER NOTIFICATIONS ****")
+	fmt.Println("")
+
+	updateNotifParams := customer.NewCustomerUpdateCustomerNotificationsParams()
+	updateNotifParams.Notifications = []*models.EmailNotification{
+		{
+			NotificationType: "CertificateRenewal",
+			Emails:           []string{"customer@account.com"}, //customer or partner user for the account
+			Enabled:          true,
+		},
+		{
+			NotificationType: "CertificateExpiring",
+			Emails:           []string{"customer@account.com"}, //customer or partner user for the account
+			Enabled:          true,
+		},
+	}
+	updateNotifResp, err :=
+		cpsService.Customer.CustomerUpdateCustomerNotifications(updateNotifParams)
 	if err != nil {
 		fmt.Printf("error fetching customer notifications: %v\n", err)
 		return
 	}
 
-	fmt.Printf("customer notifications:\n%+v", response)
+	fmt.Printf("%# v", pretty.Formatter(updateNotifResp))
+
+	fmt.Println("")
+	fmt.Println("**** GET CUSTOMER NOTIFICATIONS ****")
+	fmt.Println("")
+
+	getNotifParams := customer.NewCustomerGetCustomerNotificationsParams()
+	getNotifResp, err :=
+		cpsService.Customer.CustomerGetCustomerNotifications(getNotifParams)
+	if err != nil {
+		fmt.Printf("error fetching customer notifications: %v\n", err)
+		return
+	}
+
+	fmt.Printf("%# v", pretty.Formatter(getNotifResp))
 }
