@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -272,7 +273,7 @@ func (es ecRequestSender) sendRequest(req request) (*Response, error) {
 	}
 
 	// If a schema was provided, use the parser.
-	if req.parsedResponse != nil {
+	if req.parsedResponse != nil && httpResp.StatusCode != http.StatusNoContent {
 		err = es.parser.parseBody(body, &req.parsedResponse)
 		if err != nil {
 			return nil, fmt.Errorf("sendRequest: parseBody: %w", err)
