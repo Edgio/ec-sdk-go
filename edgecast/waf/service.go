@@ -34,9 +34,8 @@ type WafService struct {
 // New creates a new instance of WafService using the provided configuration
 func New(config edgecast.SDKConfig) (*WafService, error) {
 	authProvider, err := ecauth.NewTokenAuthorizationProvider(config.APIToken)
-
 	if err != nil {
-		return nil, fmt.Errorf("waf.New(): %v", err)
+		return nil, fmt.Errorf("error creating WafService: %w", err)
 	}
 
 	c := ecclient.New(ecclient.ClientConfig{
@@ -67,10 +66,12 @@ func checkRetryForWAFScopes(
 	// The WAF API throws a 400 Bad Request when the rules
 	// being used for a scope have not been fully processed
 	// We will retry in that situation until a more specific error is provided
-	if resp.StatusCode == http.StatusBadRequest &&
+	if resp != nil &&
+		resp.StatusCode == http.StatusBadRequest &&
 		resp.Request.Method == "POST" &&
 		strings.Contains(resp.Request.URL.String(), "waf/v1.0/scopes") {
 		return true, nil
 	}
+
 	return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
 }

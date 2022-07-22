@@ -82,7 +82,7 @@ func (c Client) GetAllScopes(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllScopes: %v", err)
+		return nil, fmt.Errorf("error getting scopes: %v", err)
 	}
 	return parsedResponse, nil
 }
@@ -120,7 +120,7 @@ func (c Client) ModifyAllScopes(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("ModifyAllScopes: %v", err)
+		return nil, fmt.Errorf("error modifying scopes: %v", err)
 	}
 	return parsedResponse, nil
 }

@@ -73,7 +73,7 @@ func (c Client) AddBotRuleSet(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return "", fmt.Errorf("AddBotRuleSet: %w", err)
+		return "", fmt.Errorf("error creating bot rule set: %w", err)
 	}
 	return parsedResponse.ID, nil
 }
@@ -93,7 +93,7 @@ func (c Client) GetAllBotRuleSets(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllBotRuleSets: %w", err)
+		return nil, fmt.Errorf("error getting all bot rule sets: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -112,7 +112,7 @@ func (c Client) DeleteBotRuleSet(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteBotRuleSet: %w", err)
+		return fmt.Errorf("error deleting bot rule set: %w", err)
 	}
 	return nil
 }
@@ -133,7 +133,7 @@ func (c Client) GetBotRuleSet(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetBotRuleSet: %w", err)
+		return nil, fmt.Errorf("error getting bot rule set: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -153,7 +153,7 @@ func (c Client) UpdateBotRuleSet(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("UpdateBotRuleSet: %w", err)
+		return fmt.Errorf("error updating bot rule set: %w", err)
 	}
 	return nil
 }

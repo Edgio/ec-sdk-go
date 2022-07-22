@@ -72,7 +72,7 @@ func (c Client) AddRateRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return "", fmt.Errorf("AddRateRule: %v", err)
+		return "", fmt.Errorf("error creating rate rule: %w", err)
 	}
 	return parsedResponse.ID, nil
 }
@@ -93,7 +93,7 @@ func (c Client) GetRateRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetRateRule: %v", err)
+		return nil, fmt.Errorf("error getting rate rule: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -113,7 +113,7 @@ func (c Client) UpdateRateRule(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("UpdateRateRule: %v", err)
+		return fmt.Errorf("error updating rate rule: %w", err)
 	}
 	return nil
 }
@@ -132,7 +132,7 @@ func (c Client) DeleteRateRule(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteRateRule: %v", err)
+		return fmt.Errorf("error deleting rate rule: %w", err)
 	}
 	return nil
 }
@@ -152,7 +152,7 @@ func (c Client) GetAllRateRules(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllRateRules: %v", err)
+		return nil, fmt.Errorf("error getting all rate rules: %w", err)
 	}
 	return parsedResponse, nil
 }
