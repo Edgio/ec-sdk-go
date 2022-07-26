@@ -18,7 +18,6 @@ type BotRuleSet struct {
 // BotRuleDirective contains rules used by Bot Rule Sets. Each directive
 // object defines a rule via the SecRule object or the Include property.
 type BotRuleDirective struct {
-
 	// Identifies a bot rule that uses custom match conditions. This type of
 	// rule is satisfied when a match is found for each of its conditions. A
 	// condition determines request identification by defining what will be
@@ -41,7 +40,6 @@ type GetAllBotRuleSetsParams struct {
 
 // BotRuleSetGetAllOK is a lightweight representation of a Bot Rule Set.
 type BotRuleSetGetAllOK struct {
-
 	// Indicates the system-defined ID for the Bot Rule Set.
 	ID string `json:"id"`
 
@@ -70,7 +68,6 @@ type GetBotRuleSetParams struct {
 
 // BotRuleSetGetOK represents the successful retrieval of a Bot Rule Set.
 type BotRuleSetGetOK struct {
-
 	// Indicates the generated ID for the Bot Rule Set
 	ID string
 

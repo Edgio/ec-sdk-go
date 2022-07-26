@@ -72,7 +72,7 @@ func (c Client) AddCustomRuleSet(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return "", fmt.Errorf("AddCustomRuleSet: %w", err)
+		return "", fmt.Errorf("error adding custom rule set: %w", err)
 	}
 	return parsedResponse.ID, nil
 }
@@ -92,7 +92,7 @@ func (c Client) GetAllCustomRuleSets(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllCustomRuleSets: %w", err)
+		return nil, fmt.Errorf("error getting all custom rule sets: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -111,7 +111,7 @@ func (c Client) DeleteCustomRuleSet(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteCustomRuleSet: %w", err)
+		return fmt.Errorf("error deleting custom rule set: %w", err)
 	}
 	return nil
 }
@@ -132,7 +132,7 @@ func (c Client) GetCustomRuleSet(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomRuleSet: %w", err)
+		return nil, fmt.Errorf("error getting custom rule set: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -152,7 +152,7 @@ func (c Client) UpdateCustomRuleSet(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("UpdateCustomRuleSet: %w", err)
+		return fmt.Errorf("error updating custom rule set: %w", err)
 	}
 	return nil
 }

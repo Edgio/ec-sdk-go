@@ -68,7 +68,7 @@ func (c Client) GetAllManagedRules(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllManagedRules: %w", err)
+		return nil, fmt.Errorf("error getting all managed rules: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -89,7 +89,7 @@ func (c Client) GetManagedRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetManagedRule: %w", err)
+		return nil, fmt.Errorf("error getting managed rule: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -110,7 +110,7 @@ func (c Client) AddManagedRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return "", fmt.Errorf("AddManagedRule: %w", err)
+		return "", fmt.Errorf("error creating managed rule: %w", err)
 	}
 	return parsedResponse.ID, nil
 }
@@ -130,7 +130,7 @@ func (c Client) UpdateManagedRule(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("UpdateManagedRule: %w", err)
+		return fmt.Errorf("error updating managed rule: %w", err)
 	}
 	return nil
 }
@@ -149,7 +149,7 @@ func (c Client) DeleteManagedRule(
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("DeleteManagedRule: %w", err)
+		return fmt.Errorf("error deleting managed rule: %w", err)
 	}
 	return nil
 }

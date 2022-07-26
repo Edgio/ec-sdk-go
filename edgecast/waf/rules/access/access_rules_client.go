@@ -67,7 +67,7 @@ func (c Client) AddAccessRule(
 		ParsedResponse: &parsedResponse,
 	})
 	if err != nil {
-		return "", fmt.Errorf("AddAccessRule: %v", err)
+		return "", fmt.Errorf("error creating access rule: %w", err)
 	}
 	return parsedResponse.ID, nil
 }
@@ -87,7 +87,7 @@ func (c Client) GetAllAccessRules(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAllAccessRules: %v", err)
+		return nil, fmt.Errorf("error getting all access rules: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -108,7 +108,7 @@ func (c Client) GetAccessRule(
 		ParsedResponse: parsedResponse,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("GetAccessRule: %v", err)
+		return nil, fmt.Errorf("error getting access rule: %w", err)
 	}
 	return parsedResponse, nil
 }
@@ -127,9 +127,8 @@ func (c Client) UpdateAccessRule(
 			"rule_id":        params.AccessRuleID,
 		},
 	})
-
 	if err != nil {
-		return fmt.Errorf("UpdateAccessRule: %v", err)
+		return fmt.Errorf("error updating access rule: %v", err)
 	}
 
 	return nil
@@ -148,9 +147,8 @@ func (c Client) DeleteAccessRule(
 			"rule_id":        params.AccessRuleID,
 		},
 	})
-
 	if err != nil {
-		return fmt.Errorf("DeleteAccessRule: %v", err)
+		return fmt.Errorf("error deleting access rule: %v", err)
 	}
 
 	return nil
