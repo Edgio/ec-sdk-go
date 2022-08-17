@@ -22,7 +22,8 @@ func (svc *RulesEngineService) AddPolicy(
 	headers, err := buildPortalsHeaders(
 		params.AccountNumber,
 		params.CustomerUserID,
-		params.PortalTypeID)
+		params.PortalTypeID,
+		params.OwnerID)
 	if err != nil {
 		return nil, fmt.Errorf("AddPolicy: %w", err)
 	}
@@ -53,7 +54,8 @@ func (svc *RulesEngineService) GetPolicy(
 	headers, err := buildPortalsHeaders(
 		params.AccountNumber,
 		params.CustomerUserID,
-		params.PortalTypeID)
+		params.PortalTypeID,
+		params.OwnerID)
 	if err != nil {
 		return nil, fmt.Errorf("GetPolicy: %w", err)
 	}
@@ -83,7 +85,8 @@ func (svc *RulesEngineService) SubmitDeployRequest(
 	headers, err := buildPortalsHeaders(
 		params.AccountNumber,
 		params.CustomerUserID,
-		params.PortalTypeID)
+		params.PortalTypeID,
+		params.OwnerID)
 	if err != nil {
 		return nil, fmt.Errorf("SubmitDeployRequest: %w", err)
 	}
@@ -101,6 +104,7 @@ func buildPortalsHeaders(
 	accountNumber string,
 	customerUserID string,
 	portalTypeID string,
+	ownerID string,
 ) (map[string]string, error) {
 	m := make(map[string]string)
 
@@ -119,6 +123,10 @@ func buildPortalsHeaders(
 
 	if len(portalTypeID) > 0 {
 		m["Portals_PortalTypeId"] = portalTypeID
+	}
+
+	if len(ownerID) > 0 {
+		m["x-owner-id"] = ownerID
 	}
 
 	return m, nil
