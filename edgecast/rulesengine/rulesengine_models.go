@@ -206,7 +206,7 @@ type GetPolicyParams struct {
 	// Impersonating user ID.
 	CustomerUserID string
 
-	// Imperonating user Portal type.
+	// Impersonating user Portal type.
 	PortalTypeID string
 
 	// Same as AccountNumber. The Account Number from the upper right-hand
@@ -231,7 +231,7 @@ type AddPolicyParams struct {
 	// Impersonating user ID.
 	CustomerUserID string
 
-	// Imperonating user Portal type.
+	// Impersonating user Portal type.
 	PortalTypeID string
 
 	// Same as AccountNumber. The Account Number from the upper right-hand
@@ -256,7 +256,7 @@ type SubmitDeployRequestParams struct {
 	// Impersonating user ID.
 	CustomerUserID string
 
-	// Imperonating user Portal type.
+	// Impersonating user Portal type.
 	PortalTypeID string
 
 	// Same as AccountNumber. The Account Number from the upper right-hand
