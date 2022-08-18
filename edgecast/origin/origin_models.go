@@ -31,7 +31,7 @@ type Origin struct {
 	//  [IPv6Address]:port (e.g., [1:2:3:4:5:6:7:8]:80)
 	//  Blank: The request URI determines the value of the Host request header.
 	// A protocol should not be specified when setting this parameter.
-	HostHeader string `json:"HostHeader,omitempty"`
+	HostHeader string `json:"HostHeader"`
 
 	// This parameter contains the hostnames/IP addresses that will handle
 	// HTTP requests.
