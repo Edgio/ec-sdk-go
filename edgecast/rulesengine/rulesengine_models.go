@@ -194,10 +194,24 @@ type User struct {
 
 // Method Param Structs
 type GetPolicyParams struct {
-	AccountNumber  string
+	// Identifies the policy that will be deployed by its system-defined ID.
+	PolicyID int
+
+	// The below values are only required when acting on behalf of a customer
+	// and using Wholesaler or Partner credentials.
+
+	// Account Number in the upper right-hand corner of the MCC.
+	AccountNumber string
+
+	// Impersonating user ID.
 	CustomerUserID string
-	PortalTypeID   string
-	PolicyID       int
+
+	// Impersonating user Portal type.
+	PortalTypeID string
+
+	// Same as AccountNumber. The Account Number from the upper right-hand
+	// corner of the MCC.
+	OwnerID string
 }
 
 func NewGetPolicyParams() *GetPolicyParams {
@@ -205,10 +219,24 @@ func NewGetPolicyParams() *GetPolicyParams {
 }
 
 type AddPolicyParams struct {
-	AccountNumber  string
-	CustomerUserID string
-	PortalTypeID   string
+	// Identifies the policy constructed as a JSON object passed as a string.
 	PolicyAsString string
+
+	// The below values are only required when acting on behalf of a customer
+	// and using Wholesaler or Partner credentials.
+
+	// Account Number in the upper right-hand corner of the MCC.
+	AccountNumber string
+
+	// Impersonating user ID.
+	CustomerUserID string
+
+	// Impersonating user Portal type.
+	PortalTypeID string
+
+	// Same as AccountNumber. The Account Number from the upper right-hand
+	// corner of the MCC.
+	OwnerID string
 }
 
 func NewAddPolicyParams() *AddPolicyParams {
@@ -216,10 +244,24 @@ func NewAddPolicyParams() *AddPolicyParams {
 }
 
 type SubmitDeployRequestParams struct {
-	AccountNumber  string
+	// SubmitDeployRequest struct to be submitted via the API
+	DeployRequest SubmitDeployRequest
+
+	// The below values are only required when acting on behalf of a customer
+	// and using Wholesaler or Partner credentials.
+
+	// Account Number in the upper right-hand corner of the MCC.
+	AccountNumber string
+
+	// Impersonating user ID.
 	CustomerUserID string
-	PortalTypeID   string
-	DeployRequest  SubmitDeployRequest
+
+	// Impersonating user Portal type.
+	PortalTypeID string
+
+	// Same as AccountNumber. The Account Number from the upper right-hand
+	// corner of the MCC.
+	OwnerID string
 }
 
 func NewSubmitDeployRequestParams() *SubmitDeployRequestParams {

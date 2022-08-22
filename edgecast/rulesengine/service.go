@@ -36,7 +36,7 @@ func New(config edgecast.SDKConfig) (*RulesEngineService, error) {
 
 	c := ecclient.New(ecclient.ClientConfig{
 		AuthProvider: authProvider,
-		BaseAPIURL:   config.BaseAPIURLLegacy,
+		BaseAPIURL:   config.BaseAPIURL,
 		UserAgent:    config.UserAgent,
 		Logger:       config.Logger,
 	})
