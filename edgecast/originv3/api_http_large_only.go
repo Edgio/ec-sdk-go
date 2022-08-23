@@ -99,7 +99,13 @@ func buildGetHttpLargeGroupsRequest(
 
 // GetHttpLargeGroupsGroupIdParams contains the parameters for GetHttpLargeGroupsGroupId
 type GetHttpLargeGroupsGroupIdParams struct {
+	//  Customer Origin Group Id
 	GroupId string
+}
+
+// NewGetHttpLargeGroupsGroupIdParams creates a new instance of GetHttpLargeGroupsGroupIdParams
+func NewGetHttpLargeGroupsGroupIdParams() GetHttpLargeGroupsGroupIdParams {
+	return GetHttpLargeGroupsGroupIdParams{}
 }
 
 // GetHttpLargeGroupsGroupId - Get specific Http Large customer origin group by id
@@ -193,7 +199,13 @@ func buildGetHttpLargeShieldPopsRequest(
 
 // PostHttpLargeGroupsParams contains the parameters for PostHttpLargeGroups
 type PostHttpLargeGroupsParams struct {
+	//
 	CustomerOriginGroupHTTP CustomerOriginGroupHTTP
+}
+
+// NewPostHttpLargeGroupsParams creates a new instance of PostHttpLargeGroupsParams
+func NewPostHttpLargeGroupsParams() PostHttpLargeGroupsParams {
+	return PostHttpLargeGroupsParams{}
 }
 
 // PostHttpLargeGroups - Create new Http Large customer origin group
@@ -244,8 +256,16 @@ func buildPostHttpLargeGroupsRequest(
 
 // PutHttplargeGroupsGroupIdParams contains the parameters for PutHttplargeGroupsGroupId
 type PutHttplargeGroupsGroupIdParams struct {
-	GroupId                 string
+	//  Customer Origin Group Id
+	GroupId string
+
+	//
 	CustomerOriginGroupHTTP CustomerOriginGroupHTTP
+}
+
+// NewPutHttplargeGroupsGroupIdParams creates a new instance of PutHttplargeGroupsGroupIdParams
+func NewPutHttplargeGroupsGroupIdParams() PutHttplargeGroupsGroupIdParams {
+	return PutHttplargeGroupsGroupIdParams{}
 }
 
 // PutHttplargeGroupsGroupId - Update Http Large customer origin group by id

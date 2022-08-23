@@ -85,8 +85,16 @@ type CommonClientService interface {
 
 // AddAdnParams contains the parameters for AddAdn
 type AddAdnParams struct {
-	MediaType      string
+	//  http-large or adn
+	MediaType string
+
+	//  The Adn Customer Origin without id
 	CustomerOrigin CustomerOrigin
+}
+
+// NewAddAdnParams creates a new instance of AddAdnParams
+func NewAddAdnParams() AddAdnParams {
+	return AddAdnParams{}
 }
 
 // AddAdn - Create new Customer origin
@@ -140,8 +148,16 @@ func buildAddAdnRequest(
 
 // DeleteMediaTypeGroupsGroupIdParams contains the parameters for DeleteMediaTypeGroupsGroupId
 type DeleteMediaTypeGroupsGroupIdParams struct {
+	//  http-large or adn
 	MediaType string
-	GroupId   string
+
+	//  Customer Origin Group Id
+	GroupId string
+}
+
+// NewDeleteMediaTypeGroupsGroupIdParams creates a new instance of DeleteMediaTypeGroupsGroupIdParams
+func NewDeleteMediaTypeGroupsGroupIdParams() DeleteMediaTypeGroupsGroupIdParams {
+	return DeleteMediaTypeGroupsGroupIdParams{}
 }
 
 // DeleteMediaTypeGroupsGroupId - Delete a customer origin group by id
@@ -192,8 +208,16 @@ func buildDeleteMediaTypeGroupsGroupIdRequest(
 
 // DeleteMediaTypeIdParams contains the parameters for DeleteMediaTypeId
 type DeleteMediaTypeIdParams struct {
+	//  http-large or adn
 	MediaType string
-	Id        float32
+
+	//  Customer Origin Id
+	Id float32
+}
+
+// NewDeleteMediaTypeIdParams creates a new instance of DeleteMediaTypeIdParams
+func NewDeleteMediaTypeIdParams() DeleteMediaTypeIdParams {
+	return DeleteMediaTypeIdParams{}
 }
 
 // DeleteMediaTypeId - Delete a customer origin by id
@@ -244,11 +268,25 @@ func buildDeleteMediaTypeIdRequest(
 
 // GetAdnParams contains the parameters for GetAdn
 type GetAdnParams struct {
-	MediaType  string
-	Ascending  bool
-	PageSize   int32
+	//  http-large or adn
+	MediaType string
+
+	//  [false | true] only. Get Error with another value
+	Ascending bool
+
+	//  In range [1, 1000]
+	PageSize int32
+
+	//  In range [1, 1000]
 	PageNumber int32
-	Sortby     string
+
+	//
+	Sortby string
+}
+
+// NewGetAdnParams creates a new instance of GetAdnParams
+func NewGetAdnParams() GetAdnParams {
+	return GetAdnParams{}
 }
 
 // GetAdn - Get all Customer origins
@@ -308,8 +346,16 @@ func buildGetAdnRequest(
 
 // GetAdnIdParams contains the parameters for GetAdnId
 type GetAdnIdParams struct {
+	//  http-large or adn
 	MediaType string
-	Id        float32
+
+	//  Customer Origin Id
+	Id float32
+}
+
+// NewGetAdnIdParams creates a new instance of GetAdnIdParams
+func NewGetAdnIdParams() GetAdnIdParams {
+	return GetAdnIdParams{}
 }
 
 // GetAdnId - Get specific Customer origin by id
@@ -363,7 +409,13 @@ func buildGetAdnIdRequest(
 
 // GetMediaTypeEdgeFunctionsParams contains the parameters for GetMediaTypeEdgeFunctions
 type GetMediaTypeEdgeFunctionsParams struct {
+	//  http-large or adn
 	MediaType string
+}
+
+// NewGetMediaTypeEdgeFunctionsParams creates a new instance of GetMediaTypeEdgeFunctionsParams
+func NewGetMediaTypeEdgeFunctionsParams() GetMediaTypeEdgeFunctionsParams {
+	return GetMediaTypeEdgeFunctionsParams{}
 }
 
 // GetMediaTypeEdgeFunctions - Get edge functions for customer origin
@@ -415,8 +467,16 @@ func buildGetMediaTypeEdgeFunctionsRequest(
 
 // GetMediaTypeGroupsIdOriginsParams contains the parameters for GetMediaTypeGroupsIdOrigins
 type GetMediaTypeGroupsIdOriginsParams struct {
+	//  http-large or adn
 	MediaType string
-	GroupId   string
+
+	//  Customer Origin Group Id
+	GroupId string
+}
+
+// NewGetMediaTypeGroupsIdOriginsParams creates a new instance of GetMediaTypeGroupsIdOriginsParams
+func NewGetMediaTypeGroupsIdOriginsParams() GetMediaTypeGroupsIdOriginsParams {
+	return GetMediaTypeGroupsIdOriginsParams{}
 }
 
 // GetMediaTypeGroupsIdOrigins - Get all customer origins in a group
@@ -470,8 +530,16 @@ func buildGetMediaTypeGroupsIdOriginsRequest(
 
 // GetMediaTypeGroupsIdStatusParams contains the parameters for GetMediaTypeGroupsIdStatus
 type GetMediaTypeGroupsIdStatusParams struct {
+	//  http-large or adn
 	MediaType string
-	GroupId   string
+
+	//  Customer Origin Group Id
+	GroupId string
+}
+
+// NewGetMediaTypeGroupsIdStatusParams creates a new instance of GetMediaTypeGroupsIdStatusParams
+func NewGetMediaTypeGroupsIdStatusParams() GetMediaTypeGroupsIdStatusParams {
+	return GetMediaTypeGroupsIdStatusParams{}
 }
 
 // GetMediaTypeGroupsIdStatus - Get customer origin group status
@@ -525,9 +593,19 @@ func buildGetMediaTypeGroupsIdStatusRequest(
 
 // PatchAdnIdParams contains the parameters for PatchAdnId
 type PatchAdnIdParams struct {
-	MediaType      string
-	Id             float32
+	//  http-large or adn
+	MediaType string
+
+	//  Customer Origin Id
+	Id float32
+
+	//  The modified Customer Origin
 	CustomerOrigin CustomerOrigin
+}
+
+// NewPatchAdnIdParams creates a new instance of PatchAdnIdParams
+func NewPatchAdnIdParams() PatchAdnIdParams {
+	return PatchAdnIdParams{}
 }
 
 // PatchAdnId - Update an Customer origin by id
@@ -583,9 +661,19 @@ func buildPatchAdnIdRequest(
 
 // PatchMediaTypeGroupsGroupIdOriginsParams contains the parameters for PatchMediaTypeGroupsGroupIdOrigins
 type PatchMediaTypeGroupsGroupIdOriginsParams struct {
-	MediaType     string
-	GroupId       string
+	//  http-large or adn
+	MediaType string
+
+	//  Customer Origin Group Id
+	GroupId string
+
+	//
 	FailoverOrder []FailoverOrder
+}
+
+// NewPatchMediaTypeGroupsGroupIdOriginsParams creates a new instance of PatchMediaTypeGroupsGroupIdOriginsParams
+func NewPatchMediaTypeGroupsGroupIdOriginsParams() PatchMediaTypeGroupsGroupIdOriginsParams {
+	return PatchMediaTypeGroupsGroupIdOriginsParams{}
 }
 
 // PatchMediaTypeGroupsGroupIdOrigins - Udpate the failover_order of customer origin in group
@@ -638,9 +726,19 @@ func buildPatchMediaTypeGroupsGroupIdOriginsRequest(
 
 // PatchMediaTypePrimaryIdParams contains the parameters for PatchMediaTypePrimaryId
 type PatchMediaTypePrimaryIdParams struct {
-	MediaType                      string
-	Id                             float32
+	//  http-large or adn
+	MediaType string
+
+	//  Customer Origin Id
+	Id float32
+
+	//
 	PatchMediaTypePrimaryIdRequest PatchMediaTypePrimaryIdRequest
+}
+
+// NewPatchMediaTypePrimaryIdParams creates a new instance of PatchMediaTypePrimaryIdParams
+func NewPatchMediaTypePrimaryIdParams() PatchMediaTypePrimaryIdParams {
+	return PatchMediaTypePrimaryIdParams{}
 }
 
 // PatchMediaTypePrimaryId - Update a customer origin primary by id

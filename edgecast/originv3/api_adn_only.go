@@ -97,7 +97,13 @@ func buildGetAdnGroupsRequest(
 
 // GetAdnGroupsGroupIdParams contains the parameters for GetAdnGroupsGroupId
 type GetAdnGroupsGroupIdParams struct {
+	//  Customer Origin Group Id
 	GroupId string
+}
+
+// NewGetAdnGroupsGroupIdParams creates a new instance of GetAdnGroupsGroupIdParams
+func NewGetAdnGroupsGroupIdParams() GetAdnGroupsGroupIdParams {
+	return GetAdnGroupsGroupIdParams{}
 }
 
 // GetAdnGroupsGroupId - Get specific Adn customer origin group by id
@@ -149,7 +155,13 @@ func buildGetAdnGroupsGroupIdRequest(
 
 // PostAdnGroupsParams contains the parameters for PostAdnGroups
 type PostAdnGroupsParams struct {
+	//
 	CustomerOriginGroupADN CustomerOriginGroupADN
+}
+
+// NewPostAdnGroupsParams creates a new instance of PostAdnGroupsParams
+func NewPostAdnGroupsParams() PostAdnGroupsParams {
+	return PostAdnGroupsParams{}
 }
 
 // PostAdnGroups - Create new Adn customer origin group
@@ -200,8 +212,16 @@ func buildPostAdnGroupsRequest(
 
 // PutAdnGroupsGroupIdParams contains the parameters for PutAdnGroupsGroupId
 type PutAdnGroupsGroupIdParams struct {
-	GroupId                string
+	//  Customer Origin Group Id
+	GroupId string
+
+	//
 	CustomerOriginGroupADN CustomerOriginGroupADN
+}
+
+// NewPutAdnGroupsGroupIdParams creates a new instance of PutAdnGroupsGroupIdParams
+func NewPutAdnGroupsGroupIdParams() PutAdnGroupsGroupIdParams {
+	return PutAdnGroupsGroupIdParams{}
 }
 
 // PutAdnGroupsGroupId - Update Adn customer origin group by id
