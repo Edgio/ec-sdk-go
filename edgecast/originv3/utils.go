@@ -16,7 +16,11 @@ package originv3
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 	"time"
+
+	"golang.org/x/exp/constraints"
 )
 
 // PtrBool is a helper routine that returns a pointer to given boolean value.
@@ -329,4 +333,12 @@ func (v NullableTime) MarshalJSON() ([]byte, error) {
 func (v *NullableTime) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
+}
+
+func NumberToString[N constraints.Integer | constraints.Float](in N) string {
+	return fmt.Sprintf("%v", in)
+}
+
+func BoolToString(in bool) string {
+	return strconv.FormatBool(in)
 }

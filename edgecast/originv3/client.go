@@ -16,9 +16,6 @@ package originv3
 
 import (
 	"fmt"
-	"strconv"
-
-	"golang.org/x/exp/constraints"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
@@ -26,8 +23,8 @@ import (
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecclient"
 )
 
-// Service manages communication with the Customer Origins API v3 API v0.5.0
-// In most cases there should be only one, shared, APIClient.
+// Service manages
+// communication with the Customer Origins API v3 API v0.5.0
 type Service struct {
 	client ecclient.APIClient
 
@@ -44,16 +41,17 @@ type Service struct {
 
 // New creates a new Service
 func New(config edgecast.SDKConfig) (*Service, error) {
-	var authProvider ecauth.AuthorizationProvider
+	var auth ecauth.AuthorizationProvider
 
-	authProvider, err := ecauth.NewIDSAuthorizationProvider(
+	auth, err := ecauth.NewIDSAuthorizationProvider(
 		config.BaseIDSURL,
 		ecauth.OAuth2Credentials(config.IDSCredentials))
 	if err != nil {
-		// Token authentication
-		authProvider, err = ecauth.NewTokenAuthorizationProvider(config.APIToken)
+		// Fall back to token authentication
+		auth, err = ecauth.NewTokenAuthorizationProvider(config.APIToken)
 		if err != nil {
-			return nil, fmt.Errorf("error initializing originv3 Service: %v", err)
+			return nil,
+				fmt.Errorf("error initializing originv3 Service: %w", err)
 		}
 	}
 
@@ -61,37 +59,14 @@ func New(config edgecast.SDKConfig) (*Service, error) {
 		BaseAPIURL:   config.BaseAPIURL,
 		UserAgent:    config.UserAgent,
 		Logger:       config.Logger,
-		AuthProvider: authProvider,
+		AuthProvider: auth,
 	})
 
 	return &Service{
 		client:        c,
 		Logger:        config.Logger,
-		AdnOnly:       NewAdnOnlyClientService(c, config.BaseAPIURL.String()),
-		Common:        NewCommonClientService(c, config.BaseAPIURL.String()),
-		HttpLargeOnly: NewHttpLargeOnlyClientService(c, config.BaseAPIURL.String()),
+		AdnOnly:       NewAdnOnlyClient(c, config.BaseAPIURL.String()),
+		Common:        NewCommonClient(c, config.BaseAPIURL.String()),
+		HttpLargeOnly: NewHttpLargeOnlyClient(c, config.BaseAPIURL.String()),
 	}, nil
-}
-
-// request is a local representation of a request
-type request struct {
-	queryParams map[string]string
-	pathParams  map[string]string
-	headers     map[string]string
-	body        interface{}
-}
-
-func newRequest() *request {
-	return &request{
-		queryParams: make(map[string]string),
-		pathParams:  make(map[string]string),
-	}
-}
-
-func numberToString[N constraints.Integer | constraints.Float](in N) string {
-	return fmt.Sprintf("%v", in)
-}
-
-func boolToString(in bool) string {
-	return strconv.FormatBool(in)
 }

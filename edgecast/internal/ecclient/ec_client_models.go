@@ -19,6 +19,7 @@ type APIClient interface {
 	SubmitRequest(params SubmitRequestParams) (*Response, error)
 }
 
+// SubmitRequestParams contains the parameters for SubmitRequest.
 type SubmitRequestParams struct {
 	Method      HTTPMethod
 	Path        string
@@ -28,6 +29,15 @@ type SubmitRequestParams struct {
 	Headers     map[string]string
 	// ParsedResponse will be filled in using the API response
 	ParsedResponse interface{}
+}
+
+// NewSubmitRequestParams creates a new instance of SubmitRequestParams.
+func NewSubmitRequestParams() SubmitRequestParams {
+	return SubmitRequestParams{
+		QueryParams: make(map[string]string),
+		PathParams:  make(map[string]string),
+		Headers:     make(map[string]string),
+	}
 }
 
 // response contains the response body as a string from a request along with the
