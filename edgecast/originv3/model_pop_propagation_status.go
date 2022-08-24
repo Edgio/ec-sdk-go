@@ -165,8 +165,8 @@ func (v *NullablePopPropagationStatus) Unset() {
 	v.isSet = false
 }
 
-func NewNullablePopPropagationStatus(val *PopPropagationStatus) *NullablePopPropagationStatus {
-	return &NullablePopPropagationStatus{value: val, isSet: true}
+func NewNullablePopPropagationStatus(val PopPropagationStatus) NullablePopPropagationStatus {
+	return NullablePopPropagationStatus{value: &val, isSet: true}
 }
 
 func (v NullablePopPropagationStatus) MarshalJSON() ([]byte, error) {

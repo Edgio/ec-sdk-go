@@ -20,15 +20,14 @@ import (
 
 // CustomerOrigin struct for CustomerOrigin
 type CustomerOrigin struct {
-	Name string `json:"name"`
-	// Require if origin_hostname_protocol_type = 1 | 2
-	Port                 *float32        `json:"port,omitempty"`
-	IsPrimary            bool            `json:"is_primary"`
-	OriginShieldRegionId NullableFloat32 `json:"origin_shield_region_id,omitempty"`
-	GroupId              *int32          `json:"group_id,omitempty"`
-	CloudStorage         *CloudStorage   `json:"cloud_storage,omitempty"`
-	StorageTypeId        NullableInt32   `json:"storage_type_id"`
-	ProtocolTypeId       NullableInt32   `json:"protocol_type_id"`
+	Id                   *int32   `json:"id,omitempty"`
+	Name                 *string  `json:"name,omitempty"`
+	Host                 *string  `json:"host,omitempty"`
+	Port                 *float32 `json:"port,omitempty"`
+	IsPrimary            *bool    `json:"is_primary,omitempty"`
+	StorageTypeId        *int32   `json:"storage_type_id,omitempty"`
+	ProtocolTypeId       *int32   `json:"protocol_type_id,omitempty"`
+	GroupId              *int32   `json:"group_id,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -38,12 +37,8 @@ type _CustomerOrigin CustomerOrigin
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCustomerOrigin(name string, isPrimary bool, storageTypeId NullableInt32, protocolTypeId NullableInt32) *CustomerOrigin {
+func NewCustomerOrigin() *CustomerOrigin {
 	this := CustomerOrigin{}
-	this.Name = name
-	this.IsPrimary = isPrimary
-	this.StorageTypeId = storageTypeId
-	this.ProtocolTypeId = protocolTypeId
 	return &this
 }
 
@@ -52,33 +47,103 @@ func NewCustomerOrigin(name string, isPrimary bool, storageTypeId NullableInt32,
 // but it doesn't guarantee that properties required by API are set
 func NewCustomerOriginWithDefaults() *CustomerOrigin {
 	this := CustomerOrigin{}
-	var isPrimary bool = false
-	this.IsPrimary = isPrimary
 	return &this
 }
 
-// GetName returns the Name field value
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *CustomerOrigin) GetId() int32 {
+	if o == nil || o.Id == nil {
+		var ret int32
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CustomerOrigin) GetIdOk() (*int32, bool) {
+	if o == nil || o.Id == nil {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *CustomerOrigin) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given int32 and assigns it to the Id field.
+func (o *CustomerOrigin) SetId(v int32) {
+	o.Id = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
 func (o *CustomerOrigin) GetName() string {
-	if o == nil {
+	if o == nil || o.Name == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Name
+	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CustomerOrigin) GetNameOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Name == nil {
 		return nil, false
 	}
-	return &o.Name, true
+	return o.Name, true
 }
 
-// SetName sets field value
+// HasName returns a boolean if a field has been set.
+func (o *CustomerOrigin) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
 func (o *CustomerOrigin) SetName(v string) {
-	o.Name = v
+	o.Name = &v
+}
+
+// GetHost returns the Host field value if set, zero value otherwise.
+func (o *CustomerOrigin) GetHost() string {
+	if o == nil || o.Host == nil {
+		var ret string
+		return ret
+	}
+	return *o.Host
+}
+
+// GetHostOk returns a tuple with the Host field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CustomerOrigin) GetHostOk() (*string, bool) {
+	if o == nil || o.Host == nil {
+		return nil, false
+	}
+	return o.Host, true
+}
+
+// HasHost returns a boolean if a field has been set.
+func (o *CustomerOrigin) HasHost() bool {
+	if o != nil && o.Host != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetHost gets a reference to the given string and assigns it to the Host field.
+func (o *CustomerOrigin) SetHost(v string) {
+	o.Host = &v
 }
 
 // GetPort returns the Port field value if set, zero value otherwise.
@@ -113,71 +178,100 @@ func (o *CustomerOrigin) SetPort(v float32) {
 	o.Port = &v
 }
 
-// GetIsPrimary returns the IsPrimary field value
+// GetIsPrimary returns the IsPrimary field value if set, zero value otherwise.
 func (o *CustomerOrigin) GetIsPrimary() bool {
-	if o == nil {
+	if o == nil || o.IsPrimary == nil {
 		var ret bool
 		return ret
 	}
-
-	return o.IsPrimary
+	return *o.IsPrimary
 }
 
-// GetIsPrimaryOk returns a tuple with the IsPrimary field value
+// GetIsPrimaryOk returns a tuple with the IsPrimary field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CustomerOrigin) GetIsPrimaryOk() (*bool, bool) {
-	if o == nil {
+	if o == nil || o.IsPrimary == nil {
 		return nil, false
 	}
-	return &o.IsPrimary, true
+	return o.IsPrimary, true
 }
 
-// SetIsPrimary sets field value
-func (o *CustomerOrigin) SetIsPrimary(v bool) {
-	o.IsPrimary = v
-}
-
-// GetOriginShieldRegionId returns the OriginShieldRegionId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CustomerOrigin) GetOriginShieldRegionId() float32 {
-	if o == nil || o.OriginShieldRegionId.Get() == nil {
-		var ret float32
-		return ret
-	}
-	return *o.OriginShieldRegionId.Get()
-}
-
-// GetOriginShieldRegionIdOk returns a tuple with the OriginShieldRegionId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CustomerOrigin) GetOriginShieldRegionIdOk() (*float32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.OriginShieldRegionId.Get(), o.OriginShieldRegionId.IsSet()
-}
-
-// HasOriginShieldRegionId returns a boolean if a field has been set.
-func (o *CustomerOrigin) HasOriginShieldRegionId() bool {
-	if o != nil && o.OriginShieldRegionId.IsSet() {
+// HasIsPrimary returns a boolean if a field has been set.
+func (o *CustomerOrigin) HasIsPrimary() bool {
+	if o != nil && o.IsPrimary != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetOriginShieldRegionId gets a reference to the given NullableFloat32 and assigns it to the OriginShieldRegionId field.
-func (o *CustomerOrigin) SetOriginShieldRegionId(v float32) {
-	o.OriginShieldRegionId.Set(&v)
+// SetIsPrimary gets a reference to the given bool and assigns it to the IsPrimary field.
+func (o *CustomerOrigin) SetIsPrimary(v bool) {
+	o.IsPrimary = &v
 }
 
-// SetOriginShieldRegionIdNil sets the value for OriginShieldRegionId to be an explicit nil
-func (o *CustomerOrigin) SetOriginShieldRegionIdNil() {
-	o.OriginShieldRegionId.Set(nil)
+// GetStorageTypeId returns the StorageTypeId field value if set, zero value otherwise.
+func (o *CustomerOrigin) GetStorageTypeId() int32 {
+	if o == nil || o.StorageTypeId == nil {
+		var ret int32
+		return ret
+	}
+	return *o.StorageTypeId
 }
 
-// UnsetOriginShieldRegionId ensures that no value is present for OriginShieldRegionId, not even an explicit nil
-func (o *CustomerOrigin) UnsetOriginShieldRegionId() {
-	o.OriginShieldRegionId.Unset()
+// GetStorageTypeIdOk returns a tuple with the StorageTypeId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CustomerOrigin) GetStorageTypeIdOk() (*int32, bool) {
+	if o == nil || o.StorageTypeId == nil {
+		return nil, false
+	}
+	return o.StorageTypeId, true
+}
+
+// HasStorageTypeId returns a boolean if a field has been set.
+func (o *CustomerOrigin) HasStorageTypeId() bool {
+	if o != nil && o.StorageTypeId != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetStorageTypeId gets a reference to the given int32 and assigns it to the StorageTypeId field.
+func (o *CustomerOrigin) SetStorageTypeId(v int32) {
+	o.StorageTypeId = &v
+}
+
+// GetProtocolTypeId returns the ProtocolTypeId field value if set, zero value otherwise.
+func (o *CustomerOrigin) GetProtocolTypeId() int32 {
+	if o == nil || o.ProtocolTypeId == nil {
+		var ret int32
+		return ret
+	}
+	return *o.ProtocolTypeId
+}
+
+// GetProtocolTypeIdOk returns a tuple with the ProtocolTypeId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CustomerOrigin) GetProtocolTypeIdOk() (*int32, bool) {
+	if o == nil || o.ProtocolTypeId == nil {
+		return nil, false
+	}
+	return o.ProtocolTypeId, true
+}
+
+// HasProtocolTypeId returns a boolean if a field has been set.
+func (o *CustomerOrigin) HasProtocolTypeId() bool {
+	if o != nil && o.ProtocolTypeId != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProtocolTypeId gets a reference to the given int32 and assigns it to the ProtocolTypeId field.
+func (o *CustomerOrigin) SetProtocolTypeId(v int32) {
+	o.ProtocolTypeId = &v
 }
 
 // GetGroupId returns the GroupId field value if set, zero value otherwise.
@@ -212,115 +306,31 @@ func (o *CustomerOrigin) SetGroupId(v int32) {
 	o.GroupId = &v
 }
 
-// GetCloudStorage returns the CloudStorage field value if set, zero value otherwise.
-func (o *CustomerOrigin) GetCloudStorage() CloudStorage {
-	if o == nil || o.CloudStorage == nil {
-		var ret CloudStorage
-		return ret
-	}
-	return *o.CloudStorage
-}
-
-// GetCloudStorageOk returns a tuple with the CloudStorage field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CustomerOrigin) GetCloudStorageOk() (*CloudStorage, bool) {
-	if o == nil || o.CloudStorage == nil {
-		return nil, false
-	}
-	return o.CloudStorage, true
-}
-
-// HasCloudStorage returns a boolean if a field has been set.
-func (o *CustomerOrigin) HasCloudStorage() bool {
-	if o != nil && o.CloudStorage != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetCloudStorage gets a reference to the given CloudStorage and assigns it to the CloudStorage field.
-func (o *CustomerOrigin) SetCloudStorage(v CloudStorage) {
-	o.CloudStorage = &v
-}
-
-// GetStorageTypeId returns the StorageTypeId field value
-// If the value is explicit nil, the zero value for int32 will be returned
-func (o *CustomerOrigin) GetStorageTypeId() int32 {
-	if o == nil || o.StorageTypeId.Get() == nil {
-		var ret int32
-		return ret
-	}
-
-	return *o.StorageTypeId.Get()
-}
-
-// GetStorageTypeIdOk returns a tuple with the StorageTypeId field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CustomerOrigin) GetStorageTypeIdOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.StorageTypeId.Get(), o.StorageTypeId.IsSet()
-}
-
-// SetStorageTypeId sets field value
-func (o *CustomerOrigin) SetStorageTypeId(v int32) {
-	o.StorageTypeId.Set(&v)
-}
-
-// GetProtocolTypeId returns the ProtocolTypeId field value
-// If the value is explicit nil, the zero value for int32 will be returned
-func (o *CustomerOrigin) GetProtocolTypeId() int32 {
-	if o == nil || o.ProtocolTypeId.Get() == nil {
-		var ret int32
-		return ret
-	}
-
-	return *o.ProtocolTypeId.Get()
-}
-
-// GetProtocolTypeIdOk returns a tuple with the ProtocolTypeId field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CustomerOrigin) GetProtocolTypeIdOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.ProtocolTypeId.Get(), o.ProtocolTypeId.IsSet()
-}
-
-// SetProtocolTypeId sets field value
-func (o *CustomerOrigin) SetProtocolTypeId(v int32) {
-	o.ProtocolTypeId.Set(&v)
-}
-
 func (o CustomerOrigin) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+	if o.Name != nil {
 		toSerialize["name"] = o.Name
+	}
+	if o.Host != nil {
+		toSerialize["host"] = o.Host
 	}
 	if o.Port != nil {
 		toSerialize["port"] = o.Port
 	}
-	if true {
+	if o.IsPrimary != nil {
 		toSerialize["is_primary"] = o.IsPrimary
 	}
-	if o.OriginShieldRegionId.IsSet() {
-		toSerialize["origin_shield_region_id"] = o.OriginShieldRegionId.Get()
+	if o.StorageTypeId != nil {
+		toSerialize["storage_type_id"] = o.StorageTypeId
+	}
+	if o.ProtocolTypeId != nil {
+		toSerialize["protocol_type_id"] = o.ProtocolTypeId
 	}
 	if o.GroupId != nil {
 		toSerialize["group_id"] = o.GroupId
-	}
-	if o.CloudStorage != nil {
-		toSerialize["cloud_storage"] = o.CloudStorage
-	}
-	if true {
-		toSerialize["storage_type_id"] = o.StorageTypeId.Get()
-	}
-	if true {
-		toSerialize["protocol_type_id"] = o.ProtocolTypeId.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -340,14 +350,14 @@ func (o *CustomerOrigin) UnmarshalJSON(bytes []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
 		delete(additionalProperties, "name")
+		delete(additionalProperties, "host")
 		delete(additionalProperties, "port")
 		delete(additionalProperties, "is_primary")
-		delete(additionalProperties, "origin_shield_region_id")
-		delete(additionalProperties, "group_id")
-		delete(additionalProperties, "cloud_storage")
 		delete(additionalProperties, "storage_type_id")
 		delete(additionalProperties, "protocol_type_id")
+		delete(additionalProperties, "group_id")
 		o.AdditionalProperties = additionalProperties
 	}
 
@@ -377,8 +387,8 @@ func (v *NullableCustomerOrigin) Unset() {
 	v.isSet = false
 }
 
-func NewNullableCustomerOrigin(val *CustomerOrigin) *NullableCustomerOrigin {
-	return &NullableCustomerOrigin{value: val, isSet: true}
+func NewNullableCustomerOrigin(val CustomerOrigin) NullableCustomerOrigin {
+	return NullableCustomerOrigin{value: &val, isSet: true}
 }
 
 func (v NullableCustomerOrigin) MarshalJSON() ([]byte, error) {

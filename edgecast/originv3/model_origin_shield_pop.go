@@ -21,10 +21,8 @@ import (
 // OriginShieldPop OriginShieldPop object
 type OriginShieldPop struct {
 	Id                   *float32 `json:"id,omitempty"`
-	Code                 string   `json:"code"`
+	Code                 *string  `json:"code,omitempty"`
 	City                 *string  `json:"city,omitempty"`
-	Region               *string  `json:"region,omitempty"`
-	RegionId             *float32 `json:"region_id,omitempty"`
 	IsPciCertified       *bool    `json:"is_pci_certified,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -35,9 +33,8 @@ type _OriginShieldPop OriginShieldPop
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOriginShieldPop(code string) *OriginShieldPop {
+func NewOriginShieldPop() *OriginShieldPop {
 	this := OriginShieldPop{}
-	this.Code = code
 	return &this
 }
 
@@ -81,28 +78,36 @@ func (o *OriginShieldPop) SetId(v float32) {
 	o.Id = &v
 }
 
-// GetCode returns the Code field value
+// GetCode returns the Code field value if set, zero value otherwise.
 func (o *OriginShieldPop) GetCode() string {
-	if o == nil {
+	if o == nil || o.Code == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Code
+	return *o.Code
 }
 
-// GetCodeOk returns a tuple with the Code field value
+// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OriginShieldPop) GetCodeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Code == nil {
 		return nil, false
 	}
-	return &o.Code, true
+	return o.Code, true
 }
 
-// SetCode sets field value
+// HasCode returns a boolean if a field has been set.
+func (o *OriginShieldPop) HasCode() bool {
+	if o != nil && o.Code != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCode gets a reference to the given string and assigns it to the Code field.
 func (o *OriginShieldPop) SetCode(v string) {
-	o.Code = v
+	o.Code = &v
 }
 
 // GetCity returns the City field value if set, zero value otherwise.
@@ -135,70 +140,6 @@ func (o *OriginShieldPop) HasCity() bool {
 // SetCity gets a reference to the given string and assigns it to the City field.
 func (o *OriginShieldPop) SetCity(v string) {
 	o.City = &v
-}
-
-// GetRegion returns the Region field value if set, zero value otherwise.
-func (o *OriginShieldPop) GetRegion() string {
-	if o == nil || o.Region == nil {
-		var ret string
-		return ret
-	}
-	return *o.Region
-}
-
-// GetRegionOk returns a tuple with the Region field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *OriginShieldPop) GetRegionOk() (*string, bool) {
-	if o == nil || o.Region == nil {
-		return nil, false
-	}
-	return o.Region, true
-}
-
-// HasRegion returns a boolean if a field has been set.
-func (o *OriginShieldPop) HasRegion() bool {
-	if o != nil && o.Region != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetRegion gets a reference to the given string and assigns it to the Region field.
-func (o *OriginShieldPop) SetRegion(v string) {
-	o.Region = &v
-}
-
-// GetRegionId returns the RegionId field value if set, zero value otherwise.
-func (o *OriginShieldPop) GetRegionId() float32 {
-	if o == nil || o.RegionId == nil {
-		var ret float32
-		return ret
-	}
-	return *o.RegionId
-}
-
-// GetRegionIdOk returns a tuple with the RegionId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *OriginShieldPop) GetRegionIdOk() (*float32, bool) {
-	if o == nil || o.RegionId == nil {
-		return nil, false
-	}
-	return o.RegionId, true
-}
-
-// HasRegionId returns a boolean if a field has been set.
-func (o *OriginShieldPop) HasRegionId() bool {
-	if o != nil && o.RegionId != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetRegionId gets a reference to the given float32 and assigns it to the RegionId field.
-func (o *OriginShieldPop) SetRegionId(v float32) {
-	o.RegionId = &v
 }
 
 // GetIsPciCertified returns the IsPciCertified field value if set, zero value otherwise.
@@ -238,17 +179,11 @@ func (o OriginShieldPop) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
-	if true {
+	if o.Code != nil {
 		toSerialize["code"] = o.Code
 	}
 	if o.City != nil {
 		toSerialize["city"] = o.City
-	}
-	if o.Region != nil {
-		toSerialize["region"] = o.Region
-	}
-	if o.RegionId != nil {
-		toSerialize["region_id"] = o.RegionId
 	}
 	if o.IsPciCertified != nil {
 		toSerialize["is_pci_certified"] = o.IsPciCertified
@@ -274,8 +209,6 @@ func (o *OriginShieldPop) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "id")
 		delete(additionalProperties, "code")
 		delete(additionalProperties, "city")
-		delete(additionalProperties, "region")
-		delete(additionalProperties, "region_id")
 		delete(additionalProperties, "is_pci_certified")
 		o.AdditionalProperties = additionalProperties
 	}
@@ -306,8 +239,8 @@ func (v *NullableOriginShieldPop) Unset() {
 	v.isSet = false
 }
 
-func NewNullableOriginShieldPop(val *OriginShieldPop) *NullableOriginShieldPop {
-	return &NullableOriginShieldPop{value: val, isSet: true}
+func NewNullableOriginShieldPop(val OriginShieldPop) NullableOriginShieldPop {
+	return NullableOriginShieldPop{value: &val, isSet: true}
 }
 
 func (v NullableOriginShieldPop) MarshalJSON() ([]byte, error) {

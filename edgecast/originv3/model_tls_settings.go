@@ -20,9 +20,9 @@ import (
 
 // TlsSettings
 type TlsSettings struct {
-	SniHostname          string   `json:"sni_hostname"`
-	AllowSelfSigned      bool     `json:"allow_self_signed"`
-	PublicKeysToVerify   []string `json:"public_keys_to_verify"`
+	SniHostname          NullableString `json:"sni_hostname,omitempty"`
+	AllowSelfSigned      *bool          `json:"allow_self_signed,omitempty"`
+	PublicKeysToVerify   []string       `json:"public_keys_to_verify,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,11 +32,8 @@ type _TlsSettings TlsSettings
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTlsSettings(sniHostname string, allowSelfSigned bool, publicKeysToVerify []string) *TlsSettings {
+func NewTlsSettings() *TlsSettings {
 	this := TlsSettings{}
-	this.SniHostname = sniHostname
-	this.AllowSelfSigned = allowSelfSigned
-	this.PublicKeysToVerify = publicKeysToVerify
 	return &this
 }
 
@@ -48,66 +45,91 @@ func NewTlsSettingsWithDefaults() *TlsSettings {
 	return &this
 }
 
-// GetSniHostname returns the SniHostname field value
+// GetSniHostname returns the SniHostname field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *TlsSettings) GetSniHostname() string {
-	if o == nil {
+	if o == nil || o.SniHostname.Get() == nil {
 		var ret string
 		return ret
 	}
-
-	return o.SniHostname
+	return *o.SniHostname.Get()
 }
 
-// GetSniHostnameOk returns a tuple with the SniHostname field value
+// GetSniHostnameOk returns a tuple with the SniHostname field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *TlsSettings) GetSniHostnameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.SniHostname, true
+	return o.SniHostname.Get(), o.SniHostname.IsSet()
 }
 
-// SetSniHostname sets field value
+// HasSniHostname returns a boolean if a field has been set.
+func (o *TlsSettings) HasSniHostname() bool {
+	if o != nil && o.SniHostname.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSniHostname gets a reference to the given NullableString and assigns it to the SniHostname field.
 func (o *TlsSettings) SetSniHostname(v string) {
-	o.SniHostname = v
+	o.SniHostname.Set(&v)
 }
 
-// GetAllowSelfSigned returns the AllowSelfSigned field value
+// SetSniHostnameNil sets the value for SniHostname to be an explicit nil
+func (o *TlsSettings) SetSniHostnameNil() {
+	o.SniHostname.Set(nil)
+}
+
+// UnsetSniHostname ensures that no value is present for SniHostname, not even an explicit nil
+func (o *TlsSettings) UnsetSniHostname() {
+	o.SniHostname.Unset()
+}
+
+// GetAllowSelfSigned returns the AllowSelfSigned field value if set, zero value otherwise.
 func (o *TlsSettings) GetAllowSelfSigned() bool {
-	if o == nil {
+	if o == nil || o.AllowSelfSigned == nil {
 		var ret bool
 		return ret
 	}
-
-	return o.AllowSelfSigned
+	return *o.AllowSelfSigned
 }
 
-// GetAllowSelfSignedOk returns a tuple with the AllowSelfSigned field value
+// GetAllowSelfSignedOk returns a tuple with the AllowSelfSigned field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TlsSettings) GetAllowSelfSignedOk() (*bool, bool) {
-	if o == nil {
+	if o == nil || o.AllowSelfSigned == nil {
 		return nil, false
 	}
-	return &o.AllowSelfSigned, true
+	return o.AllowSelfSigned, true
 }
 
-// SetAllowSelfSigned sets field value
+// HasAllowSelfSigned returns a boolean if a field has been set.
+func (o *TlsSettings) HasAllowSelfSigned() bool {
+	if o != nil && o.AllowSelfSigned != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAllowSelfSigned gets a reference to the given bool and assigns it to the AllowSelfSigned field.
 func (o *TlsSettings) SetAllowSelfSigned(v bool) {
-	o.AllowSelfSigned = v
+	o.AllowSelfSigned = &v
 }
 
-// GetPublicKeysToVerify returns the PublicKeysToVerify field value
-// If the value is explicit nil, the zero value for []string will be returned
+// GetPublicKeysToVerify returns the PublicKeysToVerify field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *TlsSettings) GetPublicKeysToVerify() []string {
 	if o == nil {
 		var ret []string
 		return ret
 	}
-
 	return o.PublicKeysToVerify
 }
 
-// GetPublicKeysToVerifyOk returns a tuple with the PublicKeysToVerify field value
+// GetPublicKeysToVerifyOk returns a tuple with the PublicKeysToVerify field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *TlsSettings) GetPublicKeysToVerifyOk() ([]string, bool) {
@@ -117,17 +139,26 @@ func (o *TlsSettings) GetPublicKeysToVerifyOk() ([]string, bool) {
 	return o.PublicKeysToVerify, true
 }
 
-// SetPublicKeysToVerify sets field value
+// HasPublicKeysToVerify returns a boolean if a field has been set.
+func (o *TlsSettings) HasPublicKeysToVerify() bool {
+	if o != nil && o.PublicKeysToVerify != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetPublicKeysToVerify gets a reference to the given []string and assigns it to the PublicKeysToVerify field.
 func (o *TlsSettings) SetPublicKeysToVerify(v []string) {
 	o.PublicKeysToVerify = v
 }
 
 func (o TlsSettings) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
-		toSerialize["sni_hostname"] = o.SniHostname
+	if o.SniHostname.IsSet() {
+		toSerialize["sni_hostname"] = o.SniHostname.Get()
 	}
-	if true {
+	if o.AllowSelfSigned != nil {
 		toSerialize["allow_self_signed"] = o.AllowSelfSigned
 	}
 	if o.PublicKeysToVerify != nil {
@@ -183,8 +214,8 @@ func (v *NullableTlsSettings) Unset() {
 	v.isSet = false
 }
 
-func NewNullableTlsSettings(val *TlsSettings) *NullableTlsSettings {
-	return &NullableTlsSettings{value: val, isSet: true}
+func NewNullableTlsSettings(val TlsSettings) NullableTlsSettings {
+	return NullableTlsSettings{value: &val, isSet: true}
 }
 
 func (v NullableTlsSettings) MarshalJSON() ([]byte, error) {

@@ -20,13 +20,13 @@ import (
 
 // CustomerOriginGroupHTTP
 type CustomerOriginGroupHTTP struct {
-	Id                   *int32         `json:"id,omitempty"`
-	Name                 string         `json:"name"`
-	HostHeader           NullableString `json:"host_header,omitempty"`
-	ShieldPops           []*string      `json:"shield_pops,omitempty"`
-	NetworkTypeId        *int32         `json:"network_type_id,omitempty"`
-	StrictPciCertified   NullableBool   `json:"strict_pci_certified,omitempty"`
-	TlsSettings          *TlsSettings   `json:"tls_settings,omitempty"`
+	Id                   *int32       `json:"id,omitempty"`
+	Name                 *string      `json:"name,omitempty"`
+	HostHeader           *string      `json:"host_header,omitempty"`
+	ShieldPops           []string     `json:"shield_pops,omitempty"`
+	NetworkTypeId        *int32       `json:"network_type_id,omitempty"`
+	StrictPciCertified   *bool        `json:"strict_pci_certified,omitempty"`
+	TlsSettings          *TlsSettings `json:"tls_settings,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -36,11 +36,8 @@ type _CustomerOriginGroupHTTP CustomerOriginGroupHTTP
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCustomerOriginGroupHTTP(name string) *CustomerOriginGroupHTTP {
+func NewCustomerOriginGroupHTTP() *CustomerOriginGroupHTTP {
 	this := CustomerOriginGroupHTTP{}
-	this.Name = name
-	var strictPciCertified bool = false
-	this.StrictPciCertified = *NewNullableBool(&strictPciCertified)
 	return &this
 }
 
@@ -49,8 +46,6 @@ func NewCustomerOriginGroupHTTP(name string) *CustomerOriginGroupHTTP {
 // but it doesn't guarantee that properties required by API are set
 func NewCustomerOriginGroupHTTPWithDefaults() *CustomerOriginGroupHTTP {
 	this := CustomerOriginGroupHTTP{}
-	var strictPciCertified bool = false
-	this.StrictPciCertified = *NewNullableBool(&strictPciCertified)
 	return &this
 }
 
@@ -86,77 +81,74 @@ func (o *CustomerOriginGroupHTTP) SetId(v int32) {
 	o.Id = &v
 }
 
-// GetName returns the Name field value
+// GetName returns the Name field value if set, zero value otherwise.
 func (o *CustomerOriginGroupHTTP) GetName() string {
-	if o == nil {
+	if o == nil || o.Name == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Name
+	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CustomerOriginGroupHTTP) GetNameOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Name == nil {
 		return nil, false
 	}
-	return &o.Name, true
+	return o.Name, true
 }
 
-// SetName sets field value
-func (o *CustomerOriginGroupHTTP) SetName(v string) {
-	o.Name = v
-}
-
-// GetHostHeader returns the HostHeader field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CustomerOriginGroupHTTP) GetHostHeader() string {
-	if o == nil || o.HostHeader.Get() == nil {
-		var ret string
-		return ret
-	}
-	return *o.HostHeader.Get()
-}
-
-// GetHostHeaderOk returns a tuple with the HostHeader field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CustomerOriginGroupHTTP) GetHostHeaderOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.HostHeader.Get(), o.HostHeader.IsSet()
-}
-
-// HasHostHeader returns a boolean if a field has been set.
-func (o *CustomerOriginGroupHTTP) HasHostHeader() bool {
-	if o != nil && o.HostHeader.IsSet() {
+// HasName returns a boolean if a field has been set.
+func (o *CustomerOriginGroupHTTP) HasName() bool {
+	if o != nil && o.Name != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetHostHeader gets a reference to the given NullableString and assigns it to the HostHeader field.
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *CustomerOriginGroupHTTP) SetName(v string) {
+	o.Name = &v
+}
+
+// GetHostHeader returns the HostHeader field value if set, zero value otherwise.
+func (o *CustomerOriginGroupHTTP) GetHostHeader() string {
+	if o == nil || o.HostHeader == nil {
+		var ret string
+		return ret
+	}
+	return *o.HostHeader
+}
+
+// GetHostHeaderOk returns a tuple with the HostHeader field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CustomerOriginGroupHTTP) GetHostHeaderOk() (*string, bool) {
+	if o == nil || o.HostHeader == nil {
+		return nil, false
+	}
+	return o.HostHeader, true
+}
+
+// HasHostHeader returns a boolean if a field has been set.
+func (o *CustomerOriginGroupHTTP) HasHostHeader() bool {
+	if o != nil && o.HostHeader != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetHostHeader gets a reference to the given string and assigns it to the HostHeader field.
 func (o *CustomerOriginGroupHTTP) SetHostHeader(v string) {
-	o.HostHeader.Set(&v)
-}
-
-// SetHostHeaderNil sets the value for HostHeader to be an explicit nil
-func (o *CustomerOriginGroupHTTP) SetHostHeaderNil() {
-	o.HostHeader.Set(nil)
-}
-
-// UnsetHostHeader ensures that no value is present for HostHeader, not even an explicit nil
-func (o *CustomerOriginGroupHTTP) UnsetHostHeader() {
-	o.HostHeader.Unset()
+	o.HostHeader = &v
 }
 
 // GetShieldPops returns the ShieldPops field value if set, zero value otherwise.
-func (o *CustomerOriginGroupHTTP) GetShieldPops() []*string {
+func (o *CustomerOriginGroupHTTP) GetShieldPops() []string {
 	if o == nil || o.ShieldPops == nil {
-		var ret []*string
+		var ret []string
 		return ret
 	}
 	return o.ShieldPops
@@ -164,7 +156,7 @@ func (o *CustomerOriginGroupHTTP) GetShieldPops() []*string {
 
 // GetShieldPopsOk returns a tuple with the ShieldPops field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CustomerOriginGroupHTTP) GetShieldPopsOk() ([]*string, bool) {
+func (o *CustomerOriginGroupHTTP) GetShieldPopsOk() ([]string, bool) {
 	if o == nil || o.ShieldPops == nil {
 		return nil, false
 	}
@@ -180,8 +172,8 @@ func (o *CustomerOriginGroupHTTP) HasShieldPops() bool {
 	return false
 }
 
-// SetShieldPops gets a reference to the given []*string and assigns it to the ShieldPops field.
-func (o *CustomerOriginGroupHTTP) SetShieldPops(v []*string) {
+// SetShieldPops gets a reference to the given []string and assigns it to the ShieldPops field.
+func (o *CustomerOriginGroupHTTP) SetShieldPops(v []string) {
 	o.ShieldPops = v
 }
 
@@ -217,47 +209,36 @@ func (o *CustomerOriginGroupHTTP) SetNetworkTypeId(v int32) {
 	o.NetworkTypeId = &v
 }
 
-// GetStrictPciCertified returns the StrictPciCertified field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetStrictPciCertified returns the StrictPciCertified field value if set, zero value otherwise.
 func (o *CustomerOriginGroupHTTP) GetStrictPciCertified() bool {
-	if o == nil || o.StrictPciCertified.Get() == nil {
+	if o == nil || o.StrictPciCertified == nil {
 		var ret bool
 		return ret
 	}
-	return *o.StrictPciCertified.Get()
+	return *o.StrictPciCertified
 }
 
 // GetStrictPciCertifiedOk returns a tuple with the StrictPciCertified field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CustomerOriginGroupHTTP) GetStrictPciCertifiedOk() (*bool, bool) {
-	if o == nil {
+	if o == nil || o.StrictPciCertified == nil {
 		return nil, false
 	}
-	return o.StrictPciCertified.Get(), o.StrictPciCertified.IsSet()
+	return o.StrictPciCertified, true
 }
 
 // HasStrictPciCertified returns a boolean if a field has been set.
 func (o *CustomerOriginGroupHTTP) HasStrictPciCertified() bool {
-	if o != nil && o.StrictPciCertified.IsSet() {
+	if o != nil && o.StrictPciCertified != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetStrictPciCertified gets a reference to the given NullableBool and assigns it to the StrictPciCertified field.
+// SetStrictPciCertified gets a reference to the given bool and assigns it to the StrictPciCertified field.
 func (o *CustomerOriginGroupHTTP) SetStrictPciCertified(v bool) {
-	o.StrictPciCertified.Set(&v)
-}
-
-// SetStrictPciCertifiedNil sets the value for StrictPciCertified to be an explicit nil
-func (o *CustomerOriginGroupHTTP) SetStrictPciCertifiedNil() {
-	o.StrictPciCertified.Set(nil)
-}
-
-// UnsetStrictPciCertified ensures that no value is present for StrictPciCertified, not even an explicit nil
-func (o *CustomerOriginGroupHTTP) UnsetStrictPciCertified() {
-	o.StrictPciCertified.Unset()
+	o.StrictPciCertified = &v
 }
 
 // GetTlsSettings returns the TlsSettings field value if set, zero value otherwise.
@@ -297,11 +278,11 @@ func (o CustomerOriginGroupHTTP) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
-	if true {
+	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
-	if o.HostHeader.IsSet() {
-		toSerialize["host_header"] = o.HostHeader.Get()
+	if o.HostHeader != nil {
+		toSerialize["host_header"] = o.HostHeader
 	}
 	if o.ShieldPops != nil {
 		toSerialize["shield_pops"] = o.ShieldPops
@@ -309,8 +290,8 @@ func (o CustomerOriginGroupHTTP) MarshalJSON() ([]byte, error) {
 	if o.NetworkTypeId != nil {
 		toSerialize["network_type_id"] = o.NetworkTypeId
 	}
-	if o.StrictPciCertified.IsSet() {
-		toSerialize["strict_pci_certified"] = o.StrictPciCertified.Get()
+	if o.StrictPciCertified != nil {
+		toSerialize["strict_pci_certified"] = o.StrictPciCertified
 	}
 	if o.TlsSettings != nil {
 		toSerialize["tls_settings"] = o.TlsSettings
@@ -369,8 +350,8 @@ func (v *NullableCustomerOriginGroupHTTP) Unset() {
 	v.isSet = false
 }
 
-func NewNullableCustomerOriginGroupHTTP(val *CustomerOriginGroupHTTP) *NullableCustomerOriginGroupHTTP {
-	return &NullableCustomerOriginGroupHTTP{value: val, isSet: true}
+func NewNullableCustomerOriginGroupHTTP(val CustomerOriginGroupHTTP) NullableCustomerOriginGroupHTTP {
+	return NullableCustomerOriginGroupHTTP{value: &val, isSet: true}
 }
 
 func (v NullableCustomerOriginGroupHTTP) MarshalJSON() ([]byte, error) {

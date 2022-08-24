@@ -21,7 +21,7 @@ import (
 // FailoverOrder struct for FailoverOrder
 type FailoverOrder struct {
 	Id                   float32 `json:"id"`
-	Host                 *string `json:"host,omitempty"`
+	Host                 string  `json:"host"`
 	FailoverOrder        int32   `json:"failover_order"`
 	AdditionalProperties map[string]interface{}
 }
@@ -32,9 +32,10 @@ type _FailoverOrder FailoverOrder
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFailoverOrder(id float32, failoverOrder int32) *FailoverOrder {
+func NewFailoverOrder(id float32, host string, failoverOrder int32) *FailoverOrder {
 	this := FailoverOrder{}
 	this.Id = id
+	this.Host = host
 	this.FailoverOrder = failoverOrder
 	return &this
 }
@@ -71,36 +72,28 @@ func (o *FailoverOrder) SetId(v float32) {
 	o.Id = v
 }
 
-// GetHost returns the Host field value if set, zero value otherwise.
+// GetHost returns the Host field value
 func (o *FailoverOrder) GetHost() string {
-	if o == nil || o.Host == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Host
+
+	return o.Host
 }
 
-// GetHostOk returns a tuple with the Host field value if set, nil otherwise
+// GetHostOk returns a tuple with the Host field value
 // and a boolean to check if the value has been set.
 func (o *FailoverOrder) GetHostOk() (*string, bool) {
-	if o == nil || o.Host == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Host, true
+	return &o.Host, true
 }
 
-// HasHost returns a boolean if a field has been set.
-func (o *FailoverOrder) HasHost() bool {
-	if o != nil && o.Host != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetHost gets a reference to the given string and assigns it to the Host field.
+// SetHost sets field value
 func (o *FailoverOrder) SetHost(v string) {
-	o.Host = &v
+	o.Host = v
 }
 
 // GetFailoverOrder returns the FailoverOrder field value
@@ -132,7 +125,7 @@ func (o FailoverOrder) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["id"] = o.Id
 	}
-	if o.Host != nil {
+	if true {
 		toSerialize["host"] = o.Host
 	}
 	if true {
@@ -188,8 +181,8 @@ func (v *NullableFailoverOrder) Unset() {
 	v.isSet = false
 }
 
-func NewNullableFailoverOrder(val *FailoverOrder) *NullableFailoverOrder {
-	return &NullableFailoverOrder{value: val, isSet: true}
+func NewNullableFailoverOrder(val FailoverOrder) NullableFailoverOrder {
+	return NullableFailoverOrder{value: &val, isSet: true}
 }
 
 func (v NullableFailoverOrder) MarshalJSON() ([]byte, error) {

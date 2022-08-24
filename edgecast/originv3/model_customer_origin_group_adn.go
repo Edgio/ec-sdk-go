@@ -20,14 +20,13 @@ import (
 
 // CustomerOriginGroupADN
 type CustomerOriginGroupADN struct {
-	Id         *int32         `json:"id,omitempty"`
-	Name       string         `json:"name"`
-	HostHeader NullableString `json:"host_header,omitempty"`
-	// Validation Path
-	ValidationPath       string        `json:"validation_path"`
-	NetworkTypeId        NullableInt32 `json:"network_type_id,omitempty"`
-	Gateway              Gateway       `json:"gateway"`
-	TlsSettings          *TlsSettings  `json:"tls_settings,omitempty"`
+	Id                   *int32       `json:"id,omitempty"`
+	Name                 *string      `json:"name,omitempty"`
+	HostHeader           *string      `json:"host_header,omitempty"`
+	ValidationPath       *string      `json:"validation_path,omitempty"`
+	NetworkTypeId        *int32       `json:"network_type_id,omitempty"`
+	Gateway              *Gateway     `json:"gateway,omitempty"`
+	TlsSettings          *TlsSettings `json:"tls_settings,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -37,13 +36,8 @@ type _CustomerOriginGroupADN CustomerOriginGroupADN
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCustomerOriginGroupADN(name string, validationPath string, gateway Gateway) *CustomerOriginGroupADN {
+func NewCustomerOriginGroupADN() *CustomerOriginGroupADN {
 	this := CustomerOriginGroupADN{}
-	this.Name = name
-	this.ValidationPath = validationPath
-	var networkTypeId int32 = 1
-	this.NetworkTypeId = *NewNullableInt32(&networkTypeId)
-	this.Gateway = gateway
 	return &this
 }
 
@@ -52,8 +46,6 @@ func NewCustomerOriginGroupADN(name string, validationPath string, gateway Gatew
 // but it doesn't guarantee that properties required by API are set
 func NewCustomerOriginGroupADNWithDefaults() *CustomerOriginGroupADN {
 	this := CustomerOriginGroupADN{}
-	var networkTypeId int32 = 1
-	this.NetworkTypeId = *NewNullableInt32(&networkTypeId)
 	return &this
 }
 
@@ -89,162 +81,164 @@ func (o *CustomerOriginGroupADN) SetId(v int32) {
 	o.Id = &v
 }
 
-// GetName returns the Name field value
+// GetName returns the Name field value if set, zero value otherwise.
 func (o *CustomerOriginGroupADN) GetName() string {
-	if o == nil {
+	if o == nil || o.Name == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Name
+	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CustomerOriginGroupADN) GetNameOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Name == nil {
 		return nil, false
 	}
-	return &o.Name, true
+	return o.Name, true
 }
 
-// SetName sets field value
+// HasName returns a boolean if a field has been set.
+func (o *CustomerOriginGroupADN) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
 func (o *CustomerOriginGroupADN) SetName(v string) {
-	o.Name = v
+	o.Name = &v
 }
 
-// GetHostHeader returns the HostHeader field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetHostHeader returns the HostHeader field value if set, zero value otherwise.
 func (o *CustomerOriginGroupADN) GetHostHeader() string {
-	if o == nil || o.HostHeader.Get() == nil {
+	if o == nil || o.HostHeader == nil {
 		var ret string
 		return ret
 	}
-	return *o.HostHeader.Get()
+	return *o.HostHeader
 }
 
 // GetHostHeaderOk returns a tuple with the HostHeader field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CustomerOriginGroupADN) GetHostHeaderOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.HostHeader == nil {
 		return nil, false
 	}
-	return o.HostHeader.Get(), o.HostHeader.IsSet()
+	return o.HostHeader, true
 }
 
 // HasHostHeader returns a boolean if a field has been set.
 func (o *CustomerOriginGroupADN) HasHostHeader() bool {
-	if o != nil && o.HostHeader.IsSet() {
+	if o != nil && o.HostHeader != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetHostHeader gets a reference to the given NullableString and assigns it to the HostHeader field.
+// SetHostHeader gets a reference to the given string and assigns it to the HostHeader field.
 func (o *CustomerOriginGroupADN) SetHostHeader(v string) {
-	o.HostHeader.Set(&v)
+	o.HostHeader = &v
 }
 
-// SetHostHeaderNil sets the value for HostHeader to be an explicit nil
-func (o *CustomerOriginGroupADN) SetHostHeaderNil() {
-	o.HostHeader.Set(nil)
-}
-
-// UnsetHostHeader ensures that no value is present for HostHeader, not even an explicit nil
-func (o *CustomerOriginGroupADN) UnsetHostHeader() {
-	o.HostHeader.Unset()
-}
-
-// GetValidationPath returns the ValidationPath field value
+// GetValidationPath returns the ValidationPath field value if set, zero value otherwise.
 func (o *CustomerOriginGroupADN) GetValidationPath() string {
-	if o == nil {
+	if o == nil || o.ValidationPath == nil {
 		var ret string
 		return ret
 	}
-
-	return o.ValidationPath
+	return *o.ValidationPath
 }
 
-// GetValidationPathOk returns a tuple with the ValidationPath field value
+// GetValidationPathOk returns a tuple with the ValidationPath field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CustomerOriginGroupADN) GetValidationPathOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.ValidationPath == nil {
 		return nil, false
 	}
-	return &o.ValidationPath, true
+	return o.ValidationPath, true
 }
 
-// SetValidationPath sets field value
+// HasValidationPath returns a boolean if a field has been set.
+func (o *CustomerOriginGroupADN) HasValidationPath() bool {
+	if o != nil && o.ValidationPath != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetValidationPath gets a reference to the given string and assigns it to the ValidationPath field.
 func (o *CustomerOriginGroupADN) SetValidationPath(v string) {
-	o.ValidationPath = v
+	o.ValidationPath = &v
 }
 
-// GetNetworkTypeId returns the NetworkTypeId field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetNetworkTypeId returns the NetworkTypeId field value if set, zero value otherwise.
 func (o *CustomerOriginGroupADN) GetNetworkTypeId() int32 {
-	if o == nil || o.NetworkTypeId.Get() == nil {
+	if o == nil || o.NetworkTypeId == nil {
 		var ret int32
 		return ret
 	}
-	return *o.NetworkTypeId.Get()
+	return *o.NetworkTypeId
 }
 
 // GetNetworkTypeIdOk returns a tuple with the NetworkTypeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CustomerOriginGroupADN) GetNetworkTypeIdOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || o.NetworkTypeId == nil {
 		return nil, false
 	}
-	return o.NetworkTypeId.Get(), o.NetworkTypeId.IsSet()
+	return o.NetworkTypeId, true
 }
 
 // HasNetworkTypeId returns a boolean if a field has been set.
 func (o *CustomerOriginGroupADN) HasNetworkTypeId() bool {
-	if o != nil && o.NetworkTypeId.IsSet() {
+	if o != nil && o.NetworkTypeId != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetNetworkTypeId gets a reference to the given NullableInt32 and assigns it to the NetworkTypeId field.
+// SetNetworkTypeId gets a reference to the given int32 and assigns it to the NetworkTypeId field.
 func (o *CustomerOriginGroupADN) SetNetworkTypeId(v int32) {
-	o.NetworkTypeId.Set(&v)
+	o.NetworkTypeId = &v
 }
 
-// SetNetworkTypeIdNil sets the value for NetworkTypeId to be an explicit nil
-func (o *CustomerOriginGroupADN) SetNetworkTypeIdNil() {
-	o.NetworkTypeId.Set(nil)
-}
-
-// UnsetNetworkTypeId ensures that no value is present for NetworkTypeId, not even an explicit nil
-func (o *CustomerOriginGroupADN) UnsetNetworkTypeId() {
-	o.NetworkTypeId.Unset()
-}
-
-// GetGateway returns the Gateway field value
+// GetGateway returns the Gateway field value if set, zero value otherwise.
 func (o *CustomerOriginGroupADN) GetGateway() Gateway {
-	if o == nil {
+	if o == nil || o.Gateway == nil {
 		var ret Gateway
 		return ret
 	}
-
-	return o.Gateway
+	return *o.Gateway
 }
 
-// GetGatewayOk returns a tuple with the Gateway field value
+// GetGatewayOk returns a tuple with the Gateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CustomerOriginGroupADN) GetGatewayOk() (*Gateway, bool) {
-	if o == nil {
+	if o == nil || o.Gateway == nil {
 		return nil, false
 	}
-	return &o.Gateway, true
+	return o.Gateway, true
 }
 
-// SetGateway sets field value
+// HasGateway returns a boolean if a field has been set.
+func (o *CustomerOriginGroupADN) HasGateway() bool {
+	if o != nil && o.Gateway != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetGateway gets a reference to the given Gateway and assigns it to the Gateway field.
 func (o *CustomerOriginGroupADN) SetGateway(v Gateway) {
-	o.Gateway = v
+	o.Gateway = &v
 }
 
 // GetTlsSettings returns the TlsSettings field value if set, zero value otherwise.
@@ -284,19 +278,19 @@ func (o CustomerOriginGroupADN) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
-	if true {
+	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
-	if o.HostHeader.IsSet() {
-		toSerialize["host_header"] = o.HostHeader.Get()
+	if o.HostHeader != nil {
+		toSerialize["host_header"] = o.HostHeader
 	}
-	if true {
+	if o.ValidationPath != nil {
 		toSerialize["validation_path"] = o.ValidationPath
 	}
-	if o.NetworkTypeId.IsSet() {
-		toSerialize["network_type_id"] = o.NetworkTypeId.Get()
+	if o.NetworkTypeId != nil {
+		toSerialize["network_type_id"] = o.NetworkTypeId
 	}
-	if true {
+	if o.Gateway != nil {
 		toSerialize["gateway"] = o.Gateway
 	}
 	if o.TlsSettings != nil {
@@ -356,8 +350,8 @@ func (v *NullableCustomerOriginGroupADN) Unset() {
 	v.isSet = false
 }
 
-func NewNullableCustomerOriginGroupADN(val *CustomerOriginGroupADN) *NullableCustomerOriginGroupADN {
-	return &NullableCustomerOriginGroupADN{value: val, isSet: true}
+func NewNullableCustomerOriginGroupADN(val CustomerOriginGroupADN) NullableCustomerOriginGroupADN {
+	return NullableCustomerOriginGroupADN{value: &val, isSet: true}
 }
 
 func (v NullableCustomerOriginGroupADN) MarshalJSON() ([]byte, error) {

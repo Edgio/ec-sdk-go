@@ -22,7 +22,7 @@ import (
 // Gateway struct for Gateway
 type Gateway struct {
 	SelectionLastRequested NullableTime   `json:"selection_last_requested,omitempty"`
-	FollowRedirect         NullableBool   `json:"follow_redirect"`
+	FollowRedirect         NullableBool   `json:"follow_redirect,omitempty"`
 	PopLastUpdate          NullableTime   `json:"pop_last_update,omitempty"`
 	SelectionError         NullableString `json:"selection_error,omitempty"`
 	Selected               NullableBool   `json:"selected,omitempty"`
@@ -37,9 +37,10 @@ type _Gateway Gateway
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGateway(followRedirect NullableBool) *Gateway {
+func NewGateway() *Gateway {
 	this := Gateway{}
-	this.FollowRedirect = followRedirect
+	var followRedirect bool = false
+	this.FollowRedirect = NewNullableBool(followRedirect)
 	return &this
 }
 
@@ -48,6 +49,8 @@ func NewGateway(followRedirect NullableBool) *Gateway {
 // but it doesn't guarantee that properties required by API are set
 func NewGatewayWithDefaults() *Gateway {
 	this := Gateway{}
+	var followRedirect bool = false
+	this.FollowRedirect = NewNullableBool(followRedirect)
 	return &this
 }
 
@@ -94,18 +97,16 @@ func (o *Gateway) UnsetSelectionLastRequested() {
 	o.SelectionLastRequested.Unset()
 }
 
-// GetFollowRedirect returns the FollowRedirect field value
-// If the value is explicit nil, the zero value for bool will be returned
+// GetFollowRedirect returns the FollowRedirect field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Gateway) GetFollowRedirect() bool {
 	if o == nil || o.FollowRedirect.Get() == nil {
 		var ret bool
 		return ret
 	}
-
 	return *o.FollowRedirect.Get()
 }
 
-// GetFollowRedirectOk returns a tuple with the FollowRedirect field value
+// GetFollowRedirectOk returns a tuple with the FollowRedirect field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Gateway) GetFollowRedirectOk() (*bool, bool) {
@@ -115,9 +116,28 @@ func (o *Gateway) GetFollowRedirectOk() (*bool, bool) {
 	return o.FollowRedirect.Get(), o.FollowRedirect.IsSet()
 }
 
-// SetFollowRedirect sets field value
+// HasFollowRedirect returns a boolean if a field has been set.
+func (o *Gateway) HasFollowRedirect() bool {
+	if o != nil && o.FollowRedirect.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFollowRedirect gets a reference to the given NullableBool and assigns it to the FollowRedirect field.
 func (o *Gateway) SetFollowRedirect(v bool) {
 	o.FollowRedirect.Set(&v)
+}
+
+// SetFollowRedirectNil sets the value for FollowRedirect to be an explicit nil
+func (o *Gateway) SetFollowRedirectNil() {
+	o.FollowRedirect.Set(nil)
+}
+
+// UnsetFollowRedirect ensures that no value is present for FollowRedirect, not even an explicit nil
+func (o *Gateway) UnsetFollowRedirect() {
+	o.FollowRedirect.Unset()
 }
 
 // GetPopLastUpdate returns the PopLastUpdate field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -329,7 +349,7 @@ func (o Gateway) MarshalJSON() ([]byte, error) {
 	if o.SelectionLastRequested.IsSet() {
 		toSerialize["selection_last_requested"] = o.SelectionLastRequested.Get()
 	}
-	if true {
+	if o.FollowRedirect.IsSet() {
 		toSerialize["follow_redirect"] = o.FollowRedirect.Get()
 	}
 	if o.PopLastUpdate.IsSet() {
@@ -401,8 +421,8 @@ func (v *NullableGateway) Unset() {
 	v.isSet = false
 }
 
-func NewNullableGateway(val *Gateway) *NullableGateway {
-	return &NullableGateway{value: val, isSet: true}
+func NewNullableGateway(val Gateway) NullableGateway {
+	return NullableGateway{value: &val, isSet: true}
 }
 
 func (v NullableGateway) MarshalJSON() ([]byte, error) {

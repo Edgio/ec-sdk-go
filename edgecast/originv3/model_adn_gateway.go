@@ -239,8 +239,8 @@ func (v *NullableAdnGateway) Unset() {
 	v.isSet = false
 }
 
-func NewNullableAdnGateway(val *AdnGateway) *NullableAdnGateway {
-	return &NullableAdnGateway{value: val, isSet: true}
+func NewNullableAdnGateway(val AdnGateway) NullableAdnGateway {
+	return NullableAdnGateway{value: &val, isSet: true}
 }
 
 func (v NullableAdnGateway) MarshalJSON() ([]byte, error) {

@@ -37,6 +37,8 @@ type Service struct {
 	Common CommonClientService
 
 	HttpLargeOnly HttpLargeOnlyClientService
+
+	Phase3 Phase3ClientService
 }
 
 // New creates a new Service
@@ -68,5 +70,6 @@ func New(config edgecast.SDKConfig) (*Service, error) {
 		AdnOnly:       NewAdnOnlyClient(c, config.BaseAPIURL.String()),
 		Common:        NewCommonClient(c, config.BaseAPIURL.String()),
 		HttpLargeOnly: NewHttpLargeOnlyClient(c, config.BaseAPIURL.String()),
+		Phase3:        NewPhase3Client(c, config.BaseAPIURL.String()),
 	}, nil
 }

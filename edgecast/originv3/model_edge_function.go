@@ -181,8 +181,8 @@ func (v *NullableEdgeFunction) Unset() {
 	v.isSet = false
 }
 
-func NewNullableEdgeFunction(val *EdgeFunction) *NullableEdgeFunction {
-	return &NullableEdgeFunction{value: val, isSet: true}
+func NewNullableEdgeFunction(val EdgeFunction) NullableEdgeFunction {
+	return NullableEdgeFunction{value: &val, isSet: true}
 }
 
 func (v NullableEdgeFunction) MarshalJSON() ([]byte, error) {

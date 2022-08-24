@@ -70,8 +70,8 @@ func (v *NullableBool) Unset() {
 	v.isSet = false
 }
 
-func NewNullableBool(val *bool) *NullableBool {
-	return &NullableBool{value: val, isSet: true}
+func NewNullableBool(val bool) NullableBool {
+	return NullableBool{value: &val, isSet: true}
 }
 
 func (v NullableBool) MarshalJSON() ([]byte, error) {
@@ -106,8 +106,8 @@ func (v *NullableInt) Unset() {
 	v.isSet = false
 }
 
-func NewNullableInt(val *int) *NullableInt {
-	return &NullableInt{value: val, isSet: true}
+func NewNullableInt(val int) NullableInt {
+	return NullableInt{value: &val, isSet: true}
 }
 
 func (v NullableInt) MarshalJSON() ([]byte, error) {
@@ -142,8 +142,8 @@ func (v *NullableInt32) Unset() {
 	v.isSet = false
 }
 
-func NewNullableInt32(val *int32) *NullableInt32 {
-	return &NullableInt32{value: val, isSet: true}
+func NewNullableInt32(val int32) NullableInt32 {
+	return NullableInt32{value: &val, isSet: true}
 }
 
 func (v NullableInt32) MarshalJSON() ([]byte, error) {
@@ -178,8 +178,8 @@ func (v *NullableInt64) Unset() {
 	v.isSet = false
 }
 
-func NewNullableInt64(val *int64) *NullableInt64 {
-	return &NullableInt64{value: val, isSet: true}
+func NewNullableInt64(val int64) NullableInt64 {
+	return NullableInt64{value: &val, isSet: true}
 }
 
 func (v NullableInt64) MarshalJSON() ([]byte, error) {
@@ -214,8 +214,8 @@ func (v *NullableFloat32) Unset() {
 	v.isSet = false
 }
 
-func NewNullableFloat32(val *float32) *NullableFloat32 {
-	return &NullableFloat32{value: val, isSet: true}
+func NewNullableFloat32(val float32) NullableFloat32 {
+	return NullableFloat32{value: &val, isSet: true}
 }
 
 func (v NullableFloat32) MarshalJSON() ([]byte, error) {
@@ -250,8 +250,8 @@ func (v *NullableFloat64) Unset() {
 	v.isSet = false
 }
 
-func NewNullableFloat64(val *float64) *NullableFloat64 {
-	return &NullableFloat64{value: val, isSet: true}
+func NewNullableFloat64(val float64) NullableFloat64 {
+	return NullableFloat64{value: &val, isSet: true}
 }
 
 func (v NullableFloat64) MarshalJSON() ([]byte, error) {
@@ -286,8 +286,8 @@ func (v *NullableString) Unset() {
 	v.isSet = false
 }
 
-func NewNullableString(val *string) *NullableString {
-	return &NullableString{value: val, isSet: true}
+func NewNullableString(val string) NullableString {
+	return NullableString{value: &val, isSet: true}
 }
 
 func (v NullableString) MarshalJSON() ([]byte, error) {
@@ -322,8 +322,8 @@ func (v *NullableTime) Unset() {
 	v.isSet = false
 }
 
-func NewNullableTime(val *time.Time) *NullableTime {
-	return &NullableTime{value: val, isSet: true}
+func NewNullableTime(val time.Time) NullableTime {
+	return NullableTime{value: &val, isSet: true}
 }
 
 func (v NullableTime) MarshalJSON() ([]byte, error) {

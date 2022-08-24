@@ -387,8 +387,8 @@ func (v *NullableCustomerOriginFailoverOrder) Unset() {
 	v.isSet = false
 }
 
-func NewNullableCustomerOriginFailoverOrder(val *CustomerOriginFailoverOrder) *NullableCustomerOriginFailoverOrder {
-	return &NullableCustomerOriginFailoverOrder{value: val, isSet: true}
+func NewNullableCustomerOriginFailoverOrder(val CustomerOriginFailoverOrder) NullableCustomerOriginFailoverOrder {
+	return NullableCustomerOriginFailoverOrder{value: &val, isSet: true}
 }
 
 func (v NullableCustomerOriginFailoverOrder) MarshalJSON() ([]byte, error) {

@@ -38,26 +38,140 @@ func NewAdnOnlyClient(
 
 // AdnOnlyClientService defines the operations for AdnOnly
 type AdnOnlyClientService interface {
-	GetAdnGroups() ([]CustomerOriginGroupADN, error)
-
-	GetAdnGroupsGroupId(
-		params GetAdnGroupsGroupIdParams,
+	AddAdnCustomerOriginGroup(
+		params AddAdnCustomerOriginGroupParams,
 	) (*CustomerOriginGroupADN, error)
 
-	PostAdnGroups(
-		params PostAdnGroupsParams,
+	GetAdnCustomerOriginGroup(
+		params GetAdnCustomerOriginGroupParams,
 	) (*CustomerOriginGroupADN, error)
 
-	PutAdnGroupsGroupId(
-		params PutAdnGroupsGroupIdParams,
+	GetAllAdnCustomerOriginGroups() ([]CustomerOriginGroupADN, error)
+
+	UpdateAdnCustomerOriginGroup(
+		params UpdateAdnCustomerOriginGroupParams,
 	) (*CustomerOriginGroupADN, error)
 }
 
-// GetAdnGroups - Get Adn customer origins groups
+// AddAdnCustomerOriginGroupParams contains the parameters for AddAdnCustomerOriginGroup
+type AddAdnCustomerOriginGroupParams struct {
+	CustomerOriginGroupADNRequestCreate CustomerOriginGroupADNRequestCreate
+}
+
+// NewAddAdnCustomerOriginGroupParams creates a new instance of AddAdnCustomerOriginGroupParams
+func NewAddAdnCustomerOriginGroupParams() AddAdnCustomerOriginGroupParams {
+	return AddAdnCustomerOriginGroupParams{}
+}
+
+// AddAdnCustomerOriginGroup - Create new Adn customer origin group
+//
+//	Create Adn new Customer Origin Group
+func (c AdnOnlyClient) AddAdnCustomerOriginGroup(
+	params AddAdnCustomerOriginGroupParams,
+) (*CustomerOriginGroupADN, error) {
+	req, err := buildAddAdnCustomerOriginGroupRequest(params, c.baseAPIURL)
+	if err != nil {
+		return nil, err
+	}
+
+	parsedResponse := CustomerOriginGroupADN{}
+	req.ParsedResponse = &parsedResponse
+
+	_, err = c.apiClient.SubmitRequest(*req)
+
+	if err != nil {
+		return nil, fmt.Errorf("AddAdnCustomerOriginGroup: %w", err)
+	}
+
+	return &parsedResponse, nil
+}
+
+func buildAddAdnCustomerOriginGroupRequest(
+	p AddAdnCustomerOriginGroupParams,
+	baseAPIURL string,
+) (*ecclient.SubmitRequestParams, error) {
+	req := ecclient.NewSubmitRequestParams()
+	req.Path = path.Join(baseAPIURL, "/adn/groups")
+	errs := make([]error, 0)
+
+	method, err := ecclient.ToHTTPMethod("Post")
+	if err != nil {
+		errs = append(errs, fmt.Errorf("AddAdnCustomerOriginGroup: %w", err))
+	}
+
+	req.Method = method
+	req.RawBody = p.CustomerOriginGroupADNRequestCreate
+
+	if len(errs) > 0 {
+		return nil, errors.CompositeValidationError(errs...)
+	}
+
+	return &req, nil
+}
+
+// GetAdnCustomerOriginGroupParams contains the parameters for GetAdnCustomerOriginGroup
+type GetAdnCustomerOriginGroupParams struct {
+	// Customer Origin Group Id
+	GroupId string
+}
+
+// NewGetAdnCustomerOriginGroupParams creates a new instance of GetAdnCustomerOriginGroupParams
+func NewGetAdnCustomerOriginGroupParams() GetAdnCustomerOriginGroupParams {
+	return GetAdnCustomerOriginGroupParams{}
+}
+
+// GetAdnCustomerOriginGroup - Get specific Adn customer origin group by id
+//
+//	Get an individual Adn Customer Origin Group
+func (c AdnOnlyClient) GetAdnCustomerOriginGroup(
+	params GetAdnCustomerOriginGroupParams,
+) (*CustomerOriginGroupADN, error) {
+	req, err := buildGetAdnCustomerOriginGroupRequest(params, c.baseAPIURL)
+	if err != nil {
+		return nil, err
+	}
+
+	parsedResponse := CustomerOriginGroupADN{}
+	req.ParsedResponse = &parsedResponse
+
+	_, err = c.apiClient.SubmitRequest(*req)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetAdnCustomerOriginGroup: %w", err)
+	}
+
+	return &parsedResponse, nil
+}
+
+func buildGetAdnCustomerOriginGroupRequest(
+	p GetAdnCustomerOriginGroupParams,
+	baseAPIURL string,
+) (*ecclient.SubmitRequestParams, error) {
+	req := ecclient.NewSubmitRequestParams()
+	req.Path = path.Join(baseAPIURL, "/adn/groups/{groupId}")
+	errs := make([]error, 0)
+
+	method, err := ecclient.ToHTTPMethod("Get")
+	if err != nil {
+		errs = append(errs, fmt.Errorf("GetAdnCustomerOriginGroup: %w", err))
+	}
+
+	req.Method = method
+
+	req.PathParams["groupId"] = p.GroupId
+
+	if len(errs) > 0 {
+		return nil, errors.CompositeValidationError(errs...)
+	}
+
+	return &req, nil
+}
+
+// GetAllAdnCustomerOriginGroups - Get Adn customer origins groups
 //
 //	Get list of Adn Customer Origin Groups
-func (c AdnOnlyClient) GetAdnGroups() ([]CustomerOriginGroupADN, error) {
-	req, err := buildGetAdnGroupsRequest(c.baseAPIURL)
+func (c AdnOnlyClient) GetAllAdnCustomerOriginGroups() ([]CustomerOriginGroupADN, error) {
+	req, err := buildGetAllAdnCustomerOriginGroupsRequest(c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -68,13 +182,13 @@ func (c AdnOnlyClient) GetAdnGroups() ([]CustomerOriginGroupADN, error) {
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetAdnGroups: %w", err)
+		return nil, fmt.Errorf("GetAllAdnCustomerOriginGroups: %w", err)
 	}
 
 	return parsedResponse, nil
 }
 
-func buildGetAdnGroupsRequest(
+func buildGetAllAdnCustomerOriginGroupsRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -83,7 +197,7 @@ func buildGetAdnGroupsRequest(
 
 	method, err := ecclient.ToHTTPMethod("Get")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("GetAdnGroups: %w", err))
+		errs = append(errs, fmt.Errorf("GetAllAdnCustomerOriginGroups: %w", err))
 	}
 
 	req.Method = method
@@ -95,142 +209,26 @@ func buildGetAdnGroupsRequest(
 	return &req, nil
 }
 
-// GetAdnGroupsGroupIdParams contains the parameters for GetAdnGroupsGroupId
-type GetAdnGroupsGroupIdParams struct {
-	//  Customer Origin Group Id
-	GroupId string
-}
-
-// NewGetAdnGroupsGroupIdParams creates a new instance of GetAdnGroupsGroupIdParams
-func NewGetAdnGroupsGroupIdParams() GetAdnGroupsGroupIdParams {
-	return GetAdnGroupsGroupIdParams{}
-}
-
-// GetAdnGroupsGroupId - Get specific Adn customer origin group by id
-//
-//	Get an individual Adn Customer Origin Group
-func (c AdnOnlyClient) GetAdnGroupsGroupId(
-	params GetAdnGroupsGroupIdParams,
-) (*CustomerOriginGroupADN, error) {
-	req, err := buildGetAdnGroupsGroupIdRequest(params, c.baseAPIURL)
-	if err != nil {
-		return nil, err
-	}
-
-	parsedResponse := CustomerOriginGroupADN{}
-	req.ParsedResponse = &parsedResponse
-
-	_, err = c.apiClient.SubmitRequest(*req)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetAdnGroupsGroupId: %w", err)
-	}
-
-	return &parsedResponse, nil
-}
-
-func buildGetAdnGroupsGroupIdRequest(
-	p GetAdnGroupsGroupIdParams,
-	baseAPIURL string,
-) (*ecclient.SubmitRequestParams, error) {
-	req := ecclient.NewSubmitRequestParams()
-	req.Path = path.Join(baseAPIURL, "/adn/groups/{groupId}")
-	errs := make([]error, 0)
-
-	method, err := ecclient.ToHTTPMethod("Get")
-	if err != nil {
-		errs = append(errs, fmt.Errorf("GetAdnGroupsGroupId: %w", err))
-	}
-
-	req.Method = method
-
-	req.PathParams["groupId"] = p.GroupId
-
-	if len(errs) > 0 {
-		return nil, errors.CompositeValidationError(errs...)
-	}
-
-	return &req, nil
-}
-
-// PostAdnGroupsParams contains the parameters for PostAdnGroups
-type PostAdnGroupsParams struct {
-	//
-	CustomerOriginGroupADN CustomerOriginGroupADN
-}
-
-// NewPostAdnGroupsParams creates a new instance of PostAdnGroupsParams
-func NewPostAdnGroupsParams() PostAdnGroupsParams {
-	return PostAdnGroupsParams{}
-}
-
-// PostAdnGroups - Create new Adn customer origin group
-//
-//	Create Adn new Customer Origin Group
-func (c AdnOnlyClient) PostAdnGroups(
-	params PostAdnGroupsParams,
-) (*CustomerOriginGroupADN, error) {
-	req, err := buildPostAdnGroupsRequest(params, c.baseAPIURL)
-	if err != nil {
-		return nil, err
-	}
-
-	parsedResponse := CustomerOriginGroupADN{}
-	req.ParsedResponse = &parsedResponse
-
-	_, err = c.apiClient.SubmitRequest(*req)
-
-	if err != nil {
-		return nil, fmt.Errorf("PostAdnGroups: %w", err)
-	}
-
-	return &parsedResponse, nil
-}
-
-func buildPostAdnGroupsRequest(
-	p PostAdnGroupsParams,
-	baseAPIURL string,
-) (*ecclient.SubmitRequestParams, error) {
-	req := ecclient.NewSubmitRequestParams()
-	req.Path = path.Join(baseAPIURL, "/adn/groups")
-	errs := make([]error, 0)
-
-	method, err := ecclient.ToHTTPMethod("Post")
-	if err != nil {
-		errs = append(errs, fmt.Errorf("PostAdnGroups: %w", err))
-	}
-
-	req.Method = method
-	req.RawBody = p.CustomerOriginGroupADN
-
-	if len(errs) > 0 {
-		return nil, errors.CompositeValidationError(errs...)
-	}
-
-	return &req, nil
-}
-
-// PutAdnGroupsGroupIdParams contains the parameters for PutAdnGroupsGroupId
-type PutAdnGroupsGroupIdParams struct {
-	//  Customer Origin Group Id
+// UpdateAdnCustomerOriginGroupParams contains the parameters for UpdateAdnCustomerOriginGroup
+type UpdateAdnCustomerOriginGroupParams struct {
+	// Customer Origin Group Id
 	GroupId string
 
-	//
-	CustomerOriginGroupADN CustomerOriginGroupADN
+	CustomerOriginGroupADNRequest CustomerOriginGroupADNRequest
 }
 
-// NewPutAdnGroupsGroupIdParams creates a new instance of PutAdnGroupsGroupIdParams
-func NewPutAdnGroupsGroupIdParams() PutAdnGroupsGroupIdParams {
-	return PutAdnGroupsGroupIdParams{}
+// NewUpdateAdnCustomerOriginGroupParams creates a new instance of UpdateAdnCustomerOriginGroupParams
+func NewUpdateAdnCustomerOriginGroupParams() UpdateAdnCustomerOriginGroupParams {
+	return UpdateAdnCustomerOriginGroupParams{}
 }
 
-// PutAdnGroupsGroupId - Update Adn customer origin group by id
+// UpdateAdnCustomerOriginGroup - Update Adn customer origin group by id
 //
 //	Update an individual Adn Customer Origin Group
-func (c AdnOnlyClient) PutAdnGroupsGroupId(
-	params PutAdnGroupsGroupIdParams,
+func (c AdnOnlyClient) UpdateAdnCustomerOriginGroup(
+	params UpdateAdnCustomerOriginGroupParams,
 ) (*CustomerOriginGroupADN, error) {
-	req, err := buildPutAdnGroupsGroupIdRequest(params, c.baseAPIURL)
+	req, err := buildUpdateAdnCustomerOriginGroupRequest(params, c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -241,14 +239,14 @@ func (c AdnOnlyClient) PutAdnGroupsGroupId(
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("PutAdnGroupsGroupId: %w", err)
+		return nil, fmt.Errorf("UpdateAdnCustomerOriginGroup: %w", err)
 	}
 
 	return &parsedResponse, nil
 }
 
-func buildPutAdnGroupsGroupIdRequest(
-	p PutAdnGroupsGroupIdParams,
+func buildUpdateAdnCustomerOriginGroupRequest(
+	p UpdateAdnCustomerOriginGroupParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -257,14 +255,14 @@ func buildPutAdnGroupsGroupIdRequest(
 
 	method, err := ecclient.ToHTTPMethod("Put")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("PutAdnGroupsGroupId: %w", err))
+		errs = append(errs, fmt.Errorf("UpdateAdnCustomerOriginGroup: %w", err))
 	}
 
 	req.Method = method
 
 	req.PathParams["groupId"] = p.GroupId
 
-	req.RawBody = p.CustomerOriginGroupADN
+	req.RawBody = p.CustomerOriginGroupADNRequest
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)

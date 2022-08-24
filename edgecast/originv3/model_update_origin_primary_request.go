@@ -18,34 +18,34 @@ import (
 	"encoding/json"
 )
 
-// PatchMediaTypePrimaryIdRequest
-type PatchMediaTypePrimaryIdRequest struct {
+// UpdateOriginPrimaryRequest
+type UpdateOriginPrimaryRequest struct {
 	IsPrimary            bool `json:"is_primary"`
 	AdditionalProperties map[string]interface{}
 }
 
-type _PatchMediaTypePrimaryIdRequest PatchMediaTypePrimaryIdRequest
+type _UpdateOriginPrimaryRequest UpdateOriginPrimaryRequest
 
-// NewPatchMediaTypePrimaryIdRequest instantiates a new PatchMediaTypePrimaryIdRequest object
+// NewUpdateOriginPrimaryRequest instantiates a new UpdateOriginPrimaryRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchMediaTypePrimaryIdRequest(isPrimary bool) *PatchMediaTypePrimaryIdRequest {
-	this := PatchMediaTypePrimaryIdRequest{}
+func NewUpdateOriginPrimaryRequest(isPrimary bool) *UpdateOriginPrimaryRequest {
+	this := UpdateOriginPrimaryRequest{}
 	this.IsPrimary = isPrimary
 	return &this
 }
 
-// NewPatchMediaTypePrimaryIdRequestWithDefaults instantiates a new PatchMediaTypePrimaryIdRequest object
+// NewUpdateOriginPrimaryRequestWithDefaults instantiates a new UpdateOriginPrimaryRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewPatchMediaTypePrimaryIdRequestWithDefaults() *PatchMediaTypePrimaryIdRequest {
-	this := PatchMediaTypePrimaryIdRequest{}
+func NewUpdateOriginPrimaryRequestWithDefaults() *UpdateOriginPrimaryRequest {
+	this := UpdateOriginPrimaryRequest{}
 	return &this
 }
 
 // GetIsPrimary returns the IsPrimary field value
-func (o *PatchMediaTypePrimaryIdRequest) GetIsPrimary() bool {
+func (o *UpdateOriginPrimaryRequest) GetIsPrimary() bool {
 	if o == nil {
 		var ret bool
 		return ret
@@ -56,7 +56,7 @@ func (o *PatchMediaTypePrimaryIdRequest) GetIsPrimary() bool {
 
 // GetIsPrimaryOk returns a tuple with the IsPrimary field value
 // and a boolean to check if the value has been set.
-func (o *PatchMediaTypePrimaryIdRequest) GetIsPrimaryOk() (*bool, bool) {
+func (o *UpdateOriginPrimaryRequest) GetIsPrimaryOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -64,11 +64,11 @@ func (o *PatchMediaTypePrimaryIdRequest) GetIsPrimaryOk() (*bool, bool) {
 }
 
 // SetIsPrimary sets field value
-func (o *PatchMediaTypePrimaryIdRequest) SetIsPrimary(v bool) {
+func (o *UpdateOriginPrimaryRequest) SetIsPrimary(v bool) {
 	o.IsPrimary = v
 }
 
-func (o PatchMediaTypePrimaryIdRequest) MarshalJSON() ([]byte, error) {
+func (o UpdateOriginPrimaryRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["is_primary"] = o.IsPrimary
@@ -81,11 +81,11 @@ func (o PatchMediaTypePrimaryIdRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o *PatchMediaTypePrimaryIdRequest) UnmarshalJSON(bytes []byte) (err error) {
-	varPatchMediaTypePrimaryIdRequest := _PatchMediaTypePrimaryIdRequest{}
+func (o *UpdateOriginPrimaryRequest) UnmarshalJSON(bytes []byte) (err error) {
+	varUpdateOriginPrimaryRequest := _UpdateOriginPrimaryRequest{}
 
-	if err = json.Unmarshal(bytes, &varPatchMediaTypePrimaryIdRequest); err == nil {
-		*o = PatchMediaTypePrimaryIdRequest(varPatchMediaTypePrimaryIdRequest)
+	if err = json.Unmarshal(bytes, &varUpdateOriginPrimaryRequest); err == nil {
+		*o = UpdateOriginPrimaryRequest(varUpdateOriginPrimaryRequest)
 	}
 
 	additionalProperties := make(map[string]interface{})
@@ -98,38 +98,38 @@ func (o *PatchMediaTypePrimaryIdRequest) UnmarshalJSON(bytes []byte) (err error)
 	return err
 }
 
-type NullablePatchMediaTypePrimaryIdRequest struct {
-	value *PatchMediaTypePrimaryIdRequest
+type NullableUpdateOriginPrimaryRequest struct {
+	value *UpdateOriginPrimaryRequest
 	isSet bool
 }
 
-func (v NullablePatchMediaTypePrimaryIdRequest) Get() *PatchMediaTypePrimaryIdRequest {
+func (v NullableUpdateOriginPrimaryRequest) Get() *UpdateOriginPrimaryRequest {
 	return v.value
 }
 
-func (v *NullablePatchMediaTypePrimaryIdRequest) Set(val *PatchMediaTypePrimaryIdRequest) {
+func (v *NullableUpdateOriginPrimaryRequest) Set(val *UpdateOriginPrimaryRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullablePatchMediaTypePrimaryIdRequest) IsSet() bool {
+func (v NullableUpdateOriginPrimaryRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullablePatchMediaTypePrimaryIdRequest) Unset() {
+func (v *NullableUpdateOriginPrimaryRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullablePatchMediaTypePrimaryIdRequest(val PatchMediaTypePrimaryIdRequest) NullablePatchMediaTypePrimaryIdRequest {
-	return NullablePatchMediaTypePrimaryIdRequest{value: &val, isSet: true}
+func NewNullableUpdateOriginPrimaryRequest(val UpdateOriginPrimaryRequest) NullableUpdateOriginPrimaryRequest {
+	return NullableUpdateOriginPrimaryRequest{value: &val, isSet: true}
 }
 
-func (v NullablePatchMediaTypePrimaryIdRequest) MarshalJSON() ([]byte, error) {
+func (v NullableUpdateOriginPrimaryRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullablePatchMediaTypePrimaryIdRequest) UnmarshalJSON(src []byte) error {
+func (v *NullableUpdateOriginPrimaryRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

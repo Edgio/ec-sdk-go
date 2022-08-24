@@ -368,8 +368,8 @@ func (v *NullableCloudStorage) Unset() {
 	v.isSet = false
 }
 
-func NewNullableCloudStorage(val *CloudStorage) *NullableCloudStorage {
-	return &NullableCloudStorage{value: val, isSet: true}
+func NewNullableCloudStorage(val CloudStorage) NullableCloudStorage {
+	return NullableCloudStorage{value: &val, isSet: true}
 }
 
 func (v NullableCloudStorage) MarshalJSON() ([]byte, error) {
