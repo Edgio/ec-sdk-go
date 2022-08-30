@@ -11,9 +11,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-openapi/errors"
-
 	"github.com/EdgeCast/ec-sdk-go/edgecast/cps/models"
+	"github.com/go-openapi/errors"
 )
 
 // NewTaskPostParams creates a new TaskPostParams object,
