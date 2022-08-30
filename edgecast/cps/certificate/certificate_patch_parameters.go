@@ -11,10 +11,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/EdgeCast/ec-sdk-go/edgecast/cps/models"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-
-	"github.com/EdgeCast/ec-sdk-go/edgecast/cps/models"
 )
 
 // NewCertificatePatchParams creates a new CertificatePatchParams object,

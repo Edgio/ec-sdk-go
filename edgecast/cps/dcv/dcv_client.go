@@ -25,7 +25,7 @@ type Client struct {
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	DcvCheckDcvTokens(params DcvCheckDcvTokensParams) error
+	DcvCheckDcvTokens(params DcvCheckDcvTokensParams) (*DcvCheckDcvTokensNoContent, error)
 
 	DcvGetCertificateDomainDetails(params DcvGetCertificateDomainDetailsParams) (*DcvGetCertificateDomainDetailsOK, error)
 
@@ -37,32 +37,35 @@ type ClientService interface {
 }
 
 // DcvCheckDcvTokens dcv check dcv tokens API
-func (a *Client) DcvCheckDcvTokens(params DcvCheckDcvTokensParams) error {
+func (a *Client) DcvCheckDcvTokens(params DcvCheckDcvTokensParams) (*DcvCheckDcvTokensNoContent, error) {
 
 	// Set parameters
 	results, err := WriteToRequestDcvCheckDcvTokensParams(params)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	method, err := ecclient.ToHTTPMethod("PUT")
 	if err != nil {
-		return fmt.Errorf("DcvCheckDcvTokens: %v", err)
+		return nil, fmt.Errorf("DcvCheckDcvTokens: %v", err)
 	}
 
+	parsedResponse := &DcvCheckDcvTokensNoContent{}
+
 	_, err = a.client.SubmitRequest(ecclient.SubmitRequestParams{
-		Method:      method,
-		Path:        a.baseAPIURL + "/v2.0/dcv/certificates/{id}/check",
-		RawBody:     results.Body,
-		PathParams:  results.PathParams,
-		QueryParams: results.QueryParams,
+		Method:         method,
+		Path:           a.baseAPIURL + "/v2.0/dcv/certificates/{id}/check",
+		RawBody:        results.Body,
+		PathParams:     results.PathParams,
+		QueryParams:    results.QueryParams,
+		ParsedResponse: parsedResponse,
 	})
 
 	if err != nil {
-		return fmt.Errorf("DcvCheckDcvTokens: %v", err)
+		return nil, fmt.Errorf("DcvCheckDcvTokens: %v", err)
 	}
 
-	return nil
+	return parsedResponse, nil
 }
 
 // DcvGetCertificateDomainDetails dcv get certificate domain details API
