@@ -12,6 +12,11 @@ import (
 
 func main() {
 
+	// !!!!
+	// NOTE: update the test emails in this script to an email address that
+	// is registered to a user for the account.
+	// !!!!
+
 	// Setup
 	idsCredentials := edgecast.IDSCredentials{
 		ClientID:     "CLIENT_ID",

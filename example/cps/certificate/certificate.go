@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/cps"
@@ -11,7 +12,14 @@ import (
 	"github.com/kr/pretty"
 )
 
+const timestampFormat = "2006-01-02T15_04_05Z07_00"
+
 func main() {
+
+	// !!!!
+	// NOTE: update the test emails in this script to an email address that
+	// is registered to a user for the account.
+	// !!!!
 
 	// Setup
 	apiToken := "MY_API_TOKEN"
@@ -39,7 +47,7 @@ func main() {
 
 	certParams := certificate.NewCertificatePostParams()
 	certParams.Certificate = &models.CertificateCreate{
-		CertificateLabel:     "CertLabel",
+		CertificateLabel:     "C_" + time.Now().Format(timestampFormat),
 		Description:          "test cert",
 		AutoRenew:            false,
 		CertificateAuthority: "DigiCert",
@@ -119,7 +127,7 @@ func main() {
 	patchParams := certificate.NewCertificatePatchParams()
 	patchParams.ID = certID
 	patchParams.CertificateRequest = &models.CertificateUpdate{
-		CertificateLabel: "CertLabel-Updated",
+		CertificateLabel: "C_" + time.Now().Format(timestampFormat),
 		AutoRenew:        true,
 	}
 
