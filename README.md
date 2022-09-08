@@ -2,7 +2,7 @@
 The official Go SDK for interacting with EdgeCast APIs.
 
 ## Dependencies
-- Go 1.16
+- Go 1.19
 
 ## Installing
 ### $GOPATH
