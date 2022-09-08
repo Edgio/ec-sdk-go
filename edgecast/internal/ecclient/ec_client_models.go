@@ -30,6 +30,15 @@ type SubmitRequestParams struct {
 	ParsedResponse interface{}
 }
 
+// NewSubmitRequestParams creates a new instance of SubmitRequestParams.
+func NewSubmitRequestParams() SubmitRequestParams {
+	return SubmitRequestParams{
+		QueryParams: make(map[string]string),
+		PathParams:  make(map[string]string),
+		Headers:     make(map[string]string),
+	}
+}
+
 // response contains the response body as a string from a request along with the
 // raw http.Response itself if present
 type Response struct {
