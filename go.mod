@@ -14,6 +14,7 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.0
 	github.com/kr/pretty v0.3.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
+	golang.org/x/exp v0.0.0-20220907003533-145caa8ea1d0
 )
 
 require (
@@ -38,7 +39,7 @@ require (
 	github.com/rogpeppe/go-internal v1.6.1 // indirect
 	go.mongodb.org/mongo-driver v1.7.5 // indirect
 	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
-	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
