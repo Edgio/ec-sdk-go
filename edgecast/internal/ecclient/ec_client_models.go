@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast/eclog"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/internal/ecauth"
@@ -205,7 +206,7 @@ func (m HTTPMethod) String() string {
 }
 
 func ToHTTPMethod(m string) (HTTPMethod, error) {
-	switch m {
+	switch strings.ToUpper(m) {
 	case "CONNECT":
 		return Connect, nil
 	case "DELETE":
