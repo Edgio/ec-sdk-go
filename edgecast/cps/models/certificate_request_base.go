@@ -33,6 +33,12 @@ type CertificateRequestBase struct {
 	// certificate label
 	CertificateLabel string `json:"certificate_label,omitempty"`
 
+	//dcv type
+	DcvMethod string `json:"dcv_method,omitempty"`
+
+	//validation status
+	ValidationType string `json:"validation_type,omitempty"`
+
 	// created
 	// Format: date-time
 	Created strfmt.DateTime `json:"created,omitempty"`
@@ -42,6 +48,12 @@ type CertificateRequestBase struct {
 
 	// deployments
 	Deployments []*RequestDeployment `json:"deployments"`
+
+	// domains
+	Domains []*Domain `json:"domains"`
+
+	// organization
+	Organization *OrganizationDetail `json:"organization"`
 
 	// description
 	Description string `json:"description,omitempty"`

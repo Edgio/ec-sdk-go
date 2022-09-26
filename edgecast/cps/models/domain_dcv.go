@@ -26,6 +26,10 @@ type DomainDcv struct {
 
 	// domain id
 	DomainID int64 `json:"domain_id,omitempty"`
+
+	DcvToken string `json:"dcv_token,omitempty"`
+
+	Emails []string `json:"emails,omitempty"`
 }
 
 // Validate validates this domain dcv
