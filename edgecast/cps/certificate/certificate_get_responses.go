@@ -19,7 +19,7 @@ func NewCertificateGetOK() *CertificateGetOK {
 Success
 */
 type CertificateGetOK struct {
-	models.CertificateRequestBase
+	models.CdnProvidedCertificate
 }
 
 // NewCertificateGetBadRequest creates a CertificateGetBadRequest with default headers values

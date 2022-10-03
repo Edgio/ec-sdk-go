@@ -14,10 +14,10 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// HyperionCollectionCertificateRequestBase hyperion collection certificate request base
+// HyperionCollectionCdnProvidedCertificateWithoutOrg hyperion collection cdn provided certificate without org
 //
-// swagger:model HyperionCollection[CertificateRequestBase]
-type HyperionCollectionCertificateRequestBase struct {
+// swagger:model HyperionCollection[CdnProvidedCertificateWithoutOrg]
+type HyperionCollectionCdnProvidedCertificateWithoutOrg struct {
 
 	// at id
 	AtID string `json:"@id,omitempty"`
@@ -26,7 +26,7 @@ type HyperionCollectionCertificateRequestBase struct {
 	AtType string `json:"@type,omitempty"`
 
 	// items
-	Items []*CertificateRequestBase `json:"items"`
+	Items []*CdnProvidedCertificateWithoutOrg `json:"items"`
 
 	// next cursor
 	NextCursor string `json:"next_cursor,omitempty"`
@@ -35,8 +35,8 @@ type HyperionCollectionCertificateRequestBase struct {
 	TotalItems int32 `json:"total_items,omitempty"`
 }
 
-// Validate validates this hyperion collection certificate request base
-func (m *HyperionCollectionCertificateRequestBase) Validate(formats strfmt.Registry) error {
+// Validate validates this hyperion collection cdn provided certificate without org
+func (m *HyperionCollectionCdnProvidedCertificateWithoutOrg) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateItems(formats); err != nil {
@@ -49,7 +49,7 @@ func (m *HyperionCollectionCertificateRequestBase) Validate(formats strfmt.Regis
 	return nil
 }
 
-func (m *HyperionCollectionCertificateRequestBase) validateItems(formats strfmt.Registry) error {
+func (m *HyperionCollectionCdnProvidedCertificateWithoutOrg) validateItems(formats strfmt.Registry) error {
 	if swag.IsZero(m.Items) { // not required
 		return nil
 	}
@@ -75,8 +75,8 @@ func (m *HyperionCollectionCertificateRequestBase) validateItems(formats strfmt.
 	return nil
 }
 
-// ContextValidate validate this hyperion collection certificate request base based on the context it is used
-func (m *HyperionCollectionCertificateRequestBase) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this hyperion collection cdn provided certificate without org based on the context it is used
+func (m *HyperionCollectionCdnProvidedCertificateWithoutOrg) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateItems(ctx, formats); err != nil {
@@ -89,7 +89,7 @@ func (m *HyperionCollectionCertificateRequestBase) ContextValidate(ctx context.C
 	return nil
 }
 
-func (m *HyperionCollectionCertificateRequestBase) contextValidateItems(ctx context.Context, formats strfmt.Registry) error {
+func (m *HyperionCollectionCdnProvidedCertificateWithoutOrg) contextValidateItems(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Items); i++ {
 
@@ -110,7 +110,7 @@ func (m *HyperionCollectionCertificateRequestBase) contextValidateItems(ctx cont
 }
 
 // MarshalBinary interface implementation
-func (m *HyperionCollectionCertificateRequestBase) MarshalBinary() ([]byte, error) {
+func (m *HyperionCollectionCdnProvidedCertificateWithoutOrg) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -118,8 +118,8 @@ func (m *HyperionCollectionCertificateRequestBase) MarshalBinary() ([]byte, erro
 }
 
 // UnmarshalBinary interface implementation
-func (m *HyperionCollectionCertificateRequestBase) UnmarshalBinary(b []byte) error {
-	var res HyperionCollectionCertificateRequestBase
+func (m *HyperionCollectionCdnProvidedCertificateWithoutOrg) UnmarshalBinary(b []byte) error {
+	var res HyperionCollectionCdnProvidedCertificateWithoutOrg
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

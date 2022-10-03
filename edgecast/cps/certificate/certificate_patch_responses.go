@@ -19,7 +19,7 @@ func NewCertificatePatchOK() *CertificatePatchOK {
 Success
 */
 type CertificatePatchOK struct {
-	models.CertificateRequestBase
+	models.CdnProvidedCertificate
 }
 
 // NewCertificatePatchBadRequest creates a CertificatePatchBadRequest with default headers values

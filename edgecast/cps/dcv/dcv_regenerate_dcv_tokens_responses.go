@@ -19,7 +19,7 @@ func NewDcvRegenerateDcvTokensOK() *DcvRegenerateDcvTokensOK {
 Success
 */
 type DcvRegenerateDcvTokensOK struct {
-	models.HyperionCollectionDomainDcv
+	models.HyperionCollectionDomainDcvToken
 }
 
 // NewDcvRegenerateDcvTokensBadRequest creates a DcvRegenerateDcvTokensBadRequest with default headers values

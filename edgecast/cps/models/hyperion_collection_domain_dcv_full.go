@@ -14,10 +14,10 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// HyperionCollectionDomainDcv hyperion collection domain dcv
+// HyperionCollectionDomainDcvFull hyperion collection domain dcv full
 //
-// swagger:model HyperionCollection[DomainDcv]
-type HyperionCollectionDomainDcv struct {
+// swagger:model HyperionCollection[DomainDcvFull]
+type HyperionCollectionDomainDcvFull struct {
 
 	// at id
 	AtID string `json:"@id,omitempty"`
@@ -26,7 +26,7 @@ type HyperionCollectionDomainDcv struct {
 	AtType string `json:"@type,omitempty"`
 
 	// items
-	Items []*DomainDcv `json:"items"`
+	Items []*DomainDcvFull `json:"items"`
 
 	// next cursor
 	NextCursor string `json:"next_cursor,omitempty"`
@@ -35,8 +35,8 @@ type HyperionCollectionDomainDcv struct {
 	TotalItems int32 `json:"total_items,omitempty"`
 }
 
-// Validate validates this hyperion collection domain dcv
-func (m *HyperionCollectionDomainDcv) Validate(formats strfmt.Registry) error {
+// Validate validates this hyperion collection domain dcv full
+func (m *HyperionCollectionDomainDcvFull) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateItems(formats); err != nil {
@@ -49,7 +49,7 @@ func (m *HyperionCollectionDomainDcv) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *HyperionCollectionDomainDcv) validateItems(formats strfmt.Registry) error {
+func (m *HyperionCollectionDomainDcvFull) validateItems(formats strfmt.Registry) error {
 	if swag.IsZero(m.Items) { // not required
 		return nil
 	}
@@ -75,8 +75,8 @@ func (m *HyperionCollectionDomainDcv) validateItems(formats strfmt.Registry) err
 	return nil
 }
 
-// ContextValidate validate this hyperion collection domain dcv based on the context it is used
-func (m *HyperionCollectionDomainDcv) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this hyperion collection domain dcv full based on the context it is used
+func (m *HyperionCollectionDomainDcvFull) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateItems(ctx, formats); err != nil {
@@ -89,7 +89,7 @@ func (m *HyperionCollectionDomainDcv) ContextValidate(ctx context.Context, forma
 	return nil
 }
 
-func (m *HyperionCollectionDomainDcv) contextValidateItems(ctx context.Context, formats strfmt.Registry) error {
+func (m *HyperionCollectionDomainDcvFull) contextValidateItems(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Items); i++ {
 
@@ -110,7 +110,7 @@ func (m *HyperionCollectionDomainDcv) contextValidateItems(ctx context.Context, 
 }
 
 // MarshalBinary interface implementation
-func (m *HyperionCollectionDomainDcv) MarshalBinary() ([]byte, error) {
+func (m *HyperionCollectionDomainDcvFull) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -118,8 +118,8 @@ func (m *HyperionCollectionDomainDcv) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *HyperionCollectionDomainDcv) UnmarshalBinary(b []byte) error {
-	var res HyperionCollectionDomainDcv
+func (m *HyperionCollectionDomainDcvFull) UnmarshalBinary(b []byte) error {
+	var res HyperionCollectionDomainDcvFull
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
