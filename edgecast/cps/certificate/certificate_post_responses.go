@@ -19,7 +19,7 @@ func NewCertificatePostCreated() *CertificatePostCreated {
 Success
 */
 type CertificatePostCreated struct {
-	models.CertificateRequestBase
+	models.CdnProvidedCertificate
 }
 
 // NewCertificatePostBadRequest creates a CertificatePostBadRequest with default headers values

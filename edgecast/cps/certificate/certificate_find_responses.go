@@ -19,7 +19,7 @@ func NewCertificateFindOK() *CertificateFindOK {
 Success
 */
 type CertificateFindOK struct {
-	models.HyperionCollectionCertificateRequestBase
+	models.HyperionCollectionCdnProvidedCertificateWithoutOrg
 }
 
 // NewCertificateFindBadRequest creates a CertificateFindBadRequest with default headers values

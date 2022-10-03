@@ -19,7 +19,7 @@ func NewDcvGetCertificateDomainDetailsOK() *DcvGetCertificateDomainDetailsOK {
 Success
 */
 type DcvGetCertificateDomainDetailsOK struct {
-	models.HyperionCollectionDomainDcv
+	models.HyperionCollectionDomainDcvFull
 }
 
 // NewDcvGetCertificateDomainDetailsNotFound creates a DcvGetCertificateDomainDetailsNotFound with default headers values
