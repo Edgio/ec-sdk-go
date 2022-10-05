@@ -54,6 +54,21 @@ func (c IDSClient) GetToken(
 		return nil, err
 	}
 
+	if resp.StatusCode == http.StatusBadRequest {
+		errorResponse := &OAuth2ErrorResponse{}
+		err = json.NewDecoder(resp.Body).Decode(&errorResponse)
+		if err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("bad request: %s", errorResponse.Error)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf(
+			"expected 200 OK, Received Status code %v", resp.StatusCode,
+		)
+	}
+
 	tokenResponse := &OAuth2TokenResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&tokenResponse)
 

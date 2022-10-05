@@ -19,6 +19,11 @@ type OAuth2TokenResponse struct {
 	Scope       string  `json:"scope"`
 }
 
+// OAuth2ErrorResponse represents an error response from an identity server
+type OAuth2ErrorResponse struct {
+	Error string `json:"error"`
+}
+
 // Defines structs that can retrieve OAuth 2.0 Tokens
 type OAuth2Client interface {
 	GetToken(credentials OAuth2Credentials) (*OAuth2TokenResponse, error)
