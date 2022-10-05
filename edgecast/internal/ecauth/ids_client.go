@@ -65,7 +65,7 @@ func (c IDSClient) GetToken(
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf(
-			"expected 200 OK, Received Status code %v", resp.StatusCode,
+			"expected 200 OK, received status code %v", resp.StatusCode,
 		)
 	}
 
