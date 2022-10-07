@@ -29,7 +29,7 @@ type EdgeCname struct {
 	// the relative path from the root folder of the origin server to the
 	// desired location. Set this parameter to blank to point the edge CNAME to
 	// the root folder of the origin server.
-	DirPath string `json:"DirPath,omitempty"`
+	DirPath string `json:"DirPath"`
 
 	// Determines whether hits and data transferred statistics will be tracked
 	// for this edge CNAME. Logged data can be viewed through the Custom Reports
