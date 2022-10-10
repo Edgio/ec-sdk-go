@@ -7,10 +7,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
 )
+
+const errorPrefix string = "authentication error:"
 
 // Calls the IDS token endpoint
 type IDSClient struct {
@@ -39,7 +42,8 @@ func (c IDSClient) GetToken(
 		bytes.NewBufferString(dataString))
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s failed creating HTTP request: %w",
+			errorPrefix, err)
 	}
 
 	newTokenRequest.Header.Add(
@@ -51,14 +55,41 @@ func (c IDSClient) GetToken(
 	resp, err := httpClient.Do(newTokenRequest)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s HTTP request failed: %w", errorPrefix, err)
+	}
+
+	if resp.StatusCode == http.StatusBadRequest {
+		oAuth2Error := &OAuth2ErrorResponse{}
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+
+		if err != nil {
+			return nil, fmt.Errorf("%s error reading HTTP response: %w",
+				errorPrefix, err)
+		}
+
+		err = json.Unmarshal(bodyBytes, oAuth2Error)
+		if err != nil {
+			// Cannot decode to oAuth2Error so return complete response body
+			return nil, fmt.Errorf("%s error parsing oAuth2Error response: %s",
+				errorPrefix, bodyBytes)
+		}
+
+		return nil, fmt.Errorf("%s bad request: %s",
+			errorPrefix, oAuth2Error.Error)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf(
+			"%s expected 200 OK, received status code %d", errorPrefix,
+			resp.StatusCode)
 	}
 
 	tokenResponse := &OAuth2TokenResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&tokenResponse)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s error decoding token response: %w",
+			errorPrefix, err)
 	}
 
 	return tokenResponse, nil
