@@ -24,7 +24,13 @@ import (
 const (
 	defaultHeaderAccept      string = "application/json"
 	defaultHeaderContentType string = "application/json"
-	headerAuthorization      string = "Authorization"
+)
+
+var (
+	// Store headers as a hash set for easy lookup.
+	sensitiveHeaders map[string]bool = map[string]bool{
+		"Authorization": true,
+	}
 )
 
 // SubmitRequest invokes an HTTP request with the given parameters
@@ -64,13 +70,19 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 	return resp, nil
 }
 
-func scrubSensitiveHeaders(m map[string]string) string {
-	authValue := m[headerAuthorization]
-	m[headerAuthorization] = "********"
-	s := fmt.Sprintf("%+v", m)
-	m[headerAuthorization] = authValue
+func scrubSensitiveHeaders(m map[string]string) map[string]string {
+	scrubbed := make(map[string]string, len(m))
 
-	return s
+	for k, v := range m {
+		// check the set of sensitive headers.
+		if _, ok := sensitiveHeaders[k]; ok {
+			scrubbed[k] = "*****"
+		} else {
+			scrubbed[k] = v
+		}
+	}
+
+	return scrubbed
 }
 
 // buildRequest creates a new Request for the Edgecast API with query params,
