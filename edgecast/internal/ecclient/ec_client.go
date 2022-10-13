@@ -24,6 +24,7 @@ import (
 const (
 	defaultHeaderAccept      string = "application/json"
 	defaultHeaderContentType string = "application/json"
+	headerAuthorization      string = "Authorization"
 )
 
 // SubmitRequest invokes an HTTP request with the given parameters
@@ -50,7 +51,9 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 		req.method,
 		req.url.String())
 	c.Config.Logger.Debug("[REQUEST-BODY]:%v\n", req.rawBody)
-	c.Config.Logger.Debug("[REQUEST-HEADERS]:%+v\n", req.headers)
+	c.Config.Logger.Debug(
+		"[REQUEST-HEADERS]:%s\n",
+		scrubSensitiveHeaders(req.headers))
 
 	resp, err := c.reqSender.sendRequest(*req)
 	if err != nil {
@@ -59,6 +62,15 @@ func (c ECClient) SubmitRequest(params SubmitRequestParams) (*Response, error) {
 	bodyAsString, _ := jsonhelper.ConvertToJSONString(resp.Data, true)
 	c.Config.Logger.Debug("[RESPONSE-BODY]:%s\n", bodyAsString)
 	return resp, nil
+}
+
+func scrubSensitiveHeaders(m map[string]string) string {
+	authValue := m[headerAuthorization]
+	m[headerAuthorization] = "********"
+	s := fmt.Sprintf("%+v", m)
+	m[headerAuthorization] = authValue
+
+	return s
 }
 
 // buildRequest creates a new Request for the Edgecast API with query params,
