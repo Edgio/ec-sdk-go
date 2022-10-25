@@ -43,4 +43,18 @@ func main() {
 
 	fmt.Println("successfully retrieved protocol types")
 	fmt.Printf("%# v", pretty.Formatter(resp))
+
+	fmt.Println("")
+	fmt.Println("**** Get AVAILABLE HOSTNAME RESOLUTION METHODS ****")
+	fmt.Println("")
+
+	ntresp, err := originV3Service.Phase3.GetMediaTypeOriginNetworkTypes()
+
+	if err != nil {
+		fmt.Printf("failed to get hostname resolution methods: %v\n", err)
+		return
+	}
+
+	fmt.Println("successfully retrieved hostname resolution methods")
+	fmt.Printf("%# v", pretty.Formatter(ntresp))
 }
