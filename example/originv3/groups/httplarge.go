@@ -1,11 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/ecutils"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/originv3"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/enums"
 	"github.com/kr/pretty"
@@ -14,8 +14,6 @@ import (
 func main() {
 
 	// Setup
-	//apiToken := "MY_API_TOKEN"
-
 	idsCredentials := edgecast.IDSCredentials{
 		ClientID:     "",
 		ClientSecret: "",
@@ -78,7 +76,9 @@ func main() {
 	fmt.Printf("%# v", pretty.Formatter(edgeNodes))
 
 	// Convert group retreived from API to proper update model
-	updateGroup, err := convertGetToUpdate(*originGroup)
+	updateGroup := originv3.CustomerOriginGroupHTTPRequest{}
+	err = ecutils.Convert(originGroup, &updateGroup)
+
 	if err != nil {
 		fmt.Printf("error preparing group update respose: %v\n", err)
 		return
@@ -95,7 +95,7 @@ func main() {
 
 	updateGroupParams := originv3.NewPutHttplargeGroupsGroupIdParams()
 	updateGroupParams.GroupId = strconv.Itoa(int(*originGroup.Id))
-	updateGroupParams.CustomerOriginGroupHTTPRequest = *updateGroup
+	updateGroupParams.CustomerOriginGroupHTTPRequest = updateGroup
 
 	originGroup, err = originV3Service.HttpLargeOnly.PutHttplargeGroupsGroupId(
 		updateGroupParams,
@@ -146,7 +146,7 @@ func createOriginGroupRequest() originv3.CustomerOriginGroupHTTPRequest {
 	tlsSettings.SetSniHostname("origin.example.com")
 
 	origin := originv3.CustomerOriginGroupHTTPRequest{
-		Name:        "TestSDKOriginGroup1",
+		Name:        "TestSDKOriginGroup",
 		TlsSettings: &tlsSettings,
 	}
 	origin.SetHostHeader("override-hostheader.example.com")
@@ -154,23 +154,4 @@ func createOriginGroupRequest() originv3.CustomerOriginGroupHTTPRequest {
 	origin.SetStrictPciCertified(false) // Allow non-PCI regions
 
 	return origin
-}
-
-func convertGetToUpdate(
-	groupGet originv3.CustomerOriginGroupHTTP) (
-	*originv3.CustomerOriginGroupHTTPRequest, error) {
-	groupGetBytes, err := json.Marshal(groupGet)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to marshal get origin group response: %w", err)
-	}
-
-	groupUpdate := &originv3.CustomerOriginGroupHTTPRequest{}
-	err = json.Unmarshal(groupGetBytes, groupUpdate)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"unable to unmarshal group get into group update: %w", err)
-	}
-
-	return groupUpdate, nil
 }
