@@ -138,7 +138,12 @@ func main() {
 	deleteParams.MediaType = "http-large"
 	deleteParams.Id = int32(*originid)
 
-	originV3Service.Common.DeleteMediaTypeId(deleteParams)
+	err = originV3Service.Common.DeleteMediaTypeId(deleteParams)
+
+	if err != nil {
+		fmt.Printf("failed to delete origin entry: %v\n", err)
+		return
+	}
 
 	fmt.Println("successfully deleted origin entry")
 
