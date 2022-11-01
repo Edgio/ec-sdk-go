@@ -205,7 +205,7 @@ type DeleteMediaTypeIdParams struct {
 	MediaType string
 
 	// Customer Origin Id
-	Id float32
+	Id int32
 }
 
 // NewDeleteMediaTypeIdParams creates a new instance of DeleteMediaTypeIdParams
@@ -330,7 +330,6 @@ func buildGetAdnRequest(
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
 	}
-
 	return &req, nil
 }
 
@@ -340,7 +339,7 @@ type GetAdnIdParams struct {
 	MediaType string
 
 	// Customer Origin Id
-	Id float32
+	Id int32
 }
 
 // NewGetAdnIdParams creates a new instance of GetAdnIdParams
@@ -583,7 +582,7 @@ type PatchAdnIdParams struct {
 	MediaType string
 
 	// Customer Origin Id
-	Id float32
+	Id int32
 
 	// The modified Customer Origin
 	CustomerOriginRequest CustomerOriginRequest
