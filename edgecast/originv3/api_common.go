@@ -583,7 +583,7 @@ type PatchAdnIdParams struct {
 	MediaType string
 
 	// Customer Origin Id
-	Id float32
+	Id int32
 
 	// The modified Customer Origin
 	CustomerOriginRequest CustomerOriginRequest

@@ -20,7 +20,7 @@ import (
 
 // OriginShieldEdgeNode struct for OriginShieldEdgeNode
 type OriginShieldEdgeNode struct {
-	RegionId             *float32          `json:"region_id,omitempty"`
+	RegionId             *int32          `json:"region_id,omitempty"`
 	RegionName           *string           `json:"region_name,omitempty"`
 	BypassCode           *string           `json:"bypass_code,omitempty"`
 	BypassName           *string           `json:"bypass_name,omitempty"`
@@ -48,9 +48,9 @@ func NewOriginShieldEdgeNodeWithDefaults() *OriginShieldEdgeNode {
 }
 
 // GetRegionId returns the RegionId field value if set, zero value otherwise.
-func (o *OriginShieldEdgeNode) GetRegionId() float32 {
+func (o *OriginShieldEdgeNode) GetRegionId() int32 {
 	if o == nil || o.RegionId == nil {
-		var ret float32
+		var ret int32
 		return ret
 	}
 	return *o.RegionId
@@ -58,7 +58,7 @@ func (o *OriginShieldEdgeNode) GetRegionId() float32 {
 
 // GetRegionIdOk returns a tuple with the RegionId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *OriginShieldEdgeNode) GetRegionIdOk() (*float32, bool) {
+func (o *OriginShieldEdgeNode) GetRegionIdOk() (*int32, bool) {
 	if o == nil || o.RegionId == nil {
 		return nil, false
 	}
@@ -74,8 +74,8 @@ func (o *OriginShieldEdgeNode) HasRegionId() bool {
 	return false
 }
 
-// SetRegionId gets a reference to the given float32 and assigns it to the RegionId field.
-func (o *OriginShieldEdgeNode) SetRegionId(v float32) {
+// SetRegionId gets a reference to the given int32 and assigns it to the RegionId field.
+func (o *OriginShieldEdgeNode) SetRegionId(v int32) {
 	o.RegionId = &v
 }
 
