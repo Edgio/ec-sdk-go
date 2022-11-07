@@ -37,27 +37,142 @@ func NewHttpLargeOnlyClient(
 
 // HttpLargeOnlyClientService defines the operations for HttpLargeOnly
 type HttpLargeOnlyClientService interface {
+	CreateHttpLargeGroup(
+		params CreateHttpLargeGroupParams,
+	) (*CustomerOriginGroupHTTP, error)
+
+	GetHttpLargeGroup(
+		params GetHttpLargeGroupParams,
+	) (*CustomerOriginGroupHTTP, error)
+
 	GetHttpLargeGroups() ([]CustomerOriginGroupHTTP, error)
 
-	GetHttpLargeGroupsGroupId(
-		params GetHttpLargeGroupsGroupIdParams,
-	) (*CustomerOriginGroupHTTP, error)
-
-	GetHttpLargeShieldPops(
-		params GetHttpLargeShieldPopsParams,
+	GetOriginShieldPops(
+		params GetOriginShieldPopsParams,
 	) ([]OriginShieldEdgeNode, error)
 
-	PostHttpLargeGroups(
-		params PostHttpLargeGroupsParams,
-	) (*CustomerOriginGroupHTTP, error)
-
-	PutHttplargeGroupsGroupId(
-		params PutHttplargeGroupsGroupIdParams,
+	UpdateHttplargeGroup(
+		params UpdateHttplargeGroupParams,
 	) (*CustomerOriginGroupHTTP, error)
 }
 
+// CreateHttpLargeGroupParams contains the parameters for CreateHttpLargeGroup
+type CreateHttpLargeGroupParams struct {
+	CustomerOriginGroupHTTPRequest CustomerOriginGroupHTTPRequest
+}
+
+// NewCreateHttpLargeGroupParams creates a new instance of CreateHttpLargeGroupParams
+func NewCreateHttpLargeGroupParams() CreateHttpLargeGroupParams {
+	return CreateHttpLargeGroupParams{}
+}
+
+// CreateHttpLargeGroup - Create new Http Large customer origin group
+//
+//	Create new Http Large Customer Origin Group
+func (c HttpLargeOnlyClient) CreateHttpLargeGroup(
+	params CreateHttpLargeGroupParams,
+) (*CustomerOriginGroupHTTP, error) {
+	req, err := buildCreateHttpLargeGroupRequest(params, c.baseAPIURL)
+	if err != nil {
+		return nil, err
+	}
+
+	parsedResponse := CustomerOriginGroupHTTP{}
+	req.ParsedResponse = &parsedResponse
+
+	_, err = c.apiClient.SubmitRequest(*req)
+
+	if err != nil {
+		return nil, fmt.Errorf("CreateHttpLargeGroup: %w", err)
+	}
+
+	return &parsedResponse, nil
+}
+
+func buildCreateHttpLargeGroupRequest(
+	p CreateHttpLargeGroupParams,
+	baseAPIURL string,
+) (*ecclient.SubmitRequestParams, error) {
+	req := ecclient.NewSubmitRequestParams()
+	req.Path = baseAPIURL + "/http-large/groups"
+	errs := make([]error, 0)
+
+	method, err := ecclient.ToHTTPMethod("Post")
+	if err != nil {
+		errs = append(errs, fmt.Errorf("CreateHttpLargeGroup: %w", err))
+	}
+
+	req.Method = method
+	req.RawBody = p.CustomerOriginGroupHTTPRequest
+
+	if len(errs) > 0 {
+		return nil, errors.CompositeValidationError(errs...)
+	}
+
+	return &req, nil
+}
+
+// GetHttpLargeGroupParams contains the parameters for GetHttpLargeGroup
+type GetHttpLargeGroupParams struct {
+	// Customer Origin Group Id
+	GroupId string
+}
+
+// NewGetHttpLargeGroupParams creates a new instance of GetHttpLargeGroupParams
+func NewGetHttpLargeGroupParams() GetHttpLargeGroupParams {
+	return GetHttpLargeGroupParams{}
+}
+
+// GetHttpLargeGroup - Get specific Http Large customer origin group by id
+//
+//	Get an individual Http Large Customer Origin Group
+func (c HttpLargeOnlyClient) GetHttpLargeGroup(
+	params GetHttpLargeGroupParams,
+) (*CustomerOriginGroupHTTP, error) {
+	req, err := buildGetHttpLargeGroupRequest(params, c.baseAPIURL)
+	if err != nil {
+		return nil, err
+	}
+
+	parsedResponse := CustomerOriginGroupHTTP{}
+	req.ParsedResponse = &parsedResponse
+
+	_, err = c.apiClient.SubmitRequest(*req)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetHttpLargeGroup: %w", err)
+	}
+
+	return &parsedResponse, nil
+}
+
+func buildGetHttpLargeGroupRequest(
+	p GetHttpLargeGroupParams,
+	baseAPIURL string,
+) (*ecclient.SubmitRequestParams, error) {
+	req := ecclient.NewSubmitRequestParams()
+	req.Path = baseAPIURL + "/http-large/groups/{groupId}"
+	errs := make([]error, 0)
+
+	method, err := ecclient.ToHTTPMethod("Get")
+	if err != nil {
+		errs = append(errs, fmt.Errorf("GetHttpLargeGroup: %w", err))
+	}
+
+	req.Method = method
+
+	req.PathParams["groupId"] = p.GroupId
+
+	if len(errs) > 0 {
+		return nil, errors.CompositeValidationError(errs...)
+	}
+
+	return &req, nil
+}
+
 // GetHttpLargeGroups - Get Http Large customer origins groups
-//  Get list of Http Large Customer Origin Groups
+//
+//	Get list of Http Large Customer Origin Groups
 func (c HttpLargeOnlyClient) GetHttpLargeGroups() ([]CustomerOriginGroupHTTP, error) {
 	req, err := buildGetHttpLargeGroupsRequest(c.baseAPIURL)
 	if err != nil {
@@ -97,79 +212,23 @@ func buildGetHttpLargeGroupsRequest(
 	return &req, nil
 }
 
-// GetHttpLargeGroupsGroupIdParams contains the parameters for GetHttpLargeGroupsGroupId
-type GetHttpLargeGroupsGroupIdParams struct {
-	// Customer Origin Group Id
-	GroupId string
-}
-
-// NewGetHttpLargeGroupsGroupIdParams creates a new instance of GetHttpLargeGroupsGroupIdParams
-func NewGetHttpLargeGroupsGroupIdParams() GetHttpLargeGroupsGroupIdParams {
-	return GetHttpLargeGroupsGroupIdParams{}
-}
-
-// GetHttpLargeGroupsGroupId - Get specific Http Large customer origin group by id
-//  Get an individual Http Large Customer Origin Group
-func (c HttpLargeOnlyClient) GetHttpLargeGroupsGroupId(
-	params GetHttpLargeGroupsGroupIdParams,
-) (*CustomerOriginGroupHTTP, error) {
-	req, err := buildGetHttpLargeGroupsGroupIdRequest(params, c.baseAPIURL)
-	if err != nil {
-		return nil, err
-	}
-
-	parsedResponse := CustomerOriginGroupHTTP{}
-	req.ParsedResponse = &parsedResponse
-
-	_, err = c.apiClient.SubmitRequest(*req)
-
-	if err != nil {
-		return nil, fmt.Errorf("GetHttpLargeGroupsGroupId: %w", err)
-	}
-
-	return &parsedResponse, nil
-}
-
-func buildGetHttpLargeGroupsGroupIdRequest(
-	p GetHttpLargeGroupsGroupIdParams,
-	baseAPIURL string,
-) (*ecclient.SubmitRequestParams, error) {
-	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/http-large/groups/{groupId}"
-	errs := make([]error, 0)
-
-	method, err := ecclient.ToHTTPMethod("Get")
-	if err != nil {
-		errs = append(errs, fmt.Errorf("GetHttpLargeGroupsGroupId: %w", err))
-	}
-
-	req.Method = method
-
-	req.PathParams["groupId"] = p.GroupId
-
-	if len(errs) > 0 {
-		return nil, errors.CompositeValidationError(errs...)
-	}
-
-	return &req, nil
-}
-
-// GetHttpLargeShieldPopsParams contains the parameters for GetHttpLargeShieldPops
-type GetHttpLargeShieldPopsParams struct {
+// GetOriginShieldPopsParams contains the parameters for GetOriginShieldPops
+type GetOriginShieldPopsParams struct {
 	Findcode string
 }
 
-// NewGetHttpLargeShieldPopsParams creates a new instance of GetHttpLargeShieldPopsParams
-func NewGetHttpLargeShieldPopsParams() GetHttpLargeShieldPopsParams {
-	return GetHttpLargeShieldPopsParams{}
+// NewGetOriginShieldPopsParams creates a new instance of GetOriginShieldPopsParams
+func NewGetOriginShieldPopsParams() GetOriginShieldPopsParams {
+	return GetOriginShieldPopsParams{}
 }
 
-// GetHttpLargeShieldPops - Get list of origin shield pops
-//  Get list of Origin Shield Pops. This API should work only for http-large Origin
-func (c HttpLargeOnlyClient) GetHttpLargeShieldPops(
-	params GetHttpLargeShieldPopsParams,
+// GetOriginShieldPops - Get list of origin shield pops
+//
+//	Get list of Origin Shield Pops. This API should work only for http-large Origin
+func (c HttpLargeOnlyClient) GetOriginShieldPops(
+	params GetOriginShieldPopsParams,
 ) ([]OriginShieldEdgeNode, error) {
-	req, err := buildGetHttpLargeShieldPopsRequest(params, c.baseAPIURL)
+	req, err := buildGetOriginShieldPopsRequest(params, c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -180,14 +239,14 @@ func (c HttpLargeOnlyClient) GetHttpLargeShieldPops(
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetHttpLargeShieldPops: %w", err)
+		return nil, fmt.Errorf("GetOriginShieldPops: %w", err)
 	}
 
 	return parsedResponse, nil
 }
 
-func buildGetHttpLargeShieldPopsRequest(
-	p GetHttpLargeShieldPopsParams,
+func buildGetOriginShieldPopsRequest(
+	p GetOriginShieldPopsParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -196,7 +255,7 @@ func buildGetHttpLargeShieldPopsRequest(
 
 	method, err := ecclient.ToHTTPMethod("Get")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("GetHttpLargeShieldPops: %w", err))
+		errs = append(errs, fmt.Errorf("GetOriginShieldPops: %w", err))
 	}
 
 	req.Method = method
@@ -210,80 +269,26 @@ func buildGetHttpLargeShieldPopsRequest(
 	return &req, nil
 }
 
-// PostHttpLargeGroupsParams contains the parameters for PostHttpLargeGroups
-type PostHttpLargeGroupsParams struct {
-	CustomerOriginGroupHTTPRequest CustomerOriginGroupHTTPRequest
-}
-
-// NewPostHttpLargeGroupsParams creates a new instance of PostHttpLargeGroupsParams
-func NewPostHttpLargeGroupsParams() PostHttpLargeGroupsParams {
-	return PostHttpLargeGroupsParams{}
-}
-
-// PostHttpLargeGroups - Create new Http Large customer origin group
-//  Create new Http Large Customer Origin Group
-func (c HttpLargeOnlyClient) PostHttpLargeGroups(
-	params PostHttpLargeGroupsParams,
-) (*CustomerOriginGroupHTTP, error) {
-	req, err := buildPostHttpLargeGroupsRequest(params, c.baseAPIURL)
-	if err != nil {
-		return nil, err
-	}
-
-	parsedResponse := CustomerOriginGroupHTTP{}
-	req.ParsedResponse = &parsedResponse
-
-	_, err = c.apiClient.SubmitRequest(*req)
-
-	if err != nil {
-		return nil, fmt.Errorf("PostHttpLargeGroups: %w", err)
-	}
-
-	return &parsedResponse, nil
-}
-
-func buildPostHttpLargeGroupsRequest(
-	p PostHttpLargeGroupsParams,
-	baseAPIURL string,
-) (*ecclient.SubmitRequestParams, error) {
-	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/http-large/groups"
-	errs := make([]error, 0)
-
-	method, err := ecclient.ToHTTPMethod("Post")
-	if err != nil {
-		errs = append(errs, fmt.Errorf("PostHttpLargeGroups: %w", err))
-	}
-
-	req.Method = method
-	req.RawBody = p.CustomerOriginGroupHTTPRequest
-
-	if len(errs) > 0 {
-		return nil, errors.CompositeValidationError(errs...)
-	}
-
-	return &req, nil
-}
-
-// PutHttplargeGroupsGroupIdParams contains the parameters for PutHttplargeGroupsGroupId
-type PutHttplargeGroupsGroupIdParams struct {
+// UpdateHttplargeGroupParams contains the parameters for UpdateHttplargeGroup
+type UpdateHttplargeGroupParams struct {
 	// Customer Origin Group Id
 	GroupId string
 
 	CustomerOriginGroupHTTPRequest CustomerOriginGroupHTTPRequest
 }
 
-// NewPutHttplargeGroupsGroupIdParams creates a new instance of PutHttplargeGroupsGroupIdParams
-func NewPutHttplargeGroupsGroupIdParams() PutHttplargeGroupsGroupIdParams {
-	return PutHttplargeGroupsGroupIdParams{}
+// NewUpdateHttplargeGroupParams creates a new instance of UpdateHttplargeGroupParams
+func NewUpdateHttplargeGroupParams() UpdateHttplargeGroupParams {
+	return UpdateHttplargeGroupParams{}
 }
 
-// PutHttplargeGroupsGroupId - Update Http Large customer origin group by id
-//  Update an individual Http Large Customer Origin Group
-func (c HttpLargeOnlyClient) PutHttplargeGroupsGroupId(
-	params PutHttplargeGroupsGroupIdParams,
+// UpdateHttplargeGroup - Update Http Large customer origin group by id
+//
+//	Update an individual Http Large Customer Origin Group
+func (c HttpLargeOnlyClient) UpdateHttplargeGroup(
+	params UpdateHttplargeGroupParams,
 ) (*CustomerOriginGroupHTTP, error) {
-	req, err := buildPutHttplargeGroupsGroupIdRequest(params, c.baseAPIURL)
+	req, err := buildUpdateHttplargeGroupRequest(params, c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -294,14 +299,14 @@ func (c HttpLargeOnlyClient) PutHttplargeGroupsGroupId(
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("PutHttplargeGroupsGroupId: %w", err)
+		return nil, fmt.Errorf("UpdateHttplargeGroup: %w", err)
 	}
 
 	return &parsedResponse, nil
 }
 
-func buildPutHttplargeGroupsGroupIdRequest(
-	p PutHttplargeGroupsGroupIdParams,
+func buildUpdateHttplargeGroupRequest(
+	p UpdateHttplargeGroupParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -310,7 +315,7 @@ func buildPutHttplargeGroupsGroupIdRequest(
 
 	method, err := ecclient.ToHTTPMethod("Put")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("PutHttplargeGroupsGroupId: %w", err))
+		errs = append(errs, fmt.Errorf("UpdateHttplargeGroup: %w", err))
 	}
 
 	req.Method = method

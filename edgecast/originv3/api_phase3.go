@@ -37,15 +37,16 @@ func NewPhase3Client(
 
 // Phase3ClientService defines the operations for Phase3
 type Phase3ClientService interface {
-	GetMediaTypeOriginNetworkTypes() ([]NetworkType, error)
+	GetNetworkTypes() ([]NetworkType, error)
 
-	GetMediaTypeProtocolTypes() ([]ProtocolType, error)
+	GetProtocolTypes() ([]ProtocolType, error)
 }
 
-// GetMediaTypeOriginNetworkTypes - Get Network Types
-//  Get Origin Network Regions
-func (c Phase3Client) GetMediaTypeOriginNetworkTypes() ([]NetworkType, error) {
-	req, err := buildGetMediaTypeOriginNetworkTypesRequest(c.baseAPIURL)
+// GetNetworkTypes - Get Network Types
+//
+//	Get Origin Network Regions
+func (c Phase3Client) GetNetworkTypes() ([]NetworkType, error) {
+	req, err := buildGetNetworkTypesRequest(c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -56,13 +57,13 @@ func (c Phase3Client) GetMediaTypeOriginNetworkTypes() ([]NetworkType, error) {
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetMediaTypeOriginNetworkTypes: %w", err)
+		return nil, fmt.Errorf("GetNetworkTypes: %w", err)
 	}
 
 	return parsedResponse, nil
 }
 
-func buildGetMediaTypeOriginNetworkTypesRequest(
+func buildGetNetworkTypesRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -71,7 +72,7 @@ func buildGetMediaTypeOriginNetworkTypesRequest(
 
 	method, err := ecclient.ToHTTPMethod("Get")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("GetMediaTypeOriginNetworkTypes: %w", err))
+		errs = append(errs, fmt.Errorf("GetNetworkTypes: %w", err))
 	}
 
 	req.Method = method
@@ -83,10 +84,11 @@ func buildGetMediaTypeOriginNetworkTypesRequest(
 	return &req, nil
 }
 
-// GetMediaTypeProtocolTypes - Get Protocol Types
-//  Get Protocol Types
-func (c Phase3Client) GetMediaTypeProtocolTypes() ([]ProtocolType, error) {
-	req, err := buildGetMediaTypeProtocolTypesRequest(c.baseAPIURL)
+// GetProtocolTypes - Get Protocol Types
+//
+//	Get Protocol Types
+func (c Phase3Client) GetProtocolTypes() ([]ProtocolType, error) {
+	req, err := buildGetProtocolTypesRequest(c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -97,13 +99,13 @@ func (c Phase3Client) GetMediaTypeProtocolTypes() ([]ProtocolType, error) {
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetMediaTypeProtocolTypes: %w", err)
+		return nil, fmt.Errorf("GetProtocolTypes: %w", err)
 	}
 
 	return parsedResponse, nil
 }
 
-func buildGetMediaTypeProtocolTypesRequest(
+func buildGetProtocolTypesRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -112,7 +114,7 @@ func buildGetMediaTypeProtocolTypesRequest(
 
 	method, err := ecclient.ToHTTPMethod("Get")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("GetMediaTypeProtocolTypes: %w", err))
+		errs = append(errs, fmt.Errorf("GetProtocolTypes: %w", err))
 	}
 
 	req.Method = method

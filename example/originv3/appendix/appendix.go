@@ -34,7 +34,7 @@ func main() {
 	fmt.Println("**** GET AVAILABLE PROTOCOLS ****")
 	fmt.Println("")
 
-	resp, err := originV3Service.Phase3.GetMediaTypeProtocolTypes()
+	resp, err := originV3Service.Phase3.GetProtocolTypes()
 
 	if err != nil {
 		fmt.Printf("failed to get protocol types: %v\n", err)
@@ -48,7 +48,7 @@ func main() {
 	fmt.Println("**** Get AVAILABLE HOSTNAME RESOLUTION METHODS ****")
 	fmt.Println("")
 
-	ntresp, err := originV3Service.Phase3.GetMediaTypeOriginNetworkTypes()
+	ntresp, err := originV3Service.Phase3.GetNetworkTypes()
 
 	if err != nil {
 		fmt.Printf("failed to get hostname resolution methods: %v\n", err)
