@@ -50,7 +50,6 @@ import (
 	addParams.Customer = newCustomer
 	resp, err := customerService.AddCustomer(*addParams)
 	// ...
-}
 ```
 
 #### Customer User
@@ -75,7 +74,6 @@ import (
 	// ...
 	resp, err := customerService.AddCustomerUser(*addParams)
 	// ...
-}
 ```
 
 ### Edge CNAME ###
@@ -105,7 +103,6 @@ import (
 	// ...
 	resp, err := edgecnameService.AddEdgeCname(*addParams)
 // ...
-}
 ```
 
 ### Customer Origin 
@@ -140,7 +137,151 @@ import (
 	addParams.Origin = newOrigin
 	resp, err := originService.AddOrigin(*addParams)
 // ...
+```
+
+### Customer Origin v3 - BETA
+-> Customer Origin v3 is currently available as a BETA. Business-critical processes should not depend on this functionality.
+
+Customer Origin v3 uses dedicated endpoints to manage a customer origin group and origin entries. This allows you to manage a customer origin group and all of its entries using multiple requests rather than in a single request. 
+
+It also supports managing a customer origin group's TLS configuration and retrieval of the Function@Edge functions associated with your customer origin groups.
+
+For more information, please read the [official documentation for Customer Origin v3](https://developer.edgecast.com/cdn/api/index.html#Origins/Origins.htm)
+
+#### Origin Group (v3)
+Create a customer origin group using platform-specific services. For a detailed example, please refer to the examples directory. 
+
+├── originv3.Service
+   ├── AdnOnly
+		Contains functions for use with the ADN platform.
+		├── GetAdnGroups
+			Retrieve all ADN customer origin groups
+		├── GetAdnGroupsGroupId
+			Retrieve a specific ADN customer origin group
+		├── PostAdnGroups
+			Create an ADN customer origin group without origin entries
+		├── PostAdnGroups
+			Create an ADN customer origin group without origin entries
+		├── PutAdnGroupsGroupId
+			Update an ADN customer origin group's configuration
+│   ├── Common
+		Contains functions for use with both platforms.
+		├── AddAdn
+			Add an origin entry to a customer origin group
+		├── DeleteMediaTypeGroupsGroupId
+		├── DeleteMediaTypeId
+		├── GetAdn
+		├── GetAdnId
+		├── GetMediaTypeEdgeFunctions
+		├── GetMediaTypeGroupsIdOrigins
+		├── GetMediaTypeGroupsIdStatus
+		├── PatchAdnId
+		├── PatchMediaTypeGroupsGroupIdOrigins
+│   ├── HttpLargeOnly
+		Contains functions for use with the HTTP Large platform.
+		├── GetHttpLargeGroups
+			Retrieve all HTTP Large customer origin groups
+		├── GetHttpLargeGroupsGroupId
+			Retrieve a specific HTTP Large customer origin group
+		├── PostHttpLargeGroups
+			Create an HTTP Large customer origin group without origin entries
+		├── PostHttpLargeGroups
+			Create an HTTP Large customer origin group without origin entries
+		├── PutHttplargeGroupsGroupId
+			Update an HTTP Large customer origin group's configuration
+		├── GetHttpLargeShieldPops
+			Lists the available Origin Shield locations for the HTTP Large platform by region.
+│   ├── Phase3
+│	│	├── GetMediaTypeProtocolTypes
+			Lists the available protocols that you may assign to an origin entry.
+		├── GetMediaTypeOriginNetworkTypes
+			Lists the available methods through which our service may resolve a hostname assigned to an origin entry.
+
+
+
+
+```go
+tlsSettings := originv3.TlsSettings{
+	PublicKeysToVerify: []string{
+		"ff8b4a82b08ea5f7be124e6b4363c00d7462655f",
+		"c571398b01fce46a8a177abdd6174dfee6137358",
+	},
 }
+
+tlsSettings.SetAllowSelfSigned(false)
+tlsSettings.SetSniHostname("origin.example.com")
+
+req := originv3.CustomerOriginGroupHTTPRequest{
+	Name:        "TestSDKOriginGroup",
+	TlsSettings: &tlsSettings,
+}
+
+req.SetHostHeader("override-hostheader.example.com")
+req.SetNetworkTypeId(2)          // Prefer IPv6 over IPv4
+req.SetStrictPciCertified(false) // Allow non-PCI regions
+
+addGroupParams := originv3.NewPostHttpLargeGroupsParams()
+addGroupParams.CustomerOriginGroupHTTPRequest = req
+
+group, err := originV3Service.HttpLargeOnly.PostHttpLargeGroups(addGroupParams)
+if err != nil {} // inspect error
+```
+
+#### Shield POPs (HTTP Large Only)
+Lists the available Origin Shield locations for the HTTP Large platform by region. Use Origin Shield POP codes (code) and bypass codes (bypass_code) to set or to interpret Origin Shield settings for a customer origin group.
+
+See below for an example where Shield POPs are retrieved and then used to update a Customer Origin Group. For a detailed example, please refer to the examples directory.
+
+```go
+// Get Group by ID
+getGroupParams := originv3.NewGetHttpLargeGroupsGroupIdParams()
+getGroupParams.GroupId = groupID // provide group ID here
+originGroup, _ = originV3Service.HttpLargeOnly.GetHttpLargeGroupsGroupId(
+	getGroupParams,
+)
+
+// Get All Shield POPs
+getShieldPOPsParams := originv3.NewGetHttpLargeShieldPopsParams()
+edgeNodes, _ := originV3Service.HttpLargeOnly.GetHttpLargeShieldPops(
+	getShieldPOPsParams,
+)
+
+// Convert group retreived from API to proper update model
+updateGroup := originv3.CustomerOriginGroupHTTPRequest{}
+err := ecutils.Convert(originGroup, &updateGroup)
+
+// Update Group with shield POP
+shieldPOPs := []*string{}
+shieldPOPs = append(shieldPOPs,
+	edgeNodes[0].Pops[0].Code,
+	edgeNodes[1].Pops[1].Code,
+)
+
+updateGroup.ShieldPops = shieldPOPs
+updateGroupParams := originv3.NewPutHttplargeGroupsGroupIdParams()
+updateGroupParams.GroupId = strconv.Itoa(int(*originGroup.Id))
+updateGroupParams.CustomerOriginGroupHTTPRequest = updateGroup
+
+originGroup, _ = originV3Service.HttpLargeOnly.PutHttplargeGroupsGroupId(
+	updateGroupParams,
+)
+```
+
+#### Customer Origin Entry (v3)
+Add an origin entry to a customer origin group through a platform-specific service. See below for an example of creating an HTTP Large Customer Origin Entry. For a detailed example, please refer to the examples directory.
+
+```go
+addParams := originv3.NewAddAdnParams()
+addParams.MediaType = "http-large"
+
+origin := originv3.NewCustomerOriginRequest(
+	"cdn-origin-example.com",
+	false,
+	groupID,
+)
+
+addParams.CustomerOriginRequest = *origin
+resp, err := originV3Service.Common.AddAdn(addParams)
 ```
 
 ### Route (DNS) - BETA ###
@@ -185,7 +326,6 @@ import (
 	// ...
 	resp, err := routeDNSService.AddMasterServerGroup(*addParams)
 // ...
-}
 ```
 
 ### Real Time Log Delivery (RTLD)
@@ -223,7 +363,6 @@ import (
 	addResp, err :=
 		rtldService.ProfilesRl.ProfilesRateLimitingAddCustomerSetting(addParams)
 	// ...
-}
 ```
 
 ### Rules Engine
@@ -261,7 +400,6 @@ import (
 	addParams.PolicyAsString = policyString
 	addPolicyResp, err := rulesengineService.AddPolicy(*addParams)
 // ...
-}
 ```
 
 ### Web Application Firewall (WAF)
@@ -271,7 +409,7 @@ and preventing application layer attacks. It inspects inbound HTTP/HTTPS traffic
 against reactive and proactive security policies and blocks malicious activity 
 in-band and on a real-time basis.
 
-For more information, please read the [official documentation for Web Application Firewall (WAF)](https://docs.edgecast.com/cdn/index.html#Web-Security/Web-Security.htm%3FTocPath%3DSecurity%7CWeb%2520Application%2520Firewall%2520(WAF)%7C_____0).
+For more information, please read the [official documentation for Web Application Firewall (WAF)](https://docs.edgecast.com/cdn/index.html#Web-Security/Web-Application-Firewall-WAF.htm).
 
 To use the WAF service, use the API Token provided to you.
 
@@ -444,6 +582,9 @@ import (
 │   ├── origin
 		client files for interacting with customer origin api
 		model files for customer origin
+│   ├── originv3
+		client files for interacting with customer origin v3 api
+		model files for customer origin
 │   ├── routedns
 		client files for interacting with route (dns)
 		model files for route (dns)
@@ -477,21 +618,20 @@ import (
 
 ### Contributing
 
-Please refer to the [contributing.md](https://github.com/EdgeCast/ec-sdk-go/blob/main/Contributing.md) 
+Please refer to the [contributing.md](https://github.com/Edgio/ec-sdk-go/blob/main/Contributing.md) 
 file for information about how to get involved. 
 We welcome issues, questions, and pull requests.
 
 ### Maintainers
 
 - Frank Contreras: frank.contreras@edgecast.com
-- Hector Gray: hector.gray@edgecast.com
 - Steven Paz: steven.paz@edgecast.com
 - Shikha Saluja: shikha.saluja@edgecast.com
 
 ### Testing
 
 To run all test files in the root folder
-```
+```shell
 go test -v ./...
 ```
 Tests should all pass before and after any work that you do. If they
@@ -509,8 +649,8 @@ For developers that want to interact directly with the EdgeCast CDN API,
 refer to this documentation. It contains all of the available operations as well 
 as their inputs and outputs.
 
-[Examples](https://github.com/EdgeCast/ec-sdk-go/tree/main/example) - Examples 
+[Examples](https://github.com/Edgio/ec-sdk-go/tree/main/example) - Examples 
 to get started can be found here.
 
-[Submit an Issue](https://github.com/EdgeCast/ec-sdk-go/issues) - Found a bug? 
+[Submit an Issue](https://github.com/Edgio/ec-sdk-go/issues) - Found a bug? 
 Want to request a feature? Please do so here.
