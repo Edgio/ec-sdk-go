@@ -6,6 +6,7 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	originv3 "github.com/EdgeCast/ec-sdk-go/edgecast/originv3"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/enums"
 	"github.com/kr/pretty"
 )
 
@@ -54,7 +55,7 @@ func main() {
 	fmt.Println("")
 
 	addParams := originv3.NewAddAdnParams()
-	addParams.MediaType = "http-large"
+	addParams.MediaType = enums.HttpLarge.String()
 
 	origin := originv3.NewCustomerOriginRequest(
 		"cdn-origin-example.com",
@@ -81,7 +82,7 @@ func main() {
 
 	getParams := originv3.NewGetAdnIdParams()
 	getParams.Id = int32(*originid)
-	getParams.MediaType = "http-large"
+	getParams.MediaType = enums.HttpLarge.String()
 
 	getResp, err := originV3Service.Common.GetAdnId(getParams)
 	if err != nil {
@@ -97,7 +98,7 @@ func main() {
 	fmt.Println("")
 
 	getByGroupParams := originv3.NewGetMediaTypeGroupsIdOriginsParams()
-	getByGroupParams.MediaType = "http-large"
+	getByGroupParams.MediaType = enums.HttpLarge.String()
 	getByGroupParams.GroupId = strconv.Itoa(int(groupid))
 
 	getByGroupResp, err := originV3Service.Common.GetMediaTypeGroupsIdOrigins(getByGroupParams)
@@ -115,7 +116,7 @@ func main() {
 	fmt.Println("")
 
 	updateParams := originv3.NewPatchAdnIdParams()
-	updateParams.MediaType = "http-large"
+	updateParams.MediaType = enums.HttpLarge.String()
 	updateParams.Id = int32(*originid)
 	origin.IsPrimary = true
 	updateParams.CustomerOriginRequest = *origin
@@ -135,7 +136,7 @@ func main() {
 	fmt.Println("")
 
 	deleteParams := originv3.NewDeleteMediaTypeIdParams()
-	deleteParams.MediaType = "http-large"
+	deleteParams.MediaType = enums.HttpLarge.String()
 	deleteParams.Id = int32(*originid)
 
 	err = originV3Service.Common.DeleteMediaTypeId(deleteParams)
