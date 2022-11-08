@@ -115,7 +115,7 @@ func buildCreateHttpLargeGroupRequest(
 // GetHttpLargeGroupParams contains the parameters for GetHttpLargeGroup
 type GetHttpLargeGroupParams struct {
 	// Customer Origin Group Id
-	GroupId string
+	GroupId int32
 }
 
 // NewGetHttpLargeGroupParams creates a new instance of GetHttpLargeGroupParams
@@ -161,7 +161,7 @@ func buildGetHttpLargeGroupRequest(
 
 	req.Method = method
 
-	req.PathParams["groupId"] = p.GroupId
+	req.PathParams["groupId"] = NumberToString(p.GroupId)
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
@@ -272,7 +272,7 @@ func buildGetOriginShieldPopsRequest(
 // UpdateHttplargeGroupParams contains the parameters for UpdateHttplargeGroup
 type UpdateHttplargeGroupParams struct {
 	// Customer Origin Group Id
-	GroupId string
+	GroupId int32
 
 	CustomerOriginGroupHTTPRequest CustomerOriginGroupHTTPRequest
 }
@@ -320,7 +320,7 @@ func buildUpdateHttplargeGroupRequest(
 
 	req.Method = method
 
-	req.PathParams["groupId"] = p.GroupId
+	req.PathParams["groupId"] = NumberToString(p.GroupId)
 
 	req.RawBody = p.CustomerOriginGroupHTTPRequest
 

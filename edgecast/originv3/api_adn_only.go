@@ -111,7 +111,7 @@ func buildCreateAdnGroupRequest(
 // GetAdnGroupParams contains the parameters for GetAdnGroup
 type GetAdnGroupParams struct {
 	// Customer Origin Group Id
-	GroupId string
+	GroupId int32
 }
 
 // NewGetAdnGroupParams creates a new instance of GetAdnGroupParams
@@ -157,7 +157,7 @@ func buildGetAdnGroupRequest(
 
 	req.Method = method
 
-	req.PathParams["groupId"] = p.GroupId
+	req.PathParams["groupId"] = NumberToString(p.GroupId)
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
@@ -211,7 +211,7 @@ func buildGetAdnGroupsRequest(
 // UpdateAdnGroupParams contains the parameters for UpdateAdnGroup
 type UpdateAdnGroupParams struct {
 	// Customer Origin Group Id
-	GroupId string
+	GroupId int32
 
 	CustomerOriginGroupADNRequest CustomerOriginGroupADNRequest
 }
@@ -259,7 +259,7 @@ func buildUpdateAdnGroupRequest(
 
 	req.Method = method
 
-	req.PathParams["groupId"] = p.GroupId
+	req.PathParams["groupId"] = NumberToString(p.GroupId)
 
 	req.RawBody = p.CustomerOriginGroupADNRequest
 

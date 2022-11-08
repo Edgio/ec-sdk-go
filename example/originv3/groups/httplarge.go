@@ -1,8 +1,9 @@
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 package main
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/ecutils"
@@ -12,7 +13,6 @@ import (
 )
 
 func main() {
-
 	// Setup
 	idsCredentials := edgecast.IDSCredentials{
 		ClientID:     "",
@@ -24,7 +24,6 @@ func main() {
 	sdkConfig.IDSCredentials = idsCredentials
 
 	originV3Service, err := originv3.New(sdkConfig)
-
 	if err != nil {
 		fmt.Printf("error creating service: %v\n", err)
 		return
@@ -32,12 +31,12 @@ func main() {
 
 	// Create Group
 	originGroupRequest := createOriginGroupRequest()
-	createGroupParams := originv3.NewPostHttpLargeGroupsParams()
+	createGroupParams := originv3.NewCreateHttpLargeGroupParams()
 	createGroupParams.CustomerOriginGroupHTTPRequest = originGroupRequest
-	originGroup, err := originV3Service.HttpLargeOnly.PostHttpLargeGroups(
+
+	originGroup, err := originV3Service.HttpLargeOnly.CreateHttpLargeGroup(
 		createGroupParams,
 	)
-
 	if err != nil {
 		fmt.Printf("error creating origin group: %v\n", err)
 		return
@@ -47,9 +46,9 @@ func main() {
 	fmt.Printf("%# v", pretty.Formatter(originGroup))
 
 	// Get Group by ID
-	getGroupParams := originv3.NewGetHttpLargeGroupsGroupIdParams()
-	getGroupParams.GroupId = strconv.Itoa(int(*originGroup.Id))
-	originGroup, err = originV3Service.HttpLargeOnly.GetHttpLargeGroupsGroupId(
+	getGroupParams := originv3.NewGetHttpLargeGroupParams()
+	getGroupParams.GroupId = *originGroup.Id
+	originGroup, err = originV3Service.HttpLargeOnly.GetHttpLargeGroup(
 		getGroupParams,
 	)
 
@@ -62,11 +61,10 @@ func main() {
 	fmt.Printf("%# v", pretty.Formatter(originGroup))
 
 	// Get Shield POPs
-	getShieldPOPsParams := originv3.NewGetHttpLargeShieldPopsParams()
-	edgeNodes, err := originV3Service.HttpLargeOnly.GetHttpLargeShieldPops(
+	getShieldPOPsParams := originv3.NewGetOriginShieldPopsParams()
+	edgeNodes, err := originV3Service.HttpLargeOnly.GetOriginShieldPops(
 		getShieldPOPsParams,
 	)
-
 	if err != nil {
 		fmt.Printf("error retrieving shield POPs: %v\n", err)
 		return
@@ -93,14 +91,13 @@ func main() {
 
 	updateGroup.ShieldPops = shieldPOPs
 
-	updateGroupParams := originv3.NewPutHttplargeGroupsGroupIdParams()
-	updateGroupParams.GroupId = strconv.Itoa(int(*originGroup.Id))
+	updateGroupParams := originv3.NewUpdateHttplargeGroupParams()
+	updateGroupParams.GroupId = *originGroup.Id
 	updateGroupParams.CustomerOriginGroupHTTPRequest = updateGroup
 
-	originGroup, err = originV3Service.HttpLargeOnly.PutHttplargeGroupsGroupId(
+	originGroup, err = originV3Service.HttpLargeOnly.UpdateHttplargeGroup(
 		updateGroupParams,
 	)
-
 	if err != nil {
 		fmt.Printf("error updating origin group: %v\n", err)
 		return
@@ -111,7 +108,6 @@ func main() {
 
 	// Get all Groups
 	originGroups, err := originV3Service.HttpLargeOnly.GetHttpLargeGroups()
-
 	if err != nil {
 		fmt.Printf("error retrieving all origin groups: %v\n", err)
 		return
@@ -121,14 +117,11 @@ func main() {
 	fmt.Printf("%# v", pretty.Formatter(originGroups))
 
 	// Delete Group
-	deleteOriginGroupParams := originv3.NewDeleteMediaTypeGroupsGroupIdParams()
-	deleteOriginGroupParams.GroupId = strconv.Itoa(int(*originGroup.Id))
+	deleteOriginGroupParams := originv3.NewDeleteGroupParams()
+	deleteOriginGroupParams.GroupId = *originGroup.Id
 	deleteOriginGroupParams.MediaType = enums.HttpLarge.String()
 
-	err = originV3Service.Common.DeleteMediaTypeGroupsGroupId(
-		deleteOriginGroupParams,
-	)
-
+	err = originV3Service.Common.DeleteGroup(deleteOriginGroupParams)
 	if err != nil {
 		fmt.Printf("error deleting origin group: %v\n", err)
 		return
@@ -142,13 +135,14 @@ func createOriginGroupRequest() originv3.CustomerOriginGroupHTTPRequest {
 			"c571398b01fce46a8a177abdd6174dfee6137358",
 		},
 	}
+
 	tlsSettings.SetAllowSelfSigned(false)
 	tlsSettings.SetSniHostname("origin.example.com")
-
 	origin := originv3.CustomerOriginGroupHTTPRequest{
 		Name:        "TestSDKOriginGroup",
 		TlsSettings: &tlsSettings,
 	}
+
 	origin.SetHostHeader("override-hostheader.example.com")
 	origin.SetNetworkTypeId(2)          // Prefer IPv6 over IPv4
 	origin.SetStrictPciCertified(false) // Allow non-PCI regions

@@ -207,7 +207,7 @@ type DeleteGroupParams struct {
 	MediaType string
 
 	// Customer Origin Group Id
-	GroupId string
+	GroupId int32
 }
 
 // NewDeleteGroupParams creates a new instance of DeleteGroupParams
@@ -252,7 +252,7 @@ func buildDeleteGroupRequest(
 
 	req.PathParams["mediaType"] = p.MediaType
 
-	req.PathParams["groupId"] = p.GroupId
+	req.PathParams["groupId"] = NumberToString(p.GroupId)
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
@@ -465,7 +465,7 @@ type GetGroupStatusParams struct {
 	MediaType string
 
 	// Customer Origin Group Id
-	GroupId string
+	GroupId int32
 }
 
 // NewGetGroupStatusParams creates a new instance of GetGroupStatusParams
@@ -513,7 +513,7 @@ func buildGetGroupStatusRequest(
 
 	req.PathParams["mediaType"] = p.MediaType
 
-	req.PathParams["groupId"] = p.GroupId
+	req.PathParams["groupId"] = NumberToString(p.GroupId)
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
@@ -528,7 +528,7 @@ type GetOriginsByGroupParams struct {
 	MediaType string
 
 	// Customer Origin Group Id
-	GroupId string
+	GroupId int32
 }
 
 // NewGetOriginsByGroupParams creates a new instance of GetOriginsByGroupParams
@@ -576,7 +576,7 @@ func buildGetOriginsByGroupRequest(
 
 	req.PathParams["mediaType"] = p.MediaType
 
-	req.PathParams["groupId"] = p.GroupId
+	req.PathParams["groupId"] = NumberToString(p.GroupId)
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
@@ -659,7 +659,7 @@ type UpdateGroupFailoverOrderParams struct {
 	MediaType string
 
 	// Customer Origin Group Id
-	GroupId string
+	GroupId int32
 
 	FailoverOrder []FailoverOrder
 }
@@ -706,7 +706,7 @@ func buildUpdateGroupFailoverOrderRequest(
 
 	req.PathParams["mediaType"] = p.MediaType
 
-	req.PathParams["groupId"] = p.GroupId
+	req.PathParams["groupId"] = NumberToString(p.GroupId)
 
 	req.RawBody = p.FailoverOrder
 

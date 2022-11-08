@@ -1,3 +1,5 @@
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 package main
 
 import (
@@ -9,7 +11,6 @@ import (
 )
 
 func main() {
-
 	// Setup
 	apiToken := "MY_API_TOKEN"
 
@@ -24,7 +25,6 @@ func main() {
 	sdkConfig.IDSCredentials = idsCredentials
 
 	originV3Service, err := originv3.New(sdkConfig)
-
 	if err != nil {
 		fmt.Printf("error creating service: %v\n", err)
 		return
@@ -35,7 +35,6 @@ func main() {
 	fmt.Println("")
 
 	resp, err := originV3Service.Phase3.GetProtocolTypes()
-
 	if err != nil {
 		fmt.Printf("failed to get protocol types: %v\n", err)
 		return
@@ -49,7 +48,6 @@ func main() {
 	fmt.Println("")
 
 	ntresp, err := originV3Service.Phase3.GetNetworkTypes()
-
 	if err != nil {
 		fmt.Printf("failed to get hostname resolution methods: %v\n", err)
 		return
