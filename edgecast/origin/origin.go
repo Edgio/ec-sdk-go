@@ -21,7 +21,7 @@ func (svc *OriginService) GetAllOrigins(
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"platform_id":    params.MediaTypeID.String(),
+			"platform_id":    params.MediaTypeID.StringWithoutHyphen(),
 		},
 		ParsedResponse: parsedResponse,
 	})
@@ -39,7 +39,7 @@ func (svc *OriginService) AddOrigin(params AddOriginParams) (*int, error) {
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"platform_id":    params.MediaTypeID.String(),
+			"platform_id":    params.MediaTypeID.StringWithoutHyphen(),
 		},
 		RawBody:        params.Origin,
 		ParsedResponse: parsedResponse,
@@ -60,7 +60,7 @@ func (svc *OriginService) GetOrigin(
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"platform_id":    params.MediaTypeID.String(),
+			"platform_id":    params.MediaTypeID.StringWithoutHyphen(),
 			"origin_id":      strconv.Itoa(params.CustomerOriginID),
 		},
 		ParsedResponse: parsedResponse,
@@ -81,7 +81,7 @@ func (svc *OriginService) UpdateOrigin(
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"platform_id":    params.Origin.MediaTypeID.String(),
+			"platform_id":    params.Origin.MediaTypeID.StringWithoutHyphen(),
 			"origin_id":      strconv.Itoa(params.Origin.ID),
 		},
 		RawBody:        params.Origin,
@@ -162,7 +162,7 @@ func (svc *OriginService) GetOriginShieldPOPs(
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/shieldpops",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"platform_id":    params.MediaTypeID.String(),
+			"platform_id":    params.MediaTypeID.StringWithoutHyphen(),
 		},
 		ParsedResponse: parsedResponse,
 	})
@@ -183,7 +183,7 @@ func (svc *OriginService) ReselectADNGateways(
 		Path:   "v2/mcc/customers/{account_number}/origins/{platform_id}/{origin_id}/reselect",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"platform_id":    params.MediaTypeID.String(),
+			"platform_id":    params.MediaTypeID.StringWithoutHyphen(),
 			"origin_id":      strconv.Itoa(params.CustomerOriginID),
 		},
 	})
