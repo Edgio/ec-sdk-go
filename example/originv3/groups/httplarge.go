@@ -29,13 +29,13 @@ func main() {
 		return
 	}
 
-	// Create Group
+	// Add Group
 	originGroupRequest := createOriginGroupRequest()
-	createGroupParams := originv3.NewCreateHttpLargeGroupParams()
-	createGroupParams.CustomerOriginGroupHTTPRequest = originGroupRequest
+	addGroupParams := originv3.NewAddHttpLargeGroupParams()
+	addGroupParams.CustomerOriginGroupHTTPRequest = originGroupRequest
 
-	originGroup, err := originV3Service.HttpLargeOnly.CreateHttpLargeGroup(
-		createGroupParams,
+	originGroup, err := originV3Service.HttpLargeOnly.AddHttpLargeGroup(
+		addGroupParams,
 	)
 	if err != nil {
 		fmt.Printf("error creating origin group: %v\n", err)
@@ -91,11 +91,11 @@ func main() {
 
 	updateGroup.ShieldPops = shieldPOPs
 
-	updateGroupParams := originv3.NewUpdateHttplargeGroupParams()
+	updateGroupParams := originv3.NewUpdateHttpLargeGroupParams()
 	updateGroupParams.GroupId = *originGroup.Id
 	updateGroupParams.CustomerOriginGroupHTTPRequest = updateGroup
 
-	originGroup, err = originV3Service.HttpLargeOnly.UpdateHttplargeGroup(
+	originGroup, err = originV3Service.HttpLargeOnly.UpdateHttpLargeGroup(
 		updateGroupParams,
 	)
 	if err != nil {
@@ -107,7 +107,7 @@ func main() {
 	fmt.Printf("%# v", pretty.Formatter(originGroup))
 
 	// Get all Groups
-	originGroups, err := originV3Service.HttpLargeOnly.GetHttpLargeGroups()
+	originGroups, err := originV3Service.HttpLargeOnly.GetAllHttpLargeGroups()
 	if err != nil {
 		fmt.Printf("error retrieving all origin groups: %v\n", err)
 		return

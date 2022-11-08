@@ -37,16 +37,16 @@ func NewPhase3Client(
 
 // Phase3ClientService defines the operations for Phase3
 type Phase3ClientService interface {
-	GetNetworkTypes() ([]NetworkType, error)
+	GetAvailableHostnameResolutionMethods() ([]NetworkType, error)
 
-	GetProtocolTypes() ([]ProtocolType, error)
+	GetAvailableProtocols() ([]ProtocolType, error)
 }
 
-// GetNetworkTypes - Get Network Types
+// GetAvailableHostnameResolutionMethods - Get Network Types
 //
 //	Get Origin Network Regions
-func (c Phase3Client) GetNetworkTypes() ([]NetworkType, error) {
-	req, err := buildGetNetworkTypesRequest(c.baseAPIURL)
+func (c Phase3Client) GetAvailableHostnameResolutionMethods() ([]NetworkType, error) {
+	req, err := buildGetAvailableHostnameResolutionMethodsRequest(c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -57,13 +57,13 @@ func (c Phase3Client) GetNetworkTypes() ([]NetworkType, error) {
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetNetworkTypes: %w", err)
+		return nil, fmt.Errorf("GetAvailableHostnameResolutionMethods: %w", err)
 	}
 
 	return parsedResponse, nil
 }
 
-func buildGetNetworkTypesRequest(
+func buildGetAvailableHostnameResolutionMethodsRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -72,7 +72,7 @@ func buildGetNetworkTypesRequest(
 
 	method, err := ecclient.ToHTTPMethod("Get")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("GetNetworkTypes: %w", err))
+		errs = append(errs, fmt.Errorf("GetAvailableHostnameResolutionMethods: %w", err))
 	}
 
 	req.Method = method
@@ -84,11 +84,11 @@ func buildGetNetworkTypesRequest(
 	return &req, nil
 }
 
-// GetProtocolTypes - Get Protocol Types
+// GetAvailableProtocols - Get Protocol Types
 //
 //	Get Protocol Types
-func (c Phase3Client) GetProtocolTypes() ([]ProtocolType, error) {
-	req, err := buildGetProtocolTypesRequest(c.baseAPIURL)
+func (c Phase3Client) GetAvailableProtocols() ([]ProtocolType, error) {
+	req, err := buildGetAvailableProtocolsRequest(c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -99,13 +99,13 @@ func (c Phase3Client) GetProtocolTypes() ([]ProtocolType, error) {
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetProtocolTypes: %w", err)
+		return nil, fmt.Errorf("GetAvailableProtocols: %w", err)
 	}
 
 	return parsedResponse, nil
 }
 
-func buildGetProtocolTypesRequest(
+func buildGetAvailableProtocolsRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -114,7 +114,7 @@ func buildGetProtocolTypesRequest(
 
 	method, err := ecclient.ToHTTPMethod("Get")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("GetProtocolTypes: %w", err))
+		errs = append(errs, fmt.Errorf("GetAvailableProtocols: %w", err))
 	}
 
 	req.Method = method

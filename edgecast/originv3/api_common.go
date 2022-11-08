@@ -37,24 +37,20 @@ func NewCommonClient(
 
 // CommonClientService defines the operations for Common
 type CommonClientService interface {
-	CreateCustomerOrigin(
-		params CreateCustomerOriginParams,
+	AddOrigin(
+		params AddOriginParams,
 	) (*CustomerOrigin, error)
-
-	DeleteCustomerOrigin(
-		params DeleteCustomerOriginParams,
-	) error
 
 	DeleteGroup(
 		params DeleteGroupParams,
 	) error
 
-	GetCustomerOrigin(
-		params GetCustomerOriginParams,
-	) (*CustomerOrigin, error)
+	DeleteOrigin(
+		params DeleteOriginParams,
+	) error
 
-	GetCustomerOrigins(
-		params GetCustomerOriginsParams,
+	GetAllOrigins(
+		params GetAllOriginsParams,
 	) ([]CustomerOrigin, error)
 
 	GetEdgeFunctions(
@@ -65,40 +61,44 @@ type CommonClientService interface {
 		params GetGroupStatusParams,
 	) (*CustomerOriginStatus, error)
 
+	GetOrigin(
+		params GetOriginParams,
+	) (*CustomerOrigin, error)
+
 	GetOriginsByGroup(
 		params GetOriginsByGroupParams,
 	) ([]CustomerOriginFailoverOrder, error)
 
-	UpdateCustomerOrigin(
-		params UpdateCustomerOriginParams,
-	) (*CustomerOrigin, error)
-
-	UpdateGroupFailoverOrder(
-		params UpdateGroupFailoverOrderParams,
+	UpdateFailoverOrder(
+		params UpdateFailoverOrderParams,
 	) error
+
+	UpdateOrigin(
+		params UpdateOriginParams,
+	) (*CustomerOrigin, error)
 }
 
-// CreateCustomerOriginParams contains the parameters for CreateCustomerOrigin
-type CreateCustomerOriginParams struct {
+// AddOriginParams contains the parameters for AddOrigin
+type AddOriginParams struct {
 	// http-large or adn
 	MediaType string
 
-	// The Adn Customer Origin without id
+	// The Customer Origin without id
 	CustomerOriginRequest CustomerOriginRequest
 }
 
-// NewCreateCustomerOriginParams creates a new instance of CreateCustomerOriginParams
-func NewCreateCustomerOriginParams() CreateCustomerOriginParams {
-	return CreateCustomerOriginParams{}
+// NewAddOriginParams creates a new instance of AddOriginParams
+func NewAddOriginParams() AddOriginParams {
+	return AddOriginParams{}
 }
 
-// CreateCustomerOrigin - Create new Customer origin
+// AddOrigin - Create new Customer origin
 //
 //	Create new Customer Origin
-func (c CommonClient) CreateCustomerOrigin(
-	params CreateCustomerOriginParams,
+func (c CommonClient) AddOrigin(
+	params AddOriginParams,
 ) (*CustomerOrigin, error) {
-	req, err := buildCreateCustomerOriginRequest(params, c.baseAPIURL)
+	req, err := buildAddOriginRequest(params, c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -109,14 +109,14 @@ func (c CommonClient) CreateCustomerOrigin(
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("CreateCustomerOrigin: %w", err)
+		return nil, fmt.Errorf("AddOrigin: %w", err)
 	}
 
 	return &parsedResponse, nil
 }
 
-func buildCreateCustomerOriginRequest(
-	p CreateCustomerOriginParams,
+func buildAddOriginRequest(
+	p AddOriginParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -125,7 +125,7 @@ func buildCreateCustomerOriginRequest(
 
 	method, err := ecclient.ToHTTPMethod("Post")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("CreateCustomerOrigin: %w", err))
+		errs = append(errs, fmt.Errorf("AddOrigin: %w", err))
 	}
 
 	req.Method = method
@@ -133,66 +133,6 @@ func buildCreateCustomerOriginRequest(
 	req.PathParams["mediaType"] = p.MediaType
 
 	req.RawBody = p.CustomerOriginRequest
-
-	if len(errs) > 0 {
-		return nil, errors.CompositeValidationError(errs...)
-	}
-
-	return &req, nil
-}
-
-// DeleteCustomerOriginParams contains the parameters for DeleteCustomerOrigin
-type DeleteCustomerOriginParams struct {
-	// http-large or adn
-	MediaType string
-
-	// Customer Origin Id
-	Id int32
-}
-
-// NewDeleteCustomerOriginParams creates a new instance of DeleteCustomerOriginParams
-func NewDeleteCustomerOriginParams() DeleteCustomerOriginParams {
-	return DeleteCustomerOriginParams{}
-}
-
-// DeleteCustomerOrigin - Delete a customer origin by id
-//
-//	Delete an individual Customer Origin
-func (c CommonClient) DeleteCustomerOrigin(
-	params DeleteCustomerOriginParams,
-) error {
-	req, err := buildDeleteCustomerOriginRequest(params, c.baseAPIURL)
-	if err != nil {
-		return err
-	}
-
-	_, err = c.apiClient.SubmitRequest(*req)
-
-	if err != nil {
-		return fmt.Errorf("DeleteCustomerOrigin: %w", err)
-	}
-
-	return nil
-}
-
-func buildDeleteCustomerOriginRequest(
-	p DeleteCustomerOriginParams,
-	baseAPIURL string,
-) (*ecclient.SubmitRequestParams, error) {
-	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{mediaType}/{id}"
-	errs := make([]error, 0)
-
-	method, err := ecclient.ToHTTPMethod("Delete")
-	if err != nil {
-		errs = append(errs, fmt.Errorf("DeleteCustomerOrigin: %w", err))
-	}
-
-	req.Method = method
-
-	req.PathParams["mediaType"] = p.MediaType
-
-	req.PathParams["id"] = NumberToString(p.Id)
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
@@ -261,8 +201,8 @@ func buildDeleteGroupRequest(
 	return &req, nil
 }
 
-// GetCustomerOriginParams contains the parameters for GetCustomerOrigin
-type GetCustomerOriginParams struct {
+// DeleteOriginParams contains the parameters for DeleteOrigin
+type DeleteOriginParams struct {
 	// http-large or adn
 	MediaType string
 
@@ -270,45 +210,42 @@ type GetCustomerOriginParams struct {
 	Id int32
 }
 
-// NewGetCustomerOriginParams creates a new instance of GetCustomerOriginParams
-func NewGetCustomerOriginParams() GetCustomerOriginParams {
-	return GetCustomerOriginParams{}
+// NewDeleteOriginParams creates a new instance of DeleteOriginParams
+func NewDeleteOriginParams() DeleteOriginParams {
+	return DeleteOriginParams{}
 }
 
-// GetCustomerOrigin - Get specific Customer origin by id
+// DeleteOrigin - Delete a customer origin by id
 //
-//	Get an individual Customer Origin
-func (c CommonClient) GetCustomerOrigin(
-	params GetCustomerOriginParams,
-) (*CustomerOrigin, error) {
-	req, err := buildGetCustomerOriginRequest(params, c.baseAPIURL)
+//	Delete an individual Customer Origin
+func (c CommonClient) DeleteOrigin(
+	params DeleteOriginParams,
+) error {
+	req, err := buildDeleteOriginRequest(params, c.baseAPIURL)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	parsedResponse := CustomerOrigin{}
-	req.ParsedResponse = &parsedResponse
 
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomerOrigin: %w", err)
+		return fmt.Errorf("DeleteOrigin: %w", err)
 	}
 
-	return &parsedResponse, nil
+	return nil
 }
 
-func buildGetCustomerOriginRequest(
-	p GetCustomerOriginParams,
+func buildDeleteOriginRequest(
+	p DeleteOriginParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
 	req.Path = baseAPIURL + "/{mediaType}/{id}"
 	errs := make([]error, 0)
 
-	method, err := ecclient.ToHTTPMethod("Get")
+	method, err := ecclient.ToHTTPMethod("Delete")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("GetCustomerOrigin: %w", err))
+		errs = append(errs, fmt.Errorf("DeleteOrigin: %w", err))
 	}
 
 	req.Method = method
@@ -324,8 +261,8 @@ func buildGetCustomerOriginRequest(
 	return &req, nil
 }
 
-// GetCustomerOriginsParams contains the parameters for GetCustomerOrigins
-type GetCustomerOriginsParams struct {
+// GetAllOriginsParams contains the parameters for GetAllOrigins
+type GetAllOriginsParams struct {
 	// http-large or adn
 	MediaType string
 
@@ -341,18 +278,18 @@ type GetCustomerOriginsParams struct {
 	Sortby string
 }
 
-// NewGetCustomerOriginsParams creates a new instance of GetCustomerOriginsParams
-func NewGetCustomerOriginsParams() GetCustomerOriginsParams {
-	return GetCustomerOriginsParams{}
+// NewGetAllOriginsParams creates a new instance of GetAllOriginsParams
+func NewGetAllOriginsParams() GetAllOriginsParams {
+	return GetAllOriginsParams{}
 }
 
-// GetCustomerOrigins - Get all Customer origins
+// GetAllOrigins - Get all Customer origins
 //
 //	Get list of Customer Origin
-func (c CommonClient) GetCustomerOrigins(
-	params GetCustomerOriginsParams,
+func (c CommonClient) GetAllOrigins(
+	params GetAllOriginsParams,
 ) ([]CustomerOrigin, error) {
-	req, err := buildGetCustomerOriginsRequest(params, c.baseAPIURL)
+	req, err := buildGetAllOriginsRequest(params, c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -363,14 +300,14 @@ func (c CommonClient) GetCustomerOrigins(
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("GetCustomerOrigins: %w", err)
+		return nil, fmt.Errorf("GetAllOrigins: %w", err)
 	}
 
 	return parsedResponse, nil
 }
 
-func buildGetCustomerOriginsRequest(
-	p GetCustomerOriginsParams,
+func buildGetAllOriginsRequest(
+	p GetAllOriginsParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -379,7 +316,7 @@ func buildGetCustomerOriginsRequest(
 
 	method, err := ecclient.ToHTTPMethod("Get")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("GetCustomerOrigins: %w", err))
+		errs = append(errs, fmt.Errorf("GetAllOrigins: %w", err))
 	}
 
 	req.Method = method
@@ -522,6 +459,69 @@ func buildGetGroupStatusRequest(
 	return &req, nil
 }
 
+// GetOriginParams contains the parameters for GetOrigin
+type GetOriginParams struct {
+	// http-large or adn
+	MediaType string
+
+	// Customer Origin Id
+	Id int32
+}
+
+// NewGetOriginParams creates a new instance of GetOriginParams
+func NewGetOriginParams() GetOriginParams {
+	return GetOriginParams{}
+}
+
+// GetOrigin - Get specific Customer origin by id
+//
+//	Get an individual Customer Origin
+func (c CommonClient) GetOrigin(
+	params GetOriginParams,
+) (*CustomerOrigin, error) {
+	req, err := buildGetOriginRequest(params, c.baseAPIURL)
+	if err != nil {
+		return nil, err
+	}
+
+	parsedResponse := CustomerOrigin{}
+	req.ParsedResponse = &parsedResponse
+
+	_, err = c.apiClient.SubmitRequest(*req)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetOrigin: %w", err)
+	}
+
+	return &parsedResponse, nil
+}
+
+func buildGetOriginRequest(
+	p GetOriginParams,
+	baseAPIURL string,
+) (*ecclient.SubmitRequestParams, error) {
+	req := ecclient.NewSubmitRequestParams()
+	req.Path = baseAPIURL + "/{mediaType}/{id}"
+	errs := make([]error, 0)
+
+	method, err := ecclient.ToHTTPMethod("Get")
+	if err != nil {
+		errs = append(errs, fmt.Errorf("GetOrigin: %w", err))
+	}
+
+	req.Method = method
+
+	req.PathParams["mediaType"] = p.MediaType
+
+	req.PathParams["id"] = NumberToString(p.Id)
+
+	if len(errs) > 0 {
+		return nil, errors.CompositeValidationError(errs...)
+	}
+
+	return &req, nil
+}
+
 // GetOriginsByGroupParams contains the parameters for GetOriginsByGroup
 type GetOriginsByGroupParams struct {
 	// http-large or adn
@@ -585,8 +585,72 @@ func buildGetOriginsByGroupRequest(
 	return &req, nil
 }
 
-// UpdateCustomerOriginParams contains the parameters for UpdateCustomerOrigin
-type UpdateCustomerOriginParams struct {
+// UpdateFailoverOrderParams contains the parameters for UpdateFailoverOrder
+type UpdateFailoverOrderParams struct {
+	// http-large or adn
+	MediaType string
+
+	// Customer Origin Group Id
+	GroupId int32
+
+	FailoverOrder []FailoverOrder
+}
+
+// NewUpdateFailoverOrderParams creates a new instance of UpdateFailoverOrderParams
+func NewUpdateFailoverOrderParams() UpdateFailoverOrderParams {
+	return UpdateFailoverOrderParams{}
+}
+
+// UpdateFailoverOrder - Udpate the failover_order of customer origin in group
+//
+//	Modify the Failover Order in Group
+func (c CommonClient) UpdateFailoverOrder(
+	params UpdateFailoverOrderParams,
+) error {
+	req, err := buildUpdateFailoverOrderRequest(params, c.baseAPIURL)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.apiClient.SubmitRequest(*req)
+
+	if err != nil {
+		return fmt.Errorf("UpdateFailoverOrder: %w", err)
+	}
+
+	return nil
+}
+
+func buildUpdateFailoverOrderRequest(
+	p UpdateFailoverOrderParams,
+	baseAPIURL string,
+) (*ecclient.SubmitRequestParams, error) {
+	req := ecclient.NewSubmitRequestParams()
+	req.Path = baseAPIURL + "/{mediaType}/groups/{groupId}/origins"
+	errs := make([]error, 0)
+
+	method, err := ecclient.ToHTTPMethod("Patch")
+	if err != nil {
+		errs = append(errs, fmt.Errorf("UpdateFailoverOrder: %w", err))
+	}
+
+	req.Method = method
+
+	req.PathParams["mediaType"] = p.MediaType
+
+	req.PathParams["groupId"] = NumberToString(p.GroupId)
+
+	req.RawBody = p.FailoverOrder
+
+	if len(errs) > 0 {
+		return nil, errors.CompositeValidationError(errs...)
+	}
+
+	return &req, nil
+}
+
+// UpdateOriginParams contains the parameters for UpdateOrigin
+type UpdateOriginParams struct {
 	// http-large or adn
 	MediaType string
 
@@ -597,18 +661,18 @@ type UpdateCustomerOriginParams struct {
 	CustomerOriginRequest CustomerOriginRequest
 }
 
-// NewUpdateCustomerOriginParams creates a new instance of UpdateCustomerOriginParams
-func NewUpdateCustomerOriginParams() UpdateCustomerOriginParams {
-	return UpdateCustomerOriginParams{}
+// NewUpdateOriginParams creates a new instance of UpdateOriginParams
+func NewUpdateOriginParams() UpdateOriginParams {
+	return UpdateOriginParams{}
 }
 
-// UpdateCustomerOrigin - Update an Customer origin by id
+// UpdateOrigin - Update an Customer origin by id
 //
 //	Update an individual Customer Origin
-func (c CommonClient) UpdateCustomerOrigin(
-	params UpdateCustomerOriginParams,
+func (c CommonClient) UpdateOrigin(
+	params UpdateOriginParams,
 ) (*CustomerOrigin, error) {
-	req, err := buildUpdateCustomerOriginRequest(params, c.baseAPIURL)
+	req, err := buildUpdateOriginRequest(params, c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -619,14 +683,14 @@ func (c CommonClient) UpdateCustomerOrigin(
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("UpdateCustomerOrigin: %w", err)
+		return nil, fmt.Errorf("UpdateOrigin: %w", err)
 	}
 
 	return &parsedResponse, nil
 }
 
-func buildUpdateCustomerOriginRequest(
-	p UpdateCustomerOriginParams,
+func buildUpdateOriginRequest(
+	p UpdateOriginParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -635,7 +699,7 @@ func buildUpdateCustomerOriginRequest(
 
 	method, err := ecclient.ToHTTPMethod("Put")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("UpdateCustomerOrigin: %w", err))
+		errs = append(errs, fmt.Errorf("UpdateOrigin: %w", err))
 	}
 
 	req.Method = method
@@ -645,70 +709,6 @@ func buildUpdateCustomerOriginRequest(
 	req.PathParams["id"] = NumberToString(p.Id)
 
 	req.RawBody = p.CustomerOriginRequest
-
-	if len(errs) > 0 {
-		return nil, errors.CompositeValidationError(errs...)
-	}
-
-	return &req, nil
-}
-
-// UpdateGroupFailoverOrderParams contains the parameters for UpdateGroupFailoverOrder
-type UpdateGroupFailoverOrderParams struct {
-	// http-large or adn
-	MediaType string
-
-	// Customer Origin Group Id
-	GroupId int32
-
-	FailoverOrder []FailoverOrder
-}
-
-// NewUpdateGroupFailoverOrderParams creates a new instance of UpdateGroupFailoverOrderParams
-func NewUpdateGroupFailoverOrderParams() UpdateGroupFailoverOrderParams {
-	return UpdateGroupFailoverOrderParams{}
-}
-
-// UpdateGroupFailoverOrder - Udpate the failover_order of customer origin in group
-//
-//	Modify the Failover Order in Group
-func (c CommonClient) UpdateGroupFailoverOrder(
-	params UpdateGroupFailoverOrderParams,
-) error {
-	req, err := buildUpdateGroupFailoverOrderRequest(params, c.baseAPIURL)
-	if err != nil {
-		return err
-	}
-
-	_, err = c.apiClient.SubmitRequest(*req)
-
-	if err != nil {
-		return fmt.Errorf("UpdateGroupFailoverOrder: %w", err)
-	}
-
-	return nil
-}
-
-func buildUpdateGroupFailoverOrderRequest(
-	p UpdateGroupFailoverOrderParams,
-	baseAPIURL string,
-) (*ecclient.SubmitRequestParams, error) {
-	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{mediaType}/groups/{groupId}/origins"
-	errs := make([]error, 0)
-
-	method, err := ecclient.ToHTTPMethod("Patch")
-	if err != nil {
-		errs = append(errs, fmt.Errorf("UpdateGroupFailoverOrder: %w", err))
-	}
-
-	req.Method = method
-
-	req.PathParams["mediaType"] = p.MediaType
-
-	req.PathParams["groupId"] = NumberToString(p.GroupId)
-
-	req.RawBody = p.FailoverOrder
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
