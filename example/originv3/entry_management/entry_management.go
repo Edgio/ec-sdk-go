@@ -25,7 +25,7 @@ func main() {
 	sdkConfig.APIToken = apiToken
 	sdkConfig.IDSCredentials = idsCredentials
 
-	originV3Service, err := originv3.New(sdkConfig)
+	svc, err := originv3.New(sdkConfig)
 	if err != nil {
 		fmt.Printf("error creating service: %v\n", err)
 		return
@@ -35,7 +35,7 @@ func main() {
 	addGroupParams := originv3.NewAddHttpLargeGroupParams()
 	addGroupParams.CustomerOriginGroupHTTPRequest = createOriginGroupRequest()
 
-	grp, err := originV3Service.HttpLargeOnly.AddHttpLargeGroup(addGroupParams)
+	grp, err := svc.HttpLargeOnly.AddHttpLargeGroup(addGroupParams)
 	if err != nil {
 		fmt.Printf("error creating origin group: %v\n", err)
 		return
@@ -58,7 +58,7 @@ func main() {
 	)
 	addOriginParams.CustomerOriginRequest = *originRequest
 
-	origin, err := originV3Service.Common.AddOrigin(addOriginParams)
+	origin, err := svc.Common.AddOrigin(addOriginParams)
 	if err != nil {
 		fmt.Printf("failed to add origin entry: %v\n", err)
 		return
@@ -75,7 +75,7 @@ func main() {
 	getParams.Id = *origin.Id
 	getParams.MediaType = enums.HttpLarge.String()
 
-	getResp, err := originV3Service.Common.GetOrigin(getParams)
+	getResp, err := svc.Common.GetOrigin(getParams)
 	if err != nil {
 		fmt.Printf("failed to retrieve origin entry: %v\n", err)
 		return
@@ -92,7 +92,7 @@ func main() {
 	getByGrpParams.MediaType = enums.HttpLarge.String()
 	getByGrpParams.GroupId = groupID
 
-	getByGroupResp, err := originV3Service.Common.GetOriginsByGroup(getByGrpParams)
+	getByGroupResp, err := svc.Common.GetOriginsByGroup(getByGrpParams)
 	if err != nil {
 		fmt.Printf("failed to retrieve origin entries by group: %v\n", err)
 		return
@@ -111,7 +111,7 @@ func main() {
 	originRequest.IsPrimary = true // reuse request obj from earlier
 	updateParams.CustomerOriginRequest = *originRequest
 
-	updateResp, err := originV3Service.Common.UpdateOrigin(updateParams)
+	updateResp, err := svc.Common.UpdateOrigin(updateParams)
 	if err != nil {
 		fmt.Printf("failed to update origin entry: %v\n", err)
 		return
@@ -128,7 +128,7 @@ func main() {
 	deleteParams.MediaType = enums.HttpLarge.String()
 	deleteParams.Id = *origin.Id
 
-	err = originV3Service.Common.DeleteOrigin(deleteParams)
+	err = svc.Common.DeleteOrigin(deleteParams)
 	if err != nil {
 		fmt.Printf("failed to delete origin entry: %v\n", err)
 		return

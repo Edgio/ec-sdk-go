@@ -24,7 +24,7 @@ func main() {
 	sdkConfig.APIToken = apiToken
 	sdkConfig.IDSCredentials = idsCredentials
 
-	originV3Service, err := originv3.New(sdkConfig)
+	svc, err := originv3.New(sdkConfig)
 	if err != nil {
 		fmt.Printf("error creating service: %v\n", err)
 		return
@@ -34,7 +34,7 @@ func main() {
 	fmt.Println("**** GET AVAILABLE PROTOCOLS ****")
 	fmt.Println("")
 
-	resp, err := originV3Service.Phase3.GetAvailableProtocols()
+	resp, err := svc.Phase3.GetAvailableProtocols()
 	if err != nil {
 		fmt.Printf("failed to get protocol types: %v\n", err)
 		return
@@ -47,7 +47,7 @@ func main() {
 	fmt.Println("**** Get AVAILABLE HOSTNAME RESOLUTION METHODS ****")
 	fmt.Println("")
 
-	ntresp, err := originV3Service.Phase3.GetAvailableHostnameResolutionMethods()
+	ntresp, err := svc.Phase3.GetAvailableHostnameResolutionMethods()
 	if err != nil {
 		fmt.Printf("failed to get hostname resolution methods: %v\n", err)
 		return

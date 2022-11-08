@@ -23,7 +23,7 @@ func main() {
 	sdkConfig := edgecast.NewSDKConfig()
 	sdkConfig.IDSCredentials = idsCredentials
 
-	originV3Service, err := originv3.New(sdkConfig)
+	svc, err := originv3.New(sdkConfig)
 	if err != nil {
 		fmt.Printf("error creating service: %v\n", err)
 		return
@@ -34,7 +34,7 @@ func main() {
 	addGroupParams := originv3.NewAddHttpLargeGroupParams()
 	addGroupParams.CustomerOriginGroupHTTPRequest = originGroupRequest
 
-	originGroup, err := originV3Service.HttpLargeOnly.AddHttpLargeGroup(
+	originGroup, err := svc.HttpLargeOnly.AddHttpLargeGroup(
 		addGroupParams,
 	)
 	if err != nil {
@@ -48,7 +48,7 @@ func main() {
 	// Get Group by ID
 	getGroupParams := originv3.NewGetHttpLargeGroupParams()
 	getGroupParams.GroupId = *originGroup.Id
-	originGroup, err = originV3Service.HttpLargeOnly.GetHttpLargeGroup(
+	originGroup, err = svc.HttpLargeOnly.GetHttpLargeGroup(
 		getGroupParams,
 	)
 
@@ -62,7 +62,7 @@ func main() {
 
 	// Get Shield POPs
 	getShieldPOPsParams := originv3.NewGetOriginShieldPopsParams()
-	edgeNodes, err := originV3Service.HttpLargeOnly.GetOriginShieldPops(
+	edgeNodes, err := svc.HttpLargeOnly.GetOriginShieldPops(
 		getShieldPOPsParams,
 	)
 	if err != nil {
@@ -95,7 +95,7 @@ func main() {
 	updateGroupParams.GroupId = *originGroup.Id
 	updateGroupParams.CustomerOriginGroupHTTPRequest = updateGroup
 
-	originGroup, err = originV3Service.HttpLargeOnly.UpdateHttpLargeGroup(
+	originGroup, err = svc.HttpLargeOnly.UpdateHttpLargeGroup(
 		updateGroupParams,
 	)
 	if err != nil {
@@ -107,7 +107,7 @@ func main() {
 	fmt.Printf("%# v", pretty.Formatter(originGroup))
 
 	// Get all Groups
-	originGroups, err := originV3Service.HttpLargeOnly.GetAllHttpLargeGroups()
+	originGroups, err := svc.HttpLargeOnly.GetAllHttpLargeGroups()
 	if err != nil {
 		fmt.Printf("error retrieving all origin groups: %v\n", err)
 		return
@@ -121,7 +121,7 @@ func main() {
 	deleteOriginGroupParams.GroupId = *originGroup.Id
 	deleteOriginGroupParams.MediaType = enums.HttpLarge.String()
 
-	err = originV3Service.Common.DeleteGroup(deleteOriginGroupParams)
+	err = svc.Common.DeleteGroup(deleteOriginGroupParams)
 	if err != nil {
 		fmt.Printf("error deleting origin group: %v\n", err)
 		return
