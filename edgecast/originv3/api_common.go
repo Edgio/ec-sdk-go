@@ -147,7 +147,7 @@ type DeleteCustomerOriginParams struct {
 	MediaType string
 
 	// Customer Origin Id
-	Id float32
+	Id int32
 }
 
 // NewDeleteCustomerOriginParams creates a new instance of DeleteCustomerOriginParams
@@ -267,7 +267,7 @@ type GetCustomerOriginParams struct {
 	MediaType string
 
 	// Customer Origin Id
-	Id float32
+	Id int32
 }
 
 // NewGetCustomerOriginParams creates a new instance of GetCustomerOriginParams
@@ -591,7 +591,7 @@ type UpdateCustomerOriginParams struct {
 	MediaType string
 
 	// Customer Origin Id
-	Id float32
+	Id int32
 
 	// The modified Customer Origin
 	CustomerOriginRequest CustomerOriginRequest
