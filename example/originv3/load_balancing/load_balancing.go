@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
-	originv3 "github.com/EdgeCast/ec-sdk-go/edgecast/originv3"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/originv3"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/enums"
 	"github.com/kr/pretty"
 )
