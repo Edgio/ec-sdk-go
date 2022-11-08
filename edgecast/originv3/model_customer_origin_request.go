@@ -23,7 +23,7 @@ type CustomerOriginRequest struct {
 	Name NullableString `json:"name,omitempty"`
 	Host string         `json:"host"`
 	// Require if origin_hostname_protocol_type = 1 | 2
-	Port                 *float32      `json:"port,omitempty"`
+	Port                 *int32      `json:"port,omitempty"`
 	IsPrimary            bool          `json:"is_primary"`
 	GroupId              int32         `json:"group_id"`
 	StorageTypeId        NullableInt32 `json:"storage_type_id,omitempty"`
@@ -131,9 +131,9 @@ func (o *CustomerOriginRequest) SetHost(v string) {
 }
 
 // GetPort returns the Port field value if set, zero value otherwise.
-func (o *CustomerOriginRequest) GetPort() float32 {
+func (o *CustomerOriginRequest) GetPort() int32 {
 	if o == nil || o.Port == nil {
-		var ret float32
+		var ret int32
 		return ret
 	}
 	return *o.Port
@@ -141,7 +141,7 @@ func (o *CustomerOriginRequest) GetPort() float32 {
 
 // GetPortOk returns a tuple with the Port field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CustomerOriginRequest) GetPortOk() (*float32, bool) {
+func (o *CustomerOriginRequest) GetPortOk() (*int32, bool) {
 	if o == nil || o.Port == nil {
 		return nil, false
 	}
@@ -157,8 +157,8 @@ func (o *CustomerOriginRequest) HasPort() bool {
 	return false
 }
 
-// SetPort gets a reference to the given float32 and assigns it to the Port field.
-func (o *CustomerOriginRequest) SetPort(v float32) {
+// SetPort gets a reference to the given int32 and assigns it to the Port field.
+func (o *CustomerOriginRequest) SetPort(v int32) {
 	o.Port = &v
 }
 
