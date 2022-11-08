@@ -21,7 +21,7 @@ func (svc *EdgeCnameService) GetAllEdgeCnames(
 		Path:   "v2/mcc/customers/{account_number}/cnames/{platform_id}",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
-			"platform_id":    params.Platform.String(),
+			"platform_id":    params.Platform.StringWithoutHyphen(),
 		},
 		ParsedResponse: parsedResponse,
 	})
