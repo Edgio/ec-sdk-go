@@ -6,6 +6,7 @@ import (
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	originv3 "github.com/EdgeCast/ec-sdk-go/edgecast/originv3"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/shared/enums"
 	"github.com/kr/pretty"
 )
 
@@ -52,7 +53,7 @@ func main() {
 	// add origin entries
 	// 1.
 	addParams1 := originv3.NewAddAdnParams()
-	addParams1.MediaType = "http-large"
+	addParams1.MediaType = enums.HttpLarge.String()
 	origin1 := originv3.NewCustomerOriginRequest(
 		"cdn-origin-example.com",
 		true,
@@ -73,7 +74,7 @@ func main() {
 
 	// 2.
 	addParams2 := originv3.NewAddAdnParams()
-	addParams2.MediaType = "http-large"
+	addParams2.MediaType = enums.HttpLarge.String()
 	origin2 := originv3.NewCustomerOriginRequest(
 		"cdn-origin-example2.com",
 		false,
@@ -93,7 +94,7 @@ func main() {
 
 	//3.
 	addParams3 := originv3.NewAddAdnParams()
-	addParams3.MediaType = "http-large"
+	addParams3.MediaType = enums.HttpLarge.String()
 	origin3 := originv3.NewCustomerOriginRequest(
 		"cdn-origin-example3.com",
 		false,
@@ -115,7 +116,7 @@ func main() {
 	fmt.Println("")
 
 	loadbalancingParams := originv3.NewPatchMediaTypeGroupsGroupIdOriginsParams()
-	loadbalancingParams.MediaType = "http-large"
+	loadbalancingParams.MediaType = enums.HttpLarge.String()
 	loadbalancingParams.GroupId = strconv.Itoa(int(groupid))
 	loadbalancingParams.FailoverOrder = []originv3.FailoverOrder{
 		{
@@ -146,7 +147,7 @@ func main() {
 	//Delete Group
 	deleteOriginGroupParams := originv3.NewDeleteMediaTypeGroupsGroupIdParams()
 	deleteOriginGroupParams.GroupId = strconv.Itoa(int(groupid))
-	deleteOriginGroupParams.MediaType = "http-large"
+	deleteOriginGroupParams.MediaType = enums.HttpLarge.String()
 
 	err = originV3Service.Common.DeleteMediaTypeGroupsGroupId(
 		deleteOriginGroupParams,
