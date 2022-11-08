@@ -20,10 +20,10 @@ import (
 
 // OriginShieldPop OriginShieldPop object
 type OriginShieldPop struct {
-	Id                   *int32 `json:"id,omitempty"`
-	Code                 *string  `json:"code,omitempty"`
-	City                 *string  `json:"city,omitempty"`
-	IsPciCertified       *bool    `json:"is_pci_certified,omitempty"`
+	Id                   *int32  `json:"id,omitempty"`
+	Code                 *string `json:"code,omitempty"`
+	City                 *string `json:"city,omitempty"`
+	IsPciCertified       *bool   `json:"is_pci_certified,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 

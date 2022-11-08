@@ -20,7 +20,7 @@ import (
 
 // OriginShieldEdgeNode struct for OriginShieldEdgeNode
 type OriginShieldEdgeNode struct {
-	RegionId             *int32          `json:"region_id,omitempty"`
+	RegionId             *int32            `json:"region_id,omitempty"`
 	RegionName           *string           `json:"region_name,omitempty"`
 	BypassCode           *string           `json:"bypass_code,omitempty"`
 	BypassName           *string           `json:"bypass_name,omitempty"`

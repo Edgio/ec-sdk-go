@@ -20,14 +20,14 @@ import (
 
 // CustomerOriginFailoverOrder struct for CustomerOriginFailoverOrder
 type CustomerOriginFailoverOrder struct {
-	Id                   *int32 `json:"id,omitempty"`
-	Name                 *string  `json:"name,omitempty"`
-	Host                 *string  `json:"host,omitempty"`
-	Port                 *int32   `json:"port,omitempty"`
-	IsPrimary            *bool    `json:"is_primary,omitempty"`
-	StorageTypeId        *int32   `json:"storage_type_id,omitempty"`
-	ProtocolTypeId       *int32   `json:"protocol_type_id,omitempty"`
-	FailoverOrder        *int32   `json:"failover_order,omitempty"`
+	Id                   *int32  `json:"id,omitempty"`
+	Name                 *string `json:"name,omitempty"`
+	Host                 *string `json:"host,omitempty"`
+	Port                 *int32  `json:"port,omitempty"`
+	IsPrimary            *bool   `json:"is_primary,omitempty"`
+	StorageTypeId        *int32  `json:"storage_type_id,omitempty"`
+	ProtocolTypeId       *int32  `json:"protocol_type_id,omitempty"`
+	FailoverOrder        *int32  `json:"failover_order,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 

@@ -20,9 +20,9 @@ import (
 
 // FailoverOrder struct for FailoverOrder
 type FailoverOrder struct {
-	Id                   int32 `json:"id"`
-	Host                 string  `json:"host"`
-	FailoverOrder        int32   `json:"failover_order"`
+	Id                   int32  `json:"id"`
+	Host                 string `json:"host"`
+	FailoverOrder        int32  `json:"failover_order"`
 	AdditionalProperties map[string]interface{}
 }
 

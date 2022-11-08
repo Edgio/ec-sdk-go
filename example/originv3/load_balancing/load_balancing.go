@@ -1,8 +1,9 @@
+// Copyright 2022 Edgecast Inc., Licensed under the terms of the Apache 2.0
+// license. See LICENSE file in project root for terms.
 package main
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/EdgeCast/ec-sdk-go/edgecast"
 	"github.com/EdgeCast/ec-sdk-go/edgecast/originv3"
@@ -11,7 +12,6 @@ import (
 )
 
 func main() {
-
 	// Setup
 	apiToken := "MY_API_TOKEN"
 
@@ -25,45 +25,41 @@ func main() {
 	sdkConfig.APIToken = apiToken
 	sdkConfig.IDSCredentials = idsCredentials
 
-	originV3Service, err := originv3.New(sdkConfig)
-
+	svc, err := originv3.New(sdkConfig)
 	if err != nil {
 		fmt.Printf("error creating service: %v\n", err)
 		return
 	}
 
-	// Create a Group
+	// Add a new HTTP Large Group.
 	originGroupRequest := createOriginGroupRequest()
-	createGroupParams := originv3.NewPostHttpLargeGroupsParams()
-	createGroupParams.CustomerOriginGroupHTTPRequest = originGroupRequest
-	originGroup, err := originV3Service.HttpLargeOnly.PostHttpLargeGroups(
-		createGroupParams,
-	)
+	addGrpParams := originv3.NewAddHttpLargeGroupParams()
+	addGrpParams.CustomerOriginGroupHTTPRequest = originGroupRequest
 
+	grp, err := svc.HttpLargeOnly.AddHttpLargeGroup(addGrpParams)
 	if err != nil {
 		fmt.Printf("error creating origin group: %v\n", err)
 		return
 	}
 
 	fmt.Println("successfully created origin group")
-	fmt.Printf("%# v", pretty.Formatter(originGroup))
+	fmt.Printf("%# v", pretty.Formatter(grp))
 
-	groupid := *originGroup.Id
+	groupID := *grp.Id
 
-	// add origin entries
-	// 1.
-	addParams1 := originv3.NewAddAdnParams()
+	// Add Origin Entries to the group.
+	addParams1 := originv3.NewAddOriginParams()
 	addParams1.MediaType = enums.HttpLarge.String()
 	origin1 := originv3.NewCustomerOriginRequest(
 		"cdn-origin-example.com",
 		true,
-		int32(groupid),
+		groupID,
 	)
 	protocoltypeid := int32(3)
 	origin1.ProtocolTypeId.Set(&protocoltypeid)
 	addParams1.CustomerOriginRequest = *origin1
 
-	resp1, err := originV3Service.Common.AddAdn(addParams1)
+	resp1, err := svc.Common.AddOrigin(addParams1)
 	if err != nil {
 		fmt.Printf("failed to add origin entry: %v\n", err)
 		return
@@ -73,17 +69,17 @@ func main() {
 	fmt.Printf("%# v", pretty.Formatter(resp1))
 
 	// 2.
-	addParams2 := originv3.NewAddAdnParams()
+	addParams2 := originv3.NewAddOriginParams()
 	addParams2.MediaType = enums.HttpLarge.String()
 	origin2 := originv3.NewCustomerOriginRequest(
 		"cdn-origin-example2.com",
 		false,
-		int32(groupid),
+		groupID,
 	)
 	origin2.ProtocolTypeId.Set(&protocoltypeid)
 	addParams2.CustomerOriginRequest = *origin2
 
-	resp2, err := originV3Service.Common.AddAdn(addParams2)
+	resp2, err := svc.Common.AddOrigin(addParams2)
 	if err != nil {
 		fmt.Printf("failed to add origin entry: %v\n", err)
 		return
@@ -93,16 +89,16 @@ func main() {
 	fmt.Printf("%# v", pretty.Formatter(resp2))
 
 	//3.
-	addParams3 := originv3.NewAddAdnParams()
+	addParams3 := originv3.NewAddOriginParams()
 	addParams3.MediaType = enums.HttpLarge.String()
 	origin3 := originv3.NewCustomerOriginRequest(
 		"cdn-origin-example3.com",
 		false,
-		int32(groupid),
+		groupID,
 	)
 	addParams3.CustomerOriginRequest = *origin3
 
-	resp3, err := originV3Service.Common.AddAdn(addParams3)
+	resp3, err := svc.Common.AddOrigin(addParams3)
 	if err != nil {
 		fmt.Printf("failed to add origin entry: %v\n", err)
 		return
@@ -112,13 +108,13 @@ func main() {
 	fmt.Printf("%# v", pretty.Formatter(resp3))
 
 	fmt.Println("")
-	fmt.Println("**** SET LOAD BALANCING ****")
+	fmt.Println("**** SET FAILOVER ORDER ****")
 	fmt.Println("")
 
-	loadbalancingParams := originv3.NewPatchMediaTypeGroupsGroupIdOriginsParams()
-	loadbalancingParams.MediaType = enums.HttpLarge.String()
-	loadbalancingParams.GroupId = strconv.Itoa(int(groupid))
-	loadbalancingParams.FailoverOrder = []originv3.FailoverOrder{
+	failoverParams := originv3.NewUpdateFailoverOrderParams()
+	failoverParams.MediaType = enums.HttpLarge.String()
+	failoverParams.GroupId = groupID
+	failoverParams.FailoverOrder = []originv3.FailoverOrder{
 		{
 			Id:            *resp1.Id,
 			Host:          "http://cdn-origin-example.com",
@@ -136,23 +132,20 @@ func main() {
 		},
 	}
 
-	err = originV3Service.Common.PatchMediaTypeGroupsGroupIdOrigins(loadbalancingParams)
+	err = svc.Common.UpdateFailoverOrder(failoverParams)
 	if err != nil {
-		fmt.Printf("failed to set load balancing: %v\n", err)
+		fmt.Printf("failed to set failover order: %v\n", err)
 		return
 	}
 
-	fmt.Println("successfully set load balancing")
+	fmt.Println("successfully set failover order")
 
-	//Delete Group
-	deleteOriginGroupParams := originv3.NewDeleteMediaTypeGroupsGroupIdParams()
-	deleteOriginGroupParams.GroupId = strconv.Itoa(int(groupid))
+	// Cleanup - Delete Group
+	deleteOriginGroupParams := originv3.NewDeleteGroupParams()
+	deleteOriginGroupParams.GroupId = groupID
 	deleteOriginGroupParams.MediaType = enums.HttpLarge.String()
 
-	err = originV3Service.Common.DeleteMediaTypeGroupsGroupId(
-		deleteOriginGroupParams,
-	)
-
+	err = svc.Common.DeleteGroup(deleteOriginGroupParams)
 	if err != nil {
 		fmt.Printf("error deleting origin group: %v\n", err)
 		return
@@ -166,13 +159,14 @@ func createOriginGroupRequest() originv3.CustomerOriginGroupHTTPRequest {
 			"c571398b01fce46a8a177abdd6174dfee6137358",
 		},
 	}
+
 	tlsSettings.SetAllowSelfSigned(false)
 	tlsSettings.SetSniHostname("origin.example.com")
-
 	origin := originv3.CustomerOriginGroupHTTPRequest{
 		Name:        "TestSDKOriginGroup",
 		TlsSettings: &tlsSettings,
 	}
+
 	origin.SetHostHeader("override-hostheader.example.com")
 	origin.SetNetworkTypeId(2)          // Prefer IPv6 over IPv4
 	origin.SetStrictPciCertified(false) // Allow non-PCI regions

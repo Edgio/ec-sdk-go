@@ -23,7 +23,7 @@ type CustomerOriginRequest struct {
 	Name NullableString `json:"name,omitempty"`
 	Host string         `json:"host"`
 	// Require if origin_hostname_protocol_type = 1 | 2
-	Port                 *int32      `json:"port,omitempty"`
+	Port                 *int32        `json:"port,omitempty"`
 	IsPrimary            bool          `json:"is_primary"`
 	GroupId              int32         `json:"group_id"`
 	StorageTypeId        NullableInt32 `json:"storage_type_id,omitempty"`

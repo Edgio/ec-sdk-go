@@ -20,14 +20,14 @@ import (
 
 // CustomerOrigin struct for CustomerOrigin
 type CustomerOrigin struct {
-	Id                   *int32   `json:"id,omitempty"`
-	Name                 *string  `json:"name,omitempty"`
-	Host                 *string  `json:"host,omitempty"`
-	Port                 *int32 `json:"port,omitempty"`
-	IsPrimary            *bool    `json:"is_primary,omitempty"`
-	StorageTypeId        *int32   `json:"storage_type_id,omitempty"`
-	ProtocolTypeId       *int32   `json:"protocol_type_id,omitempty"`
-	GroupId              *int32   `json:"group_id,omitempty"`
+	Id                   *int32  `json:"id,omitempty"`
+	Name                 *string `json:"name,omitempty"`
+	Host                 *string `json:"host,omitempty"`
+	Port                 *int32  `json:"port,omitempty"`
+	IsPrimary            *bool   `json:"is_primary,omitempty"`
+	StorageTypeId        *int32  `json:"storage_type_id,omitempty"`
+	ProtocolTypeId       *int32  `json:"protocol_type_id,omitempty"`
+	GroupId              *int32  `json:"group_id,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
