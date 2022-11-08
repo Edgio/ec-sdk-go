@@ -20,14 +20,14 @@ import (
 
 // CustomerOriginFailoverOrder struct for CustomerOriginFailoverOrder
 type CustomerOriginFailoverOrder struct {
-	Id                   *float32 `json:"id,omitempty"`
-	Name                 *string  `json:"name,omitempty"`
-	Host                 *string  `json:"host,omitempty"`
-	Port                 *int32   `json:"port,omitempty"`
-	IsPrimary            *bool    `json:"is_primary,omitempty"`
-	StorageTypeId        *int32   `json:"storage_type_id,omitempty"`
-	ProtocolTypeId       *int32   `json:"protocol_type_id,omitempty"`
-	FailoverOrder        *int32   `json:"failover_order,omitempty"`
+	Id                   *int32  `json:"id,omitempty"`
+	Name                 *string `json:"name,omitempty"`
+	Host                 *string `json:"host,omitempty"`
+	Port                 *int32  `json:"port,omitempty"`
+	IsPrimary            *bool   `json:"is_primary,omitempty"`
+	StorageTypeId        *int32  `json:"storage_type_id,omitempty"`
+	ProtocolTypeId       *int32  `json:"protocol_type_id,omitempty"`
+	FailoverOrder        *int32  `json:"failover_order,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -51,9 +51,9 @@ func NewCustomerOriginFailoverOrderWithDefaults() *CustomerOriginFailoverOrder {
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *CustomerOriginFailoverOrder) GetId() float32 {
+func (o *CustomerOriginFailoverOrder) GetId() int32 {
 	if o == nil || o.Id == nil {
-		var ret float32
+		var ret int32
 		return ret
 	}
 	return *o.Id
@@ -61,7 +61,7 @@ func (o *CustomerOriginFailoverOrder) GetId() float32 {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CustomerOriginFailoverOrder) GetIdOk() (*float32, bool) {
+func (o *CustomerOriginFailoverOrder) GetIdOk() (*int32, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -77,8 +77,8 @@ func (o *CustomerOriginFailoverOrder) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given float32 and assigns it to the Id field.
-func (o *CustomerOriginFailoverOrder) SetId(v float32) {
+// SetId gets a reference to the given int32 and assigns it to the Id field.
+func (o *CustomerOriginFailoverOrder) SetId(v int32) {
 	o.Id = &v
 }
 

@@ -20,9 +20,9 @@ import (
 
 // FailoverOrder struct for FailoverOrder
 type FailoverOrder struct {
-	Id                   float32 `json:"id"`
-	Host                 string  `json:"host"`
-	FailoverOrder        int32   `json:"failover_order"`
+	Id                   int32  `json:"id"`
+	Host                 string `json:"host"`
+	FailoverOrder        int32  `json:"failover_order"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,7 +32,7 @@ type _FailoverOrder FailoverOrder
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFailoverOrder(id float32, host string, failoverOrder int32) *FailoverOrder {
+func NewFailoverOrder(id int32, host string, failoverOrder int32) *FailoverOrder {
 	this := FailoverOrder{}
 	this.Id = id
 	this.Host = host
@@ -49,9 +49,9 @@ func NewFailoverOrderWithDefaults() *FailoverOrder {
 }
 
 // GetId returns the Id field value
-func (o *FailoverOrder) GetId() float32 {
+func (o *FailoverOrder) GetId() int32 {
 	if o == nil {
-		var ret float32
+		var ret int32
 		return ret
 	}
 
@@ -60,7 +60,7 @@ func (o *FailoverOrder) GetId() float32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *FailoverOrder) GetIdOk() (*float32, bool) {
+func (o *FailoverOrder) GetIdOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -68,7 +68,7 @@ func (o *FailoverOrder) GetIdOk() (*float32, bool) {
 }
 
 // SetId sets field value
-func (o *FailoverOrder) SetId(v float32) {
+func (o *FailoverOrder) SetId(v int32) {
 	o.Id = v
 }
 
