@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	// Setup
+	// Setup.
 	apiToken := "MY_API_TOKEN"
 
 	idsCredentials := edgecast.IDSCredentials{
@@ -32,20 +32,21 @@ func main() {
 	}
 
 	// Add a new HTTP Large Group.
-	originGroupRequest := createOriginGroupRequest()
+	grpReq := createOriginGroupRequest()
 	addGrpParams := originv3.NewAddHttpLargeGroupParams()
-	addGrpParams.CustomerOriginGroupHTTPRequest = originGroupRequest
+	addGrpParams.CustomerOriginGroupHTTPRequest = grpReq
 
-	grp, err := svc.HttpLargeOnly.AddHttpLargeGroup(addGrpParams)
+	addGrpResp, err := svc.HttpLargeOnly.AddHttpLargeGroup(addGrpParams)
 	if err != nil {
 		fmt.Printf("error creating origin group: %v\n", err)
 		return
 	}
 
 	fmt.Println("successfully created origin group")
-	fmt.Printf("%# v", pretty.Formatter(grp))
+	fmt.Printf("%# v", pretty.Formatter(addGrpResp))
 
-	groupID := *grp.Id
+	// The response model contains the newly generated group ID.
+	groupID := *addGrpResp.Id
 
 	// Add Origin Entries to the group.
 	addParams1 := originv3.NewAddOriginParams()
@@ -55,8 +56,11 @@ func main() {
 		true,
 		groupID,
 	)
-	protocoltypeid := int32(3)
-	origin1.ProtocolTypeId.Set(&protocoltypeid)
+
+	// Use originv3.Service.Phase3.GetAvailableProtocols to retrieve available
+	// protocols. For this example, we will use 3 = Match Client.
+	protocolTypeID := int32(3)
+	origin1.ProtocolTypeId.Set(&protocolTypeID)
 	addParams1.CustomerOriginRequest = *origin1
 
 	resp1, err := svc.Common.AddOrigin(addParams1)
@@ -68,7 +72,7 @@ func main() {
 	fmt.Println("successfully added origin entry")
 	fmt.Printf("%# v", pretty.Formatter(resp1))
 
-	// 2.
+	// Add a 2nd origin entry.
 	addParams2 := originv3.NewAddOriginParams()
 	addParams2.MediaType = enums.HttpLarge.String()
 	origin2 := originv3.NewCustomerOriginRequest(
@@ -76,7 +80,7 @@ func main() {
 		false,
 		groupID,
 	)
-	origin2.ProtocolTypeId.Set(&protocoltypeid)
+	origin2.ProtocolTypeId.Set(&protocolTypeID)
 	addParams2.CustomerOriginRequest = *origin2
 
 	resp2, err := svc.Common.AddOrigin(addParams2)
@@ -88,7 +92,7 @@ func main() {
 	fmt.Println("successfully added origin entry")
 	fmt.Printf("%# v", pretty.Formatter(resp2))
 
-	//3.
+	// Add a 3rd origin entry.
 	addParams3 := originv3.NewAddOriginParams()
 	addParams3.MediaType = enums.HttpLarge.String()
 	origin3 := originv3.NewCustomerOriginRequest(
@@ -107,10 +111,11 @@ func main() {
 	fmt.Println("successfully added origin entry")
 	fmt.Printf("%# v", pretty.Formatter(resp3))
 
+	// Now that we've created 3 origin entries in the group, set the group's
+	// failover order using the origin IDs.
 	fmt.Println("")
 	fmt.Println("**** SET FAILOVER ORDER ****")
 	fmt.Println("")
-
 	failoverParams := originv3.NewUpdateFailoverOrderParams()
 	failoverParams.MediaType = enums.HttpLarge.String()
 	failoverParams.GroupId = groupID
@@ -140,7 +145,7 @@ func main() {
 
 	fmt.Println("successfully set failover order")
 
-	// Cleanup - Delete Group
+	// Cleanup - Delete Group.
 	deleteOriginGroupParams := originv3.NewDeleteGroupParams()
 	deleteOriginGroupParams.GroupId = groupID
 	deleteOriginGroupParams.MediaType = enums.HttpLarge.String()

@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	// Setup
+	// Setup.
 	idsCredentials := edgecast.IDSCredentials{
 		ClientID:     "",
 		ClientSecret: "",
@@ -29,42 +29,39 @@ func main() {
 		return
 	}
 
-	// Add Group
-	originGroupRequest := createOriginGroupRequest()
-	addGroupParams := originv3.NewAddHttpLargeGroupParams()
-	addGroupParams.CustomerOriginGroupHTTPRequest = originGroupRequest
+	// Add Group.
+	addParams := originv3.NewAddHttpLargeGroupParams()
+	addParams.CustomerOriginGroupHTTPRequest = createOriginGroupRequest()
 
-	originGroup, err := svc.HttpLargeOnly.AddHttpLargeGroup(
-		addGroupParams,
-	)
+	addResp, err := svc.HttpLargeOnly.AddHttpLargeGroup(addParams)
 	if err != nil {
 		fmt.Printf("error creating origin group: %v\n", err)
 		return
 	}
 
 	fmt.Println("successfully created origin group")
-	fmt.Printf("%# v", pretty.Formatter(originGroup))
+	fmt.Printf("%# v", pretty.Formatter(addResp))
 
-	// Get Group by ID
-	getGroupParams := originv3.NewGetHttpLargeGroupParams()
-	getGroupParams.GroupId = *originGroup.Id
-	originGroup, err = svc.HttpLargeOnly.GetHttpLargeGroup(
-		getGroupParams,
-	)
+	// The response model contains the newly generated group ID.
+	groupID := *addResp.Id
 
+	// Get Group by ID.
+	getParams := originv3.NewGetHttpLargeGroupParams()
+	getParams.GroupId = groupID
+
+	getResp, err := svc.HttpLargeOnly.GetHttpLargeGroup(getParams)
 	if err != nil {
 		fmt.Printf("error retrieving origin group by ID: %v\n", err)
 		return
 	}
 
 	fmt.Println("successfully retrieved origin group by ID")
-	fmt.Printf("%# v", pretty.Formatter(originGroup))
+	fmt.Printf("%# v", pretty.Formatter(getResp))
 
 	// Get Shield POPs
 	getShieldPOPsParams := originv3.NewGetOriginShieldPopsParams()
-	edgeNodes, err := svc.HttpLargeOnly.GetOriginShieldPops(
-		getShieldPOPsParams,
-	)
+
+	edgeNodes, err := svc.HttpLargeOnly.GetOriginShieldPops(getShieldPOPsParams)
 	if err != nil {
 		fmt.Printf("error retrieving shield POPs: %v\n", err)
 		return
@@ -73,40 +70,30 @@ func main() {
 	fmt.Println("successfully retrieved origin shield POPs")
 	fmt.Printf("%# v", pretty.Formatter(edgeNodes))
 
-	// Convert group retreived from API to proper update model
-	updateGroup := originv3.CustomerOriginGroupHTTPRequest{}
-	err = ecutils.Convert(originGroup, &updateGroup)
+	// Convert Read model to Update Model.
+	updateReq := originv3.CustomerOriginGroupHTTPRequest{}
+	err = ecutils.Convert(getResp, &updateReq)
 
 	if err != nil {
-		fmt.Printf("error preparing group update respose: %v\n", err)
+		fmt.Printf("error preparing group update model: %v\n", err)
 		return
 	}
 
-	// Update Group with shield POP
-	shieldPOPs := []*string{}
-	shieldPOPs = append(shieldPOPs,
-		edgeNodes[0].Pops[0].Code,
-		edgeNodes[1].Pops[1].Code,
-	)
+	updateReq.SetShieldPOPsFromEdgeNodes(edgeNodes)
+	updateParams := originv3.NewUpdateHttpLargeGroupParams()
+	updateParams.GroupId = groupID
+	updateParams.CustomerOriginGroupHTTPRequest = updateReq
 
-	updateGroup.ShieldPops = shieldPOPs
-
-	updateGroupParams := originv3.NewUpdateHttpLargeGroupParams()
-	updateGroupParams.GroupId = *originGroup.Id
-	updateGroupParams.CustomerOriginGroupHTTPRequest = updateGroup
-
-	originGroup, err = svc.HttpLargeOnly.UpdateHttpLargeGroup(
-		updateGroupParams,
-	)
+	updateResp, err := svc.HttpLargeOnly.UpdateHttpLargeGroup(updateParams)
 	if err != nil {
 		fmt.Printf("error updating origin group: %v\n", err)
 		return
 	}
 
 	fmt.Println("successfully updated origin group")
-	fmt.Printf("%# v", pretty.Formatter(originGroup))
+	fmt.Printf("%# v", pretty.Formatter(updateResp))
 
-	// Get all Groups
+	// Get all Groups.
 	originGroups, err := svc.HttpLargeOnly.GetAllHttpLargeGroups()
 	if err != nil {
 		fmt.Printf("error retrieving all origin groups: %v\n", err)
@@ -116,12 +103,12 @@ func main() {
 	fmt.Println("successfully retrieved all origin groups")
 	fmt.Printf("%# v", pretty.Formatter(originGroups))
 
-	// Delete Group
-	deleteOriginGroupParams := originv3.NewDeleteGroupParams()
-	deleteOriginGroupParams.GroupId = *originGroup.Id
-	deleteOriginGroupParams.MediaType = enums.HttpLarge.String()
+	// Cleanup - Delete Group.
+	deleteParams := originv3.NewDeleteGroupParams()
+	deleteParams.GroupId = groupID
+	deleteParams.MediaType = enums.HttpLarge.String()
 
-	err = svc.Common.DeleteGroup(deleteOriginGroupParams)
+	err = svc.Common.DeleteGroup(deleteParams)
 	if err != nil {
 		fmt.Printf("error deleting origin group: %v\n", err)
 		return
@@ -138,14 +125,14 @@ func createOriginGroupRequest() originv3.CustomerOriginGroupHTTPRequest {
 
 	tlsSettings.SetAllowSelfSigned(false)
 	tlsSettings.SetSniHostname("origin.example.com")
-	origin := originv3.CustomerOriginGroupHTTPRequest{
+	grp := originv3.CustomerOriginGroupHTTPRequest{
 		Name:        "TestSDKOriginGroup",
 		TlsSettings: &tlsSettings,
 	}
 
-	origin.SetHostHeader("override-hostheader.example.com")
-	origin.SetNetworkTypeId(2)          // Prefer IPv6 over IPv4
-	origin.SetStrictPciCertified(false) // Allow non-PCI regions
+	grp.SetHostHeader("override-hostheader.example.com")
+	grp.SetNetworkTypeId(2)          // Prefer IPv6 over IPv4
+	grp.SetStrictPciCertified(false) // Allow non-PCI regions
 
-	return origin
+	return grp
 }

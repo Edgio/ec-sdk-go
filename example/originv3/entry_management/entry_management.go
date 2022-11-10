@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	// Setup
+	// Setup.
 	apiToken := "MY_API_TOKEN"
 
 	idsCredentials := edgecast.IDSCredentials{
@@ -32,19 +32,20 @@ func main() {
 	}
 
 	// Create Customer Origin Group.
-	addGroupParams := originv3.NewAddHttpLargeGroupParams()
-	addGroupParams.CustomerOriginGroupHTTPRequest = createOriginGroupRequest()
+	addGrpParams := originv3.NewAddHttpLargeGroupParams()
+	addGrpParams.CustomerOriginGroupHTTPRequest = createOriginGroupRequest()
 
-	grp, err := svc.HttpLargeOnly.AddHttpLargeGroup(addGroupParams)
+	addGrpResp, err := svc.HttpLargeOnly.AddHttpLargeGroup(addGrpParams)
 	if err != nil {
 		fmt.Printf("error creating origin group: %v\n", err)
 		return
 	}
 
 	fmt.Println("successfully created origin group")
-	fmt.Printf("%# v", pretty.Formatter(grp))
+	fmt.Printf("%# v", pretty.Formatter(addGrpResp))
 
-	groupID := *grp.Id
+	// The response model contains the newly generated group ID.
+	groupID := *addGrpResp.Id
 
 	fmt.Println("")
 	fmt.Println("**** ADD ORIGIN ENTRY ****")
@@ -58,21 +59,24 @@ func main() {
 	)
 	addOriginParams.CustomerOriginRequest = *originRequest
 
-	origin, err := svc.Common.AddOrigin(addOriginParams)
+	addOriginResp, err := svc.Common.AddOrigin(addOriginParams)
 	if err != nil {
 		fmt.Printf("failed to add origin entry: %v\n", err)
 		return
 	}
 
 	fmt.Println("successfully added origin entry")
-	fmt.Printf("%# v", pretty.Formatter(origin))
+	fmt.Printf("%# v", pretty.Formatter(addOriginResp))
 	fmt.Println("")
+
+	// The response model contains the newly generated origin ID.
+	originID := *addOriginResp.Id
 
 	fmt.Println("**** GET ORIGIN ENTRY BY ID ****")
 	fmt.Println("")
 
 	getParams := originv3.NewGetOriginParams()
-	getParams.Id = *origin.Id
+	getParams.Id = originID
 	getParams.MediaType = enums.HttpLarge.String()
 
 	getResp, err := svc.Common.GetOrigin(getParams)
@@ -107,7 +111,7 @@ func main() {
 
 	updateParams := originv3.NewUpdateOriginParams()
 	updateParams.MediaType = enums.HttpLarge.String()
-	updateParams.Id = *origin.Id
+	updateParams.Id = originID
 	originRequest.IsPrimary = true // reuse request obj from earlier
 	updateParams.CustomerOriginRequest = *originRequest
 
@@ -120,13 +124,14 @@ func main() {
 	fmt.Println("successfully updated origin entry")
 	fmt.Printf("%# v", pretty.Formatter(updateResp))
 
+	// Cleanup - Delete Origin and Group.
 	fmt.Println("")
 	fmt.Println("**** DELETE ORIGIN ENTRY ****")
 	fmt.Println("")
 
 	deleteParams := originv3.NewDeleteOriginParams()
 	deleteParams.MediaType = enums.HttpLarge.String()
-	deleteParams.Id = *origin.Id
+	deleteParams.Id = *addOriginResp.Id
 
 	err = svc.Common.DeleteOrigin(deleteParams)
 	if err != nil {

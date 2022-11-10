@@ -21,6 +21,16 @@ We only seek to accept code that you are authorized to contribute to the project
 
 > I confirm that this contribution is made under the terms of the license found in the root directory of this repository's source tree and that I have the authority necessary to make this contribution on behalf of its copyright owner.
 
+***Testing***
+To run all test files in the root folder
+```shell
+go test -v ./...
+```
+Tests should all pass before and after any work that you do. If they
+do not; please reach out to the maintainers for help.
+
+Separately, all test files are also run when a pull request is created.
+
 ## Code of Conduct
 
 We encourage inclusive and professional interactions on our project. We welcome everyone to open an issue, improve the documentation, report bug or submit a pull request. By participating in this project, you agree to abide by the [Edgecast Code of Conduct](Code-of-Conduct.md). If you feel there is a conduct issue related to this project, please raise it per the Code of Conduct process and we will address it.

@@ -1,6 +1,20 @@
 # Go SDK for EdgeCast CDN
 The official Go SDK for interacting with EdgeCast APIs.
 
+Jump To:
+* [Using the SDK](#using-the-sdk)
+    * [Customer Management](#customer-management)
+	* [Edge CNAME](#edge-cname)
+	* [Customer Origin](#customer-origin)
+	* [Customer Origin v3](#customer-origin-v3)
+	* [Route (DNS)](#route-dns)
+	* [Real Time Log Delivery (RTLD)](#real-time-log-delivery-rtld)
+	* [Web Application Firewall (WAF)](#web-application-firewall-waf)
+* [Project Structure](#structure)
+* [Contributing](#contributing)
+* [Maintainers](#maintainers)
+* [Resources](#resources)
+
 ## Dependencies
 - Go 1.19
 
@@ -50,7 +64,6 @@ import (
 	addParams.Customer = newCustomer
 	resp, err := customerService.AddCustomer(*addParams)
 	// ...
-}
 ```
 
 #### Customer User
@@ -75,7 +88,6 @@ import (
 	// ...
 	resp, err := customerService.AddCustomerUser(*addParams)
 	// ...
-}
 ```
 
 ### Edge CNAME ###
@@ -105,7 +117,6 @@ import (
 	// ...
 	resp, err := edgecnameService.AddEdgeCname(*addParams)
 // ...
-}
 ```
 
 ### Customer Origin 
@@ -140,10 +151,99 @@ import (
 	addParams.Origin = newOrigin
 	resp, err := originService.AddOrigin(*addParams)
 // ...
-}
 ```
 
-### Route (DNS) - BETA ###
+### Customer Origin v3
+-> Customer Origin v3 is currently available as a BETA. Business-critical processes should not depend on this functionality.
+
+Customer Origin v3 uses dedicated endpoints to manage a customer origin group and origin entries. This allows you to manage a customer origin group and all of its entries using multiple requests rather than in a single request. 
+
+It also supports managing a customer origin group's TLS configuration and retrieval of the Function@Edge functions associated with your customer origin groups.
+
+For more information, please read the [official documentation for Customer Origin v3](https://developer.edgecast.com/cdn/api/index.html#Origins/Origins.htm).
+
+For detailed code examples, please refer to the [examples directory](https://github.com/Edgio/ec-sdk-go/tree/main/example/originv3).
+
+#### Origin Groups
+Create Origin Groups using the platform specific namespace within the OriginV3 Service. See below for an example of creating an HTTP Large Origin Group.
+
+```go
+// Set up the creation model.
+tlsSettings := originv3.TlsSettings{
+	PublicKeysToVerify: []string{
+		"ff8b4a82b08ea5f7be124e6b4363c00d7462655f",
+		"c571398b01fce46a8a177abdd6174dfee6137358",
+	},
+}
+
+tlsSettings.SetAllowSelfSigned(false)
+tlsSettings.SetSniHostname("origin.example.com")
+grp := originv3.CustomerOriginGroupHTTPRequest{
+	Name:        "test group",
+	TlsSettings: &tlsSettings,
+}
+
+grp.SetHostHeader("override-hostheader.example.com")
+grp.SetNetworkTypeId(2)          // Prefer IPv6 over IPv4
+grp.SetStrictPciCertified(false) // Allow non-PCI regions
+
+// Set params and add the new group.
+addParams := originv3.NewAddHttpLargeGroupParams()
+addParams.CustomerOriginGroupHTTPRequest = grp
+addResp, err := svc.HttpLargeOnly.AddHttpLargeGroup(addParams)
+```
+
+#### Customer Origin Entry (v3)
+Add an origin entry to a customer origin group for either platform. See below for an example of creating an HTTP Large Customer Origin Entry. For a detailed example, please refer to the examples directory.
+
+```go
+addParams := originv3.NewAddOriginParams()
+addParams.MediaType = enums.HttpLarge.String()
+originRequest := originv3.NewCustomerOriginRequest(
+	"cdn-origin-example.com",
+	false,
+	groupID,
+)
+addParams.CustomerOriginRequest = *originRequest
+addResp, err := svc.Common.AddOrigin(addOriginParams)
+```
+
+#### Load Balancing
+Update a customer origin group's failover order through a platform-specific endpoint.
+
+Key information:
+- Sort order is defined on a per protocol basis.
+- If you create an origin entry that is configured to match the client's protocol (protocol_type_id=3), then our service will create an HTTP and an HTTPS version of it. Each of these origin entries may be assigned a different sort order.
+- Ensure that sort order is applied as intended by defining a sort position for all of the customer origin group's origin entries that correspond to the desired protocol (i.e., HTTP or HTTPS). Defining a sort position for a subset of origin entries that correspond to that protocol may produce unexpected results.
+
+```go
+failoverParams := originv3.NewUpdateFailoverOrderParams()
+failoverParams.MediaType = enums.HttpLarge.String()
+failoverParams.GroupId = groupID
+failoverParams.FailoverOrder = []originv3.FailoverOrder{
+	{
+		Id:            origin1ID,
+		Host:          "http://cdn-origin-example.com",
+		FailoverOrder: 0,
+	},
+	{
+		Id:            origin2ID,
+		Host:          "http://cdn-origin-example2.com",
+		FailoverOrder: 2,
+	},
+	{
+		Id:            origin3ID,
+		Host:          "http://cdn-origin-example3.com",
+		FailoverOrder: 1,
+	},
+}
+
+err = svc.Common.UpdateFailoverOrder(failoverParams)
+```
+
+### Route (DNS) ###
+
+-> Route (DNS) is currently available as a BETA. Business-critical processes should not depend on this functionality.
 
 Our Route (DNS) solution is a reliable, high performance, and secure DNS service 
 that provides capabilities such as:
@@ -185,7 +285,6 @@ import (
 	// ...
 	resp, err := routeDNSService.AddMasterServerGroup(*addParams)
 // ...
-}
 ```
 
 ### Real Time Log Delivery (RTLD)
@@ -223,7 +322,6 @@ import (
 	addResp, err :=
 		rtldService.ProfilesRl.ProfilesRateLimitingAddCustomerSetting(addParams)
 	// ...
-}
 ```
 
 ### Rules Engine
@@ -261,7 +359,6 @@ import (
 	addParams.PolicyAsString = policyString
 	addPolicyResp, err := rulesengineService.AddPolicy(*addParams)
 // ...
-}
 ```
 
 ### Web Application Firewall (WAF)
@@ -271,7 +368,7 @@ and preventing application layer attacks. It inspects inbound HTTP/HTTPS traffic
 against reactive and proactive security policies and blocks malicious activity 
 in-band and on a real-time basis.
 
-For more information, please read the [official documentation for Web Application Firewall (WAF)](https://docs.edgecast.com/cdn/index.html#Web-Security/Web-Security.htm%3FTocPath%3DSecurity%7CWeb%2520Application%2520Firewall%2520(WAF)%7C_____0).
+For more information, please read the [official documentation for Web Application Firewall (WAF)](https://docs.edgecast.com/cdn/index.html#Web-Security/Web-Application-Firewall-WAF.htm).
 
 To use the WAF service, use the API Token provided to you.
 
@@ -411,7 +508,7 @@ import (
 		})
 ```
 
-### Structure
+## Structure
 
 ```
 .
@@ -444,6 +541,9 @@ import (
 │   ├── origin
 		client files for interacting with customer origin api
 		model files for customer origin
+│   ├── originv3
+		client files for interacting with customer origin v3 api
+		model files for customer origin
 │   ├── routedns
 		client files for interacting with route (dns)
 		model files for route (dns)
@@ -475,31 +575,20 @@ import (
 
 ```
 
-### Contributing
+## Contributing
 
-Please refer to the [contributing.md](https://github.com/EdgeCast/ec-sdk-go/blob/main/Contributing.md) 
+Please refer to the [contributing.md](https://github.com/Edgio/ec-sdk-go/blob/main/Contributing.md) 
 file for information about how to get involved. 
 We welcome issues, questions, and pull requests.
 
-### Maintainers
+## Maintainers
 
 - Frank Contreras: frank.contreras@edgecast.com
-- Hector Gray: hector.gray@edgecast.com
 - Steven Paz: steven.paz@edgecast.com
 - Shikha Saluja: shikha.saluja@edgecast.com
 
-### Testing
-
-To run all test files in the root folder
-```
-go test -v ./...
-```
-Tests should all pass before and after any work that you do. If they
-do not; please reach out to the maintainers for help.
-
-Separately, all test files are also run when a pull request is created.
-
 ## Resources
+
 [CDN Reference Documentation](https://docs.edgecast.com/cdn/index.html) - This 
 is a useful resource for learning about EdgeCast CDN. It is a good starting point 
 before using this SDK.
@@ -509,8 +598,8 @@ For developers that want to interact directly with the EdgeCast CDN API,
 refer to this documentation. It contains all of the available operations as well 
 as their inputs and outputs.
 
-[Examples](https://github.com/EdgeCast/ec-sdk-go/tree/main/example) - Examples 
+[Examples](https://github.com/Edgio/ec-sdk-go/tree/main/example) - Examples 
 to get started can be found here.
 
-[Submit an Issue](https://github.com/EdgeCast/ec-sdk-go/issues) - Found a bug? 
+[Submit an Issue](https://github.com/Edgio/ec-sdk-go/issues) - Found a bug? 
 Want to request a feature? Please do so here.
