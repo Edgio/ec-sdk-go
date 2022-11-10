@@ -1,6 +1,20 @@
 # Go SDK for EdgeCast CDN
 The official Go SDK for interacting with EdgeCast APIs.
 
+Jump To:
+* [Using the SDK](#using-the-sdk)
+    * [Customer Management](#customer-management)
+	* [Edge CNAME](#edge-cname)
+	* [Customer Origin](#customer-origin)
+	* [Customer Origin v3](#customer-origin-v3)
+	* [Route (DNS)](#route-dns)
+	* [Real Time Log Delivery (RTLD)](#real-time-log-delivery-rtld)
+	* [Web Application Firewall (WAF)](#web-application-firewall-waf)
+* [Project Structure](#structure)
+* [Contributing](#contributing)
+* [Maintainers](#maintainers)
+* [Resources](#resources)
+
 ## Dependencies
 - Go 1.19
 
@@ -139,68 +153,22 @@ import (
 // ...
 ```
 
-### Customer Origin v3 - BETA
+### Customer Origin v3
 -> Customer Origin v3 is currently available as a BETA. Business-critical processes should not depend on this functionality.
 
 Customer Origin v3 uses dedicated endpoints to manage a customer origin group and origin entries. This allows you to manage a customer origin group and all of its entries using multiple requests rather than in a single request. 
 
 It also supports managing a customer origin group's TLS configuration and retrieval of the Function@Edge functions associated with your customer origin groups.
 
-For more information, please read the [official documentation for Customer Origin v3](https://developer.edgecast.com/cdn/api/index.html#Origins/Origins.htm)
+For more information, please read the [official documentation for Customer Origin v3](https://developer.edgecast.com/cdn/api/index.html#Origins/Origins.htm).
 
-#### Origin Group (v3)
-Create a customer origin group using platform-specific services. For a detailed example, please refer to the examples directory. 
+For detailed code examples, please refer to the [examples directory](https://github.com/Edgio/ec-sdk-go/tree/main/example/originv3).
 
-├── originv3.Service
-   ├── AdnOnly
-		Contains functions for use with the ADN platform.
-		├── GetAdnGroups
-			Retrieve all ADN customer origin groups
-		├── GetAdnGroupsGroupId
-			Retrieve a specific ADN customer origin group
-		├── PostAdnGroups
-			Create an ADN customer origin group without origin entries
-		├── PostAdnGroups
-			Create an ADN customer origin group without origin entries
-		├── PutAdnGroupsGroupId
-			Update an ADN customer origin group's configuration
-│   ├── Common
-		Contains functions for use with both platforms.
-		├── AddAdn
-			Add an origin entry to a customer origin group
-		├── DeleteMediaTypeGroupsGroupId
-		├── DeleteMediaTypeId
-		├── GetAdn
-		├── GetAdnId
-		├── GetMediaTypeEdgeFunctions
-		├── GetMediaTypeGroupsIdOrigins
-		├── GetMediaTypeGroupsIdStatus
-		├── PatchAdnId
-		├── PatchMediaTypeGroupsGroupIdOrigins
-│   ├── HttpLargeOnly
-		Contains functions for use with the HTTP Large platform.
-		├── GetHttpLargeGroups
-			Retrieve all HTTP Large customer origin groups
-		├── GetHttpLargeGroupsGroupId
-			Retrieve a specific HTTP Large customer origin group
-		├── PostHttpLargeGroups
-			Create an HTTP Large customer origin group without origin entries
-		├── PostHttpLargeGroups
-			Create an HTTP Large customer origin group without origin entries
-		├── PutHttplargeGroupsGroupId
-			Update an HTTP Large customer origin group's configuration
-		├── GetHttpLargeShieldPops
-			Lists the available Origin Shield locations for the HTTP Large platform by region.
-│   ├── Phase3
-│	│	├── GetMediaTypeProtocolTypes
-			Lists the available protocols that you may assign to an origin entry.
-		├── GetMediaTypeOriginNetworkTypes
-			Lists the available methods through which our service may resolve a hostname assigned to an origin entry.
-
-
-
+#### Origin Groups
+Create Origin Groups using the platform specific namespace within the OriginV3 Service. See below for an example of creating an HTTP Large Origin Group.
 
 ```go
+// Set up the creation model.
 tlsSettings := originv3.TlsSettings{
 	PublicKeysToVerify: []string{
 		"ff8b4a82b08ea5f7be124e6b4363c00d7462655f",
@@ -210,81 +178,72 @@ tlsSettings := originv3.TlsSettings{
 
 tlsSettings.SetAllowSelfSigned(false)
 tlsSettings.SetSniHostname("origin.example.com")
-
-req := originv3.CustomerOriginGroupHTTPRequest{
-	Name:        "TestSDKOriginGroup",
+grp := originv3.CustomerOriginGroupHTTPRequest{
+	Name:        "test group",
 	TlsSettings: &tlsSettings,
 }
 
-req.SetHostHeader("override-hostheader.example.com")
-req.SetNetworkTypeId(2)          // Prefer IPv6 over IPv4
-req.SetStrictPciCertified(false) // Allow non-PCI regions
+grp.SetHostHeader("override-hostheader.example.com")
+grp.SetNetworkTypeId(2)          // Prefer IPv6 over IPv4
+grp.SetStrictPciCertified(false) // Allow non-PCI regions
 
-addGroupParams := originv3.NewPostHttpLargeGroupsParams()
-addGroupParams.CustomerOriginGroupHTTPRequest = req
-
-group, err := originV3Service.HttpLargeOnly.PostHttpLargeGroups(addGroupParams)
-if err != nil {} // inspect error
-```
-
-#### Shield POPs (HTTP Large Only)
-Lists the available Origin Shield locations for the HTTP Large platform by region. Use Origin Shield POP codes (code) and bypass codes (bypass_code) to set or to interpret Origin Shield settings for a customer origin group.
-
-See below for an example where Shield POPs are retrieved and then used to update a Customer Origin Group. For a detailed example, please refer to the examples directory.
-
-```go
-// Get Group by ID
-getGroupParams := originv3.NewGetHttpLargeGroupsGroupIdParams()
-getGroupParams.GroupId = groupID // provide group ID here
-originGroup, _ = originV3Service.HttpLargeOnly.GetHttpLargeGroupsGroupId(
-	getGroupParams,
-)
-
-// Get All Shield POPs
-getShieldPOPsParams := originv3.NewGetHttpLargeShieldPopsParams()
-edgeNodes, _ := originV3Service.HttpLargeOnly.GetHttpLargeShieldPops(
-	getShieldPOPsParams,
-)
-
-// Convert group retreived from API to proper update model
-updateGroup := originv3.CustomerOriginGroupHTTPRequest{}
-err := ecutils.Convert(originGroup, &updateGroup)
-
-// Update Group with shield POP
-shieldPOPs := []*string{}
-shieldPOPs = append(shieldPOPs,
-	edgeNodes[0].Pops[0].Code,
-	edgeNodes[1].Pops[1].Code,
-)
-
-updateGroup.ShieldPops = shieldPOPs
-updateGroupParams := originv3.NewPutHttplargeGroupsGroupIdParams()
-updateGroupParams.GroupId = strconv.Itoa(int(*originGroup.Id))
-updateGroupParams.CustomerOriginGroupHTTPRequest = updateGroup
-
-originGroup, _ = originV3Service.HttpLargeOnly.PutHttplargeGroupsGroupId(
-	updateGroupParams,
-)
+// Set params and add the new group.
+addParams := originv3.NewAddHttpLargeGroupParams()
+addParams.CustomerOriginGroupHTTPRequest = grp
+addResp, err := svc.HttpLargeOnly.AddHttpLargeGroup(addParams)
 ```
 
 #### Customer Origin Entry (v3)
-Add an origin entry to a customer origin group through a platform-specific service. See below for an example of creating an HTTP Large Customer Origin Entry. For a detailed example, please refer to the examples directory.
+Add an origin entry to a customer origin group for either platform. See below for an example of creating an HTTP Large Customer Origin Entry. For a detailed example, please refer to the examples directory.
 
 ```go
-addParams := originv3.NewAddAdnParams()
-addParams.MediaType = "http-large"
-
-origin := originv3.NewCustomerOriginRequest(
+addParams := originv3.NewAddOriginParams()
+addParams.MediaType = enums.HttpLarge.String()
+originRequest := originv3.NewCustomerOriginRequest(
 	"cdn-origin-example.com",
 	false,
 	groupID,
 )
-
-addParams.CustomerOriginRequest = *origin
-resp, err := originV3Service.Common.AddAdn(addParams)
+addParams.CustomerOriginRequest = *originRequest
+addResp, err := svc.Common.AddOrigin(addOriginParams)
 ```
 
-### Route (DNS) - BETA ###
+#### Load Balancing
+Update a customer origin group's failover order through a platform-specific endpoint.
+
+Key information:
+- Sort order is defined on a per protocol basis.
+- If you create an origin entry that is configured to match the client's protocol (protocol_type_id=3), then our service will create an HTTP and an HTTPS version of it. Each of these origin entries may be assigned a different sort order.
+- Ensure that sort order is applied as intended by defining a sort position for all of the customer origin group's origin entries that correspond to the desired protocol (i.e., HTTP or HTTPS). Defining a sort position for a subset of origin entries that correspond to that protocol may produce unexpected results.
+
+```go
+failoverParams := originv3.NewUpdateFailoverOrderParams()
+failoverParams.MediaType = enums.HttpLarge.String()
+failoverParams.GroupId = groupID
+failoverParams.FailoverOrder = []originv3.FailoverOrder{
+	{
+		Id:            origin1ID,
+		Host:          "http://cdn-origin-example.com",
+		FailoverOrder: 0,
+	},
+	{
+		Id:            origin2ID,
+		Host:          "http://cdn-origin-example2.com",
+		FailoverOrder: 2,
+	},
+	{
+		Id:            origin3ID,
+		Host:          "http://cdn-origin-example3.com",
+		FailoverOrder: 1,
+	},
+}
+
+err = svc.Common.UpdateFailoverOrder(failoverParams)
+```
+
+### Route (DNS) ###
+
+-> Route (DNS) is currently available as a BETA. Business-critical processes should not depend on this functionality.
 
 Our Route (DNS) solution is a reliable, high performance, and secure DNS service 
 that provides capabilities such as:
@@ -549,7 +508,7 @@ import (
 		})
 ```
 
-### Structure
+## Structure
 
 ```
 .
@@ -616,30 +575,20 @@ import (
 
 ```
 
-### Contributing
+## Contributing
 
 Please refer to the [contributing.md](https://github.com/Edgio/ec-sdk-go/blob/main/Contributing.md) 
 file for information about how to get involved. 
 We welcome issues, questions, and pull requests.
 
-### Maintainers
+## Maintainers
 
 - Frank Contreras: frank.contreras@edgecast.com
 - Steven Paz: steven.paz@edgecast.com
 - Shikha Saluja: shikha.saluja@edgecast.com
 
-### Testing
-
-To run all test files in the root folder
-```shell
-go test -v ./...
-```
-Tests should all pass before and after any work that you do. If they
-do not; please reach out to the maintainers for help.
-
-Separately, all test files are also run when a pull request is created.
-
 ## Resources
+
 [CDN Reference Documentation](https://docs.edgecast.com/cdn/index.html) - This 
 is a useful resource for learning about EdgeCast CDN. It is a good starting point 
 before using this SDK.
