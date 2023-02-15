@@ -36,108 +36,47 @@ func NewBotManagersClient(
 
 // BotManagersClientService defines the operations for BotManagers
 type BotManagersClientService interface {
-	CustIdBotManagerBotManagerIdDelete(
-		params CustIdBotManagerBotManagerIdDeleteParams,
-	) error
-
-	CustIdBotManagerBotManagerIdGet(
-		params CustIdBotManagerBotManagerIdGetParams,
+	CreateBotManager(
+		params CreateBotManagerParams,
 	) (*BotManager, error)
 
-	CustIdBotManagerBotManagerIdPut(
-		params CustIdBotManagerBotManagerIdPutParams,
+	DeleteBotManager(
+		params DeleteBotManagerParams,
 	) error
 
-	CustIdBotManagerGet(
-		params CustIdBotManagerGetParams,
+	GetBotManager(
+		params GetBotManagerParams,
+	) (*BotManager, error)
+
+	GetBotManagers(
+		params GetBotManagersParams,
 	) ([]ObjShort, error)
 
-	CustIdBotManagerPost(
-		params CustIdBotManagerPostParams,
-	) (*BotManager, error)
+	UpdateBotManager(
+		params UpdateBotManagerParams,
+	) error
 }
 
-// CustIdBotManagerBotManagerIdDeleteParams contains the parameters for CustIdBotManagerBotManagerIdDelete
-type CustIdBotManagerBotManagerIdDeleteParams struct {
+// CreateBotManagerParams contains the parameters for CreateBotManager
+type CreateBotManagerParams struct {
 	// The customer id
 	CustId string
 
-	// The Bot Manager id
-	BotManagerId string
+	BotManagerInfo BotManager
 }
 
-// NewCustIdBotManagerBotManagerIdDeleteParams creates a new instance of CustIdBotManagerBotManagerIdDeleteParams
-func NewCustIdBotManagerBotManagerIdDeleteParams() CustIdBotManagerBotManagerIdDeleteParams {
-	return CustIdBotManagerBotManagerIdDeleteParams{}
+// NewCreateBotManagerParams creates a new instance of CreateBotManagerParams
+func NewCreateBotManagerParams() CreateBotManagerParams {
+	return CreateBotManagerParams{}
 }
 
-// CustIdBotManagerBotManagerIdDelete - DELETE Bot Manager Object
+// CreateBotManager - POST Bot Manager
 //
-//	Delete a Bot Manager object identified by id.
-func (c BotManagersClient) CustIdBotManagerBotManagerIdDelete(
-	params CustIdBotManagerBotManagerIdDeleteParams,
-) error {
-	req, err := buildCustIdBotManagerBotManagerIdDeleteRequest(params, c.baseAPIURL)
-	if err != nil {
-		return err
-	}
-
-	_, err = c.apiClient.SubmitRequest(*req)
-
-	if err != nil {
-		return fmt.Errorf("CustIdBotManagerBotManagerIdDelete: %w", err)
-	}
-
-	return nil
-}
-
-func buildCustIdBotManagerBotManagerIdDeleteRequest(
-	p CustIdBotManagerBotManagerIdDeleteParams,
-	baseAPIURL string,
-) (*ecclient.SubmitRequestParams, error) {
-	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{cust_id}/bot_manager/{bot_manager_id}"
-	errs := make([]error, 0)
-
-	method, err := ecclient.ToHTTPMethod("Delete")
-	if err != nil {
-		errs = append(errs, fmt.Errorf("CustIdBotManagerBotManagerIdDelete: %w", err))
-	}
-
-	req.Method = method
-
-	req.PathParams["custId"] = p.CustId
-
-	req.PathParams["botManagerId"] = p.BotManagerId
-
-	if len(errs) > 0 {
-		return nil, errors.CompositeValidationError(errs...)
-	}
-
-	return &req, nil
-}
-
-// CustIdBotManagerBotManagerIdGetParams contains the parameters for CustIdBotManagerBotManagerIdGet
-type CustIdBotManagerBotManagerIdGetParams struct {
-	// The customer id
-	CustId string
-
-	// The Bot Manager id
-	BotManagerId string
-}
-
-// NewCustIdBotManagerBotManagerIdGetParams creates a new instance of CustIdBotManagerBotManagerIdGetParams
-func NewCustIdBotManagerBotManagerIdGetParams() CustIdBotManagerBotManagerIdGetParams {
-	return CustIdBotManagerBotManagerIdGetParams{}
-}
-
-// CustIdBotManagerBotManagerIdGet - GET Bot Manager Object
-//
-//	Get a Bot Manager object from a Bot Manager id.
-func (c BotManagersClient) CustIdBotManagerBotManagerIdGet(
-	params CustIdBotManagerBotManagerIdGetParams,
+//	Create a new Bot Manager for a given customer.
+func (c BotManagersClient) CreateBotManager(
+	params CreateBotManagerParams,
 ) (*BotManager, error) {
-	req, err := buildCustIdBotManagerBotManagerIdGetRequest(params, c.baseAPIURL)
+	req, err := buildCreateBotManagerRequest(params, c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -148,92 +87,28 @@ func (c BotManagersClient) CustIdBotManagerBotManagerIdGet(
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("CustIdBotManagerBotManagerIdGet: %w", err)
+		return nil, fmt.Errorf("CreateBotManager: %w", err)
 	}
 
 	return &parsedResponse, nil
 }
 
-func buildCustIdBotManagerBotManagerIdGetRequest(
-	p CustIdBotManagerBotManagerIdGetParams,
+func buildCreateBotManagerRequest(
+	p CreateBotManagerParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{cust_id}/bot_manager/{bot_manager_id}"
+	req.Path = baseAPIURL + "/{cust_id}/bot_manager"
 	errs := make([]error, 0)
 
-	method, err := ecclient.ToHTTPMethod("Get")
+	method, err := ecclient.ToHTTPMethod("Post")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("CustIdBotManagerBotManagerIdGet: %w", err))
+		errs = append(errs, fmt.Errorf("CreateBotManager: %w", err))
 	}
 
 	req.Method = method
 
 	req.PathParams["custId"] = p.CustId
-
-	req.PathParams["botManagerId"] = p.BotManagerId
-
-	if len(errs) > 0 {
-		return nil, errors.CompositeValidationError(errs...)
-	}
-
-	return &req, nil
-}
-
-// CustIdBotManagerBotManagerIdPutParams contains the parameters for CustIdBotManagerBotManagerIdPut
-type CustIdBotManagerBotManagerIdPutParams struct {
-	// The customer id
-	CustId string
-
-	// The Bot Manager id
-	BotManagerId string
-
-	BotManagerInfo BotManager
-}
-
-// NewCustIdBotManagerBotManagerIdPutParams creates a new instance of CustIdBotManagerBotManagerIdPutParams
-func NewCustIdBotManagerBotManagerIdPutParams() CustIdBotManagerBotManagerIdPutParams {
-	return CustIdBotManagerBotManagerIdPutParams{}
-}
-
-// CustIdBotManagerBotManagerIdPut - PUT Bot Manager Object
-//
-//	Modify a Bot Manager object identified by id.
-func (c BotManagersClient) CustIdBotManagerBotManagerIdPut(
-	params CustIdBotManagerBotManagerIdPutParams,
-) error {
-	req, err := buildCustIdBotManagerBotManagerIdPutRequest(params, c.baseAPIURL)
-	if err != nil {
-		return err
-	}
-
-	_, err = c.apiClient.SubmitRequest(*req)
-
-	if err != nil {
-		return fmt.Errorf("CustIdBotManagerBotManagerIdPut: %w", err)
-	}
-
-	return nil
-}
-
-func buildCustIdBotManagerBotManagerIdPutRequest(
-	p CustIdBotManagerBotManagerIdPutParams,
-	baseAPIURL string,
-) (*ecclient.SubmitRequestParams, error) {
-	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{cust_id}/bot_manager/{bot_manager_id}"
-	errs := make([]error, 0)
-
-	method, err := ecclient.ToHTTPMethod("Put")
-	if err != nil {
-		errs = append(errs, fmt.Errorf("CustIdBotManagerBotManagerIdPut: %w", err))
-	}
-
-	req.Method = method
-
-	req.PathParams["custId"] = p.CustId
-
-	req.PathParams["botManagerId"] = p.BotManagerId
 
 	req.RawBody = p.BotManagerInfo
 
@@ -244,24 +119,147 @@ func buildCustIdBotManagerBotManagerIdPutRequest(
 	return &req, nil
 }
 
-// CustIdBotManagerGetParams contains the parameters for CustIdBotManagerGet
-type CustIdBotManagerGetParams struct {
+// DeleteBotManagerParams contains the parameters for DeleteBotManager
+type DeleteBotManagerParams struct {
+	// The customer id
+	CustId string
+
+	// The Bot Manager id
+	BotManagerId string
+}
+
+// NewDeleteBotManagerParams creates a new instance of DeleteBotManagerParams
+func NewDeleteBotManagerParams() DeleteBotManagerParams {
+	return DeleteBotManagerParams{}
+}
+
+// DeleteBotManager - DELETE Bot Manager Object
+//
+//	Delete a Bot Manager object identified by id.
+func (c BotManagersClient) DeleteBotManager(
+	params DeleteBotManagerParams,
+) error {
+	req, err := buildDeleteBotManagerRequest(params, c.baseAPIURL)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.apiClient.SubmitRequest(*req)
+
+	if err != nil {
+		return fmt.Errorf("DeleteBotManager: %w", err)
+	}
+
+	return nil
+}
+
+func buildDeleteBotManagerRequest(
+	p DeleteBotManagerParams,
+	baseAPIURL string,
+) (*ecclient.SubmitRequestParams, error) {
+	req := ecclient.NewSubmitRequestParams()
+	req.Path = baseAPIURL + "/{cust_id}/bot_manager/{bot_manager_id}"
+	errs := make([]error, 0)
+
+	method, err := ecclient.ToHTTPMethod("Delete")
+	if err != nil {
+		errs = append(errs, fmt.Errorf("DeleteBotManager: %w", err))
+	}
+
+	req.Method = method
+
+	req.PathParams["custId"] = p.CustId
+
+	req.PathParams["botManagerId"] = p.BotManagerId
+
+	if len(errs) > 0 {
+		return nil, errors.CompositeValidationError(errs...)
+	}
+
+	return &req, nil
+}
+
+// GetBotManagerParams contains the parameters for GetBotManager
+type GetBotManagerParams struct {
+	// The customer id
+	CustId string
+
+	// The Bot Manager id
+	BotManagerId string
+}
+
+// NewGetBotManagerParams creates a new instance of GetBotManagerParams
+func NewGetBotManagerParams() GetBotManagerParams {
+	return GetBotManagerParams{}
+}
+
+// GetBotManager - GET Bot Manager Object
+//
+//	Get a Bot Manager object from a Bot Manager id.
+func (c BotManagersClient) GetBotManager(
+	params GetBotManagerParams,
+) (*BotManager, error) {
+	req, err := buildGetBotManagerRequest(params, c.baseAPIURL)
+	if err != nil {
+		return nil, err
+	}
+
+	parsedResponse := BotManager{}
+	req.ParsedResponse = &parsedResponse
+
+	_, err = c.apiClient.SubmitRequest(*req)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetBotManager: %w", err)
+	}
+
+	return &parsedResponse, nil
+}
+
+func buildGetBotManagerRequest(
+	p GetBotManagerParams,
+	baseAPIURL string,
+) (*ecclient.SubmitRequestParams, error) {
+	req := ecclient.NewSubmitRequestParams()
+	req.Path = baseAPIURL + "/{cust_id}/bot_manager/{bot_manager_id}"
+	errs := make([]error, 0)
+
+	method, err := ecclient.ToHTTPMethod("Get")
+	if err != nil {
+		errs = append(errs, fmt.Errorf("GetBotManager: %w", err))
+	}
+
+	req.Method = method
+
+	req.PathParams["custId"] = p.CustId
+
+	req.PathParams["botManagerId"] = p.BotManagerId
+
+	if len(errs) > 0 {
+		return nil, errors.CompositeValidationError(errs...)
+	}
+
+	return &req, nil
+}
+
+// GetBotManagersParams contains the parameters for GetBotManagers
+type GetBotManagersParams struct {
 	// The customer id
 	CustId string
 }
 
-// NewCustIdBotManagerGetParams creates a new instance of CustIdBotManagerGetParams
-func NewCustIdBotManagerGetParams() CustIdBotManagerGetParams {
-	return CustIdBotManagerGetParams{}
+// NewGetBotManagersParams creates a new instance of GetBotManagersParams
+func NewGetBotManagersParams() GetBotManagersParams {
+	return GetBotManagersParams{}
 }
 
-// CustIdBotManagerGet - GET Bot Managers
+// GetBotManagers - GET Bot Managers
 //
 //	List all Bot Managers for a given customer.
-func (c BotManagersClient) CustIdBotManagerGet(
-	params CustIdBotManagerGetParams,
+func (c BotManagersClient) GetBotManagers(
+	params GetBotManagersParams,
 ) ([]ObjShort, error) {
-	req, err := buildCustIdBotManagerGetRequest(params, c.baseAPIURL)
+	req, err := buildGetBotManagersRequest(params, c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
@@ -272,14 +270,14 @@ func (c BotManagersClient) CustIdBotManagerGet(
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("CustIdBotManagerGet: %w", err)
+		return nil, fmt.Errorf("GetBotManagers: %w", err)
 	}
 
 	return parsedResponse, nil
 }
 
-func buildCustIdBotManagerGetRequest(
-	p CustIdBotManagerGetParams,
+func buildGetBotManagersRequest(
+	p GetBotManagersParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
@@ -288,7 +286,7 @@ func buildCustIdBotManagerGetRequest(
 
 	method, err := ecclient.ToHTTPMethod("Get")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("CustIdBotManagerGet: %w", err))
+		errs = append(errs, fmt.Errorf("GetBotManagers: %w", err))
 	}
 
 	req.Method = method
@@ -302,58 +300,60 @@ func buildCustIdBotManagerGetRequest(
 	return &req, nil
 }
 
-// CustIdBotManagerPostParams contains the parameters for CustIdBotManagerPost
-type CustIdBotManagerPostParams struct {
+// UpdateBotManagerParams contains the parameters for UpdateBotManager
+type UpdateBotManagerParams struct {
 	// The customer id
 	CustId string
+
+	// The Bot Manager id
+	BotManagerId string
 
 	BotManagerInfo BotManager
 }
 
-// NewCustIdBotManagerPostParams creates a new instance of CustIdBotManagerPostParams
-func NewCustIdBotManagerPostParams() CustIdBotManagerPostParams {
-	return CustIdBotManagerPostParams{}
+// NewUpdateBotManagerParams creates a new instance of UpdateBotManagerParams
+func NewUpdateBotManagerParams() UpdateBotManagerParams {
+	return UpdateBotManagerParams{}
 }
 
-// CustIdBotManagerPost - POST Bot Manager
+// UpdateBotManager - PUT Bot Manager Object
 //
-//	Create a new Bot Manager for a given customer.
-func (c BotManagersClient) CustIdBotManagerPost(
-	params CustIdBotManagerPostParams,
-) (*BotManager, error) {
-	req, err := buildCustIdBotManagerPostRequest(params, c.baseAPIURL)
+//	Modify a Bot Manager object identified by id.
+func (c BotManagersClient) UpdateBotManager(
+	params UpdateBotManagerParams,
+) error {
+	req, err := buildUpdateBotManagerRequest(params, c.baseAPIURL)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	parsedResponse := BotManager{}
-	req.ParsedResponse = &parsedResponse
 
 	_, err = c.apiClient.SubmitRequest(*req)
 
 	if err != nil {
-		return nil, fmt.Errorf("CustIdBotManagerPost: %w", err)
+		return fmt.Errorf("UpdateBotManager: %w", err)
 	}
 
-	return &parsedResponse, nil
+	return nil
 }
 
-func buildCustIdBotManagerPostRequest(
-	p CustIdBotManagerPostParams,
+func buildUpdateBotManagerRequest(
+	p UpdateBotManagerParams,
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{cust_id}/bot_manager"
+	req.Path = baseAPIURL + "/{cust_id}/bot_manager/{bot_manager_id}"
 	errs := make([]error, 0)
 
-	method, err := ecclient.ToHTTPMethod("Post")
+	method, err := ecclient.ToHTTPMethod("Put")
 	if err != nil {
-		errs = append(errs, fmt.Errorf("CustIdBotManagerPost: %w", err))
+		errs = append(errs, fmt.Errorf("UpdateBotManager: %w", err))
 	}
 
 	req.Method = method
 
 	req.PathParams["custId"] = p.CustId
+
+	req.PathParams["botManagerId"] = p.BotManagerId
 
 	req.RawBody = p.BotManagerInfo
 
