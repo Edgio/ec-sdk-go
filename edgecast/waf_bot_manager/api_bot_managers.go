@@ -108,7 +108,7 @@ func buildCreateBotManagerRequest(
 
 	req.Method = method
 
-	req.PathParams["custId"] = p.CustId
+	req.PathParams["cust_id"] = p.CustId
 
 	req.RawBody = p.BotManagerInfo
 
@@ -168,9 +168,9 @@ func buildDeleteBotManagerRequest(
 
 	req.Method = method
 
-	req.PathParams["custId"] = p.CustId
+	req.PathParams["cust_id"] = p.CustId
 
-	req.PathParams["botManagerId"] = p.BotManagerId
+	req.PathParams["bot_manager_id"] = p.BotManagerId
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
@@ -231,9 +231,9 @@ func buildGetBotManagerRequest(
 
 	req.Method = method
 
-	req.PathParams["custId"] = p.CustId
+	req.PathParams["cust_id"] = p.CustId
 
-	req.PathParams["botManagerId"] = p.BotManagerId
+	req.PathParams["bot_manager_id"] = p.BotManagerId
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
@@ -291,7 +291,7 @@ func buildGetBotManagersRequest(
 
 	req.Method = method
 
-	req.PathParams["custId"] = p.CustId
+	req.PathParams["cust_id"] = p.CustId
 
 	if len(errs) > 0 {
 		return nil, errors.CompositeValidationError(errs...)
@@ -351,9 +351,9 @@ func buildUpdateBotManagerRequest(
 
 	req.Method = method
 
-	req.PathParams["custId"] = p.CustId
+	req.PathParams["cust_id"] = p.CustId
 
-	req.PathParams["botManagerId"] = p.BotManagerId
+	req.PathParams["bot_manager_id"] = p.BotManagerId
 
 	req.RawBody = p.BotManagerInfo
 
