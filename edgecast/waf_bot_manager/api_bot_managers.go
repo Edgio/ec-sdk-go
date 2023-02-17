@@ -38,7 +38,7 @@ func NewBotManagersClient(
 type BotManagersClientService interface {
 	CreateBotManager(
 		params CreateBotManagerParams,
-	) (*BotManager, error)
+	) (*ResponseObj, error)
 
 	DeleteBotManager(
 		params DeleteBotManagerParams,
@@ -75,13 +75,13 @@ func NewCreateBotManagerParams() CreateBotManagerParams {
 //	Create a new Bot Manager for a given customer.
 func (c BotManagersClient) CreateBotManager(
 	params CreateBotManagerParams,
-) (*BotManager, error) {
+) (*ResponseObj, error) {
 	req, err := buildCreateBotManagerRequest(params, c.baseAPIURL)
 	if err != nil {
 		return nil, err
 	}
 
-	parsedResponse := BotManager{}
+	parsedResponse := ResponseObj{}
 	req.ParsedResponse = &parsedResponse
 
 	_, err = c.apiClient.SubmitRequest(*req)
