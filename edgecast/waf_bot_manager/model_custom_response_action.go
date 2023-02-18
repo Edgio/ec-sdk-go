@@ -19,12 +19,12 @@ import (
 
 // CustomResponseAction struct for CustomResponseAction
 type CustomResponseAction struct {
-	Id                   *string          `json:"id,omitempty"`
-	Name                 *string          `json:"name,omitempty"`
-	EnfType              *string          `json:"enf_type,omitempty"`
-	ResponseBodyBase64   *string          `json:"response_body_base64,omitempty"`
-	Status               *int32           `json:"status,omitempty"`
-	ResponseHeaders      []ResponseHeader `json:"response_headers,omitempty"`
+	Id                   *string            `json:"id,omitempty"`
+	Name                 *string            `json:"name,omitempty"`
+	EnfType              *string            `json:"enf_type,omitempty"`
+	ResponseBodyBase64   *string            `json:"response_body_base64,omitempty"`
+	Status               *int32             `json:"status,omitempty"`
+	ResponseHeaders      *map[string]string `json:"response_headers,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -208,17 +208,17 @@ func (o *CustomResponseAction) SetStatus(v int32) {
 }
 
 // GetResponseHeaders returns the ResponseHeaders field value if set, zero value otherwise.
-func (o *CustomResponseAction) GetResponseHeaders() []ResponseHeader {
+func (o *CustomResponseAction) GetResponseHeaders() map[string]string {
 	if o == nil || o.ResponseHeaders == nil {
-		var ret []ResponseHeader
+		var ret map[string]string
 		return ret
 	}
-	return o.ResponseHeaders
+	return *o.ResponseHeaders
 }
 
 // GetResponseHeadersOk returns a tuple with the ResponseHeaders field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CustomResponseAction) GetResponseHeadersOk() ([]ResponseHeader, bool) {
+func (o *CustomResponseAction) GetResponseHeadersOk() (*map[string]string, bool) {
 	if o == nil || o.ResponseHeaders == nil {
 		return nil, false
 	}
@@ -234,9 +234,9 @@ func (o *CustomResponseAction) HasResponseHeaders() bool {
 	return false
 }
 
-// SetResponseHeaders gets a reference to the given []ResponseHeader and assigns it to the ResponseHeaders field.
-func (o *CustomResponseAction) SetResponseHeaders(v []ResponseHeader) {
-	o.ResponseHeaders = v
+// SetResponseHeaders gets a reference to the given map[string]string and assigns it to the ResponseHeaders field.
+func (o *CustomResponseAction) SetResponseHeaders(v map[string]string) {
+	o.ResponseHeaders = &v
 }
 
 func (o CustomResponseAction) MarshalJSON() ([]byte, error) {
