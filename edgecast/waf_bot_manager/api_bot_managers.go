@@ -98,7 +98,7 @@ func buildCreateBotManagerRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{cust_id}/bot_manager"
+	req.Path = baseAPIURL + "/{cust_id}/waf/v1.0/bot-manager"
 	errs := make([]error, 0)
 
 	method, err := ecclient.ToHTTPMethod("Post")
@@ -158,7 +158,7 @@ func buildDeleteBotManagerRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{cust_id}/bot_manager/{bot_manager_id}"
+	req.Path = baseAPIURL + "/{cust_id}/waf/v1.0/bot-manager/{bot_manager_id}"
 	errs := make([]error, 0)
 
 	method, err := ecclient.ToHTTPMethod("Delete")
@@ -221,7 +221,7 @@ func buildGetBotManagerRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{cust_id}/bot_manager/{bot_manager_id}"
+	req.Path = baseAPIURL + "/{cust_id}/waf/v1.0/bot-manager/{bot_manager_id}"
 	errs := make([]error, 0)
 
 	method, err := ecclient.ToHTTPMethod("Get")
@@ -281,7 +281,7 @@ func buildGetBotManagersRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{cust_id}/bot_manager"
+	req.Path = baseAPIURL + "/{cust_id}/waf/v1.0/bot-manager"
 	errs := make([]error, 0)
 
 	method, err := ecclient.ToHTTPMethod("Get")
@@ -341,7 +341,7 @@ func buildUpdateBotManagerRequest(
 	baseAPIURL string,
 ) (*ecclient.SubmitRequestParams, error) {
 	req := ecclient.NewSubmitRequestParams()
-	req.Path = baseAPIURL + "/{cust_id}/bot_manager/{bot_manager_id}"
+	req.Path = baseAPIURL + "/{cust_id}/waf/v1.0/bot-manager/{bot_manager_id}"
 	errs := make([]error, 0)
 
 	method, err := ecclient.ToHTTPMethod("Put")
