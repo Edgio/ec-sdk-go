@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	DefaultBasePath string = "/waf/v1.0/config"
+	DefaultBasePath string = "/v2/mcc/customers"
 )
 
 // Service manages
