@@ -41,7 +41,7 @@ type Service struct {
 
 // New creates a new Service
 func New(config edgecast.SDKConfig) (*Service, error) {
-	apiURL, err := url.Parse(config.BaseAPIURL.String() + DefaultBasePath)
+	apiURL, err := url.Parse(config.BaseAPIURLLegacy.String() + DefaultBasePath)
 	if err != nil {
 		return nil, fmt.Errorf("waf_bot_manager.New(): %w", err)
 	}

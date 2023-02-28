@@ -86,7 +86,7 @@ func (c Client) GetAllBotRuleSets(
 	parsedResponse := &[]BotRuleSetGetAllOK{}
 	_, err := c.client.SubmitRequest(ecclient.SubmitRequestParams{
 		Method: ecclient.Get,
-		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/rules",
+		Path:   "v2/mcc/customers/{account_number}/waf/v1.0/bots",
 		PathParams: map[string]string{
 			"account_number": params.AccountNumber,
 		},

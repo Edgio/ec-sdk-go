@@ -19,14 +19,10 @@ func main() {
 	// Setup.
 	customerID := "<Customer ID>"
 	botRuleID := "<Bot Rule ID>" // must be a valid bot rule ID
-	idsCredentials := edgecast.IDSCredentials{
-		ClientID:     "",
-		ClientSecret: "",
-		Scope:        "ec.waf",
-	}
+	apiToken := "<API Token>"
 
 	sdkConfig := edgecast.NewSDKConfig()
-	sdkConfig.IDSCredentials = idsCredentials
+	sdkConfig.APIToken = apiToken
 
 	svc, err := waf_bot_manager.New(sdkConfig)
 	if err != nil {
