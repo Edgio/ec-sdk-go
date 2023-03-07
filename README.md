@@ -10,6 +10,7 @@ Jump To:
 	* [Route (DNS)](#route-dns)
 	* [Real Time Log Delivery (RTLD)](#real-time-log-delivery-rtld)
 	* [Web Application Firewall (WAF)](#web-application-firewall-waf)
+	* [Web Application Firewall (WAF) - Bot Manager (Advanced)](#web-application-firewall-waf---bot-manager-advanced)
 * [Project Structure](#structure)
 * [Contributing](#contributing)
 * [Maintainers](#maintainers)
@@ -506,6 +507,80 @@ import (
 			CustomerID: accountNumber,
 			Scopes:     []scopes.Scope{scope},
 		})
+```
+
+### Web Application Firewall (WAF) - Bot Manager (Advanced)
+Bot Manager Advanced adds an additional layer of security that is dedicated to 
+bot detection and mitigation. It is designed to automatically detect good bots 
+(e.g., search bots) and bad bots, including those that spoof good bots, by 
+analyzing requests and behavior. You may even customize how bad bots are 
+detected and mitigated by defining custom criteria that profiles a bad bot and 
+the action that we will take for that traffic. Bot Manager Advanced is also able 
+to mitigate basic bots by requiring a web browser to resolve a JavaScript 
+challenge before our service will resolve traffic. Finally, it provides 
+actionable near real-time data on detected bots through which you may fine-tune 
+your configuration to reduce false positives.
+
+Bot Manager Advanced is a powerful tool through which you may mitigate 
+undesired bot traffic and prevent them from performing undesired or malicious 
+activity, such as scraping your site, carding, taking over accounts through 
+credential stuffing, spamming your forms, launching DDoS attacks, and 
+committing ad fraud.
+
+For detailed information about Bot Manager in WAF, please read the [official documentation](https://docs.edgecast.com/cdn/#Web-Security/Advanced-Bot-Manager.htm).
+
+#### WAF - Bot Manager (Advanced) Sample Usage
+```go
+import (
+	"github.com/EdgeCast/ec-sdk-go/edgecast"
+	"github.com/EdgeCast/ec-sdk-go/edgecast/waf_bot_manager"
+)
+// ...
+	sdkConfig := edgecast.NewSDKConfig()
+	sdkConfig.APIToken = "MY API TOKEN"
+	wafBotManagerService, err := waf_bot_manager.New(sdkConfig)
+	customerID := "<Customer ID>"
+	botRuleID := "<Bot Rule ID>" 
+
+	botmanager := waf_bot_manager.BotManager{
+		Name: waf_bot_manager.PtrString("my bot manager"),
+		SpoofBotActionType: waf_bot_manager.PtrString("ALERT"),
+		Actions: &waf_bot_manager.ActionObj{
+			ALERT: &waf_bot_manager.AlertAction{
+				// ...
+			},
+			BLOCK_REQUEST: &waf_bot_manager.BlockRequestAction{
+				// ...
+			},
+			BROWSER_CHALLENGE: &waf_bot_manager.BrowserChallengeAction{
+				// ...
+			},
+			CUSTOM_RESPONSE: &waf_bot_manager.CustomResponseAction{
+				// ...
+			},
+			REDIRECT302: &waf_bot_manager.RedirectAction{
+				// ... 
+			},
+		},
+		BotsProdId:      &botRuleID,
+		CustomerId:      &customerID,
+		ExceptionCookie: []string{"sample cookie"},
+		ExceptionJa3:    []string{"sample ja3"},
+		ExceptionUrl:    []string{"sample url"},
+		ExceptionUserAgent: []string{"sample user agent"},
+		InspectKnownBots: waf_bot_manager.PtrBool(true),
+		KnownBots: []waf_bot_manager.KnownBotObj{
+			{
+				// ...
+			},
+		},
+	}
+
+	createBotManagerParams := waf_bot_manager.NewCreateBotManagerParams()
+	createBotManagerParams.CustId = customerID
+	createBotManagerParams.BotManagerInfo = &botmanager
+
+	createBotManagerResp, err := svc.BotManagers.CreateBotManage(createBotManagerParams)
 ```
 
 ## Structure
