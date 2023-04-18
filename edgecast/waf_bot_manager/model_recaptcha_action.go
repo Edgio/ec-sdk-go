@@ -213,7 +213,7 @@ func (o *RecaptchaAction) GetFailedActionType() string {
 		var ret string
 		return ret
 	}
-	return *o.EnfType
+	return *o.FailedActionType
 }
 
 // GetFailedActionTypeOk returns a tuple with the FailedActionType field value if set, nil otherwise
@@ -222,7 +222,7 @@ func (o *RecaptchaAction) GetFailedActionTypeOk() (*string, bool) {
 	if o == nil || o.FailedActionType == nil {
 		return nil, false
 	}
-	return o.EnfType, true
+	return o.FailedActionType, true
 }
 
 // HasFailedActionType returns a boolean if a field has been set.
