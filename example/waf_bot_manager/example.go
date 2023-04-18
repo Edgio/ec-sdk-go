@@ -136,6 +136,13 @@ func buildBotManager(customerID string, botRuleID string) waf_bot_manager.BotMan
 				EnfType: waf_bot_manager.PtrString("REDIRECT_302"),
 				Url:     waf_bot_manager.PtrString("http://imouttahere.com"),
 			},
+			RECAPTCHA: &waf_bot_manager.RecaptchaAction{
+				Name:             waf_bot_manager.PtrString("my recaptcha"),
+				EnfType:          waf_bot_manager.PtrString("RECAPTCHA"),
+				ValidForSec:      waf_bot_manager.PtrInt32(3),
+				Status:           waf_bot_manager.PtrInt32(401),
+				FailedActionType: waf_bot_manager.PtrString("ALERT"),
+			},
 		},
 		BotsProdId:      &botRuleID,
 		CustomerId:      &customerID,

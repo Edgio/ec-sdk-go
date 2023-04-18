@@ -24,6 +24,7 @@ type ActionObj struct {
 	BLOCK_REQUEST        *BlockRequestAction     `json:"BLOCK_REQUEST,omitempty"`
 	REDIRECT302          *RedirectAction         `json:"REDIRECT_302,omitempty"`
 	BROWSER_CHALLENGE    *BrowserChallengeAction `json:"BROWSER_CHALLENGE,omitempty"`
+	RECAPTCHA    		 *RecaptchaAction 		 `json:"RECAPTCHA,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -206,6 +207,29 @@ func (o *ActionObj) SetBROWSER_CHALLENGE(v BrowserChallengeAction) {
 	o.BROWSER_CHALLENGE = &v
 }
 
+// GetRECAPTCHAOk returns a tuple with the RECAPTCHA field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ActionObj) GetRECAPTCHAOk() (*RecaptchaAction, bool) {
+	if o == nil || o.RECAPTCHA == nil {
+		return nil, false
+	}
+	return o.RECAPTCHA, true
+}
+
+// HasRECAPTCHA returns a boolean if a field has been set.
+func (o *ActionObj) HasRECAPTCHA() bool {
+	if o != nil && o.RECAPTCHA != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRECAPTCHA gets a reference to the given RecaptchaAction and assigns it to the RECAPTCHA field.
+func (o *ActionObj) SetRECAPTCHA(v RecaptchaAction) {
+	o.RECAPTCHA = &v
+}
+
 func (o ActionObj) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.ALERT != nil {
@@ -222,6 +246,9 @@ func (o ActionObj) MarshalJSON() ([]byte, error) {
 	}
 	if o.BROWSER_CHALLENGE != nil {
 		toSerialize["BROWSER_CHALLENGE"] = o.BROWSER_CHALLENGE
+	}
+	if o.RECAPTCHA != nil{
+		toSerialize["RECAPTCHA"] = o.RECAPTCHA
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -246,6 +273,7 @@ func (o *ActionObj) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "BLOCK_REQUEST")
 		delete(additionalProperties, "REDIRECT_302")
 		delete(additionalProperties, "BROWSER_CHALLENGE")
+		delete(additionalProperties, "RECAPTCHA")
 		o.AdditionalProperties = additionalProperties
 	}
 
