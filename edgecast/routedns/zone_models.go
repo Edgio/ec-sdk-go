@@ -19,7 +19,7 @@ type Zone struct {
 	ZoneType int `json:"ZoneType,omitempty"`
 
 	// Indicates the comment associated with a zone.
-	Comment string `json:"Comment,omitempty"`
+	Comment string `json:"Comment"`
 
 	// Contains the set of records that will be associated with the zone. This
 	// section should only describe records that do not belong to a load
