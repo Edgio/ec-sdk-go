@@ -561,6 +561,9 @@ import (
 			REDIRECT302: &waf_bot_manager.RedirectAction{
 				// ... 
 			},
+			RECAPTCHA: &waf_bot_manager.RecaptchaAction{
+				// ...
+			},
 		},
 		BotsProdId:      &botRuleID,
 		CustomerId:      &customerID,
