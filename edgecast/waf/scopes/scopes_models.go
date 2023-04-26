@@ -18,8 +18,8 @@ type ModifyAllScopesOK struct {
 }
 
 /*
-	Contains the set of Security Application Manager configurations (Scopes)
-	for a customer
+Contains the set of Security Application Manager configurations (Scopes)
+for a customer
 */
 type Scopes struct {
 
@@ -69,7 +69,7 @@ type Scopes struct {
 }
 
 /*
-	Describes a Security Application Manager configuration (Scope)
+Describes a Security Application Manager configuration (Scope)
 */
 type Scope struct {
 
@@ -88,6 +88,26 @@ type Scope struct {
 		Default Value: "name"
 	*/
 	Name string `json:"name"`
+
+	/*
+		Describe the type of action that will take place when the bot manager with recaptcha type
+		defined within the BotManagerConfigId property is violated.
+	*/
+	ReCaptchaActionName *string `json:"recaptcha_action_name"`
+
+	/*
+		Indicates the secret key assigned to the bot manager with recaptcha type
+		defined within the BotManagerConfigId property.
+
+	*/
+	ReCaptchaSecretKey *string `json:"recaptcha_secret_key"`
+
+	/*
+		Indicates the reCaptcha site key assigned to the bot manager with recaptcha type
+		defined within the BotManagerConfigId property.
+
+	*/
+	ReCaptchaSiteKey *string `json:"recaptcha_site_key"`
 
 	/*
 		Describes a hostname match condition.
@@ -138,17 +158,11 @@ type Scope struct {
 	ACLProdID *string `json:"acl_prod_id,omitempty"`
 
 	/*
-		Indicates the system-defined ID for the bots rule that will be applied
+		Indicates the system-defined ID for the bot manager that will be applied
 		to production traffic for this Security Application Manager
 		configuration.
 	*/
-	BotsProdID *string `json:"bots_prod_id,omitempty"`
-
-	/*
-		Describes the type of action that will take place when the bots rule
-		defined within the BotsProdID property is violated.
-	*/
-	BotsProdAction *ProdAction `json:"bots_prod_action,omitempty"`
+	BotManagerConfigId *string `json:"bot_manager_config_id,omitempty"`
 
 	/*
 		Describes the type of action that will take place when the managed rule
@@ -213,9 +227,9 @@ type Scope struct {
 }
 
 /*
-	AuditAction describes the enforcement action that will be taken when a
-	request violates the configuration defined by an Access, Managed, or Custom
-	Rule.
+AuditAction describes the enforcement action that will be taken when a
+request violates the configuration defined by an Access, Managed, or Custom
+Rule.
 */
 type AuditAction struct {
 
@@ -230,9 +244,9 @@ type AuditAction struct {
 }
 
 /*
-	ProdAction describes the enforcement action that will be taken when a
-	request violates the configuration defined by an Access, Managed, or Custom
-	Rule.
+ProdAction describes the enforcement action that will be taken when a
+request violates the configuration defined by an Access, Managed, or Custom
+Rule.
 */
 type ProdAction struct {
 
@@ -307,7 +321,7 @@ type ProdAction struct {
 }
 
 /*
-	Describes a match condition for hostnames or URL paths
+Describes a match condition for hostnames or URL paths
 */
 type MatchCondition struct {
 
@@ -377,9 +391,9 @@ type MatchCondition struct {
 }
 
 /*
-	Identifies a rate rule that will be enforced for a Security Application
-	Manager configuration and the enforcement action that will be applied to
-	rate limited requests.
+Identifies a rate rule that will be enforced for a Security Application
+Manager configuration and the enforcement action that will be applied to
+rate limited requests.
 */
 type Limit struct {
 
