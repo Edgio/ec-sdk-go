@@ -18,8 +18,8 @@ type ModifyAllScopesOK struct {
 }
 
 /*
-Contains the set of Security Application Manager configurations (Scopes)
-for a customer
+	Contains the set of Security Application Manager configurations (Scopes)
+	for a customer
 */
 type Scopes struct {
 
@@ -69,7 +69,7 @@ type Scopes struct {
 }
 
 /*
-Describes a Security Application Manager configuration (Scope)
+	Describes a Security Application Manager configuration (Scope)
 */
 type Scope struct {
 
@@ -227,9 +227,9 @@ type Scope struct {
 }
 
 /*
-AuditAction describes the enforcement action that will be taken when a
-request violates the configuration defined by an Access, Managed, or Custom
-Rule.
+	AuditAction describes the enforcement action that will be taken when a
+	request violates the configuration defined by an Access, Managed, or Custom
+	Rule.
 */
 type AuditAction struct {
 
@@ -244,9 +244,9 @@ type AuditAction struct {
 }
 
 /*
-ProdAction describes the enforcement action that will be taken when a
-request violates the configuration defined by an Access, Managed, or Custom
-Rule.
+	ProdAction describes the enforcement action that will be taken when a
+	request violates the configuration defined by an Access, Managed, or Custom
+	Rule.
 */
 type ProdAction struct {
 
@@ -321,7 +321,7 @@ type ProdAction struct {
 }
 
 /*
-Describes a match condition for hostnames or URL paths
+	Describes a match condition for hostnames or URL paths
 */
 type MatchCondition struct {
 
@@ -391,9 +391,9 @@ type MatchCondition struct {
 }
 
 /*
-Identifies a rate rule that will be enforced for a Security Application
-Manager configuration and the enforcement action that will be applied to
-rate limited requests.
+	Identifies a rate rule that will be enforced for a Security Application
+	Manager configuration and the enforcement action that will be applied to
+	rate limited requests.
 */
 type Limit struct {
 
