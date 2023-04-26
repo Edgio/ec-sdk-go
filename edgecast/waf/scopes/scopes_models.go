@@ -90,7 +90,24 @@ type Scope struct {
 	Name string `json:"name"`
 
 	/*
-		Describe the type of action that will take place when the bot manager with recaptcha type
+		Describes a hostname match condition.
+	*/
+	Host MatchCondition `json:"host"`
+
+	/*
+		Identifies the set of rate rules that will be enforced for this Security
+		Application Manager configuration and the enforcement action that will
+		be applied to rate limited requests.
+	*/
+	Limits *[]Limit `json:"limits,omitempty"`
+
+	/*
+		Describes a URL match condition.
+	*/
+	Path MatchCondition `json:"path"`
+
+	/*
+		Indicates the name assigned to the action that will take place when the bot manager with recaptcha type
 		defined within the BotManagerConfigId property is violated.
 	*/
 	ReCaptchaActionName *string `json:"recaptcha_action_name"`
@@ -108,23 +125,6 @@ type Scope struct {
 
 	*/
 	ReCaptchaSiteKey *string `json:"recaptcha_site_key"`
-
-	/*
-		Describes a hostname match condition.
-	*/
-	Host MatchCondition `json:"host"`
-
-	/*
-		Identifies the set of rate rules that will be enforced for this Security
-		Application Manager configuration and the enforcement action that will
-		be applied to rate limited requests.
-	*/
-	Limits *[]Limit `json:"limits,omitempty"`
-
-	/*
-		Describes a URL match condition.
-	*/
-	Path MatchCondition `json:"path"`
 
 	/*
 		Describe the type of action that will take place when the access rule
