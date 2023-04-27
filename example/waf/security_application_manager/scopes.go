@@ -250,7 +250,7 @@ func PrintScope(scope scopes.Scope) {
 	}
 
 	if scope.BotManagerConfigId != nil {
-		fmt.Printf("\tBotsProdID:%s\n", *scope.BotManagerConfigId)
+		fmt.Printf("\tBotManagerConfigId:%s\n", *scope.BotManagerConfigId)
 	}
 
 	if scope.ProfileAuditID != nil {
