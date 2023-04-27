@@ -107,6 +107,26 @@ type Scope struct {
 	Path MatchCondition `json:"path"`
 
 	/*
+		Indicates the name assigned to the action that will take place when the bot manager with recaptcha type
+		defined within the BotManagerConfigId property is violated.
+	*/
+	ReCaptchaActionName *string `json:"recaptcha_action_name"`
+
+	/*
+		Indicates the secret key assigned to the bot manager with recaptcha type
+		defined within the BotManagerConfigId property.
+
+	*/
+	ReCaptchaSecretKey *string `json:"recaptcha_secret_key"`
+
+	/*
+		Indicates the reCaptcha site key assigned to the bot manager with recaptcha type
+		defined within the BotManagerConfigId property.
+
+	*/
+	ReCaptchaSiteKey *string `json:"recaptcha_site_key"`
+
+	/*
 		Describe the type of action that will take place when the access rule
 		defined within the ACLAuditID property is violated.
 	*/
@@ -138,17 +158,11 @@ type Scope struct {
 	ACLProdID *string `json:"acl_prod_id,omitempty"`
 
 	/*
-		Indicates the system-defined ID for the bots rule that will be applied
+		Indicates the system-defined ID for the bot manager that will be applied
 		to production traffic for this Security Application Manager
 		configuration.
 	*/
-	BotsProdID *string `json:"bots_prod_id,omitempty"`
-
-	/*
-		Describes the type of action that will take place when the bots rule
-		defined within the BotsProdID property is violated.
-	*/
-	BotsProdAction *ProdAction `json:"bots_prod_action,omitempty"`
+	BotManagerConfigId *string `json:"bot_manager_config_id,omitempty"`
 
 	/*
 		Describes the type of action that will take place when the managed rule

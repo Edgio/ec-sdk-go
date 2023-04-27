@@ -33,7 +33,10 @@ func main() {
 	accessRuleID := "ACCESS_RULE_ID"
 	managedRuleID := "MANAGED_RULE_ID"
 	customRuleID := "CUSTOM_RULE_ID"
-	botRuleID := "BOT_RULE_ID"
+	botManagerConfigId := "BOT_MANAGER_ID"
+	reCaptchaActionName := "edgio_bot"
+	reCaptchaSecretKey := "2Phg5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1vkF"
+	reCaptchaSiteKey := "6Lcm3XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX5mfX"
 
 	sdkConfig := edgecast.NewSDKConfig()
 	sdkConfig.APIToken = apiToken
@@ -50,8 +53,6 @@ func main() {
 	trueVar := true
 	encodedMessage := base64.StdEncoding.EncodeToString([]byte("hello!"))
 	status404 := 404
-	status200 := 200   // used by bot rule
-	validForSec := 300 // used by bot rule
 	redirectURL := "https://www.mysite.com/redirected"
 
 	scope := scopes.Scope{
@@ -61,6 +62,9 @@ func main() {
 			IsCaseInsensitive: &trueVar,
 			Values:            &[]string{"mysite.com", "mysite2.com"},
 		},
+		ReCaptchaActionName: &reCaptchaActionName,
+		ReCaptchaSecretKey:  &reCaptchaSecretKey,
+		ReCaptchaSiteKey:    &reCaptchaSiteKey,
 		Path: scopes.MatchCondition{
 			Type:   "EM",
 			Values: &[]string{"/account", "/admin"},
@@ -98,13 +102,7 @@ func main() {
 			ENFType: "ALERT",
 		},
 
-		BotsProdID: &botRuleID,
-		BotsProdAction: &scopes.ProdAction{
-			Name:        "Bot Rule Action",
-			ENFType:     "BROWSER_CHALLENGE",
-			Status:      &status200,
-			ValidForSec: &validForSec,
-		},
+		BotManagerConfigId: &botManagerConfigId,
 	}
 
 	modifyResp, err := wafService.Scopes.ModifyAllScopes(
@@ -216,6 +214,18 @@ func PrintScope(scope scopes.Scope) {
 	fmt.Println("\tPath:")
 	PrintMatchCondition(scope.Path)
 
+	if scope.ReCaptchaActionName != nil {
+		fmt.Printf("\tReCaptchaActionName:%s\n", *scope.ReCaptchaActionName)
+	}
+
+	if scope.ReCaptchaSecretKey != nil {
+		fmt.Printf("\tReCaptchaSecretKey:%s\n", *scope.ReCaptchaSecretKey)
+	}
+
+	if scope.ReCaptchaSiteKey != nil {
+		fmt.Printf("\tReCaptchaSitetKey:%s\n", *scope.ReCaptchaSiteKey)
+	}
+
 	if scope.Limits != nil {
 		fmt.Println("\tLimits:")
 		PrintLimits(*scope.Limits)
@@ -239,13 +249,8 @@ func PrintScope(scope scopes.Scope) {
 		PrintProdAction(*scope.ACLProdAction)
 	}
 
-	if scope.BotsProdID != nil {
-		fmt.Printf("\tBotsProdID:%s\n", *scope.BotsProdID)
-	}
-
-	if scope.BotsProdAction != nil {
-		fmt.Println("\tBotsProdAction:")
-		PrintProdAction(*scope.BotsProdAction)
+	if scope.BotManagerConfigId != nil {
+		fmt.Printf("\tBotManagerConfigId:%s\n", *scope.BotManagerConfigId)
 	}
 
 	if scope.ProfileAuditID != nil {
